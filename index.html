@@ -4366,6 +4366,68 @@ const MIS=[
      if(es!==debe)return{ok:false,msg:`Con el sensor al ${mpct(v).toFixed(0)}% el buzzer tendría que estar ${debe?"sonando":"apagado"}.`}}
    return{ok:true,msg:"El buzzer suena por dos motivos distintos. ¿Cómo haría alguien para saber cuál de los dos fue?"}}},
 
+{t:"El sensor mentiroso",c:"encontrar el error",
+ g:"Este programa tendría que prender el LED cuando la tierra está seca, pero se equivoca siempre. Hay una sola línea mal. Encontrala y arreglala.",
+ th:`Todo el programa está bien escrito y corre sin dar error. Pero <b>hace lo que no queremos</b>.<br>
+     Ejecutalo con el deslizador bien abajo y mirá el monitor: ¿ese número puede ser un porcentaje?<br>
+     Un programa que anda no es lo mismo que un programa que anda bien.`,
+ s:"crudo = leer(A0)\nporcentaje = crudo * 100 / 100\nmostrar(porcentaje)\nif porcentaje < 30:\n    prender(13)\nelse:\n    apagar(13)\n",
+ chk:async r=>{
+   const seco=await r({an:{A0:100}}); if(seco.err)return{ok:false,msg:""};
+   if(seco.pins[13]!==1)return{ok:false,msg:"Con el sensor en 100 la tierra está al 10%: el LED tendría que prenderse. Mirá qué número muestra el monitor."};
+   const hum=await r({an:{A0:900}}); if(hum.err)return{ok:false,msg:""};
+   if(hum.pins[13]===1)return{ok:false,msg:"Con el sensor en 900 la tierra está al 88%: el LED tendría que estar apagado."};
+   return{ok:true,msg:"Dividía por 100 en vez de por 1023, así que el porcentaje daba cualquier cosa. Todo el error estaba en un solo número."}}},
+
+{t:"Ponele nota al cantero",c:"escalar a otro rango",
+ g:"Mostrá cómo está el cantero con una nota del 0 al 10, como en el boletín. 0 es tierra seca, 10 es empapada.",
+ th:`Es exactamente la misma cuenta de la misión 5, pero llegando a otro número.<br>
+     Si 1023 tenía que dar 100, arriba iba un 100. Si ahora 1023 tiene que dar <b>10</b>, ¿qué va arriba?`,
+ s:"crudo = leer(A0)\n",
+ chk:async r=>{
+   for(const v of [250,700]){const x=await r({an:{A0:v}});
+     if(x.err)return{ok:false,msg:""};
+     const last=[...x.out].reverse().find(o=>!isNaN(parseFloat(o)));
+     if(last===undefined)return{ok:false,msg:"No mostraste nada todavía."};
+     const debe=v*10/1023;
+     if(Math.abs(parseFloat(last)-debe)>0.3)
+       return{ok:false,msg:`Con el sensor en ${v} la nota tendría que dar ${debe.toFixed(1)} y mostraste ${last}.`}}
+   return{ok:true,msg:"Misma cuenta, otro número arriba. Ese número que va arriba tiene nombre, y lo vemos al cierre."}}},
+
+{t:"El termómetro del aula",c:"escalar con arranque",
+ g:"Ahora el sensor mide temperatura. Cuando marca 0 hace 10 grados bajo cero, y cuando marca 1023 hace 40 grados. Mostrá la temperatura.",
+ th:`Ojo que este es distinto a todos los anteriores.<br>
+     Antes, cuando el sensor marcaba 0, el resultado también daba 0. <b>Acá no</b>: cuando marca 0 hace
+     <b>10 grados bajo cero</b>. Toda la escala está corrida.<br>
+     Pensalo en dos pasos: ¿cuántos grados hay de punta a punta, de -10 hasta 40? Y después, ¿desde dónde arranca?`,
+ s:"crudo = leer(A0)\n",
+ chk:async r=>{
+   for(const v of [0,512,1023]){const x=await r({an:{A0:v}});
+     if(x.err)return{ok:false,msg:""};
+     const last=[...x.out].reverse().find(o=>!isNaN(parseFloat(o)));
+     if(last===undefined)return{ok:false,msg:"No mostraste nada todavía."};
+     const debe=v*50/1023-10;
+     if(Math.abs(parseFloat(last)-debe)>0.6)
+       return{ok:false,msg:`Con el sensor en ${v} tendría que dar ${debe.toFixed(1)} grados y mostraste ${last}.`}}
+   return{ok:true,msg:"De punta a punta hay 50 grados y la escala arranca en -10. Con esos dos números se convierte cualquier cosa en cualquier otra."}}},
+
+{t:"El sensor al revés",c:"cuando la cuenta baja",
+ g:"Este sensor marca MÁS cuando hay MENOS agua: con 0 la tierra está empapada (100%) y con 1023 está seca (0%). Mostrá el porcentaje de humedad.",
+ th:`Existen de verdad, y son una trampa clásica: el aparato queda funcionando al revés y nadie se da
+     cuenta hasta que la planta se seca.<br>
+     Si el sensor marca 0 tenés que mostrar 100, y si marca 1023 tenés que mostrar 0.
+     ¿Cómo hacés para que la cuenta <b>baje</b> en vez de subir?`,
+ s:"crudo = leer(A0)\n",
+ chk:async r=>{
+   for(const v of [200,800]){const x=await r({an:{A0:v}});
+     if(x.err)return{ok:false,msg:""};
+     const last=[...x.out].reverse().find(o=>!isNaN(parseFloat(o)));
+     if(last===undefined)return{ok:false,msg:"No mostraste nada todavía."};
+     const debe=100-mpct(v);
+     if(Math.abs(parseFloat(last)-debe)>1.5)
+       return{ok:false,msg:`Con el sensor en ${v} tendría que dar ${debe.toFixed(1)}% y mostraste ${last}.`}}
+   return{ok:true,msg:"La cuenta ahora baja en vez de subir. Si dibujaras los puntos en un gráfico, la línea iría para abajo."}}},
+
 {t:"Parpadeá exactamente 5 veces",c:"for · repetir una cantidad",
  g:"Hacé que el LED del pin 13 parpadee 5 veces y después pare. Ni una más ni una menos.",
  th:`<code>while True</code> repite sin final. Para repetir una cantidad conocida de veces:<br>
