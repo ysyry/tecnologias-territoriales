@@ -338,6 +338,52 @@
   .tolink{background:none;border:none;color:#333c4a;font-size:.73rem;font-family:inherit;cursor:pointer;
     display:block;margin:40px auto 0;padding:6px}
   .tolink:hover{color:var(--muted)}
+
+.ardu{max-width:900px;margin:0 auto}
+.arduhead{display:flex;gap:18px;align-items:flex-start;justify-content:space-between;
+  flex-wrap:wrap;margin-bottom:22px;padding-bottom:18px;border-bottom:1px solid rgba(255,255,255,.12)}
+.arduhead h2{margin:0 0 6px}
+.arduhead p{margin:0;opacity:.82;max-width:62ch;line-height:1.55}
+.akick{font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;opacity:.6;margin-bottom:6px!important}
+.ardutabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.atab{background:transparent;border:1px solid rgba(255,255,255,.16);color:inherit;
+  padding:9px 16px;border-radius:999px;cursor:pointer;font:inherit;font-size:.95rem;opacity:.72}
+.atab.on{opacity:1;border-color:currentColor;background:rgba(125,160,255,.12)}
+.atab span{opacity:.55;margin-left:6px;font-size:.85em}
+.ardulista{display:flex;flex-direction:column;gap:10px}
+.arduitem{display:flex;align-items:center;gap:14px;width:100%;text-align:left;cursor:pointer;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:12px;
+  padding:14px 16px;color:inherit;font:inherit}
+.arduitem:hover{background:rgba(255,255,255,.09)}
+.an{flex:0 0 30px;height:30px;border-radius:50%;display:grid;place-items:center;
+  background:rgba(255,255,255,.09);font-size:.85rem;opacity:.85}
+.at{display:flex;flex-direction:column;gap:2px;flex:1}
+.at i{font-style:normal;opacity:.6;font-size:.87rem}
+.aa{opacity:.45}
+.ardugrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin-bottom:16px}
+.acard{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);
+  border-radius:12px;padding:16px 18px}
+.acard h4{margin:0 0 10px;font-size:.76rem;letter-spacing:.09em;text-transform:uppercase;opacity:.62;font-weight:600}
+.acard p,.acard li{line-height:1.6;margin:0 0 6px}
+.acard ul,.acard ol{margin:0;padding-left:20px}
+.acard li{margin-bottom:8px}
+.acard li:last-child{margin-bottom:0}
+.acard.nota{background:rgba(125,160,255,.08);border-color:rgba(125,160,255,.28)}
+.acode{border:1px solid rgba(255,255,255,.12);border-radius:12px;overflow:hidden;margin-bottom:16px}
+.acodetop{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:9px 14px;
+  background:rgba(255,255,255,.06);font-size:.78rem;letter-spacing:.09em;text-transform:uppercase;opacity:.85}
+.acode pre,.aroto pre{margin:0;padding:16px 18px;overflow-x:auto;background:rgba(0,0,0,.3);
+  font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:.92rem;line-height:1.55;
+  white-space:pre;tab-size:2}
+.ardunav{display:flex;justify-content:space-between;gap:12px;margin-top:22px;flex-wrap:wrap}
+.arointro{opacity:.85;line-height:1.6;margin:0 0 18px;max-width:66ch}
+.aroto{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:16px 18px}
+.arotoh{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.aroto pre{border-radius:8px;margin-bottom:12px}
+.arotosol{margin-top:12px;padding:12px 14px;border-radius:8px;line-height:1.6;
+  background:rgba(125,160,255,.10);border-left:3px solid rgba(125,160,255,.55)}
+.btn.small{padding:5px 12px;font-size:.85rem}
+@media(max-width:640px){.arduhead{flex-direction:column}.ardugrid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -2908,9 +2954,23 @@ const ANIOS = {
     ids:['situac','desafios','desafios2']},
    {t:'Probate', d:'Para cuando ya recorriste los módulos de arriba.',
     ids:['repaso'], esp:['mezcla']}
+ ]},
+ '4to':{ nom:'4to año', sub:'De los datos al sistema', mods:[
+   {t:'Programá la placa', d:'Escribís el código y el aparato reacciona. Se abren de a una.',
+    esp:['misiones']},
+   {t:'Arduino de verdad', d:'Lo mismo en el lenguaje real de la placa, para el simulador o para el hardware.',
+    esp:['arduino']},
+   {t:'1 · El aparato por dentro', d:'Qué hay adentro, qué mide cada cosa y cómo se conecta.',
+    ids:['sensores','electro','caja']},
+   {t:'2 · Decidir con datos', d:'Del número crudo a la decisión: escalar, comparar, combinar condiciones.',
+    ids:['robot1','dec','bug']},
+   {t:'3 · Situaciones completas', d:'Problemas donde hay que combinar todo y decidir qué conviene.',
+    ids:['situac','desafios2']},
+   {t:'Probate', d:'Para cuando ya recorriste los módulos de arriba.',
+    ids:['repaso'], esp:['mezcla']}
  ]}
 };
-const ANIOS_ORDEN=['1ro','2do','3ro'];
+const ANIOS_ORDEN=['1ro','2do','3ro','4to'];
 
 /* entradas normalizadas ({id, tag}) de todas las salas de un año */
 function entradasAnio(anio){
@@ -2926,11 +2986,351 @@ function ejsDeSala(ent){
   return base.map(e=>Object.assign({},e,{concepto:s.concepto, sinResultado:!!s.sinResultado}));
 }
 
+const ARDU = [
+ {
+  "t": "La luz de la placa",
+  "c": "lo mínimo que anda",
+  "q": "El LED que ya viene soldado en la placa parpadea. No hay que conectar nada.",
+  "n": [
+   "Solo la placa y el cable USB"
+  ],
+  "cir": "Nada. El LED del pin 13 ya está en la placa.",
+  "code": "void setup() {\n  pinMode(13, OUTPUT);\n}\n\nvoid loop() {\n  digitalWrite(13, HIGH);\n  delay(1000);\n  digitalWrite(13, LOW);\n  delay(1000);\n}",
+  "ex": [
+   "Cambiá los dos <code>1000</code> por <code>100</code>. ¿Qué pasa?",
+   "Sacá los dos <code>delay</code>. El LED parece prendido a media luz: está parpadeando más rápido de lo que el ojo ve.",
+   "Hacé que parpadee en código Morse: tres cortos, tres largos, tres cortos."
+  ],
+  "nota": "<b>setup()</b> corre una sola vez, al encender. <b>loop()</b> se repite para siempre. Esa es toda la estructura de un programa de Arduino."
+ },
+ {
+  "t": "Un LED afuera",
+  "c": "salida digital · resistencia",
+  "q": "Un LED puesto en la protoboard, no el de la placa.",
+  "n": [
+   "1 LED",
+   "1 resistencia de 220 Ω",
+   "2 cables"
+  ],
+  "cir": "Pin 8 → resistencia → pata larga del LED. Pata corta del LED → GND.",
+  "code": "const int LED = 8;\n\nvoid setup() {\n  pinMode(LED, OUTPUT);\n}\n\nvoid loop() {\n  digitalWrite(LED, HIGH);\n  delay(500);\n  digitalWrite(LED, LOW);\n  delay(500);\n}",
+  "ex": [
+   "Agregá un segundo LED en el pin 9 y hacé que se alternen.",
+   "Poné tres LEDs y hacé que la luz corra de uno al otro."
+  ],
+  "nota": "La <b>resistencia no es opcional</b>: sin ella pasa demasiada corriente y el LED se quema. 220 Ω es el valor de siempre. Y la pata larga del LED es el positivo."
+ },
+ {
+  "t": "El botón",
+  "c": "entrada digital · pull-up",
+  "q": "El LED se prende mientras el botón está apretado.",
+  "n": [
+   "1 pulsador",
+   "1 LED + resistencia de 220 Ω",
+   "cables"
+  ],
+  "cir": "Una pata del botón al pin 2, la otra a GND. El LED en el pin 8 como antes.",
+  "code": "const int BOTON = 2;\nconst int LED = 8;\n\nvoid setup() {\n  pinMode(BOTON, INPUT_PULLUP);\n  pinMode(LED, OUTPUT);\n}\n\nvoid loop() {\n  if (digitalRead(BOTON) == LOW) {\n    digitalWrite(LED, HIGH);\n  } else {\n    digitalWrite(LED, LOW);\n  }\n}",
+  "ex": [
+   "Hacé que el botón <b>cambie</b> el estado en vez de mantenerlo: una apretada prende, la siguiente apaga.",
+   "Contá cuántas veces se apretó y mostralo por el monitor serie."
+  ],
+  "nota": "<b>INPUT_PULLUP</b> le pide a la placa que mantenga el pin en alto por su cuenta. Por eso el botón apretado da <code>LOW</code> y no <code>HIGH</code>: es al revés de lo que uno esperaría, y es la fuente de la mitad de los errores con botones."
+ },
+ {
+  "t": "La perilla",
+  "c": "entrada analógica · monitor serie",
+  "q": "Un potenciómetro que devuelve un número entre 0 y 1023 según cuánto lo gires.",
+  "n": [
+   "1 potenciómetro",
+   "3 cables"
+  ],
+  "cir": "Las dos patas de los extremos a 5 V y GND. La del medio a A0.",
+  "code": "void setup() {\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  int crudo = analogRead(A0);\n  Serial.println(crudo);\n  delay(200);\n}",
+  "ex": [
+   "Abrí el <b>monitor serie</b> (la lupa arriba a la derecha, o Ctrl+Shift+M) y girá la perilla.",
+   "Probá el <b>graficador serie</b>: se ve la curva en vivo.",
+   "Cambiá el <code>delay</code> a 20 y mirá cuántos datos entran por segundo."
+  ],
+  "nota": "El conversor de la placa es de <b>10 bits</b>: 2¹⁰ = 1024 valores, de 0 a 1023. Ese número <b>no es</b> voltios, ni grados, ni porcentaje. Es una lectura cruda, y no significa nada hasta que uno construya la conversión."
+ },
+ {
+  "t": "El sensor de humedad",
+  "c": "calibración · función lineal",
+  "q": "Lo mismo que la perilla, pero clavado en la tierra. Y ahora el número crudo se convierte en un porcentaje.",
+  "n": [
+   "1 sensor de humedad de suelo",
+   "3 cables"
+  ],
+  "cir": "VCC a 5 V, GND a GND, la salida analógica a A0.",
+  "code": "// Estos dos números son TUYOS: salen de medir\n// el sensor en tierra seca y en tierra empapada.\nconst int CRUDO_SECO     = 862;\nconst int CRUDO_SATURADO = 331;\n\nfloat aPorcentaje(int crudo) {\n  float m = 100.0 / (CRUDO_SATURADO - CRUDO_SECO);\n  float b = -m * CRUDO_SECO;\n  return m * crudo + b;\n}\n\nvoid setup() {\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  int crudo = analogRead(A0);\n  float humedad = aPorcentaje(crudo);\n\n  Serial.print(crudo);\n  Serial.print(\"  ->  \");\n  Serial.print(humedad);\n  Serial.println(\" %\");\n  delay(500);\n}",
+  "ex": [
+   "Poné <b>tus</b> dos números de calibración y comprobá que en seco dé 0 y en agua dé 100.",
+   "¿Qué humedad da un crudo de 600 con tu recta? ¿Y con la del equipo de al lado?",
+   "Dejalo andando media hora sin tocar nada. ¿El número se queda quieto o se va corriendo?"
+  ],
+  "nota": "Los dos números de arriba son <b>distintos para cada sensor</b>: por eso la recta de cada equipo es propia y no se puede copiar. Si el sensor se corroe y su valor en seco cambia, <b>toda la recta queda mal</b> y hay que calibrar de nuevo."
+ },
+ {
+  "t": "La luz del ambiente",
+  "c": "LDR · divisor de tensión",
+  "q": "Una fotorresistencia mide cuánta luz hay.",
+  "n": [
+   "1 LDR",
+   "1 resistencia de 10 kΩ",
+   "cables"
+  ],
+  "cir": "5 V → LDR → punto medio a A0 → resistencia de 10 kΩ → GND.",
+  "code": "void setup() {\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  int luz = analogRead(A0);\n  Serial.println(luz);\n\n  if (luz < 300) {\n    digitalWrite(13, HIGH);   // está oscuro\n  } else {\n    digitalWrite(13, LOW);\n  }\n  delay(200);\n}",
+  "ex": [
+   "Tapá el sensor con la mano y buscá el número donde conviene poner el umbral.",
+   "Hacé que el umbral sea distinto para prender y para apagar, así no titila al atardecer."
+  ],
+  "nota": "Una LDR sola no sirve: hace falta la resistencia fija para armar un <b>divisor de tensión</b>. Sin ella, el pin no lee nada útil."
+ },
+ {
+  "t": "Temperatura y humedad del aire",
+  "c": "DHT22 · librería",
+  "q": "Un sensor que da los dos valores ya convertidos, sin calibrar.",
+  "n": [
+   "1 sensor DHT22",
+   "3 cables",
+   "la librería <i>DHT sensor library</i> de Adafruit"
+  ],
+  "cir": "VCC a 5 V, GND a GND, DATA al pin 2.",
+  "code": "#include \"DHT.h\"\n\nDHT dht(2, DHT22);\n\nvoid setup() {\n  Serial.begin(9600);\n  dht.begin();\n}\n\nvoid loop() {\n  float temp = dht.readTemperature();\n  float hum  = dht.readHumidity();\n\n  if (isnan(temp) || isnan(hum)) {\n    Serial.println(\"El sensor no contesto\");\n  } else {\n    Serial.print(temp);\n    Serial.print(\" C   \");\n    Serial.print(hum);\n    Serial.println(\" %\");\n  }\n  delay(2000);\n}",
+  "ex": [
+   "¿Por qué el <code>delay</code> es de 2 segundos y no de 200 milisegundos? Buscalo en la hoja de datos del sensor.",
+   "El <code>isnan</code> chequea si el sensor no contestó. Sacalo y desconectá el cable de datos: ¿qué muestra?"
+  ],
+  "nota": "Este sensor viene <b>calibrado de fábrica</b>: devuelve grados y porcentaje directamente. Eso es cómodo, pero significa que <b>alguien más decidió la conversión</b> y vos no sabés cómo. El de humedad de suelo, que hay que calibrar, es más trabajo y más honesto."
+ },
+ {
+  "t": "El zumbador",
+  "c": "salida · alarma",
+  "q": "Un pitido cuando algo pasa.",
+  "n": [
+   "1 buzzer piezoeléctrico",
+   "2 cables"
+  ],
+  "cir": "Pata positiva al pin 9, la otra a GND.",
+  "code": "const int BUZZER = 9;\n\nvoid setup() {\n  pinMode(BUZZER, OUTPUT);\n}\n\nvoid loop() {\n  tone(BUZZER, 880);\n  delay(200);\n  noTone(BUZZER);\n  delay(800);\n}",
+  "ex": [
+   "Cambiá el 880 y escuchá. Ese número son <b>hertz</b>: cuántas veces por segundo vibra.",
+   "Armá una alarma que suene solo si la humedad está por debajo de 20 %."
+  ],
+  "nota": "<code>tone()</code> arranca el sonido y sigue solo: no frena el programa. <code>noTone()</code> lo corta."
+ },
+ {
+  "t": "El servo",
+  "c": "mover algo",
+  "q": "Un motor que va a un ángulo exacto y se queda ahí.",
+  "n": [
+   "1 servomotor SG90",
+   "3 cables",
+   "la librería <i>Servo</i> (ya viene incluida)"
+  ],
+  "cir": "Naranja al pin 9, rojo a 5 V, marrón a GND.",
+  "code": "#include <Servo.h>\n\nServo compuerta;\n\nvoid setup() {\n  compuerta.attach(9);\n}\n\nvoid loop() {\n  compuerta.write(0);\n  delay(1000);\n  compuerta.write(90);\n  delay(1000);\n  compuerta.write(180);\n  delay(1000);\n}",
+  "ex": [
+   "Hacé que el ángulo dependa del potenciómetro: <code>map(crudo, 0, 1023, 0, 180)</code>.",
+   "Abrí la compuerta solo cuando la humedad baje del umbral, y cerrala cuando suba."
+  ],
+  "nota": "Un servo chico se puede alimentar desde la placa. Uno grande <b>no</b>: pide más corriente de la que el USB puede dar, y la placa se reinicia sola."
+ },
+ {
+  "t": "No le creas a un solo dato",
+  "c": "promedio · for",
+  "q": "En vez de leer una vez, lee diez y promedia. El número deja de saltar.",
+  "n": [
+   "Lo mismo del sensor que estés usando"
+  ],
+  "cir": "Sin cambios.",
+  "code": "int leerPromedio(int pin, int veces) {\n  long suma = 0;\n  for (int i = 0; i < veces; i++) {\n    suma = suma + analogRead(pin);\n    delay(10);\n  }\n  return suma / veces;\n}\n\nvoid setup() {\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  int crudo = leerPromedio(A0, 10);\n  Serial.println(crudo);\n  delay(500);\n}",
+  "ex": [
+   "Compará: mostrá en la misma línea la lectura suelta y el promedio. ¿Cuánto salta cada una?",
+   "Subí a 100 lecturas. ¿Mejora mucho más, o ya no se nota?"
+  ],
+  "nota": "<code>suma</code> es <b>long</b> y no <b>int</b> a propósito: diez lecturas de hasta 1023 suman más de 10.000, y un <code>int</code> en esta placa aguanta hasta 32.767. Con cien lecturas se pasaría y el número daría negativo sin avisar.<br><br>Promediar <b>baja el ruido pero no corrige el sesgo</b>: si el sensor está mal calibrado, el promedio está igual de mal, solo que más parejo."
+ },
+ {
+  "t": "Que no titile",
+  "c": "histéresis · dos umbrales",
+  "q": "Un sistema con un solo umbral se prende y se apaga sin parar cuando el valor queda justo ahí. Con dos umbrales, no.",
+  "n": [
+   "El sensor y un LED o una bomba"
+  ],
+  "cir": "Sin cambios.",
+  "code": "const float PRENDER = 30.0;   // riega si baja de esto\nconst float APAGAR   = 45.0;   // corta recien al llegar aca\n\nbool regando = false;\n\nvoid setup() {\n  pinMode(8, OUTPUT);\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  float humedad = aPorcentaje(analogRead(A0));\n\n  if (!regando && humedad < PRENDER) {\n    regando = true;\n  }\n  if (regando && humedad > APAGAR) {\n    regando = false;\n  }\n\n  digitalWrite(8, regando ? HIGH : LOW);\n  Serial.println(humedad);\n  delay(500);\n}",
+  "ex": [
+   "Poné los dos umbrales en el mismo número y mirá qué pasa cuando la humedad queda justo ahí.",
+   "Dibujá el <b>diagrama de estados</b>: dos estados, y qué hace falta para pasar de uno al otro."
+  ],
+  "nota": "La zona entre 30 y 45 es la <b>banda muerta</b>: adentro de ella el sistema <b>no cambia de opinión</b>, sigue haciendo lo que venía haciendo. Por eso hace falta la variable <code>regando</code>: el sistema tiene que <b>acordarse</b> de en qué estado estaba. Eso ya es una máquina de estados."
+ },
+ {
+  "t": "El aparato de la huerta",
+  "c": "integrador",
+  "q": "Todo junto: mide, promedia, convierte, decide con banda muerta, actúa y avisa.",
+  "n": [
+   "Sensor de humedad",
+   "1 LED",
+   "1 buzzer",
+   "Opcional: servo o relé"
+  ],
+  "cir": "Sensor a A0, LED al 8, buzzer al 9.",
+  "code": "const int CRUDO_SECO     = 862;\nconst int CRUDO_SATURADO = 331;\nconst float PRENDER = 30.0;\nconst float APAGAR  = 45.0;\n\nbool regando = false;\n\nfloat aPorcentaje(int crudo) {\n  float m = 100.0 / (CRUDO_SATURADO - CRUDO_SECO);\n  return m * crudo - m * CRUDO_SECO;\n}\n\nint leerPromedio(int pin, int veces) {\n  long suma = 0;\n  for (int i = 0; i < veces; i++) {\n    suma = suma + analogRead(pin);\n    delay(10);\n  }\n  return suma / veces;\n}\n\nvoid setup() {\n  pinMode(8, OUTPUT);\n  pinMode(9, OUTPUT);\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  int crudo = leerPromedio(A0, 10);\n  float humedad = aPorcentaje(crudo);\n\n  // el sensor desconectado da 0 o 1023 clavados\n  if (crudo < 5 || crudo > 1018) {\n    tone(9, 440);\n    Serial.println(\"LECTURA SOSPECHOSA\");\n    delay(1000);\n    noTone(9);\n    return;\n  }\n\n  if (!regando && humedad < PRENDER) regando = true;\n  if (regando && humedad > APAGAR)   regando = false;\n\n  digitalWrite(8, regando ? HIGH : LOW);\n\n  Serial.print(crudo);\n  Serial.print(\"  \");\n  Serial.print(humedad);\n  Serial.print(\" %  \");\n  Serial.println(regando ? \"REGANDO\" : \"-\");\n  delay(1000);\n}",
+  "ex": [
+   "¿Qué otra cosa podría salir mal que este código todavía no detecte?",
+   "Si el sensor se corroe de a poco, ¿este programa se da cuenta? ¿Cómo podría darse cuenta?",
+   "¿Qué parte de esta decisión <b>no</b> dejarías automatizada?"
+  ],
+  "nota": "El bloque de la <b>lectura sospechosa</b> es lo que separa un programa de un sistema: un aparato que no desconfía de su propio sensor se cree cualquier cosa. Un 0 clavado durante tres días no es tierra seca, es un cable suelto."
+ }
+];
+const ARDU_ROTO = [
+ {
+  "t": "El LED no prende nunca",
+  "code": "void setup() {\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  digitalWrite(13, HIGH);\n  delay(500);\n  digitalWrite(13, LOW);\n  delay(500);\n}",
+  "sol": "Falta <code>pinMode(13, OUTPUT)</code> en el setup. Sin eso el pin queda como entrada y no manda corriente. <b>No da error al compilar</b>: simplemente no pasa nada."
+ },
+ {
+  "t": "El contador siempre da 1",
+  "code": "void loop() {\n  int cuenta = 0;\n  cuenta = cuenta + 1;\n  Serial.println(cuenta);\n  delay(1000);\n}",
+  "sol": "<code>cuenta</code> se declara <b>adentro</b> del loop, así que se crea de nuevo en cada vuelta y vuelve a cero. Para que acumule tiene que estar <b>afuera</b>, antes del setup."
+ },
+ {
+  "t": "Riega siempre, sin importar el sensor",
+  "code": "int humedad = 45;\n\nvoid loop() {\n  if (humedad = 30) {\n    digitalWrite(13, HIGH);\n  } else {\n    digitalWrite(13, LOW);\n  }\n}",
+  "sol": "<code>=</code> <b>asigna</b>, <code>==</code> <b>compara</b>. Esa línea le pone 30 a <code>humedad</code> y después evalúa ese 30 como verdadero, así que entra siempre por el if. En C++ compila sin chistar."
+ },
+ {
+  "t": "Parpadea aunque la humedad esté bien",
+  "code": "void loop() {\n  float humedad = aPorcentaje(analogRead(A0));\n\n  if (humedad < 30);\n  {\n    digitalWrite(13, HIGH);\n    delay(200);\n    digitalWrite(13, LOW);\n    delay(200);\n  }\n}",
+  "sol": "El <b>punto y coma después del if</b>. Ese <code>;</code> cierra el if con un cuerpo vacío, y el bloque de abajo pasa a ejecutarse siempre. Es de los errores más difíciles de ver a ojo."
+ },
+ {
+  "t": "La conversión da números redondos",
+  "code": "void loop() {\n  int crudo = analogRead(A0);\n  int humedad = -0.1883 * crudo + 162.3;\n  Serial.println(humedad);\n}",
+  "sol": "<code>humedad</code> es <b>int</b>, así que trunca los decimales. Con crudo 600 debería dar 49,32 y da 49. Parece poco, pero si esa humedad alimenta un promedio o una decisión, el error se arrastra. Va <b>float</b>."
+ },
+ {
+  "t": "Solo apaga la primera luz",
+  "code": "void loop() {\n  float humedad = aPorcentaje(analogRead(A0));\n\n  if (humedad > 60)\n    digitalWrite(12, LOW);\n    digitalWrite(13, LOW);\n}",
+  "sol": "Sin llaves, el <code>if</code> se lleva <b>solo la línea siguiente</b>. La segunda se ejecuta siempre. La indentación sugiere otra cosa y por eso engaña: <b>el código no hace lo que parece</b>."
+ },
+ {
+  "t": "El promedio da siempre cero",
+  "code": "void loop() {\n  int suma = 0;\n  for (int i = 0; i < 10; i++) {\n    suma = suma + analogRead(A0);\n  }\n  int promedio = suma / 10;\n  Serial.println(promedio / 1000);\n}",
+  "sol": "<code>promedio / 1000</code> con enteros da <b>cero</b> siempre, porque el promedio es menor que 1000 y la división entera trunca. El promedio en sí estaba bien: el error está en la última línea."
+ },
+ {
+  "t": "La alarma no salta nunca",
+  "code": "void loop() {\n  float humedad = aPorcentaje(analogRead(A0));\n\n  if (humedad < 20 && humedad > 80) {\n    digitalWrite(13, HIGH);\n  }\n}",
+  "sol": "<code>&&</code> pide que se cumplan <b>las dos</b>, y ningún número es a la vez menor que 20 y mayor que 80. Va <code>||</code>. Es el error lógico clásico."
+ }
+];
+
+/* ============================================================
+   TALLER ARDUINO — 4to año
+   Código real de C++ para simulador (wokwi.com) o placa física.
+   Doce proyectos con sensores básicos, copiables, más un banco
+   de código roto: compila y sube, pero no hace lo que dice.
+   ============================================================ */
+let _arduTab='proy';
+function arduHome(tab){
+  cur=null; if(tab) _arduTab=tab;
+  const proy=_arduTab==='proy';
+  app.innerHTML=`<div class="ardu">
+    <div class="arduhead">
+      <div>
+        <h2>Arduino de verdad</h2>
+        <p>Los mismos conceptos de las misiones, ahora en el lenguaje real de la placa.
+           Andá a <a href="https://wokwi.com/projects/new/arduino-uno" target="_blank" rel="noopener">wokwi.com</a>
+           para simularlo en el navegador, o subilo a una placa si tenés.</p>
+      </div>
+      <button class="btn ghost" onclick="menu()">← Volver</button>
+    </div>
+    <div class="ardutabs">
+      <button class="atab${proy?' on':''}" onclick="arduHome('proy')">Proyectos <span>${ARDU.length}</span></button>
+      <button class="atab${!proy?' on':''}" onclick="arduHome('roto')">Código roto <span>${ARDU_ROTO.length}</span></button>
+    </div>
+    ${proy?arduListaHTML():arduRotoHTML()}
+  </div>`;
+  window.scrollTo(0,0);
+}
+function arduListaHTML(){
+  return `<div class="ardulista">${ARDU.map((p,i)=>`
+    <button class="arduitem" onclick="arduVer(${i})">
+      <span class="an">${i+1}</span>
+      <span class="at"><b>${p.t}</b><i>${p.c}</i></span>
+      <span class="aa">→</span>
+    </button>`).join('')}</div>`;
+}
+function arduVer(i){
+  const p=ARDU[i]; cur=null;
+  app.innerHTML=`<div class="ardu">
+    <div class="arduhead">
+      <div>
+        <p class="akick">Proyecto ${i+1} de ${ARDU.length} · ${p.c}</p>
+        <h2>${p.t}</h2>
+        <p>${p.q}</p>
+      </div>
+      <button class="btn ghost" onclick="arduHome('proy')">← Proyectos</button>
+    </div>
+    <div class="ardugrid">
+      <div class="acard"><h4>Qué necesitás</h4><ul>${p.n.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+      <div class="acard"><h4>Cómo se conecta</h4><p>${p.cir}</p></div>
+    </div>
+    <div class="acode">
+      <div class="acodetop"><span>El código</span>
+        <button class="btn small" id="acopy" onclick="arduCopiar(${i})">Copiar</button></div>
+      <pre>${escapeHtml(p.code)}</pre>
+    </div>
+    <div class="acard nota"><h4>Lo que conviene saber</h4><p>${p.nota}</p></div>
+    <div class="acard"><h4>Probá esto</h4><ol>${p.ex.map(x=>`<li>${x}</li>`).join('')}</ol></div>
+    <div class="ardunav">
+      ${i>0?`<button class="btn ghost" onclick="arduVer(${i-1})">← ${ARDU[i-1].t}</button>`:'<span></span>'}
+      ${i<ARDU.length-1?`<button class="btn" onclick="arduVer(${i+1})">${ARDU[i+1].t} →</button>`:`<button class="btn" onclick="arduHome('roto')">Ir al código roto →</button>`}
+    </div>
+  </div>`;
+  window.scrollTo(0,0);
+}
+function arduCopiar(i){
+  const t=ARDU[i].code, b=document.getElementById('acopy');
+  const ok=()=>{ b.textContent='Copiado'; setTimeout(()=>{b.textContent='Copiar';},1600); };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(t).then(ok).catch(()=>arduCopiarFallback(t,ok));
+  } else arduCopiarFallback(t,ok);
+}
+function arduCopiarFallback(t,ok){
+  const a=document.createElement('textarea'); a.value=t;
+  a.style.position='fixed'; a.style.opacity='0'; document.body.appendChild(a);
+  a.select(); try{ document.execCommand('copy'); ok(); }catch(e){}
+  document.body.removeChild(a);
+}
+function arduRotoHTML(){
+  return `<p class="arointro">Estos programas <b>compilan y suben sin ningún error</b>. Pero no hacen lo que dicen que hacen.
+    No está dicho cuántas cosas tiene mal cada uno.</p>
+    <div class="ardulista">${ARDU_ROTO.map((r,i)=>`
+    <div class="aroto">
+      <div class="arotoh"><span class="an">${i+1}</span><b>${r.t}</b></div>
+      <pre>${escapeHtml(r.code)}</pre>
+      <button class="btn ghost small" onclick="arduRotoVer(${i},this)">Ver la respuesta</button>
+      <div class="arotosol" id="arotosol${i}" hidden>${r.sol}</div>
+    </div>`).join('')}</div>`;
+}
+function arduRotoVer(i,b){
+  const d=document.getElementById('arotosol'+i);
+  d.hidden=!d.hidden; b.textContent=d.hidden?'Ver la respuesta':'Ocultar';
+}
+
 const ESPECIALES={
  intro:{n:'Introducción a la robótica', d:'Qué es un robot, de dónde viene y cómo está hecho. Once pantallas para leer de corrido.', fn:'introHome()', wide:true, dest:true},
  jr:   {n:'Modo Jr', d:'Nivel más simple, sin texto para leer: llevá al personaje hasta su objetivo con flechas.', fn:'jrMission(0)', lvl:0},
  estudio:{n:'Estudio de dibujo', d:'Modo libre: movés las perillas y la tortuga dibuja en vivo.', fn:'estudio()'},
  mezcla:{n:'Modo mezcla', d:'Ocho ejercicios tomados al azar de las salas de tu año.', fn:"startSala('mezcla')", wide:true},
+ arduino:{n:'Arduino de verdad', d:'Los mismos conceptos, en el lenguaje real de la placa. Doce proyectos con sensores básicos y el código listo para copiar al simulador o a un Arduino. Más un banco de código que compila pero está mal.', fn:"arduHome('proy')", wide:true, dest:true},
  misiones:{n:'Misiones: programá la placa', d:'Escribís código de verdad y la placa reacciona: se prenden las luces, suena el buzzer, se mueve el servo y el sensor te da un número. Se abren de a una.', fn:'misHome()', wide:true, dest:true}
 };
 
