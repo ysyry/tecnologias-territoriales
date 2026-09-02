@@ -171,23 +171,140 @@
   .hint{background:var(--accent-dim);border-left:2px solid var(--accent);padding:11px 14px;
     border-radius:8px;font-size:.87rem;margin:11px 0;line-height:1.6}
 
-  /* ---- modo Jr (visual, mantiene los emojis a propósito) ---- */
+  /* ---- modo Jr (visual, mantiene los emojis a propósito) ----
+     Todo grande a propósito: se maneja con clics de dedo grueso y sin
+     leer una palabra. El tamaño de celda lo fija jrRender con --jrc
+     según cuántas columnas tenga la misión, para que nunca se corte. */
   .jrwrap{text-align:center}
-  .jrgrid{display:grid;gap:6px;justify-content:center;margin:16px auto}
-  .jrcell{width:56px;height:56px;border-radius:12px;background:#0b0e15;border:1px solid var(--line);
-    display:flex;align-items:center;justify-content:center;font-size:2rem}
-  .jrcell.goal{background:rgba(232,182,84,.12);border-color:var(--warn)}
+  .jrgrid{display:grid;gap:10px;justify-content:center;margin:18px auto}
+  .jrcell{width:var(--jrc,96px);height:var(--jrc,96px);border-radius:16px;background:#0b0e15;
+    border:2px solid var(--line);display:flex;align-items:center;justify-content:center;
+    font-size:calc(var(--jrc,96px) * .56);line-height:1}
+  .jrcell.goal{background:rgba(232,182,84,.14);border-color:var(--warn)}
   .jrcell.wall{background:#2e2620;border-color:#4a3c2e}
-  .jrstrip{min-height:52px;background:#0b0e15;border:1px dashed var(--line2);border-radius:12px;padding:8px;
-    display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center;margin:12px 0;font-size:1.8rem}
-  .jrbtns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:6px 0}
-  .jrbtn{font-size:1.9rem;width:72px;height:64px;border-radius:14px;border:1px solid var(--line2);
-    background:var(--surface2);color:var(--txt);cursor:pointer;transition:.1s}
+  .jrstrip{min-height:78px;background:#0b0e15;border:2px dashed var(--line2);border-radius:16px;padding:10px;
+    display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center;margin:14px 0;font-size:2.6rem}
+  .jrbtns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:6px 0}
+  .jrbtn{font-size:2.6rem;width:98px;height:88px;border-radius:20px;border:2px solid var(--line2);
+    background:var(--surface2);color:var(--txt);cursor:pointer;transition:.1s;line-height:1}
+  /* En pantalla ancha, el tablero a la izquierda y los controles a la
+     derecha: así el ▶ entra sin scrollear en las PC de la escuela.
+     Que el botón quede fuera de la pantalla es una barrera real para
+     quien usa esto solo. */
+  .jrcols{display:grid;gap:20px;align-items:center;justify-items:center}
+  @media(min-width:840px){ .jrcols{grid-template-columns:auto 1fr} }
   .jrbtn:active{transform:scale(.93)}
-  .jrgo{font-size:1.25rem;font-weight:700;padding:14px 26px;border-radius:14px;border:none;
-    background:var(--good);color:#0a0c11;cursor:pointer}
+  .jrgo{font-size:2.4rem;font-weight:700;padding:16px 44px;border-radius:20px;border:none;
+    background:var(--good);color:#0a0c11;cursor:pointer;line-height:1}
   .jrgo:active{transform:scale(.96)}
-  .jrmsg{font-size:1.4rem;font-weight:700;margin:10px 0;min-height:34px}
+  .jrmsg{font-size:2rem;font-weight:700;margin:12px 0;min-height:46px}
+
+  /* ---- el baile (coreografía visual) ----
+     La escuela no tiene parlantes: el compás se VE, no se escucha.
+     Los pasos son íconos grandes y la bailarina los hace con transform. */
+  .bawrap{text-align:center}
+  .baesc{background:#0b0e15;border:2px solid var(--line);border-radius:20px;height:240px;
+    display:flex;align-items:flex-end;justify-content:center;margin:14px 0;position:relative;overflow:hidden}
+  .bapiso{position:absolute;left:0;right:0;bottom:0;height:30px;
+    background:linear-gradient(180deg,rgba(255,255,255,.05),transparent)}
+  .badan{font-size:7rem;line-height:1;margin-bottom:24px;position:relative;
+    transition:transform .34s cubic-bezier(.34,1.4,.5,1);transform-origin:50% 92%}
+  .badan.pA{transform:translateY(-20px) scale(1.1)}
+  .badan.pP{transform:scaleX(.82) scale(1.06)}
+  .badan.pG{transform:rotate(360deg)}
+  .badan.pC{transform:translateX(58px)}
+  .badan.pS{transform:translateY(-58px) scale(1.05)}
+  .badan.pR{transform:rotate(22deg) translateY(12px)}
+  .bacompas{display:flex;gap:12px;justify-content:center;margin:6px 0 2px}
+  .bapulso{width:18px;height:18px;border-radius:50%;background:var(--surface2);
+    border:2px solid var(--line2);transition:.15s}
+  .bapulso.on{background:var(--good);border-color:var(--good);transform:scale(1.35)}
+  /* los seis pasos siempre en 3 × 2: la misma forma en toda pantalla, que es
+     lo que hace que se pueda usar de memoria */
+  .bapasos{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:390px;margin:0 auto}
+  .bapaso{font-size:2.7rem;width:100%;min-height:92px;padding:10px 4px;border-radius:20px;
+    border:2px solid var(--line2);background:var(--surface2);color:var(--txt);cursor:pointer;
+    transition:.12s;line-height:1;font-family:inherit}
+  /* los controles tienen que verse DISTINTOS de los pasos: si son del mismo
+     tamaño, el ▶ parece un paso más de la coreografía */
+  .bapaso.chico{width:84px;min-height:66px;font-size:1.9rem}
+  .bactrl{margin-top:22px;padding-top:16px;border-top:1px dashed var(--line)}
+  .bapaso:active{transform:scale(.93)}
+  .bapaso.on{border-color:var(--good);background:var(--accent-dim);transform:scale(1.12)}
+  .bapal{display:block;font-size:.82rem;font-weight:700;margin-top:7px;text-transform:uppercase;
+    letter-spacing:.4px;color:var(--txt)}
+
+  /* ---- casa de imágenes: el inicio de la sección Jr, sin texto ---- */
+  .casa{display:flex;gap:28px;justify-content:center;flex-wrap:wrap;margin:34px 0}
+  .casab{width:230px;height:230px;border-radius:28px;border:3px solid var(--line2);
+    background:var(--surface2);color:var(--txt);cursor:pointer;font-size:6.5rem;line-height:1;
+    display:flex;align-items:center;justify-content:center;transition:.14s;font-family:inherit}
+  .casab:hover{border-color:var(--good);transform:translateY(-4px)}
+  .casab:active{transform:scale(.96)}
+  .casapie{display:flex;justify-content:center;margin-top:22px}
+  .casacfg{font-size:1rem;width:40px;height:34px;border-radius:10px;border:1px solid var(--line);
+    background:transparent;color:var(--faint);cursor:pointer;font-family:inherit;opacity:.5}
+  .casacfg:hover{opacity:1}
+
+  /* ---- poner cada cosa en su lugar: emparejar y rompecabezas ---- */
+  .pogrid{display:grid;gap:12px;justify-content:center;margin:4px auto 0}
+  .pocelda{width:112px;height:112px;border-radius:18px;border:2px dashed var(--line2);
+    background:#0b0e15;display:flex;align-items:center;justify-content:center;font-size:3.4rem;
+    cursor:pointer;font-family:inherit;color:var(--txt);transition:.12s;line-height:1}
+  .pocelda .gh{opacity:.32}
+  .pocelda.lista{border-style:solid;border-color:var(--good);background:var(--accent-dim)}
+  .pocelda.sobre{border-color:var(--good);transform:scale(1.07)}
+  .popiezas{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;max-width:360px;margin:0 auto}
+  .popieza{width:104px;height:96px;border-radius:18px;border:2px solid var(--line2);
+    background:var(--surface2);font-size:3.2rem;cursor:grab;font-family:inherit;color:var(--txt);
+    transition:.12s;line-height:1}
+  .popieza.sel{border-color:var(--good);transform:scale(1.12) translateY(-4px)}
+  .popieza:active{cursor:grabbing}
+  .popieza:focus-visible,.pocelda:focus-visible{outline:4px solid var(--good);outline-offset:3px}
+  @media(prefers-reduced-motion:reduce){
+    .pocelda.sobre,.popieza.sel{transform:none}
+  }
+
+  /* el mapa: los lugares se ubican encima del dibujo, en porcentaje */
+  /* la caja tiene EXACTAMENTE la forma del dibujo (viewBox 100x200), si no
+     el svg se centra adentro y los lugares caen corridos */
+  .pomapa{--h:min(470px,60vh);position:relative;height:var(--h);width:calc(var(--h)/2);margin:0 auto}
+  .pomapa svg{width:100%;height:100%;display:block}
+  .pomapa .pocelda{position:absolute;width:64px;height:64px;font-size:1.9rem;
+    transform:translate(-50%,-50%)}
+  .pomapa .pocelda.sobre{transform:translate(-50%,-50%) scale(1.08)}
+  @media(prefers-reduced-motion:reduce){
+    .pomapa .pocelda.sobre{transform:translate(-50%,-50%)}
+  }
+
+  /* En modo imágenes se saca el encabezado: son tres renglones de texto que
+     no puede leer, ocupan alto de pantalla y distraen. Menos cosas en la
+     pantalla es una recomendación explícita para accesibilidad cognitiva. */
+  body.modoimg header{display:none}
+  body.modoimg .card{margin-top:10px}
+
+  /* El foco tiene que VERSE: se maneja igual con teclado que con mouse
+     (WCAG 2.4.7 y 2.1.1). Importa para motricidad fina. */
+  .jrbtn:focus-visible,.jrgo:focus-visible,.bapaso:focus-visible,
+  .casab:focus-visible,.baopt:focus-visible,.casacfg:focus-visible{
+    outline:4px solid var(--good);outline-offset:3px}
+  @media(prefers-reduced-motion:reduce){
+    .casab:hover{transform:none}
+  }
+  /* los dos interruptores son para la docente: chicos y fuera del camino */
+  .baopts{display:flex;gap:8px;margin-left:12px}
+  .baopt{font-size:1.3rem;width:46px;height:40px;border-radius:12px;border:1px solid var(--line2);
+    background:var(--surface2);color:var(--txt);cursor:pointer;line-height:1;font-family:inherit}
+  .bamuestra{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center;
+    font-size:2.6rem;min-height:70px;background:rgba(232,182,84,.08);border:2px solid var(--warn);
+    border-radius:16px;padding:10px;margin:12px 0}
+  .bamuestra .ic{opacity:.35;transition:.15s}
+  .bamuestra .ic.on{opacity:1;transform:scale(1.3)}
+  @media(prefers-reduced-motion:reduce){
+    .badan{transition:none}
+    .badan.pG{transform:none}
+    .bapulso.on,.bamuestra .ic.on,.bapaso.on{transform:none}
+  }
 
   /* ---- circuitos y electrónica ---- */
   .elec{background:#0b0e15;border:1px solid var(--line);border-radius:12px;padding:16px 14px;
@@ -2940,7 +3057,12 @@ const NIVELN=['','Inicial','Intermedio','Avanzado'];
 const ANIOS = {
  '1ro':{ nom:'1er año', sub:'Empezar a programar', mods:[
    {t:'Para arrancar', d:'Si es tu primera vez con esto, empezá por acá.',
-    esp:['intro','jr']},
+    esp:['intro']},
+   /* Sección visual de 1ro: se juega con dibujos, sin nada para leer.
+      Con el botón 🖼️ de la pantalla de identidad, una máquina puede
+      quedar abriendo directo acá. Ver "CASA DE IMÁGENES". */
+   {t:'Modo Jr', d:'Actividades con dibujos: no hay nada escrito para leer. Se puede usar solo.',
+    esp:['jr','baile','poner']},
    {t:'1 · Primeros pasos', d:'Qué es un algoritmo, qué es un programa y en qué orden pasan las cosas.',
     ids:[{id:'sec',tag:'a1'},{id:'alg',tag:'a1'}]},
    {t:'2 · Repetir y dibujar', d:'Repetir sin escribir todo de nuevo, y hacer arte con eso.',
@@ -3665,6 +3787,8 @@ function arduRotoVer(i,b){
 const ESPECIALES={
  intro:{n:'Introducción a la robótica', d:'Qué es un robot, de dónde viene y cómo está hecho. Once pantallas para leer de corrido.', fn:'introHome()', wide:true, dest:true},
  jr:   {n:'Modo Jr', d:'Nivel más simple, sin texto para leer: llevá al personaje hasta su objetivo con flechas.', fn:'jrMission(0)', lvl:0},
+ poner:{n:'Poner en su lugar', d:'Emparejar, armar y ubicar en el mapa. Se puede arrastrar la pieza o tocarla y después tocar el lugar. Sin texto para leer.', fn:'poInicio(0)', lvl:0},
+ baile:{n:'El baile', d:'Armá una coreografía con pasos y la bailarina la hace en orden. Cada paso tiene su nota, así que la secuencia se ve, se escucha y se baila. Sin texto para leer.', fn:'baInicio(0)', lvl:0},
  estudio:{n:'Estudio de dibujo', d:'Modo libre: movés las perillas y la tortuga dibuja en vivo.', fn:'estudio()'},
  mezcla:{n:'Modo mezcla', d:'Ocho ejercicios tomados al azar de las salas de tu año.', fn:"startSala('mezcla')", wide:true},
  arduino:{n:'Arduino de verdad', d:'Los mismos conceptos, en el lenguaje real de la placa. Doce proyectos con sensores básicos y el código listo para copiar al simulador o a un Arduino. Más un banco de código que compila pero está mal.', fn:"arduHome('proy')", wide:true, dest:true},
@@ -3684,6 +3808,9 @@ function itemHTML(o){
 function menu(){
   cur = null;
   if(!SES) return pantallaIdentidad();
+  /* si esta máquina está en modo imágenes, el ← de las actividades vuelve
+     a la casa de dibujos y no al menú de texto. Ver "CASA DE IMÁGENES". */
+  if(MODOIMG) return casaImagenes();
   recalcDone(); pintarSesbar();
   const A = ANIOS[SES.anio];
   let h = `<div class="ronda${MODO.id==='desafio'?' on':''}">
@@ -3995,9 +4122,12 @@ let jrState;
 function jrMission(idx){
   cur=null;
   const m=JR[idx];
-  jrState={idx, m, prog:[], pos:{c:m.start.c,r:m.start.r}, playing:false};
+  jrState={idx, m, prog:[], pos:{c:m.start.c,r:m.start.r}, playing:false,
+           intentos:0, t0:Date.now()};
   jrRender();
 }
+/* la celda se achica sola cuando la grilla es ancha, así nunca se corta */
+function jrCelda(cols){ return cols<=3?116:cols===4?104:88; }
 function jrRender(msg){
   const {m,prog}=jrState, showUD=m.rows>1;
   let cells='';
@@ -4007,30 +4137,44 @@ function jrRender(msg){
   }
   const dots=JR.map((_,k)=>k===jrState.idx?'●':'○').join(' ');
   app.innerHTML=`
-    <div class="topbar"><button class="backb" onclick="menu()">←</button>
-      <div class="progtext" style="letter-spacing:3px;color:var(--b1)">${dots}</div></div>
+    <div class="topbar"><button class="backb" onclick="menu()" aria-label="volver">←</button>
+      <div class="progtext" style="letter-spacing:3px;color:var(--b1)">${dots}</div>
+      <div class="baopts">${btnsAyuda(false)}</div></div>
     <div class="card jrwrap">
-      <div style="font-size:2.6rem;margin:4px 0 8px">${m.char}<span style="font-size:1.6rem;opacity:.5;margin:0 14px">➡️</span>${m.goal}</div>
-      <div class="jrgrid" style="grid-template-columns:repeat(${m.cols},56px)">${cells}</div>
-      <div class="jrmsg">${msg||''}</div>
-      <div class="jrstrip">${prog.length?prog.map(a=>JR_ICON[a]).join(' '):'<span style="opacity:.3;font-size:1.5rem">▫️ ▫️ ▫️</span>'}</div>
-      ${showUD?`<div class="jrbtns"><button class="jrbtn" onclick="jrAdd('U')">⬆️</button></div>`:''}
-      <div class="jrbtns">
-        <button class="jrbtn" onclick="jrAdd('L')">⬅️</button>
-        <button class="jrbtn" onclick="jrAdd('R')">➡️</button>
+     <div class="jrcols">
+      <div>
+        <div style="font-size:3.4rem;margin:2px 0 10px;line-height:1">${m.char}<span style="font-size:2rem;opacity:.5;margin:0 16px">➡️</span>${m.goal}</div>
+        <div class="jrgrid" style="--jrc:${jrCelda(m.cols)}px;grid-template-columns:repeat(${m.cols},${jrCelda(m.cols)}px)">${cells}</div>
       </div>
-      ${showUD?`<div class="jrbtns"><button class="jrbtn" onclick="jrAdd('D')">⬇️</button></div>`:''}
-      <div class="jrbtns" style="margin-top:12px">
-        <button class="jrgo" onclick="jrRun()">▶</button>
-        <button class="jrbtn" onclick="jrClear()">🗑️</button>
+      <div>
+        <div class="jrmsg" role="status" aria-live="polite">${msg||''}</div>
+        <div class="jrstrip" aria-label="tu camino">${prog.length?prog.map(a=>JR_ICON[a]).join(' '):'<span style="opacity:.3;font-size:1.5rem">▫️ ▫️ ▫️</span>'}</div>
+        ${showUD?`<div class="jrbtns"><button class="jrbtn" onclick="jrAdd('U')" aria-label="arriba">⬆️</button></div>`:''}
+        <div class="jrbtns">
+          <button class="jrbtn" onclick="jrAdd('L')" aria-label="izquierda">⬅️</button>
+          <button class="jrbtn" onclick="jrAdd('R')" aria-label="derecha">➡️</button>
+        </div>
+        ${showUD?`<div class="jrbtns"><button class="jrbtn" onclick="jrAdd('D')" aria-label="abajo">⬇️</button></div>`:''}
+        <div class="jrbtns" style="margin-top:14px">
+          <button class="jrgo" onclick="jrRun()" aria-label="que empiece">▶</button>
+          <button class="jrbtn" onclick="jrClear()" aria-label="borrar">🗑️</button>
+        </div>
       </div>
+     </div>
     </div>`;
 }
-function jrAdd(a){ if(jrState.playing) return; jrState.prog.push(a); jrRender(); }
+const JR_F={U:880,D:392,L:523.25,R:659.25};
+const JR_NOM={U:'arriba',D:'abajo',L:'izquierda',R:'derecha'};
+function jrAdd(a){
+  if(jrState.playing) return;
+  jrState.prog.push(a);
+  tono(JR_F[a],.26); decir(JR_NOM[a]);
+  jrRender();
+}
 function jrClear(){ if(jrState.playing) return; jrState.prog=[]; jrState.pos={c:jrState.m.start.c,r:jrState.m.start.r}; jrRender(); }
 function jrRun(){
   if(jrState.playing || !jrState.prog.length) return;
-  jrState.playing=true;
+  jrState.playing=true; jrState.intentos++;
   jrState.pos={c:jrState.m.start.c,r:jrState.m.start.r};
   const steps=jrState.prog.slice(); let i=0;
   const tick=()=>{
@@ -4038,7 +4182,8 @@ function jrRun(){
     const a=steps[i++], p=jrState.pos, m=jrState.m;
     let nc=p.c, nr=p.r;
     if(a==='R') nc++; else if(a==='L') nc--; else if(a==='U') nr--; else if(a==='D') nr++;
-    if(nc>=0&&nc<m.cols&&nr>=0&&nr<m.rows&&!jrWall(m,nc,nr)){ p.c=nc; p.r=nr; }  // clamp + paredes bloquean
+    if(nc>=0&&nc<m.cols&&nr>=0&&nr<m.rows&&!jrWall(m,nc,nr)){ p.c=nc; p.r=nr; tono(JR_F[a],.24); }  // clamp + paredes bloquean
+    else tono(160,.14);   // chocó: se ve que no se movió y además se escucha
     jrRender(); setTimeout(tick,520);
   };
   setTimeout(tick,300);
@@ -4047,15 +4192,475 @@ function jrFinish(){
   const {pos,m,idx}=jrState; jrState.playing=false;
   if(pos.c===m.target.c && pos.r===m.target.r){
     const last=idx>=JR.length-1;
+    sonarOk();
+    guardarVisual('jr','Modo Jr','Secuencia de pasos','Camino '+(idx+1),
+                  jrState.intentos, Math.round((Date.now()-jrState.t0)/1000));
     const msg=app.querySelector('.jrmsg'); if(msg) msg.innerHTML='🎉 🌟 👏';
     const wrap=app.querySelector('.jrwrap');
     if(wrap){ const b=document.createElement('div'); b.className='jrbtns'; b.style.marginTop='12px';
-      b.innerHTML = last ? `<button class="jrgo" onclick="menu()">🏆</button>`
-                         : `<button class="jrgo" onclick="jrMission(${idx+1})">➡️ 🎈</button>`;
+      b.innerHTML = last ? `<button class="jrgo" onclick="menu()" aria-label="terminar">🏆</button>`
+                         : `<button class="jrgo" onclick="jrMission(${idx+1}) aria-label="seguir">➡️ 🎈</button>`;
       wrap.appendChild(b); }
   } else {
+    sonarNo();
     const msg=app.querySelector('.jrmsg'); if(msg) msg.innerHTML='🔁 🙂';
     setTimeout(()=>{ jrState.pos={c:jrState.m.start.c,r:jrState.m.start.r}; jrRender(); }, 1100);
+  }
+}
+
+/* Guarda una actividad visual (Jr, baile) con la MISMA forma que una tanda
+   normal, para que aparezca en el panel docente y en la planilla sin tocar
+   nada más. Una fila por camino o coreografía terminada. */
+function guardarVisual(sala, salaNom, concepto, etiqueta, intentos, seg){
+  if(!SES) return false;
+  const ok1 = intentos<=1;
+  return DB.add({
+    id:'t'+Date.now().toString(36)+Math.random().toString(36).slice(2,7),
+    alumno:SES.nombre, anio:SES.anio, fecha:SES.fecha, ts:new Date().toISOString(),
+    sala, salaNom, modo:'practica',
+    total:1, resueltos:1, sinAyuda: ok1?1:0,
+    pistas:0, salteadas:0, seg,
+    ejs:[{c:concepto, t:'visual', q:etiqueta, i:intentos, ok:true, ok1, p:0, s:false, sg:seg}]
+  });
+}
+
+/* ============================================================
+   SONIDO — se sintetiza en el momento, no hay archivos ni internet
+   ------------------------------------------------------------
+   REGLA: el sonido SIEMPRE acompaña algo que ya se ve. Nunca lleva
+   información solo. Alrededor de 1 de cada 3 chicos con síndrome de
+   Down tiene alguna pérdida auditiva, y la memoria auditiva a corto
+   plazo es justo el punto débil del perfil, mientras que la visual es
+   una fortaleza. Así que el sonido es REFUERZO, no canal: si está
+   apagado o no se escucha, la actividad funciona igual.
+   Se apaga con el botón 🔊 y queda apagado en esa máquina.
+   ============================================================ */
+const K_SND='pps.sonido.v1', K_PAL='pps.palabras.v1';
+function _lee(k,d){ try{ const v=localStorage.getItem(k); return v===null?d:JSON.parse(v); }catch(e){ return d; } }
+let SND=_lee(K_SND,true);     // tonos y voz
+let PALAB=_lee(K_PAL,false);  // mostrar la palabra debajo del ícono
+let _ac=null;
+function ac(){
+  if(_ac) return _ac;
+  try{ _ac=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ _ac=null; }
+  return _ac;
+}
+function tono(freq,dur){
+  if(!SND) return;
+  const c=ac(); if(!c) return;
+  try{
+    if(c.state==='suspended') c.resume();
+    const t=c.currentTime, o=c.createOscillator(), g=c.createGain();
+    o.type='sine'; o.frequency.value=freq;
+    g.gain.setValueAtTime(0.0001,t);
+    g.gain.exponentialRampToValueAtTime(0.2,t+0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+    o.connect(g); g.connect(c.destination);
+    o.start(t); o.stop(t+dur+0.03);
+  }catch(e){}
+}
+function melodia(notas,paso){ notas.forEach((f,i)=>setTimeout(()=>tono(f,.3), i*(paso||140))); }
+function sonarOk(){ melodia([523.25,659.25,783.99,1046.5],125); }
+function sonarNo(){ melodia([329.63,261.63],190); }
+/* la voz dice el nombre del paso: suma vocabulario, pero lo que manda
+   es el ícono. Si la máquina no tiene voces instaladas, no pasa nada. */
+function decir(txt){
+  if(!SND||!txt) return;
+  try{
+    if(!window.speechSynthesis) return;
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(txt);
+    u.lang='es-AR'; u.rate=.9;
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+function toggleSonido(){
+  SND=!SND;
+  try{ localStorage.setItem(K_SND,JSON.stringify(SND)); }catch(e){}
+  if(SND) tono(659.25,.2);
+  if(document.querySelector('.bawrap')) baRender();
+  else if(document.querySelector('.jrwrap')) jrRender();
+}
+function togglePalabras(){
+  PALAB=!PALAB;
+  try{ localStorage.setItem(K_PAL,JSON.stringify(PALAB)); }catch(e){}
+  if(document.querySelector('.bawrap')) baRender();
+}
+/* los dos interruptores, chiquitos y arriba a la derecha: son para la
+   docente, no para la alumna */
+function btnsAyuda(conPalabras){
+  return `<button class="baopt" onclick="toggleSonido()" title="sonido"
+      aria-label="${SND?'apagar el sonido':'prender el sonido'}">${SND?'🔊':'🔇'}</button>`+
+    (conPalabras?`<button class="baopt" onclick="togglePalabras()" title="palabras"
+      aria-label="${PALAB?'ocultar las palabras':'mostrar las palabras'}"
+      style="font-size:.95rem;font-weight:700;${PALAB?'':'opacity:.45'}">Aa</button>`:'');
+}
+
+/* ---- teclado ----
+   Todo lo que se hace con el mouse se puede hacer con el teclado: flechas
+   para el camino, 1 a 6 para los pasos del baile, Enter para arrancar,
+   Borrar para limpiar, Esc para volver. Es WCAG 2.1.1, y en la práctica
+   sirve cuando el mouse cuesta. Sólo actúa dentro de la sección Jr. */
+document.addEventListener('keydown', e=>{
+  if(e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+  const enJr=!!document.querySelector('.jrwrap'), enBa=!!document.querySelector('.bawrap'),
+        enPo=!!document.querySelector('.powrap');
+  if(!enJr && !enBa && !enPo) return;
+  const k=e.key, enBoton=!!(e.target && e.target.tagName==='BUTTON');
+  if(k==='Escape'){ e.preventDefault(); menu(); return; }
+  const arrancar=(k==='Enter'||k===' ') && !enBoton;   // si el foco está en un botón, que lo maneje el botón
+  const limpiar = k==='Backspace'||k==='Delete';
+  if(enJr && jrState){
+    const a={ArrowUp:'U',ArrowDown:'D',ArrowLeft:'L',ArrowRight:'R'}[k];
+    if(a){ if(jrState.m.rows>1 || a==='L' || a==='R'){ e.preventDefault(); jrAdd(a); } return; }
+    if(arrancar){ e.preventDefault(); jrRun(); return; }
+    if(limpiar){ e.preventDefault(); jrClear(); return; }
+  }
+  if(enBa && baState){
+    const i='123456'.indexOf(k);
+    if(i>=0){ e.preventDefault(); baAdd(BA_PASOS[i].id); return; }
+    if(arrancar){ e.preventDefault(); baRun(); return; }
+    if(limpiar){ e.preventDefault(); baClear(); return; }
+  }
+});
+
+/* ============================================================
+   CASA DE IMÁGENES — la pantalla de inicio, sin una sola palabra
+   ------------------------------------------------------------
+   Para quien todavía no lee. El menú normal, la pantalla de "poné tu
+   nombre" y las tarjetas con descripción son todas barreras de lectura
+   antes de llegar a la actividad, que sí es visual.
+   Se prende UNA VEZ POR MÁQUINA desde la pantalla de identidad (botón
+   🖼️): la docente escribe el nombre ahí y listo. Desde entonces esa PC
+   abre directo acá — dos dibujos grandes — y el ← de las actividades
+   vuelve a esta pantalla, nunca al menú de texto.
+   El ⚙️ chiquito de abajo devuelve la máquina al menú normal.
+   ============================================================ */
+const K_IMG='pps.imagenes.v1';
+let MODOIMG=_lee(K_IMG,false);
+function casaImagenes(){
+  cur=null;
+  document.body.classList.add('modoimg');
+  const sb=document.getElementById('sesbar'); if(sb) sb.innerHTML='';
+  app.innerHTML=`
+    <div class="topbar"><div style="margin-left:auto"></div>
+      <div class="baopts">${btnsAyuda(false)}</div></div>
+    <div class="card" style="text-align:center">
+      <div class="casa">
+        <button class="casab" onclick="jrMission(0)" aria-label="el camino">🐢</button>
+        <button class="casab" onclick="baInicio(0)" aria-label="el baile">💃</button>
+        <button class="casab" onclick="poInicio(0)" aria-label="poner en su lugar">🧩</button>
+      </div>
+      <div class="casapie"><button class="casacfg" onclick="salirImagenes()"
+        aria-label="volver al menú normal" title="volver al menú normal">⚙️</button></div>
+    </div>`;
+}
+function entrarImagenes(){
+  const n=prompt('Modo imágenes — nombre y apellido de quien usa esta máquina:');
+  if(n===null) return;
+  const nombre=String(n).trim().replace(/\s+/g,' ');
+  if(nombre.length<3){ alert('Falta el nombre.'); return; }
+  SES={nombre, anio:(_idTmp&&_idTmp.anio)||'1ro', fecha:hoyISO()};
+  LS.set(K_SES,SES);
+  MODOIMG=true; try{ localStorage.setItem(K_IMG,'true'); }catch(e){}
+  casaImagenes();
+}
+function salirImagenes(){
+  MODOIMG=false; try{ localStorage.setItem(K_IMG,'false'); }catch(e){}
+  document.body.classList.remove('modoimg');
+  menu();
+}
+
+/* -------------------- EL BAILE (coreografía) --------------------
+   Secuencia sin una sola palabra para leer: armás una coreografía con
+   pasos y la bailarina la hace en orden. Es el mismo concepto de algoritmo
+   que el resto del año, con otro cuerpo.
+   El compás se VE (los puntos de arriba) además de escucharse, porque en la
+   escuela puede no haber parlantes y porque el sonido acá es refuerzo.
+   Cada paso tiene su nota: las seis forman una escala pentatónica, así que
+   CUALQUIER coreografía suena bien y la misma secuencia suena siempre igual.
+   Esa es la idea: la secuencia se ve, se escucha y se baila a la vez.
+   Los cuatro primeros son "copiá la que te muestro"; el cuarto se puede
+   resolver con el 🔁, que es un bucle sin decirle bucle. El último es libre. */
+const BA_PASOS=[
+  {id:'A', ic:'🙌', nom:'brazos arriba',  f:523.25},
+  {id:'P', ic:'👏', nom:'aplauso',        f:587.33},
+  {id:'G', ic:'🔄', nom:'giro',           f:659.25},
+  {id:'C', ic:'➡️', nom:'paso al costado', f:783.99},
+  {id:'S', ic:'🤸', nom:'salto',          f:880.00},
+  {id:'R', ic:'🙇', nom:'saludo',         f:392.00}
+];
+const BA_IC={}, BA_NOM={}, BA_F={};
+BA_PASOS.forEach(p=>{ BA_IC[p.id]=p.ic; BA_NOM[p.id]=p.nom; BA_F[p.id]=p.f; });
+const BAILES=[
+  {seq:['A','P']},
+  {seq:['G','A','P']},
+  {seq:['C','S','P','A']},
+  {seq:['A','P','A','P'], repe:true},
+  {libre:true}
+];
+let baState;
+function baInicio(idx){
+  cur=null;
+  const n=BAILES[idx];
+  baState={idx, n, prog:[], playing:false, intentos:0, t0:Date.now(),
+           usoRepe:false, guardado:false};
+  baRender();
+  if(!n.libre) setTimeout(baMostrar, 600);
+}
+function baRender(msg){
+  const {n,prog,idx}=baState;
+  const dots=BAILES.map((_,k)=>k===idx?'●':'○').join(' ');
+  const pasos=BA_PASOS.map(p=>`<button class="bapaso" onclick="baAdd('${p.id}')" aria-label="${p.nom}">${p.ic}${
+    PALAB?`<span class="bapal">${p.nom}</span>`:''}</button>`).join('');
+  const cuantos = n.libre ? Math.max(prog.length,4) : n.seq.length;
+  const pulsos=[]; for(let i=0;i<cuantos;i++) pulsos.push(`<span class="bapulso" id="bu${i}"></span>`);
+  const muestra = n.libre ? '' :
+    `<div class="bamuestra">${n.seq.map((s,i)=>`<span class="ic" id="bm${i}">${BA_IC[s]}</span>`).join('')}</div>`;
+  app.innerHTML=`
+    <div class="topbar"><button class="backb" onclick="menu()" aria-label="volver">←</button>
+      <div class="progtext" style="letter-spacing:3px;color:var(--b1)">${dots}</div>
+      <div class="baopts">${btnsAyuda(true)}</div></div>
+    <div class="card bawrap">
+     <div class="jrcols">
+      <div>
+        <div class="baesc"><div class="bapiso"></div><div class="badan" id="badan">💃</div></div>
+        <div class="bacompas">${pulsos.join('')}</div>
+        ${muestra}
+      </div>
+      <div>
+        <div class="jrmsg" id="bamsg" role="status" aria-live="polite">${msg||''}</div>
+        <div class="jrstrip" aria-label="tu coreografía">${prog.length?prog.map(a=>BA_IC[a]).join(' '):'<span style="opacity:.3;font-size:2rem">▫️ ▫️ ▫️</span>'}</div>
+        <div class="bapasos">${pasos}</div>
+        <div class="jrbtns bactrl">
+          <button class="jrgo" onclick="baRun()" aria-label="que baile">▶</button>
+          ${n.repe?`<button class="bapaso chico" onclick="baRepetir()" aria-label="otra vez">🔁</button>`:''}
+          <button class="bapaso chico" onclick="baClear()" aria-label="borrar">🗑️</button>
+          ${n.libre?'':`<button class="bapaso chico" onclick="baMostrar()" aria-label="mirar de nuevo">👀</button>`}
+        </div>
+      </div>
+     </div>
+    </div>`;
+}
+function baAdd(id){
+  if(baState.playing || baState.prog.length>=12) return;
+  baState.prog.push(id);
+  tono(BA_F[id],.26); decir(BA_NOM[id]);
+  baRender();
+}
+function baClear(){ if(baState.playing) return; baState.prog=[]; baRender(); }
+/* el 🔁: repetir lo que ya armó. Es un bucle, y no hace falta nombrarlo. */
+function baRepetir(){
+  if(baState.playing || !baState.prog.length) return;
+  baState.prog=baState.prog.concat(baState.prog);
+  baState.usoRepe=true; baRender();
+}
+function baApagar(){
+  for(let k=0;k<24;k++){
+    const pu=document.getElementById('bu'+k); if(pu) pu.classList.remove('on');
+    const m=document.getElementById('bm'+k); if(m) m.classList.remove('on');
+  }
+}
+/* la bailarina hace la secuencia, un paso por compás */
+function baBailar(seq, marcar, cb){
+  baApagar();
+  const dan=document.getElementById('badan');
+  let i=0;
+  const paso=()=>{
+    if(i>=seq.length){ if(dan) dan.className='badan'; if(cb) cb(); return; }
+    const s=seq[i];
+    if(dan) dan.className='badan p'+s;
+    tono(BA_F[s]||440,.3);
+    const pu=document.getElementById('bu'+i); if(pu) pu.classList.add('on');
+    if(marcar){ const m=document.getElementById('bm'+i); if(m) m.classList.add('on'); }
+    i++;
+    setTimeout(()=>{ if(dan) dan.className='badan'; setTimeout(paso,170); }, 470);
+  };
+  paso();
+}
+function baMostrar(){
+  if(!baState || baState.playing || baState.n.libre) return;
+  baState.playing=true;
+  baBailar(baState.n.seq, true, ()=>{
+    baState.playing=false;
+    /* la consigna es una imagen: cuando termina la demostración, la flecha
+       apunta a los botones. Nunca hay una frase que haya que leer. */
+    const m=document.getElementById('bamsg'); if(m) m.innerHTML='👇';
+  });
+}
+function baRun(){
+  const {n,prog}=baState;
+  if(baState.playing || !prog.length) return;
+  baState.playing=true; baState.intentos++;
+  baBailar(prog, false, ()=>{
+    baState.playing=false;
+    if(n.libre){
+      sonarOk();
+      const m=document.getElementById('bamsg'); if(m) m.innerHTML='🎉 💃 👏';
+      if(!baState.guardado){
+        baState.guardado=true;
+        guardarVisual('baile','El baile','Secuencia libre','Mi baile',1,
+                      Math.round((Date.now()-baState.t0)/1000));
+      }
+      return;
+    }
+    baFin(prog.length===n.seq.length && prog.every((p,i)=>p===n.seq[i]));
+  });
+}
+function baFin(ok){
+  const {idx}=baState;
+  const msg=document.getElementById('bamsg');
+  if(ok){
+    sonarOk();
+    guardarVisual('baile','El baile','Secuencia de pasos','Coreografía '+(idx+1),
+                  baState.intentos, Math.round((Date.now()-baState.t0)/1000));
+    if(msg) msg.innerHTML = baState.usoRepe ? '🎉 🔁 👏' : '🎉 🌟 👏';
+    const wrap=app.querySelector('.bawrap');
+    if(wrap){
+      const b=document.createElement('div'); b.className='jrbtns'; b.style.marginTop='14px';
+      b.innerHTML = idx>=BAILES.length-1 ? `<button class="jrgo" onclick="menu()" aria-label="terminar">🏆</button>`
+                                         : `<button class="jrgo" onclick="baInicio(${idx+1}) aria-label="seguir">➡️ 🎈</button>`;
+      wrap.appendChild(b);
+    }
+  } else {
+    sonarNo();
+    if(msg) msg.innerHTML='🔁 🙂';
+    setTimeout(()=>{ baState.prog=[]; baRender(); setTimeout(baMostrar,400); }, 1200);
+  }
+}
+
+/* ==================== PONER CADA COSA EN SU LUGAR ====================
+   Emparejar, rompecabezas y mapas: una sola mecánica con tres caras, para
+   que la actividad cambie sin que cambie la forma de usarla.
+
+   Se puede ARRASTRAR la pieza (que es para lo que sirve este tipo de
+   ejercicio: coordinación óculo-manual) o TOCAR la pieza y después el
+   lugar. Las dos formas hacen exactamente lo mismo. Sólo arrastrar dejaría
+   afuera a quien tiene dificultad motriz fina, y además hay que poder
+   hacerlo sin arrastrar (WCAG 2.5.7).
+
+   El lugar muestra siempre el dibujo en gris: la consigna es esa, no hay
+   nada que leer. Con el interruptor Aa aparecen además las palabras.
+
+   PARA AGREGAR NIVELES: sumá una entrada a PONER. 'par' y 'puz' son
+   grillas; 'mapa' pone los lugares encima del dibujo de Argentina, en
+   porcentaje de ancho y alto. Los nombres para la voz van en PO_NOM.
+   ==================================================================== */
+const PO_NOM={'🐶':'perro','🐱':'gato','🐰':'conejo','🐦':'pájaro',
+  '🍎':'manzana','🍌':'banana','🍇':'uva','🍓':'frutilla',
+  '🔴':'rojo','🔵':'azul','🟡':'amarillo','🟢':'verde',
+  '🌞':'sol','☁️':'nube','🌳':'árbol','🏠':'casa','🌻':'flor',
+  '🌵':'el norte, el cactus','🌴':'el litoral, la selva','🐄':'la pampa, las vacas',
+  '🐧':'la patagonia, los pingüinos','🐟':'el mar, los peces','⛰️':'la cordillera'};
+const PONER=[
+ {tipo:'par', cols:3, items:['🐶','🐱','🐰']},
+ {tipo:'par', cols:4, items:['🍎','🍌','🍇','🍓']},
+ {tipo:'par', cols:4, items:['🔴','🔵','🟡','🟢']},
+ {tipo:'puz', cols:2, items:['🌞','☁️','🌳','🏠']},
+ {tipo:'puz', cols:3, items:['🌞','☁️','🐦','🌳','🏠','🌻']},
+ /* Argentina: cada cosa donde va. El dibujo es esquemático a propósito
+    (se reconoce la forma, no sirve para medir). */
+ {tipo:'mapa', items:[
+   {id:'🌵', x:30, y:13}, {id:'🌴', x:73, y:16}, {id:'⛰️', x:22, y:42},
+   {id:'🐄', x:60, y:44}, {id:'🐧', x:41, y:80}, {id:'🐟', x:83, y:62}]}
+];
+const MAPA_AR=`<svg viewBox="0 0 100 200" aria-hidden="true">
+  <polygon fill="rgba(111,198,201,.13)" stroke="rgba(111,198,201,.55)" stroke-width="1.4"
+   stroke-linejoin="round" points="30,3 48,1 58,7 62,13 76,15 88,22 84,31 74,34 78,42 76,53
+   80,64 74,73 76,82 68,89 66,99 62,110 60,120 56,130 54,140 50,150 46,161 44,171 48,180
+   40,184 34,178 36,168 32,156 30,143 28,130 26,117 24,102 22,88 20,73 18,58 20,44 24,29 26,15"/>
+</svg>`;
+let poState;
+function poMezclar(a){ const b=a.slice(); for(let i=b.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [b[i],b[j]]=[b[j],b[i]]; } return b; }
+function poIds(n){ return n.tipo==='mapa' ? n.items.map(o=>o.id) : n.items; }
+function poInicio(idx){
+  cur=null;
+  const n=PONER[idx];
+  poState={idx, n, puestas:{}, piezas:poMezclar(poIds(n)), sel:null,
+           intentos:0, t0:Date.now()};
+  poRender();
+}
+function poCelda(id, extra){
+  const puesta=!!poState.puestas[id];
+  const pal=PALAB&&PO_NOM[id]?`<span class="bapal">${PO_NOM[id]}</span>`:'';
+  return `<button class="pocelda ${puesta?'lista':''}" ${extra||''}
+    aria-label="lugar de ${PO_NOM[id]||''}"
+    onclick="poColocar(poState.sel,'${id}')"
+    ondragover="event.preventDefault()"
+    ondragenter="this.classList.add('sobre')"
+    ondragleave="this.classList.remove('sobre')"
+    ondrop="poSoltar(event,'${id}')"
+    ><span class="${puesta?'':'gh'}">${id}</span>${pal}</button>`;
+}
+function poRender(msg){
+  const n=poState.n, ids=poIds(n);
+  const dots=PONER.map((_,k)=>k===poState.idx?'●':'○').join(' ');
+  let tablero;
+  if(n.tipo==='mapa'){
+    tablero=`<div class="pomapa">${MAPA_AR}${n.items.map(o=>
+      poCelda(o.id,`style="left:${o.x}%;top:${o.y}%"`)).join('')}</div>`;
+  }else{
+    tablero=`<div class="pogrid" style="grid-template-columns:repeat(${n.cols},112px)">${
+      ids.map(id=>poCelda(id)).join('')}</div>`;
+  }
+  const piezas=poState.piezas.map(id=>`<button class="popieza ${poState.sel===id?'sel':''}"
+     draggable="true" ondragstart="poAgarrar(event,'${id}')"
+     onclick="poTocar('${id}')" aria-label="${PO_NOM[id]||'pieza'}">${id}</button>`).join('');
+  app.innerHTML=`
+    <div class="topbar"><button class="backb" onclick="menu()" aria-label="volver">←</button>
+      <div class="progtext" style="letter-spacing:3px;color:var(--b1)">${dots}</div>
+      <div class="baopts">${btnsAyuda(true)}</div></div>
+    <div class="card powrap">
+     <div class="jrcols">
+      <div>${tablero}</div>
+      <div>
+        <div class="jrmsg" role="status" aria-live="polite">${msg||''}</div>
+        <div class="popiezas">${piezas||'<span style="opacity:.3;font-size:2rem">✔️</span>'}</div>
+      </div>
+     </div>
+    </div>`;
+}
+function poTocar(id){
+  poState.sel = (poState.sel===id ? null : id);
+  if(poState.sel){ tono(659.25,.2); decir(PO_NOM[id]); }
+  poRender();
+}
+function poAgarrar(ev,id){
+  poState.sel=id;
+  try{ ev.dataTransfer.setData('text/plain',id); ev.dataTransfer.effectAllowed='move'; }catch(e){}
+}
+function poSoltar(ev,slot){
+  ev.preventDefault();
+  let id=''; try{ id=ev.dataTransfer.getData('text/plain'); }catch(e){}
+  poColocar(id||poState.sel, slot);
+}
+function poColocar(pieza, slot){
+  if(!poState || !pieza || poState.puestas[slot]) return;
+  poState.intentos++;
+  if(pieza===slot){
+    poState.puestas[slot]=true;
+    poState.piezas=poState.piezas.filter(p=>p!==pieza);
+    poState.sel=null;
+    tono(783.99,.26);
+    poRender();
+    if(!poState.piezas.length) poFin();
+  }else{
+    sonarNo(); poState.sel=null; poRender('🔁 🙂');
+  }
+}
+function poFin(){
+  const idx=poState.idx;
+  sonarOk();
+  guardarVisual('poner','Poner en su lugar','Emparejar y ubicar','Tablero '+(idx+1),
+                Math.max(1, poState.intentos - poIds(poState.n).length + 1),
+                Math.round((Date.now()-poState.t0)/1000));
+  const msg=app.querySelector('.jrmsg'); if(msg) msg.innerHTML='🎉 🌟 👏';
+  const col=app.querySelector('.popiezas');
+  if(col){
+    const b=document.createElement('div'); b.className='jrbtns'; b.style.marginTop='18px';
+    b.innerHTML = idx>=PONER.length-1 ? `<button class="jrgo" onclick="menu()" aria-label="terminar">🏆</button>`
+                                      : `<button class="jrgo" onclick="poInicio(${idx+1})" aria-label="seguir">➡️ 🎈</button>`;
+    col.parentNode.appendChild(b);
   }
 }
 
@@ -4169,6 +4774,7 @@ function pantallaIdentidad(pre){
     <input class="f" id="fFec" type="date" value="${pre.fecha||hoyISO()}">
     <div class="err" id="fErr"></div>
     <button class="btn" onclick="entrar()">Empezar →</button>
+    <button class="btn ghost" onclick="entrarImagenes()" title="Modo imágenes: esta máquina abre directo en la sección Jr, sin nada para leer">🖼️ Modo imágenes</button>
   </div>`;
   pintarAnios();
   document.getElementById('fNom').addEventListener('keydown',e=>{ if(e.key==='Enter') entrar(); });
