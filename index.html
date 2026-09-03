@@ -246,6 +246,20 @@
     background:transparent;color:var(--faint);cursor:pointer;font-family:inherit;opacity:.5}
   .casacfg:hover{opacity:1}
 
+  /* ---- proyectos de 4to: esquema de conexión y tabla de elecciones ---- */
+  .esqt{width:100%;border-collapse:collapse;margin:14px 0;font-size:.92rem}
+  .esqt th{text-align:left;padding:8px 10px;border-bottom:2px solid var(--line2);
+    color:var(--muted);font-size:.8rem;text-transform:uppercase;letter-spacing:.5px}
+  .esqt td{padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  .esqt tr:last-child td{border-bottom:none}
+  .opsl{display:flex;gap:9px;flex-wrap:wrap;margin:10px 0}
+  .opch{display:inline-block;padding:9px 14px;border-radius:11px;border:1px solid var(--line2);
+    background:var(--surface2);color:var(--txt);font-size:.9rem;line-height:1.35;font-family:inherit}
+  button.opch{cursor:pointer;transition:.12s;text-align:left}
+  button.opch:hover{border-color:var(--muted)}
+  button.opch.on{border-color:var(--good);background:var(--accent-dim);font-weight:600}
+  button.opch:focus-visible{outline:3px solid var(--good);outline-offset:2px}
+
   /* ---- poner cada cosa en su lugar: emparejar y rompecabezas ---- */
   .pogrid{display:grid;gap:12px;justify-content:center;margin:4px auto 0}
   .pocelda{width:112px;height:112px;border-radius:18px;border:2px dashed var(--line2);
@@ -3101,6 +3115,8 @@ const ANIOS = {
     ids:['repaso'], esp:['mezcla']}
  ]},
  '4to':{ nom:'4to año', sub:'De los datos al sistema', mods:[
+   {t:'Los proyectos del cuatrimestre', d:'Por acá se arranca: el proyecto de tu equipo, paso a paso, hasta la simulación en Tinkercad.',
+    esp:['proy4']},
    {t:'Programá la placa', d:'Escribís el código y el aparato reacciona. Se abren de a una.',
     esp:['misiones']},
    {t:'Arduino de verdad', d:'Lo mismo en el lenguaje real de la placa, para el simulador o para el hardware.',
@@ -3787,6 +3803,7 @@ function arduRotoVer(i,b){
 const ESPECIALES={
  intro:{n:'Introducción a la robótica', d:'Qué es un robot, de dónde viene y cómo está hecho. Once pantallas para leer de corrido.', fn:'introHome()', wide:true, dest:true},
  jr:   {n:'Modo Jr', d:'Nivel más simple, sin texto para leer: llevá al personaje hasta su objetivo con flechas.', fn:'jrMission(0)', lvl:0},
+ proy4:{n:'Los proyectos', d:'Los tres proyectos del cuatrimestre, cada uno en cinco etapas: los componentes, el esquema de conexión, las elecciones del equipo, la tabla de elecciones y la simulación en Tinkercad con pistas.', fn:'proyHome()', wide:true, dest:true},
  poner:{n:'Poner en su lugar', d:'Emparejar, armar y ubicar en el mapa. Se puede arrastrar la pieza o tocarla y después tocar el lugar. Sin texto para leer.', fn:'poInicio(0)', lvl:0},
  baile:{n:'El baile', d:'Armá una coreografía con pasos y la bailarina la hace en orden. Cada paso tiene su nota, así que la secuencia se ve, se escucha y se baila. Sin texto para leer.', fn:'baInicio(0)', lvl:0},
  estudio:{n:'Estudio de dibujo', d:'Modo libre: movés las perillas y la tortuga dibuja en vivo.', fn:'estudio()'},
@@ -4662,6 +4679,510 @@ function poFin(){
                                       : `<button class="jrgo" onclick="poInicio(${idx+1})" aria-label="seguir">➡️ 🎈</button>`;
     col.parentNode.appendChild(b);
   }
+}
+
+/* ==================== PROYECTOS DE 4to ====================
+   Guía por etapas de los tres proyectos del 2do cuatrimestre. No es un
+   banco de ejercicios: es el cuaderno de obra del equipo.
+
+   Cada proyecto tiene cinco etapas, en orden:
+     1. Los componentes      → qué es cada cosa y cómo funciona
+     2. El esquema           → qué pata va a qué pin
+     3. Las elecciones       → lo que el equipo tiene que decidir
+     4. La tabla             → la actividad: eligen y queda guardado
+     5. La simulación        → el código para Tinkercad, con pistas
+
+   La etapa 4 es la que produce algo: al completarla queda el arranque de
+   la FICHA DEL INSTRUMENTO, que es el producto de la unidad 1.
+   ========================================================== */
+
+const TINKER=[
+ {k:'Antes de empezar', t:'Entrar a Tinkercad', h:`
+   <p>Tinkercad simula un Arduino entero en el navegador: se arma el circuito arrastrando
+   piezas y se escribe el código al lado. Lo que funciona ahí, funciona en la placa real.</p>
+   <p><b>Para entrar:</b> ir a <code>tinkercad.com</code> → <i>Join a Class</i> → escribir el
+   <b>código de la clase</b> que está en el pizarrón → elegir un apodo.
+   <b>No hace falta mail.</b></p>`},
+ {k:'Antes de empezar', t:'Armar el primer circuito', h:`
+   <p>Una vez adentro: <b>Circuits → Create new Circuit</b>.</p>
+   <ul>
+     <li>Del panel de la derecha se arrastra el <b>Arduino Uno R3</b></li>
+     <li>El buscador de ese panel encuentra cualquier componente por nombre</li>
+     <li>Para conectar: se hace clic en una pata y después en el destino. Sale un cable</li>
+     <li><b>Code</b> abre el editor. Cambiá <i>Blocks</i> por <b>Text</b> para escribir C++</li>
+     <li><b>Start Simulation</b> lo enciende. <b>Serial Monitor</b> muestra los números</li>
+   </ul>`},
+ {k:'Antes de empezar', t:'Explorar: tres cosas para probar', h:`
+   <p>Antes de arrancar con el proyecto, cinco minutos de manosear:</p>
+   <ol>
+     <li><b>Prendé el LED del pin 13</b> con el código del 27/08. Cambiá los <code>delay</code>
+     y mirá qué pasa</li>
+     <li><b>Buscá tres sensores</b> en el panel: escribí <i>soil</i>, <i>TMP36</i> y
+     <i>photoresistor</i>. Miralos, no hace falta conectarlos todavía</li>
+     <li><b>Agarrá el sensor de humedad ya conectado y movele el nivel con el mouse.</b>
+     Vas a ver cambiar el número en el monitor serie. Ese número es de dónde sale todo</li>
+   </ol>
+   <p class="muted">Cuando termines esto, volvé y elegí el proyecto de tu equipo.</p>`}
+];
+
+const PROY4=[
+{
+ id:'riego', ic:'💧', nom:'El riego de la huerta',
+ que:'Decide si abrir el agua',
+ regla:'regar = (humedad &lt; umbral) <b>Y</b> (no es mediodía)',
+ comp:[
+  {k:'Componentes', t:'El sensor de humedad de suelo', h:`
+    <p>Dos varillas que se clavan en la tierra. Entre ellas pasa una corriente chiquita:
+    <b>cuanta más agua hay, mejor pasa</b>. La placa lo traduce a un número de <b>0 a 1023</b>.</p>
+    <p><b>Ojo con esto:</b> a más agua, <b>menos</b> número. Por eso la recta de calibración
+    de ustedes va a tener <b>pendiente negativa</b>. No está mal: está al revés a propósito.</p>
+    <p>Tres patas: <code>+</code>, <code>−</code> y <code>SIG</code>, que es la que trae el dato.</p>`},
+  {k:'Componentes', t:'El relé: sin esto no hay riego', h:`
+    <p>El Arduino entrega <b>5 voltios</b> y muy poca corriente. Una bomba de agua necesita
+    mucho más. Si la conectás directo, no pasa nada — o se quema la placa.</p>
+    <p>El <b>relé</b> es un interruptor que el Arduino puede apretar. De un lado recibe la
+    orden (3 cablecitos al Arduino), del otro deja pasar la corriente grande de la bomba.</p>
+    <p><b>Es el componente que convierte un programa en un acto físico.</b> Todo lo demás del
+    año fue prender un LED; esto mueve agua.</p>`},
+  {k:'Componentes', t:'La bomba y el LED testigo', h:`
+    <p>La <b>bomba</b> tiene su propia alimentación: no sale del Arduino. El relé sólo decide
+    si esa alimentación llega o no.</p>
+    <p>El <b>LED testigo</b> parece un adorno y no lo es: <b>permite ver qué está decidiendo el
+    programa sin tener que mirar el agua.</b> Cuando algo falle, ese LED te va a decir si el
+    problema está en la decisión o en el caño.</p>`}],
+ esq:{
+  filas:[['Sensor de humedad','+','5V'],['Sensor de humedad','−','GND'],
+         ['Sensor de humedad','SIG','A0'],
+         ['Relé','VCC','5V'],['Relé','GND','GND'],['Relé','IN','pin 7'],
+         ['LED testigo','pata larga','pin 13 (con resistencia de 220 Ω)'],
+         ['LED testigo','pata corta','GND']],
+  nota:'La bomba va del <b>otro lado</b> del relé, con su propia fuente. El Arduino nunca toca la corriente de la bomba.'},
+ eleg:[
+  {q:'¿Con qué humedad riega?', op:['25 % — aguanta más seco','30 % — el término medio','40 % — riega seguido'],
+   por:'Depende de qué se plantó. La lechuga quiere más agua que la papa. <b>Esta decisión no es del programador: es de quien cuida la huerta.</b>'},
+  {q:'¿Cuánto tiempo riega cada vez?', op:['5 segundos','30 segundos','Hasta que el sensor pase el umbral'],
+   por:'La tercera parece la más inteligente y es la más peligrosa: si el sensor falla, riega para siempre. <b>Pensá qué pasa si se desconecta.</b>'},
+  {q:'¿Cada cuánto mide?', op:['Cada 1 minuto','Cada 15 minutos','Cada 1 hora'],
+   por:'La tierra no se seca en un minuto. Medir de más gasta batería y llena la memoria de datos que no dicen nada nuevo. <b>Esto es elegir la frecuencia de muestreo.</b>'},
+  {q:'¿Riega al mediodía?', op:['Sí, cuando haga falta','No, nunca entre las 12 y las 16'],
+   por:'Con sol fuerte el agua se evapora antes de llegar a la raíz, y las gotas sobre las hojas queman. Si elegís que no, tu regla pasa a tener <b>dos condiciones</b>.'},
+  {q:'¿Qué hace si el sensor da un valor imposible?', op:['Riega igual','No riega y prende el LED de alarma','Usa la última lectura buena'],
+   por:'Un sensor desconectado suele dar 0 o 1023 fijo. <b>Un sistema que no sabe cuándo no sabe es peligroso.</b>'}],
+ cod:{
+  consigna:'Escribí el programa que lee la humedad, la convierte con la recta de tu equipo, y abre el riego si está seca.',
+  base:`int crudo;
+float humedad;
+
+void setup() {
+  pinMode(7, OUTPUT);      // el relé
+  pinMode(13, OUTPUT);     // el LED testigo
+  Serial.begin(9600);
+}
+
+void loop() {
+  crudo = analogRead(A0);
+
+  // 1. convertí el crudo a humedad con TU recta
+
+  // 2. mostrá los dos números, el crudo y el convertido
+
+  // 3. si está por debajo del umbral, abrí el riego
+
+  delay(500);
+}`,
+  pistas:[
+   'La recta es <code>humedad = m * crudo + b</code>. La <code>m</code> y la <code>b</code> son las que sacó tu equipo el 27/08. Tienen decimales, así que la variable va <code>float</code>.',
+   'Para ver los dos números juntos: <code>Serial.print(crudo);</code> después <code>Serial.print("  ->  ");</code> y al final <code>Serial.println(humedad);</code>. El <code>println</code> es el que baja de renglón.',
+   'La decisión es <code>if (humedad &lt; 30) { digitalWrite(7, HIGH); } else { digitalWrite(7, LOW); }</code>. Y prendé el LED 13 en la misma rama, para poder ver la decisión.'],
+  sol:`  humedad = -0.1883 * crudo + 162.3;
+
+  Serial.print(crudo);
+  Serial.print("  ->  ");
+  Serial.println(humedad);
+
+  if (humedad < 30) {
+    digitalWrite(7, HIGH);
+    digitalWrite(13, HIGH);
+  } else {
+    digitalWrite(7, LOW);
+    digitalWrite(13, LOW);
+  }`}
+},
+{
+ id:'interna', ic:'🏠', nom:'La estación del invernadero',
+ que:'Decide si ventilar',
+ regla:'ventilar = (temperatura adentro − temperatura afuera) &gt; diferencia',
+ comp:[
+  {k:'Componentes', t:'Dos sensores, no uno', h:`
+    <p>Este proyecto es distinto de los otros dos en algo grande: <b>no decide mirando un
+    número, sino la diferencia entre dos.</b></p>
+    <p>Van dos sensores de temperatura: uno adentro del invernadero y otro afuera. Si adentro
+    hace mucho más calor que afuera, hay que ventilar. Si afuera hace el mismo calor, abrir la
+    ventana no sirve de nada.</p>
+    <p><b>Eso es comparar dos series</b>, y es exactamente lo que están viendo con Ana.</p>`},
+  {k:'Componentes', t:'El TMP36 y su recta de fábrica', h:`
+    <p>El <b>TMP36</b> da un voltaje que sube 10 milivoltios por cada grado, arrancando en
+    500 mV a 0 °C. La cuenta es:</p>
+    <pre><code>float voltaje = analogRead(A0) * 5.0 / 1024.0;
+float temp = (voltaje - 0.5) * 100.0;</code></pre>
+    <p><b>Esa recta no la calibraron ustedes: la escribió el fabricante.</b> El sensor de
+    humedad no viene con ninguna y hay que construirla. Vale la pregunta:
+    <i>¿por qué le creemos al fabricante y no a nosotros mismos?</i></p>
+    <p>Mirando la cara plana, de izquierda a derecha: <b>5V · señal · GND</b>. Al revés se
+    calienta.</p>`},
+  {k:'Componentes', t:'El servo: abrir la ventana', h:`
+    <p>El <b>servo</b> gira hasta un ángulo que vos le decís, entre 0 y 180 grados, y se queda
+    ahí. No es un motor que da vueltas: es un motor que va a una posición.</p>
+    <pre><code>#include &lt;Servo.h&gt;
+Servo ventana;
+ventana.attach(9);
+ventana.write(90);   // medio abierta</code></pre>
+    <p>Y ahí aparece una decisión que los otros proyectos no tienen: <b>la ventana no es
+    abierta o cerrada, puede estar a medias.</b></p>`}],
+ esq:{
+  filas:[['TMP36 adentro','5V · señal · GND','5V · A0 · GND'],
+         ['TMP36 afuera','5V · señal · GND','5V · A1 · GND'],
+         ['Servo','naranja (señal)','pin 9'],
+         ['Servo','rojo · marrón','5V · GND'],
+         ['LED testigo','pata larga','pin 13 (con resistencia de 220 Ω)']],
+  nota:'Los dos sensores son iguales y van a <b>pines distintos</b>: A0 y A1. El programa los lee por separado.'},
+ eleg:[
+  {q:'¿Con cuántos grados de diferencia ventila?', op:['3 °C','5 °C','8 °C'],
+   por:'Muy poca diferencia y la ventana se pasa el día abriendo y cerrando. Mucha, y el invernadero se cocina antes de que reaccione.'},
+  {q:'¿La ventana abre del todo o a medias?', op:['Abierta o cerrada, nada más','Abre proporcional a la diferencia'],
+   por:'La segunda usa el servo de verdad: a más diferencia, más ángulo. <b>Eso es otra vez una función lineal</b>, ahora de la diferencia al ángulo.'},
+  {q:'¿Qué hace de noche?', op:['Lo mismo que de día','De noche no ventila nunca','De noche cierra siempre'],
+   por:'De noche afuera enfría rápido y el invernadero guarda calor. Ventilar puede arruinar justamente lo que el invernadero protege.'},
+  {q:'¿Cada cuánto mide?', op:['Cada 30 segundos','Cada 5 minutos','Cada 30 minutos'],
+   por:'La temperatura del aire cambia mucho más rápido que la humedad de la tierra. <b>La frecuencia depende del fenómeno, no del gusto.</b>'},
+  {q:'¿Qué pasa si los dos sensores dan lo mismo siempre?', op:['Está todo bien','Probablemente uno está desconectado'],
+   por:'Dos sensores que coinciden perfectamente son sospechosos. En el mundo real siempre hay diferencia, aunque sea de ruido.'}],
+ cod:{
+  consigna:'Escribí el programa que lee las dos temperaturas, calcula la diferencia y abre la ventana si adentro hace mucho más calor.',
+  base:`#include <Servo.h>
+Servo ventana;
+
+float adentro, afuera, diferencia;
+
+void setup() {
+  ventana.attach(9);
+  pinMode(13, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  // 1. leé los dos sensores y convertilos a grados
+
+  // 2. calculá la diferencia
+
+  // 3. mostrá las tres cosas
+
+  // 4. si la diferencia es grande, abrí la ventana
+
+  delay(2000);
+}`,
+  pistas:[
+   'La conversión del TMP36 es siempre la misma, y la vas a escribir dos veces: una para A0 y otra para A1. <code>float adentro = (analogRead(A0) * 5.0 / 1024.0 - 0.5) * 100.0;</code>',
+   'La diferencia es una resta: <code>diferencia = adentro - afuera;</code>. Puede dar negativa, y eso significa que afuera hace más calor que adentro.',
+   'Para abrir: <code>ventana.write(90);</code> y para cerrar <code>ventana.write(0);</code>. Si elegiste la apertura proporcional, probá <code>ventana.write(diferencia * 18);</code> y fijate qué pasa cuando la diferencia es grande.'],
+  sol:`  adentro = (analogRead(A0) * 5.0 / 1024.0 - 0.5) * 100.0;
+  afuera  = (analogRead(A1) * 5.0 / 1024.0 - 0.5) * 100.0;
+  diferencia = adentro - afuera;
+
+  Serial.print(adentro);
+  Serial.print("  ");
+  Serial.print(afuera);
+  Serial.print("  dif ");
+  Serial.println(diferencia);
+
+  if (diferencia > 5) {
+    ventana.write(90);
+    digitalWrite(13, HIGH);
+  } else {
+    ventana.write(0);
+    digitalWrite(13, LOW);
+  }`}
+},
+{
+ id:'externa', ic:'🌤️', nom:'La estación meteorológica',
+ que:'Informa, y avisa la helada',
+ regla:'alerta = (temperatura &lt; 3) <b>Y</b> (viene bajando)',
+ comp:[
+  {k:'Componentes', t:'Varios sensores, una sola fila', h:`
+    <p>Esta estación no decide gran cosa: <b>produce la serie más larga y más rica de los tres
+    proyectos.</b> Temperatura, luz, y humedad del aire si se consigue el sensor.</p>
+    <p>La idea que ordena todo: cada vez que mide, <b>escribe una fila</b> con todo junto. Una
+    fila = un momento. Eso después es una tabla, y esa tabla es el material de la unidad 2.</p>`},
+  {k:'Componentes', t:'El fotorresistor y su divisor', h:`
+    <p>El <b>LDR</b> no da un número solo: cambia su resistencia según la luz. Para que la
+    placa pueda leerlo necesita un <b>divisor de tensión</b>: el LDR de 5V a A1, y desde A1
+    una resistencia de <b>10 kΩ</b> a GND.</p>
+    <p>Sin esa resistencia, A1 queda flotando y el número que sale es basura. <b>Es el error
+    número uno con este sensor.</b></p>`},
+  {k:'Componentes', t:'La alerta: por qué esta estación también decide', h:`
+    <p>La unidad 3 se llama <i>el sistema decide</i>. Una estación que sólo informa se queda
+    afuera de esa unidad.</p>
+    <p>Por eso este proyecto se compromete a <b>una</b> decisión automática: la <b>alerta de
+    helada</b>. Y no es cualquier decisión — es la única de los tres proyectos que necesita
+    mirar el <b>pasado</b>, no sólo el presente: no alcanza con que haga frío, tiene que
+    <b>venir bajando</b>.</p>`}],
+ esq:{
+  filas:[['TMP36','5V · señal · GND','5V · A0 · GND'],
+         ['Fotorresistor','una pata','5V'],
+         ['Fotorresistor','otra pata','A1 <b>y</b> resistencia de 10 kΩ a GND'],
+         ['LED de alerta','pata larga','pin 13 (con resistencia de 220 Ω)'],
+         ['Buzzer (opcional)','+ · −','pin 8 · GND']],
+  nota:'El divisor del fotorresistor no es opcional: sin la resistencia de 10 kΩ a GND, la lectura de A1 no significa nada.'},
+ eleg:[
+  {q:'¿Con qué temperatura avisa helada?', op:['5 °C — avisa antes','3 °C — el margen justo','0 °C — cuando ya está helando'],
+   por:'A 0 °C ya es tarde para tapar la huerta. Avisar antes da tiempo, pero avisar de más hace que nadie le crea.'},
+  {q:'¿Cada cuánto guarda una fila?', op:['Cada 1 minuto','Cada 10 minutos','Cada 1 hora'],
+   por:'Cada minuto son 525.600 filas por año. Cada hora, 8.760. <b>Hacé la cuenta antes de elegir</b>: esa es la diferencia entre que entre en la placa o no.'},
+  {q:'¿Qué columnas tiene cada fila?', op:['Sólo el valor','Momento y valor','Momento, temperatura, luz y humedad'],
+   por:'Un número sin momento no sirve para nada. <b>Y las unidades van en el nombre de la columna</b>: no <code>temp</code> sino <code>temp_c</code>.'},
+  {q:'¿Qué escribe si un sensor no midió?', op:['Un 0','Nada, deja el lugar vacío','Siempre lo mismo, y está avisado'],
+   por:'El 0 es la peor opción: un 0 parece un dato y ensucia todos los promedios. <b>Lo importante no es qué se escribe, sino que sea siempre igual.</b>'},
+  {q:'¿Cómo sabe que "viene bajando"?', op:['No hace falta, alcanza con el frío','Compara con la lectura anterior','Compara con el promedio de la última hora'],
+   por:'Para comparar con el pasado el programa tiene que <b>recordar</b>. Y eso significa una variable que sobrevive de una vuelta a la otra del <code>loop</code>.'}],
+ cod:{
+  consigna:'Escribí el programa que mide, escribe una fila con todo junto, y prende la alerta si hace frío y además viene bajando.',
+  base:`float temp, luz;
+float anterior = 99;      // la última temperatura, para saber si baja
+
+void setup() {
+  pinMode(13, OUTPUT);
+  Serial.begin(9600);
+  Serial.println("temp_c,luz_cruda");    // el encabezado, una sola vez
+}
+
+void loop() {
+  // 1. leé la temperatura y la luz
+
+  // 2. escribí la fila: los valores separados por coma
+
+  // 3. si hace frío Y bajó respecto de la anterior, prendé la alerta
+
+  // 4. guardá esta temperatura para la próxima vuelta
+
+  delay(5000);
+}`,
+  pistas:[
+   'La fila se escribe con <code>Serial.print(temp); Serial.print(","); Serial.println(luz);</code>. El <code>println</code> del final es el que corta el renglón: <b>cada renglón es una fila</b>.',
+   'La alerta necesita las dos cosas a la vez, así que va con <code>&&</code>: <code>if (temp &lt; 3 && temp &lt; anterior)</code>.',
+   'El paso 4 es el que casi todos olvidan: <code>anterior = temp;</code> al final del loop. Sin eso, <code>anterior</code> se queda en 99 para siempre y la alerta nunca entiende que bajó. Y fijate que <code>anterior</code> está declarada <b>afuera</b> del loop: si estuviera adentro, se borraría en cada vuelta.'],
+  sol:`  temp = (analogRead(A0) * 5.0 / 1024.0 - 0.5) * 100.0;
+  luz  = analogRead(A1);
+
+  Serial.print(temp);
+  Serial.print(",");
+  Serial.println(luz);
+
+  if (temp < 3 && temp < anterior) {
+    digitalWrite(13, HIGH);
+  } else {
+    digitalWrite(13, LOW);
+  }
+
+  anterior = temp;`}
+}];
+
+const K_PROY='pps.proy4.v1';
+function proyDatos(){ return _lee(K_PROY,{}); }
+function proyGuardar(d){ try{ localStorage.setItem(K_PROY,JSON.stringify(d)); }catch(e){} }
+
+/* ---- pantalla de inicio de los proyectos ---- */
+function proyHome(){
+  cur=null;
+  const d=proyDatos();
+  const tarjetas=PROY4.map((p,i)=>{
+    const el=(d[p.id]||{}).eleg;
+    const hechas=el?Object.keys(el).length:0;
+    return `<button class="item wide dest" onclick="proyVer(${i})">
+      <div class="n">${p.ic} ${p.nom}</div>
+      <div class="d">${p.que}. <br><span class="mono">${p.regla}</span></div>
+      <div class="foot"><span class="lvl">5 etapas</span>
+        ${hechas?`<span class="hecho">${hechas} de ${p.eleg.length} elecciones</span>`:''}</div>
+    </button>`;
+  }).join('');
+  app.innerHTML=`
+    <div class="topbar"><button class="backb" onclick="menu()" aria-label="volver">← Menú</button></div>
+    <div class="card">
+      <div class="concepto big">Proyectos · 2do cuatrimestre</div>
+      <h2 style="margin-top:0">De los datos al sistema</h2>
+      <p class="muted" style="margin:0;line-height:1.6">Cada equipo elige uno de los tres, lo
+      construye, lo calibra y lo hace decidir. Los tres miden algo real de la huerta y los tres
+      terminan publicando su serie.</p>
+    </div>
+    <div class="grid" style="grid-template-columns:1fr">
+      <button class="item wide" onclick="verSlides(TINKER,'proyHome()','Elegir proyecto →',proyHome)">
+        <div class="n">🔧 Antes de empezar · Tinkercad</div>
+        <div class="d">Cómo entrar con el código de la clase, cómo se arma un circuito y tres cosas para probar.</div>
+      </button>
+      ${tarjetas}
+    </div>`;
+  window.scrollTo(0,0);
+}
+
+/* ---- las cinco etapas de un proyecto ---- */
+function proyVer(i){
+  cur=null;
+  const p=PROY4[i], d=proyDatos()[p.id]||{};
+  const hechas=d.eleg?Object.keys(d.eleg).length:0;
+  const paso=(n,t,desc,fn,marca)=>`
+    <button class="item wide" onclick="${fn}">
+      <div class="n">${n} · ${t}</div>
+      <div class="d">${desc}</div>
+      ${marca?`<div class="foot"><span class="hecho">${marca}</span></div>`:''}
+    </button>`;
+  app.innerHTML=`
+    <div class="topbar"><button class="backb" onclick="proyHome()" aria-label="volver">← Proyectos</button>
+      <div class="progtext">Etapa 1 a 5</div></div>
+    <div class="card">
+      <div class="concepto big">${p.ic} ${p.nom}</div>
+      <h2 style="margin-top:0">${p.que}</h2>
+      <p class="mono" style="margin:0">${p.regla}</p>
+    </div>
+    <div class="grid" style="grid-template-columns:1fr">
+      ${paso(1,'Los componentes','Qué es cada pieza y cómo funciona.',`proyComp(${i})`,'')}
+      ${paso(2,'El esquema de conexión','Qué pata va a qué pin, para armarlo en Tinkercad.',`proyEsq(${i})`,'')}
+      ${paso(3,'Las elecciones','Lo que tiene que decidir el equipo, y por qué no hay una respuesta única.',`proyEleg(${i})`,'')}
+      ${paso(4,'La tabla de elecciones','La actividad: eligen, queda guardado y se copia para la profe.',`proyTabla(${i})`, hechas?`${hechas} de ${p.eleg.length}`:'')}
+      ${paso(5,'La simulación','El código para escribir en Tinkercad, con pistas de a una.',`proyCod(${i})`,'')}
+    </div>`;
+  window.scrollTo(0,0);
+}
+
+function proyComp(i){ verSlides(PROY4[i].comp, `proyVer(${i})`, 'Al esquema →', ()=>proyEsq(i)); }
+
+function proyEsq(i){
+  cur=null;
+  const p=PROY4[i];
+  app.innerHTML=`
+    <div class="topbar"><button class="backb" onclick="proyVer(${i})" aria-label="volver">← ${p.nom}</button>
+      <div class="progtext">Etapa 2 de 5</div></div>
+    <div class="card">
+      <h2 style="margin-top:0">El esquema de conexión</h2>
+      <p class="muted">Armalo así en Tinkercad. Si algo no lee, lo primero que se revisa es esto.</p>
+      <table class="esqt">
+        <tr><th>Componente</th><th>Pata</th><th>Va a</th></tr>
+        ${p.esq.filas.map(f=>`<tr><td>${f[0]}</td><td class="mono">${f[1]}</td><td class="mono">${f[2]}</td></tr>`).join('')}
+      </table>
+      <div class="hint">${p.esq.nota}</div>
+    </div>
+    <button class="btn" onclick="proyEleg(${i})">A las elecciones →</button>`;
+  window.scrollTo(0,0);
+}
+
+function proyEleg(i){
+  cur=null;
+  const p=PROY4[i];
+  app.innerHTML=`
+    <div class="topbar"><button class="backb" onclick="proyVer(${i})" aria-label="volver">← ${p.nom}</button>
+      <div class="progtext">Etapa 3 de 5</div></div>
+    <div class="card">
+      <h2 style="margin-top:0">Lo que tiene que decidir el equipo</h2>
+      <p class="muted">Ninguna de estas preguntas tiene una respuesta correcta escrita en
+      ningún lado. <b>Las decide el equipo, y las tiene que poder justificar.</b></p>
+    </div>
+    ${p.eleg.map((e,k)=>`<div class="card">
+      <div class="concepto">Decisión ${k+1}</div>
+      <h3 style="margin:6px 0 10px">${e.q}</h3>
+      <div class="opsl">${e.op.map(o=>`<span class="opch">${o}</span>`).join('')}</div>
+      <div class="hint">${e.por}</div>
+    </div>`).join('')}
+    <button class="btn" onclick="proyTabla(${i})">A la tabla →</button>`;
+  window.scrollTo(0,0);
+}
+
+/* ---- etapa 4: la tabla. Es lo único que produce algo guardado ---- */
+function proyTabla(i){
+  cur=null;
+  const p=PROY4[i], d=proyDatos(), mias=(d[p.id]||{}).eleg||{};
+  app.innerHTML=`
+    <div class="topbar"><button class="backb" onclick="proyVer(${i})" aria-label="volver">← ${p.nom}</button>
+      <div class="progtext">Etapa 4 de 5</div></div>
+    <div class="card">
+      <h2 style="margin-top:0">La tabla de elecciones · ${p.nom}</h2>
+      <p class="muted">Elijan y escriban por qué. Esto queda guardado y es <b>el arranque de la
+      ficha del instrumento</b>, que es lo que se entrega al final de la unidad.</p>
+    </div>
+    ${p.eleg.map((e,k)=>`<div class="card">
+      <h3 style="margin:0 0 10px">${k+1} · ${e.q}</h3>
+      <div class="opsl">${e.op.map((o,j)=>`
+        <button class="opch sel${mias[k] && mias[k].op===j?' on':''}"
+          onclick="proyElegir(${i},${k},${j})">${o}</button>`).join('')}</div>
+      <input class="f" id="pq${k}" placeholder="¿Por qué eligieron eso?"
+        value="${mias[k]?escapeHtml(mias[k].por||''):''}"
+        oninput="proyPor(${i},${k},this.value)">
+    </div>`).join('')}
+    <div class="card">
+      <button class="btn" onclick="proyCopiar(${i})">Copiar la tabla para la profe</button>
+      <div id="pcopia"></div>
+    </div>
+    <button class="btn ghost" onclick="proyCod(${i})">A la simulación →</button>`;
+  window.scrollTo(0,0);
+}
+function proyElegir(i,k,j){
+  const p=PROY4[i], d=proyDatos();
+  d[p.id]=d[p.id]||{eleg:{}}; d[p.id].eleg=d[p.id].eleg||{};
+  const prev=d[p.id].eleg[k]||{};
+  d[p.id].eleg[k]={op:j, por:prev.por||''};
+  proyGuardar(d); tono(659.25,.18); proyTabla(i);
+}
+function proyPor(i,k,txt){
+  const p=PROY4[i], d=proyDatos();
+  d[p.id]=d[p.id]||{eleg:{}}; d[p.id].eleg=d[p.id].eleg||{};
+  d[p.id].eleg[k]=Object.assign({op:null}, d[p.id].eleg[k], {por:txt});
+  proyGuardar(d);
+}
+function proyCopiar(i){
+  const p=PROY4[i], mias=(proyDatos()[p.id]||{}).eleg||{};
+  let t=`FICHA DEL INSTRUMENTO — ${p.nom}\n`;
+  t+=`Equipo: ${SES?SES.nombre:'(sin nombre)'}\nQué decide: ${txtPlano(p.que)}\n\n`;
+  p.eleg.forEach((e,k)=>{
+    const m=mias[k];
+    t+=`${k+1}. ${txtPlano(e.q)}\n   Elegimos: ${m&&m.op!=null?txtPlano(e.op[m.op]):'(sin elegir)'}\n   Porque: ${m&&m.por?m.por:'(sin justificar)'}\n\n`;
+  });
+  const box=document.getElementById('pcopia');
+  if(box) box.innerHTML=`<textarea class="f" rows="10" onclick="this.select()">${escapeHtml(t)}</textarea>
+    <div class="muted" style="font-size:.85rem">Tocá el cuadro para seleccionar todo y copialo al Classroom.</div>`;
+}
+
+/* ---- etapa 5: el código, con pistas de a una ---- */
+function proyCod(i){
+  cur=null;
+  const p=PROY4[i];
+  app.innerHTML=`
+    <div class="topbar"><button class="backb" onclick="proyVer(${i})" aria-label="volver">← ${p.nom}</button>
+      <div class="progtext">Etapa 5 de 5</div></div>
+    <div class="card">
+      <h2 style="margin-top:0">La simulación</h2>
+      <p>${p.cod.consigna}</p>
+      <div class="hint">Escribilo <b>en Tinkercad</b>, no acá. Acá está el esqueleto y las
+      pistas; el que tiene que andar es el de allá.</div>
+      <pre><code>${escapeHtml(p.cod.base)}</code></pre>
+    </div>
+    <div class="card">
+      <div class="concepto">Pistas</div>
+      <p class="muted" style="margin-top:4px">Se abren de a una. Probá antes de abrir la
+      siguiente.</p>
+      ${p.cod.pistas.map((h,k)=>`
+        <button class="btn ghost" id="pb${k}" onclick="proyPista(${i},${k})">Pista ${k+1}</button>
+        <div class="hint" id="ph${k}" hidden>${h}</div>`).join('')}
+    </div>
+    <div class="card">
+      <details><summary>Ver cómo queda el cuerpo del loop</summary>
+        <pre><code>${escapeHtml(p.cod.sol)}</code></pre>
+        <div class="hint">Si llegaste acá sin escribir nada, volvé y probá. El código que
+        entendés es el que después podés arreglar cuando falle en la huerta.</div>
+      </details>
+    </div>`;
+  window.scrollTo(0,0);
+}
+function proyPista(i,k){
+  const h=document.getElementById('ph'+k), b=document.getElementById('pb'+k);
+  if(h){ h.hidden=false; } if(b){ b.hidden=true; }
+  tono(523.25,.18);
 }
 
 /* -------------------- FIN DE SALA -------------------- */
