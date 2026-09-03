@@ -3089,6 +3089,8 @@ const ANIOS = {
     ids:[{id:'teoria',tag:'a1'}], esp:['mezcla']}
  ]},
  '2do':{ nom:'2do año', sub:'Programas de verdad', mods:[
+   {t:'Programá la placa', d:'Escribís el código y la placa reacciona. Se abren de a una.',
+    esp:['misiones']},
    {t:'1 · Repaso y lectura', d:'Volver sobre lo básico, ahora leyendo código escrito.',
     ids:['sec','alg','flow']},
    {t:'2 · Datos y cuentas', d:'Los valores con los que trabaja un programa y qué se puede hacer con ellos.',
@@ -4715,7 +4717,7 @@ const TINKER=[
  {k:'Antes de empezar', t:'Explorar: tres cosas para probar', h:`
    <p>Antes de arrancar con el proyecto, cinco minutos de manosear:</p>
    <ol>
-     <li><b>Prendé el LED del pin 13</b> con el código del 27/08. Cambiá los <code>delay</code>
+     <li><b>Prendé el LED del pin 13</b> con el programa que ya escribieron. Cambiá los <code>delay</code>
      y mirá qué pasa</li>
      <li><b>Buscá tres sensores</b> en el panel: escribí <i>soil</i>, <i>TMP36</i> y
      <i>photoresistor</i>. Miralos, no hace falta conectarlos todavía</li>
@@ -4791,7 +4793,7 @@ void loop() {
   delay(500);
 }`,
   pistas:[
-   'La recta es <code>humedad = m * crudo + b</code>. La <code>m</code> y la <code>b</code> son las que sacó tu equipo el 27/08. Tienen decimales, así que la variable va <code>float</code>.',
+   'La recta es <code>humedad = m * crudo + b</code>. La <code>m</code> y la <code>b</code> son las que sacó tu equipo al calibrar. Tienen decimales, así que la variable va <code>float</code>.',
    'Para ver los dos números juntos: <code>Serial.print(crudo);</code> después <code>Serial.print("  ->  ");</code> y al final <code>Serial.println(humedad);</code>. El <code>println</code> es el que baja de renglón.',
    'La decisión es <code>if (humedad &lt; 30) { digitalWrite(7, HIGH); } else { digitalWrite(7, LOW); }</code>. Y prendé el LED 13 en la misma rama, para poder ver la decisión.'],
   sol:`  humedad = -0.1883 * crudo + 162.3;
