@@ -17,12 +17,12 @@ modo simple, sin texto ni audio, para quien necesite otra entrada.
 **2do** — taller de robótica por unidades, más las salas de variables, operadores,
 condicionales y programas enteros.
 
-**3ro** — **los proyectos del cuatrimestre**: los tres aparatos que puede construir un
-equipo (la estación de la escuela, el registrador de vuelo y la alarma de helada), cada
-uno en cinco etapas — componentes, esquema de conexión, decisiones del equipo, tabla para
-entregar y simulación con pistas. Más las **misiones**: se escribe código de verdad y una
-placa simulada responde, con luces, buzzer, servo y un sensor que se mueve con el mouse.
-Y la teoría del cuatrimestre.
+**3ro** — **el cuaderno del proyecto**: siete etapas, una por clase, del 16/09 al 28/10.
+En cada una hay algo que hacer, algo que decidir, algo que queda escrito, un checklist de
+salida y la bitácora del día. Todo se guarda y se copia con un botón para pegar en el
+Classroom, así el grupo trabaja solo y la profe puede evaluar lo que quedó. Aparte, las
+**fichas** de consulta (el sensor, el esquema, el código, el cohete) y las **misiones**:
+se escribe código de verdad y una placa simulada responde.
 
 Los ejercicios se corrigen solos y explican la respuesta.
 
