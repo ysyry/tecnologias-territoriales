@@ -5177,84 +5177,109 @@ const TINKER=[
 const PROY4=[
 {
  id:'riego', ic:'💧', nom:'El riego de la huerta',
- que:'Decide si abrir el agua',
- regla:'regar = (humedad &lt; umbral) <b>Y</b> (no es mediodía)',
+ que:'El timer riega. El aparato mira si hacía falta',
+ regla:'medir la tierra · anotarlo · <b>prender el LED si quedó seca</b>',
  comp:[
+  {k:'Componentes', t:'El timer riega. Nosotros miramos', h:`
+    <p>Un <b>timer</b> es un reloj que abre una canilla. Es barato, no se cuelga y no hay que
+    programarlo. <b>Pero no sensa nada:</b> riega todos los días a las 8 aunque haya llovido
+    toda la noche.</p>
+    <p><b>Nuestro aparato no riega. Mide y anota.</b> Y al final de la semana el archivo
+    contesta una pregunta que hoy nadie puede contestar:</p>
+    <p style="text-align:center"><b>¿El timer riega cuando hace falta?</b></p>
+    <p>Cuántas veces regó sobre tierra que ya estaba húmeda, y cuántas veces la tierra estuvo
+    seca sin que el timer hiciera nada.</p>
+    <div class="hint">Con esto se cae el relé, la bomba, la fuente de 12 V y el riesgo de
+    inundar el cantero. <b>Se cae la parte peligrosa, no la interesante.</b> Y la huerta se
+    riega igual, pase lo que pase con la electrónica.</div>`},
   {k:'Componentes', t:'El sensor de humedad de suelo', h:`
     <p>Dos varillas que se clavan en la tierra. Entre ellas pasa una corriente chiquita:
     <b>cuanta más agua hay, mejor pasa</b>. La placa lo traduce a un número de <b>0 a 1023</b>.</p>
-    <p><b>Ojo con esto:</b> a más agua, <b>menos</b> número. Por eso la recta de calibración
-    de ustedes va a tener <b>pendiente negativa</b>. No está mal: está al revés a propósito.</p>
-    <p>Tres patas: <code>+</code>, <code>−</code> y <code>SIG</code>, que es la que trae el dato.</p>`},
-  {k:'Componentes', t:'El relé: sin esto no hay riego', h:`
-    <p>El Arduino entrega <b>5 voltios</b> y muy poca corriente. Una bomba de agua necesita
-    mucho más. Si la conectás directo, no pasa nada — o se quema la placa.</p>
-    <p>El <b>relé</b> es un interruptor que el Arduino puede apretar. De un lado recibe la
-    orden (3 cablecitos al Arduino), del otro deja pasar la corriente grande de la bomba.</p>
-    <p><b>Es el componente que convierte un programa en un acto físico.</b> Todo lo demás del
-    año fue prender un LED; esto mueve agua.</p>`},
-  {k:'Componentes', t:'La bomba y el LED testigo', h:`
-    <p>La <b>bomba</b> tiene su propia alimentación: no sale del Arduino. El relé sólo decide
-    si esa alimentación llega o no.</p>
-    <p>El <b>LED testigo</b> parece un adorno y no lo es: <b>permite ver qué está decidiendo el
-    programa sin tener que mirar el agua.</b> Cuando algo falle, ese LED te va a decir si el
-    problema está en la decisión o en el caño.</p>`}],
+    <p><b>Ojo con esto:</b> a más agua, <b>menos</b> número. Por eso la recta de calibración de
+    ustedes va a tener <b>pendiente negativa</b>. No está mal: está al revés a propósito.</p>
+    <p>Tres patas: <code>+</code>, <code>−</code> y <code>SIG</code>, que es la que trae el dato.</p>
+    <div class="hint"><b>Para comprar:</b> los de varillas metálicas expuestas <b>se corroen</b> —
+    la corriente las oxida en semanas y la lectura se va yendo. Los <b>capacitivos</b> tienen la
+    parte sensible cubierta y duran mucho más. Cuestan un poco más y valen la pena.</div>`},
+  {k:'Componentes', t:'El testigo y el registro', h:`
+    <p>El <b>LED</b> no riega: <b>avisa</b>. Sirve para ver qué está decidiendo el programa sin
+    tener que mirar la tierra. Cuando algo falle, ese LED te va a decir si el problema está en
+    la decisión o en el sensor.</p>
+    <p>Y el <b>registro</b>: cada lectura sale por el monitor como una línea con comas. Esa
+    línea <b>ya es un CSV</b>: se copia y se pega en la planilla sin tocar nada.</p>
+    <pre><code>tiempo,crudo,humedad
+0,812,9.3
+900000,640,42.0</code></pre>
+    <p><b>Guarden siempre el número crudo, además del convertido.</b> Un dato crudo se puede
+    volver a convertir con otra recta; uno ya convertido no se puede volver atrás.</p>`},
+  {k:'Componentes', t:'Si no hay sensor de humedad', h:`
+    <p>El proyecto se hace igual con lo que haya en el armario. <b>El aparato es el mismo:
+    medir algo del cantero, anotarlo y avisar.</b></p>
+    <ul>
+      <li><b>TMP36</b> — la temperatura de la tierra. También dice cosas: la tierra mojada se
+      calienta más despacio que la seca</li>
+      <li><b>Fotorresistor</b> — cuánta luz le llega al cantero a lo largo del día</li>
+      <li><b>Una perilla</b> — para la simulación en Tinkercad, mientras no esté el sensor real</li>
+    </ul>
+    <div class="hint">Lo que no cambia nunca: <b>entra un número, se traduce, se decide, se
+    anota</b>. Cambiar de sensor es cambiar dos líneas.</div>`}],
  esq:{
   filas:[['Sensor de humedad','+','5V'],['Sensor de humedad','−','GND'],
          ['Sensor de humedad','SIG','A0'],
-         ['Relé','VCC','5V'],['Relé','GND','GND'],['Relé','IN','pin 7'],
-         ['LED testigo','pata larga','pin 13 (con resistencia de 220 Ω)'],
+         ['LED testigo','pata larga','pin 8 (con resistencia de 220 Ω)'],
          ['LED testigo','pata corta','GND']],
-  nota:'La bomba va del <b>otro lado</b> del relé, con su propia fuente. El Arduino nunca toca la corriente de la bomba.'},
+  nota:'Eso es todo. <b>Cinco cables.</b> Sin relé, sin bomba y sin fuente aparte: el aparato no toca el agua, sólo la mira.'},
  eleg:[
-  {q:'¿Con qué humedad riega?', op:['25 % — aguanta más seco','30 % — el término medio','40 % — riega seguido'],
-   por:'Depende de qué se plantó. La lechuga quiere más agua que la papa. <b>Esta decisión no es del programador: es de quien cuida la huerta.</b>'},
-  {q:'¿Cuánto tiempo riega cada vez?', op:['5 segundos','30 segundos','Hasta que el sensor pase el umbral'],
-   por:'La tercera parece la más inteligente y es la más peligrosa: si el sensor falla, riega para siempre. <b>Pensá qué pasa si se desconecta.</b>'},
-  {q:'¿Cada cuánto mide?', op:['Cada 1 minuto','Cada 15 minutos','Cada 1 hora'],
-   por:'La tierra no se seca en un minuto. Medir de más gasta batería y llena la memoria de datos que no dicen nada nuevo. <b>Esto es elegir la frecuencia de muestreo.</b>'},
-  {q:'¿Riega al mediodía?', op:['Sí, cuando haga falta','No, nunca entre las 12 y las 16'],
-   por:'Con sol fuerte el agua se evapora antes de llegar a la raíz, y las gotas sobre las hojas queman. Si elegís que no, tu regla pasa a tener <b>dos condiciones</b>.'},
-  {q:'¿Qué hace si el sensor da un valor imposible?', op:['Riega igual','No riega y prende el LED de alarma','Usa la última lectura buena'],
-   por:'Un sensor desconectado suele dar 0 o 1023 fijo. <b>Un sistema que no sabe cuándo no sabe es peligroso.</b>'}],
+  {q:'¿A qué hora conviene que riegue el timer?', op:['Temprano a la mañana','Al mediodía','De noche'],
+   por:'Con sol fuerte el agua se evapora antes de llegar a la raíz, y las gotas sobre las hojas queman. De noche las hojas quedan mojadas muchas horas y aparecen hongos. <b>Temprano es lo que hacen los que saben</b>, y ahora lo van a poder comprobar con el archivo.'},
+  {q:'¿Cada cuánto mide el aparato?', op:['Cada 1 minuto','Cada 15 minutos','Cada 1 hora'],
+   por:'La tierra no se seca en un minuto: la mayoría de esas filas dirían lo mismo. Pero si medís cada hora podés perderte el momento exacto en que el timer regó. <b>Esto es elegir la frecuencia de muestreo.</b>'},
+  {q:'¿Con qué valor decimos que "quedó seca"?', op:['25 % — aguanta más seco','30 % — el término medio','40 % — quiere agua seguido'],
+   por:'Depende de qué se plantó: la lechuga quiere más agua que la papa. <b>Esta decisión no es del programador: es de quien cuida la huerta.</b> Y por primera vez la van a poder discutir con datos en la mano.'},
+  {q:'¿Dónde va clavado el sensor?', op:['Justo al lado del gotero','Lejos del gotero, en el medio del cantero','A diez centímetros de profundidad'],
+   por:'Al lado del gotero va a dar mojado siempre, y no dice nada del cantero: dice que el gotero funciona. <b>Dónde medís cambia la respuesta</b>, y hay que poder explicar por qué eligieron ese lugar.'},
+  {q:'¿Qué hace si el sensor da un valor imposible?', op:['Lo anota igual','Anota una marca fija y prende la alarma','Usa la última lectura buena'],
+   por:'Un sensor desconectado suele dar 0 o 1023 clavado. Si eso entra al archivo como si fuera un dato, la semana entera queda arruinada y nadie se entera. <b>Un sistema que no sabe cuándo no sabe es peligroso.</b>'}],
  cod:{
-  consigna:'Escribí el programa que lee la humedad, la convierte con la recta de tu equipo, y abre el riego si está seca.',
-  base:`int crudo;
+  consigna:'Escribí el programa que lee la humedad, la convierte con la recta de tu equipo, la escribe como una línea de CSV y prende el LED si la tierra quedó seca.',
+  base:`const int SENSOR = A0;
+const int LED    = 8;
+
+int   crudo;
 float humedad;
 
 void setup() {
-  pinMode(7, OUTPUT);      // el relé
-  pinMode(13, OUTPUT);     // el LED testigo
+  pinMode(LED, OUTPUT);
   Serial.begin(9600);
 }
 
 void loop() {
-  crudo = analogRead(A0);
+  // 1. lee el sensor
 
-  // 1. convertí el crudo a humedad con TU recta
+  // 2. convertilo con LA RECTA DE TU EQUIPO
 
-  // 2. mostrá los dos números, el crudo y el convertido
+  // 3. escribi una linea: tiempo, crudo y humedad, separados por coma
 
-  // 3. si está por debajo del umbral, abrí el riego
+  // 4. prende el LED si quedo seca
 
-  delay(500);
+  delay(900000);   // 900000 ms = 15 minutos
 }`,
   pistas:[
-   'La recta es <code>humedad = m * crudo + b</code>. La <code>m</code> y la <code>b</code> son las que sacó tu equipo al calibrar. Tienen decimales, así que la variable va <code>float</code>.',
-   'Para ver los dos números juntos: <code>Serial.print(crudo);</code> después <code>Serial.print("  ->  ");</code> y al final <code>Serial.println(humedad);</code>. El <code>println</code> es el que baja de renglón.',
-   'La decisión es <code>if (humedad &lt; 30) { digitalWrite(7, HIGH); } else { digitalWrite(7, LOW); }</code>. Y prendé el LED 13 en la misma rama, para poder ver la decisión.'],
-  sol:`  humedad = -0.1883 * crudo + 162.3;
+   'La recta es <code>humedad = m * crudo + b</code>, con la <code>m</code> y la <code>b</code> que sacó <b>tu equipo</b> al calibrar. Tienen decimales, así que la variable va <code>float</code>.',
+   'Para que la línea sea un CSV de verdad: <code>Serial.print(...)</code> para cada valor, <code>Serial.print(",")</code> entre uno y otro, y <code>Serial.println(...)</code> en el último, que es el que baja de renglón. <b>Comas sin espacios</b>, y el decimal con punto.',
+   'El LED <b>no riega</b>: avisa. <code>if (humedad &lt; 30) digitalWrite(LED, HIGH); else digitalWrite(LED, LOW);</code> — y ese 30 es el número que eligieron en la etapa 3.'],
+  sol:`  crudo = analogRead(SENSOR);
 
-  Serial.print(crudo);
-  Serial.print("  ->  ");
-  Serial.println(humedad);
+  humedad = -0.1883 * crudo + 162.3;   // ← la recta de TU equipo
+
+  Serial.print(millis());   Serial.print(",");
+  Serial.print(crudo);      Serial.print(",");
+  Serial.println(humedad, 1);
 
   if (humedad < 30) {
-    digitalWrite(7, HIGH);
-    digitalWrite(13, HIGH);
+    digitalWrite(LED, HIGH);
   } else {
-    digitalWrite(7, LOW);
-    digitalWrite(13, LOW);
+    digitalWrite(LED, LOW);
   }`}
 },
 {
