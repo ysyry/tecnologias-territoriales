@@ -17,9 +17,12 @@ modo simple, sin texto ni audio, para quien necesite otra entrada.
 **2do** — taller de robótica por unidades, más las salas de variables, operadores,
 condicionales y programas enteros.
 
-**3ro** — **misiones**: se escribe código de verdad y una placa simulada responde, con
-luces, buzzer, servo y un sensor que se mueve con el mouse. Más la teoría del
-cuatrimestre y un mapa del recorrido del año.
+**3ro** — **los proyectos del cuatrimestre**: los tres aparatos que puede construir un
+equipo (la estación de la escuela, el registrador de vuelo y la alarma de helada), cada
+uno en cinco etapas — componentes, esquema de conexión, decisiones del equipo, tabla para
+entregar y simulación con pistas. Más las **misiones**: se escribe código de verdad y una
+placa simulada responde, con luces, buzzer, servo y un sensor que se mueve con el mouse.
+Y la teoría del cuatrimestre.
 
 Los ejercicios se corrigen solos y explican la respuesta.
 

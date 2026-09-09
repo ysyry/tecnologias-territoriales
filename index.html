@@ -3070,6 +3070,8 @@ const NIVELN=['','Inicial','Intermedio','Avanzado'];
    ============================================================ */
 const ANIOS = {
  '1ro':{ nom:'1er año', sub:'Empezar a programar', mods:[
+   {t:'Los juegos del cuatrimestre', d:'Lo principal de ahora: armás el circuito y programás tu juego con bloques.',
+    esp:['juegos']},
    {t:'Para arrancar', d:'Si es tu primera vez con esto, empezá por acá.',
     esp:['intro']},
    /* Sección visual de 1ro: se juega con dibujos, sin nada para leer.
@@ -3105,8 +3107,12 @@ const ANIOS = {
     ids:['teoria','repaso'], esp:['mezcla']}
  ]},
  '3ro':{ nom:'3er año', sub:'Del programa al aparato', mods:[
+   {t:'Los proyectos del cuatrimestre', d:'Por acá se arranca: el aparato de tu equipo, paso a paso, hasta la simulación.',
+    esp:['proy3']},
    {t:'Programá la placa', d:'Lo principal del cuatrimestre: escribís el código y el aparato reacciona.',
     esp:['misiones']},
+   {t:'Arduino de verdad', d:'Lo mismo en el lenguaje real de la placa, para pegar en el simulador o subir a la placa.',
+    esp:['arduino']},
    {t:'1 · Poner a punto', d:'Repaso rápido de lo que hace falta tener firme antes de seguir.',
     ids:['var','dec','bug']},
    {t:'2 · Del programa al aparato', d:'Cuando el programa sale de la pantalla y hace algo en el mundo.',
@@ -3694,7 +3700,7 @@ const ARDU_GLOS = [
 ];
 
 /* ============================================================
-   TALLER ARDUINO — 4to año
+   TALLER ARDUINO — 3ro y 4to
    Código real de C++ para simulador (wokwi.com) o placa física.
    Doce proyectos con sensores básicos, copiables, más un banco
    de código roto: compila y sube, pero no hace lo que dice.
@@ -3708,7 +3714,8 @@ function arduHome(tab){
       <div>
         <h2>Arduino de verdad</h2>
         <p>Los mismos conceptos de las misiones, ahora en el lenguaje real de la placa.
-           Andá a <a href="https://wokwi.com/projects/new/arduino-uno" target="_blank" rel="noopener">wokwi.com</a>
+           Pegalo en <a href="https://www.tinkercad.com/circuits" target="_blank" rel="noopener">Tinkercad</a>
+           o en <a href="https://wokwi.com/projects/new/arduino-uno" target="_blank" rel="noopener">wokwi.com</a>
            para simularlo en el navegador, o subilo a una placa si tenés.</p>
       </div>
       <button class="btn ghost" onclick="menu()">← Volver</button>
@@ -3805,12 +3812,14 @@ function arduRotoVer(i,b){
 const ESPECIALES={
  intro:{n:'Introducción a la robótica', d:'Qué es un robot, de dónde viene y cómo está hecho. Once pantallas para leer de corrido.', fn:'introHome()', wide:true, dest:true},
  jr:   {n:'Modo Jr', d:'Nivel más simple, sin texto para leer: llevá al personaje hasta su objetivo con flechas.', fn:'jrMission(0)', lvl:0},
+ proy3:{n:'Los proyectos del cuatrimestre', d:'Los tres aparatos que se pueden construir: la estación, el registrador de vuelo y la alarma de helada. Cada uno en cinco etapas: los componentes, el esquema de conexión, las decisiones del equipo, la tabla para entregar y la simulación con pistas.', fn:'proyHome()', wide:true, dest:true},
  proy4:{n:'Los proyectos', d:'Los tres proyectos del cuatrimestre, cada uno en cinco etapas: los componentes, el esquema de conexión, las elecciones del equipo, la tabla de elecciones y la simulación en Tinkercad con pistas.', fn:'proyHome()', wide:true, dest:true},
  poner:{n:'Poner en su lugar', d:'Emparejar, armar y ubicar en el mapa. Se puede arrastrar la pieza o tocarla y después tocar el lugar. Sin texto para leer.', fn:'poInicio(0)', lvl:0},
  baile:{n:'El baile', d:'Armá una coreografía con pasos y la bailarina la hace en orden. Cada paso tiene su nota, así que la secuencia se ve, se escucha y se baila. Sin texto para leer.', fn:'baInicio(0)', lvl:0},
  estudio:{n:'Estudio de dibujo', d:'Modo libre: movés las perillas y la tortuga dibuja en vivo.', fn:'estudio()'},
  mezcla:{n:'Modo mezcla', d:'Ocho ejercicios tomados al azar de las salas de tu año.', fn:"startSala('mezcla')", wide:true},
  arduino:{n:'Arduino de verdad', d:'Los mismos conceptos, en el lenguaje real de la placa. Doce proyectos con sensores básicos y el código listo para copiar al simulador o a un Arduino. Más un banco de código que compila pero está mal.', fn:"arduHome('proy')", wide:true, dest:true},
+ juegos:{n:'Los juegos', d:'Ocho juegos con 4 luces, 4 botones y un buzzer, sobre un mismo circuito. Cada uno trae los elementos, los pasos con huecos y pistas que se abren de a una. El programa no está hecho: se arma con bloques en Tinkercad.', fn:'juegoHome()', wide:true, dest:true},
  misiones:{n:'Misiones: programá la placa', d:'Escribís código de verdad y la placa reacciona: se prenden las luces, suena el buzzer, se mueve el servo y el sensor te da un número. Se abren de a una.', fn:'misHome()', wide:true, dest:true}
 };
 
@@ -4727,6 +4736,417 @@ const TINKER=[
    <p class="muted">Cuando termines esto, volvé y elegí el proyecto de tu equipo.</p>`}
 ];
 
+/* ============================================================
+   LOS PROYECTOS DE 3ro — EL REGISTRADOR
+   ------------------------------------------------------------
+   Tres variantes del mismo aparato: sensor -> placa -> decision
+   -> archivo. Lo unico que cambia entre uno y otro es CADA CUANTO
+   mide y que hace con el dato. Misma estructura que PROY4.
+   ============================================================ */
+
+const WOKWI=[
+ {k:'Antes de empezar', t:'Por qué Wokwi y no Tinkercad', h:`
+   <p>Tinkercad les sirvió perfecto hasta ahora: LED, botón, potenciómetro, sensor de
+   temperatura. Todo eso está en su catálogo y no hace falta nada más.</p>
+   <p><b>Pero el aparato de este proyecto no entra ahí.</b> Tinkercad no deja agregar
+   librerías, y no tiene ni el sensor de presión ni el módulo de tarjeta de memoria.
+   Sin librería no hay sensor, y sin sensor no hay proyecto.</p>
+   <p><b>Wokwi sí los tiene</b>, y también simula la tarjeta. Así que a partir de acá el
+   simulador es ese.</p>
+   <div class="hint">Es la primera vez en el año que eligen una herramienta <b>por lo que
+   necesitan hacer</b>, y no porque la eligió la profe. Eso también es contenido.</div>`},
+ {k:'Antes de empezar', t:'Entrar y armar el circuito', h:`
+   <p>Ir a <code>wokwi.com</code> → <b>New project</b> → <b>Arduino Uno</b> (o Nano, si es
+   la placa que les toca). <b>No pide cuenta para empezar a programar.</b></p>
+   <ul>
+     <li>Con el <b>+</b> que está arriba del circuito se agregan piezas buscándolas por
+     nombre: <code>BME280</code>, <code>SD card</code>, <code>LED</code>, <code>buzzer</code></li>
+     <li>Para conectar: clic en una pata y clic en el destino. Sale un cable</li>
+     <li>El botón verde de play compila y arranca la simulación</li>
+   </ul>
+   <p><b>Para guardar sí hace falta cuenta.</b> Si no se la hacen, copien el código y péguenlo
+   en el Classroom antes de irse: si cierran la pestaña, se perdió.</p>`},
+ {k:'Antes de empezar', t:'Las librerías', h:`
+   <p>Una <b>librería</b> es código que escribió otra persona para no tener que resolver de
+   cero cómo se le habla a un chip. Ustedes escriben <code>bme.readTemperature()</code> y
+   adentro hay cientos de líneas que no tienen por qué mirar.</p>
+   <p>En Wokwi: pestaña <b>Library Manager</b> → agregar <code>Adafruit BME280 Library</code>
+   (se lleva puesta también <code>Adafruit Unified Sensor</code>).
+   <code>SD</code>, <code>SPI</code> y <code>Wire</code> ya vienen con Arduino.</p>
+   <p>En la placa de verdad es lo mismo, desde el IDE de Arduino →
+   <i>Herramientas → Gestor de librerías</i>.</p>
+   <div class="hint">Casi todas son <b>software libre</b>: alguien las escribió, las publicó
+   con una licencia y cualquiera las puede usar y mejorar. El aparato de ustedes está parado
+   sobre trabajo de otros que decidieron compartirlo.</div>`},
+ {k:'Antes de empezar', t:'Cómo saber si el archivo salió bien', h:`
+   <p>El error más común no es que el programa no compile: es que <b>compile, corra, y el
+   archivo quede vacío o torcido</b>. Y eso no se ve mirando el circuito.</p>
+   <p><b>El truco:</b> escribir <u>lo mismo</u> por <code>Serial</code> que lo que se escribe
+   en la tarjeta. Si en el monitor se ve la fila bien formada, con sus comas y sus puntos
+   decimales, eso es exactamente lo que va a quedar guardado.</p>
+   <pre><code>Serial.print(millis());  Serial.print(",");
+Serial.println(temp, 2);</code></pre>
+   <p>Es una línea de más y ahorra la tarde entera.</p>`}
+];
+
+const PROY3=[
+{
+ id:'estacion3', ic:'🌡️', nom:'La estación de la escuela', sim:'Wokwi',
+ que:'Mide sola, durante días, y deja un archivo',
+ regla:'cada X minutos → leer · convertir · <b>escribir una fila</b> en la tarjeta',
+ comp:[
+  {k:'Componentes', t:'El BME280: tres magnitudes en un chip', h:`
+    <p>Un cuadradito de menos de un centímetro que mide <b>temperatura, humedad y presión</b>
+    a la vez. Es el mismo tipo de chip que tiene adentro un celular.</p>
+    <p>No devuelve un número de 0 a 1023 como el sensor de humedad de suelo: <b>habla</b>.
+    Se le pregunta por <b>I2C</b>, que son dos cables de datos (<code>SDA</code> y
+    <code>SCL</code>), y contesta los tres valores ya en grados, en porcentaje y en pascales.</p>
+    <div class="hint"><b>Ojo con lo que se compra.</b> El <b>BMP</b>280 y el <b>BME</b>280 son
+    idénticos por fuera y hay módulos vendidos como BME que traen un BMP adentro. La
+    diferencia es que <b>el BMP no mide humedad</b>. Se comprueba por software: el chip
+    contesta <code>0x60</code> si es BME280 y <code>0x58</code> si es BMP280.</div>`},
+  {k:'Componentes', t:'La microSD: dónde vive el archivo', h:`
+    <p>Hasta ahora todo lo que midieron se veía en el monitor y se perdía. El módulo de
+    tarjeta es lo que convierte al aparato en un <b>registrador</b>: escribe un archivo de
+    texto que después se abre en cualquier computadora.</p>
+    <p>Se conecta por <b>SPI</b>, que son cuatro cables. La tarjeta tiene que estar formateada
+    en <b>FAT32</b> y conviene que sea chica: 2 a 8 GB. Una de 128 GB da más problemas que
+    una vieja de 2.</p>
+    <p><b>Los nombres de archivo van en formato 8.3</b>: hasta ocho letras, un punto y tres
+    más. <code>datos.csv</code> sirve; <code>estacion_huerta_septiembre.csv</code> no.</p>
+    <div class="hint"><b>Un dato existe cuando está guardado, no cuando se calculó.</b> Es la
+    idea más importante de este proyecto y la que más vuelos arruina.</div>`},
+  {k:'Componentes', t:'El reloj que no tiene', h:`
+    <p>El Arduino <b>no sabe qué hora es</b>. Al enchufarlo arranca de cero y lo único que
+    puede decir es cuántos milisegundos pasaron desde que encendió:
+    <code>millis()</code>.</p>
+    <p>Alcanza perfectamente, con una condición: <b>anotar a qué hora se lo enchufó.</b> Con
+    eso, cualquier fila se puede traducir a una hora real después. Es una función lineal más:
+    hora real = hora de arranque + <code>t_ms</code>.</p>
+    <p>Si quieren la hora de verdad adentro del archivo, hace falta un módulo aparte
+    (<b>RTC DS3231</b>, con su pila). Es barato, pero es una pieza más que puede fallar.</p>
+    <p><b>Cada cuánto medir se llama <i>frecuencia de muestreo</i>,</b> y es la decisión que
+    más define esta estación: si medís más lento que lo que cambia el fenómeno, te lo perdés.</p>`},
+  {k:'Componentes', t:'La caja, que no es un detalle', h:`
+    <p>Para dejarla un fin de semana hay que resolver dos cosas que no son código.</p>
+    <p><b>La energía:</b> o queda enchufada por USB, o lleva pilas. Cuatro AA alcanzan varios
+    días si mide cada diez minutos; si mide cada segundo, no llega al domingo.</p>
+    <p><b>El aire:</b> la caja tiene que proteger de la lluvia y <b>dejar pasar el aire</b>.
+    Si la cierran del todo, la humedad y la temperatura que miden son las de adentro de la
+    caja, no las del ambiente. Las estaciones de verdad usan una <b>garita</b>: platos
+    apilados que dan sombra y dejan circular.</p>
+    <div class="hint">Esto es lo que se le puede pedir al FabLab: una garita impresa en 3D.
+    Es una pieza chica, se imprime una vez y sirve para todas.</div>`}],
+ esq:{
+  filas:[['BME280','VIN','5V (si el módulo trae regulador) o 3.3V'],
+         ['BME280','GND','GND'],
+         ['BME280','SDA','A4'],
+         ['BME280','SCL','A5'],
+         ['Módulo microSD','VCC','5V'],
+         ['Módulo microSD','GND','GND'],
+         ['Módulo microSD','MOSI','pin 11'],
+         ['Módulo microSD','MISO','pin 12'],
+         ['Módulo microSD','SCK','pin 13'],
+         ['Módulo microSD','CS','pin 10'],
+         ['LED testigo','pata larga','pin 8 (con resistencia de 220 Ω)'],
+         ['LED testigo','pata corta','GND']],
+  nota:'En el Uno y en el Nano, <b>I2C es siempre A4 y A5</b>: no se eligen. El único pin que se puede cambiar es el <code>CS</code> de la tarjeta. Y el testigo va al <b>8</b> y no al 13 porque el 13 acá lo usa la tarjeta.'},
+ eleg:[
+  {q:'¿Cada cuánto mide?', op:['Cada 1 minuto','Cada 10 minutos','Cada 30 minutos'],
+   por:'Un fin de semana entero a un minuto son más de <b>4300 filas</b>; a diez minutos, 430. El aire no cambia en un minuto: la mayoría de esas filas dirían lo mismo. Pero si medís muy lento te perdés la hora exacta en que arrancó a bajar la temperatura. <b>Esto es elegir la frecuencia de muestreo</b>, y es la decisión de fondo del proyecto.'},
+  {q:'¿Dónde se instala?', op:['Adentro del aula','Afuera, a la sombra y ventilada','Adentro del invernadero'],
+   por:'A pleno sol el sensor mide <b>el sol</b>, no el aire: puede marcar diez grados de más. Las estaciones oficiales se ponen a la sombra, ventiladas y a un metro y medio del piso, justamente para que los datos de un lugar se puedan comparar con los de otro. <b>Si cada uno mide como quiere, los datos no se dejan juntar.</b>'},
+  {q:'¿Qué columnas tiene el archivo?', op:['Solo la temperatura','Temperatura, humedad y presión','Las tres, más el número crudo del sensor'],
+   por:'Guardar el crudo ocupa una columna más y salva el fin de semana entero: <b>un dato crudo se puede volver a convertir con otra recta; uno ya convertido no se puede volver atrás.</b> Si la calibración estaba mal y no guardaron el crudo, hay que ir a medir de nuevo.'},
+  {q:'¿Un archivo por sesión o uno solo que crece?', op:['Uno solo, siempre el mismo','Uno nuevo cada vez que se enciende'],
+   por:'Con uno solo, cada vez que la prenden siguen escribiendo abajo y después nadie sabe dónde empezó cada tanda. Con uno por sesión hay que inventarle nombre, y la tarjeta solo admite <b>ocho letras</b>: <code>dat01.csv</code>, <code>dat02.csv</code>. Las dos opciones son válidas; hay que poder defender la elegida.'},
+  {q:'¿Qué escribe cuando el sensor no leyó?', op:['Nada, se saltea la fila','Un 0','La palabra NA'],
+   por:'El 0 es un <b>valor posible</b> de temperatura en Villa La Angostura: si escriben 0, el que abre el archivo no puede saber si hacía cero grados o si el sensor estaba desconectado. Y el que abre el archivo es <b>4to</b>, que no estuvo cuando pasó. Elijan una marca que no se confunda con un dato, y que sea siempre la misma.'}],
+ cod:{
+  consigna:'Escribí el programa que lee el BME280, escribe una fila en la tarjeta cada tanto y prende el LED mientras graba. Es el mismo esqueleto de siempre: leer, convertir, actuar. Lo nuevo es que la acción es <b>escribir</b>.',
+  base:`#include <Wire.h>
+#include <Adafruit_BME280.h>
+#include <SPI.h>
+#include <SD.h>
+
+Adafruit_BME280 bme;
+const int CS  = 10;   // el pin que "elige" la tarjeta
+const int LED = 8;    // testigo: se prende mientras escribe
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(LED, OUTPUT);
+  bme.begin(0x76);    // si no responde, probar 0x77
+  SD.begin(CS);
+
+  // 1. escribí la línea de encabezado UNA sola vez
+
+}
+
+void loop() {
+  // 2. leé las tres magnitudes
+
+  // 3. abrí el archivo, escribí la fila y cerralo
+
+  // 4. esperá lo que decidió tu equipo
+}`,
+  pistas:[
+   'El encabezado va en <code>setup()</code>, <b>no</b> en <code>loop()</code>: si lo ponés en el loop te queda una línea de títulos entre cada fila y el archivo no se deja abrir como tabla. Se escribe una sola vez, cuando la placa arranca.',
+   '<code>bme.readPressure()</code> devuelve <b>pascales</b>. Dividí por 100 para tener hectopascales, que es la unidad del pronóstico. Y acordate del acuerdo con 4to: <b>la unidad va en el nombre de la columna</b> — <code>presion_hPa</code>, no <code>presion</code>.',
+   '<code>SD.open()</code> abre, <code>f.println()</code> escribe y <b><code>f.close()</code> es el que guarda de verdad</b>. Si sacás el <code>close</code>, la fila se queda en la memoria de la placa: cuando se corte la alimentación, no está. El <code>if (f)</code> es para no escribir en un archivo que no se pudo abrir.'],
+  sol:`  // --- en setup(), una sola vez ---
+  File f = SD.open("datos.csv", FILE_WRITE);
+  if (f) {
+    f.println("t_ms,temp_C,humedad_pct,presion_hPa");
+    f.close();
+  }
+
+  // --- en loop() ---
+  float t = bme.readTemperature();
+  float h = bme.readHumidity();
+  float p = bme.readPressure() / 100.0;   // de pascales a hPa
+
+  File f = SD.open("datos.csv", FILE_WRITE);
+  if (f) {
+    digitalWrite(LED, HIGH);
+    f.print(millis()); f.print(",");
+    f.print(t, 2);     f.print(",");
+    f.print(h, 2);     f.print(",");
+    f.println(p, 2);
+    f.close();                 // el close es el que guarda
+    digitalWrite(LED, LOW);
+  }
+
+  delay(600000);   // 600000 ms = 10 minutos`}
+},
+{
+ id:'cohete3', ic:'🚀', nom:'El registrador de vuelo', sim:'Wokwi',
+ que:'El mismo aparato, 20 veces por segundo, adentro del cohete',
+ regla:'mientras vuela → medir rápido, guardar seguido, y que el archivo <b>sobreviva al golpe</b>',
+ comp:[
+  {k:'Componentes', t:'La presión es un altímetro', h:`
+    <p>Es el mismo BME280 de la estación. No hay que aprender un sensor nuevo: hay que
+    usarlo de otra manera.</p>
+    <p><b>La presión baja cuando subís.</b> A la altura de Villa La Angostura, más o menos
+    <b>1 hPa cada 9 metros</b>. La fórmula de verdad es exponencial, pero en los cien metros
+    de un cohete de agua la recta le pega tan bien que no se distingue.</p>
+    <p><b>Eso es exactamente la calibración del 30/09</b>, otra vez: una magnitud que se
+    convierte en otra, con dos puntos conocidos. Uno lo tienen gratis: la escuela, cuya
+    altura se busca en el mapa que hicieron en mayo.</p>
+    <div class="hint">La librería puede devolver metros directamente, pero necesita que le
+    pases <b>la presión al nivel del mar de ese día</b>. Si le pasás el valor de tabla, la
+    altura da mal. Ahí está el sistema de dos ecuaciones.</div>`},
+  {k:'Componentes', t:'Cuánta señal hay, dicho antes de que decepcione', h:`
+    <p>Si el cohete sube <b>50 metros</b>, toda la aventura son <b>5 o 6 hPa</b>. El sensor
+    los ve — resuelve alrededor de un metro — pero el número <b>tiembla</b>.</p>
+    <p>El gráfico va a salir rasposo. <b>Eso no es un fracaso: es el contenido del 07/10.</b>
+    Promediar las últimas cinco lecturas es la técnica que van a aprender para la estación,
+    y es la misma que después salva el vuelo.</p>
+    <p>Y el vuelo dura <b>cuatro a seis segundos</b>. Todo el proyecto se juega en menos de
+    lo que tarda esta pantalla en leerse.</p>`},
+  {k:'Componentes', t:'El acelerómetro, si entra', h:`
+    <p>El <b>MPU6050</b> mide aceleración en tres ejes y giro en otros tres:
+    <b>seis números a la vez</b>. Interpretarlos son varias clases que no hay.</p>
+    <p><b>La salida limpia: que grabe los seis y que grafiquen uno solo</b>, la aceleración
+    vertical. Ahí se ve el empuje, el momento exacto en que se acaba el agua, y el golpe del
+    aterrizaje. Los otros cinco quedan en el archivo para 4to.</p>
+    <p>Va en <b>los mismos dos cables</b> que el BME280. I2C permite varios aparatos en el
+    mismo par porque cada uno tiene su dirección: el BME es <code>0x76</code> y el MPU es
+    <code>0x68</code>. <b>Es una red diminuta adentro del aparato.</b></p>
+    <div class="hint">Es lo primero que se recorta si hay que recortar. El BME280 no.</div>`},
+  {k:'Componentes', t:'Las cuatro cosas que arruinan un vuelo', h:`
+    <p><b>1. El archivo que no se cierra.</b> Si la alimentación se corta en el golpe con el
+    archivo abierto, queda vacío o cortado. Se resuelve bajando lo escrito a la tarjeta cada
+    pocas filas, no al final.</p>
+    <p><b>2. El peso.</b> Cada gramo le baja el apogeo. Placa + sensor + tarjeta + batería
+    andan por los 60 a 90 gramos. <b>Pésenlo y anótenlo:</b> dos lanzamientos, uno con carga
+    y otro sin, es un experimento de dos variables listo.</p>
+    <p><b>3. El aterrizaje.</b> El golpe rompe sensores y desconecta cables. Espuma alrededor,
+    todo atornillado o pegado, y paracaídas si el FabLab lo hace.</p>
+    <p><b>4. El arranque.</b> Nadie va a poder apretar un botón con el cohete presurizado.
+    Que grabe desde que se enciende, y que un LED avise que está grabando.</p>`}],
+ esq:{
+  filas:[['BME280','VIN · GND','5V · GND'],
+         ['BME280','SDA · SCL','A4 · A5'],
+         ['MPU6050 (opcional)','VCC · GND','5V · GND'],
+         ['MPU6050 (opcional)','SDA · SCL','A4 · A5 (los mismos)'],
+         ['Módulo microSD','VCC · GND','5V · GND'],
+         ['Módulo microSD','MOSI · MISO · SCK','11 · 12 · 13'],
+         ['Módulo microSD','CS','pin 10'],
+         ['LED "estoy grabando"','pata larga','pin 8 (con resistencia de 220 Ω)']],
+  nota:'Los dos sensores comparten <b>el mismo par de cables</b>: eso es lo que hace el I2C. Y todo lo que vuela tiene que estar <b>pegado o atornillado</b>: un cable flojo en el banco es un cable suelto a los diez metros.'},
+ eleg:[
+  {q:'¿Cada cuánto mide en vuelo?', op:['10 veces por segundo','20 veces por segundo','50 veces por segundo'],
+   por:'El vuelo dura unos cinco segundos: a 10 por segundo son 50 filas, a 50 son 250. Parece que más siempre es mejor, pero <b>escribir en la tarjeta tarda</b>: si pedís más de lo que la tarjeta aguanta, se saltea mediciones y el intervalo entre filas deja de ser parejo. Es la misma pregunta de la estación con la respuesta al revés.'},
+  {q:'¿Cuándo empieza a grabar?', op:['Apenas se enciende','Cuando detecta el despegue','Con un botón, justo antes'],
+   por:'Nadie va a meter la mano cerca de un cohete presurizado. Detectar el despegue solo suena mejor y agrega un modo de fallar: si no lo detecta, no hay datos. <b>Grabar desde que se enciende sobra filas al principio, y las filas que sobran se borran después.</b>'},
+  {q:'¿Cada cuántas filas asegura lo escrito?', op:['Cada fila','Cada 10 filas','Al final del vuelo'],
+   por:'Cerrar en cada fila es lento y te baja la frecuencia. No cerrar nunca es <b>perder todo</b> en el golpe. El punto medio es una decisión de ingeniería con dos riesgos que tiran para lados opuestos: en el peor caso perdés las últimas nueve filas, no las ciento veinte.'},
+  {q:'Si el lanzamiento no se puede hacer, ¿qué?', op:['Se suspende el proyecto','El aparato sube al mirador','Se lo tira desde tres metros'],
+   por:'<b>El contenido no depende del cohete: depende de que haya un archivo.</b> Subir 300 metros al mirador son más de 30 hPa, seis veces la señal del vuelo, sin ningún riesgo y con la subida y la bajada perfectamente dibujadas. Es un CSV <b>mejor</b> para analizar. La caída de tres metros no se ve en presión, pero en aceleración se ve todo.'},
+  {q:'¿Cómo se llama la columna del tiempo?', op:['t','tiempo','t_ms'],
+   por:'El que abre este archivo es <b>4to, el jueves siguiente</b>, y no les va a poder preguntar nada. Si la columna dice <code>t</code>, tienen que adivinar si son segundos o milisegundos. <b>La unidad va en el nombre.</b> Es el acuerdo más barato de cumplir y el que más problemas evita.'}],
+ cod:{
+  consigna:'Escribí el programa del payload: abre el archivo una sola vez, mide rápido, y asegura lo escrito cada tantas filas. Es el mismo aparato de la estación con dos cambios, y los dos son por el mismo motivo: <b>acá no hay tiempo</b>.',
+  base:`#include <Wire.h>
+#include <Adafruit_BME280.h>
+#include <SPI.h>
+#include <SD.h>
+
+Adafruit_BME280 bme;
+File vuelo;             // el archivo queda abierto TODO el vuelo
+const int CS  = 10;
+const int LED = 8;
+int filas = 0;          // se acuerda de cuántas escribió
+
+void setup() {
+  pinMode(LED, OUTPUT);
+  bme.begin(0x76);
+  SD.begin(CS);
+  vuelo = SD.open("vuelo.csv", FILE_WRITE);
+  vuelo.println("t_ms,presion_hPa,temp_C");
+  digitalWrite(LED, HIGH);   // prendido = estoy grabando
+}
+
+void loop() {
+  // 1. una fila: el tiempo, la presión y la temperatura
+
+  // 2. cada tantas filas, asegurá lo escrito en la tarjeta
+
+  // 3. esperá lo justo para medir a la frecuencia que eligieron
+}`,
+  pistas:[
+   'Acá el archivo se abre <b>una sola vez, en <code>setup()</code></b>, y queda abierto. Abrirlo y cerrarlo en cada fila, como en la estación, tarda demasiado para medir veinte veces por segundo. Cambia porque cambió el requerimiento, no porque una forma esté mal.',
+   '<code>flush()</code> hace lo mismo que <code>close()</code> — baja lo escrito a la tarjeta — pero <b>deja el archivo abierto</b> para seguir. Es la línea que salva el vuelo cuando el golpe corta la alimentación.',
+   '<code>filas % 10 == 0</code> se lee "cada 10 filas". El <code>%</code> da el <b>resto</b> de la división: cuando el resto es cero, el número es múltiplo de 10. Es el mismo truco que usaron para saber si un número era par.'],
+  sol:`  vuelo.print(millis());                      vuelo.print(",");
+  vuelo.print(bme.readPressure() / 100.0, 2); vuelo.print(",");
+  vuelo.println(bme.readTemperature(), 1);
+
+  filas++;
+  if (filas % 10 == 0) {
+    vuelo.flush();     // baja lo escrito a la tarjeta, sin cerrar
+  }
+
+  delay(50);           // 50 ms = 20 mediciones por segundo`}
+},
+{
+ id:'helada3', ic:'❄️', nom:'La alarma de helada', sim:'Tinkercad',
+ que:'Mide, guarda y además <b>avisa</b>',
+ regla:'alarma = (temperatura &lt; umbral) <b>Y</b> se mantuvo así varias lecturas',
+ comp:[
+  {k:'Componentes', t:'Por qué esta es la que decide', h:`
+    <p>La estación y el registrador <b>observan</b>: miden y anotan. Esta además
+    <b>actúa</b>, y por eso es la que tiene adentro todo lo que vinieron trabajando desde
+    agosto: el umbral, el <code>si / si no</code>, el <code>y</code>, y una variable que se
+    acuerda de lo que ya hizo.</p>
+    <p>Y tiene un cliente que no es la profe: <b>quien cuida la huerta</b>. Una helada tardía
+    en octubre se lleva puesto todo lo plantado, y en Villa La Angostura eso pasa.</p>
+    <div class="hint">La pregunta que quedó abierta el 26/08 — <i>¿quién eligió el 30?</i> —
+    acá se contesta sola. <b>El número lo elige el que se queda sin plantas.</b></div>`},
+  {k:'Componentes', t:'El sensor de temperatura y su recta de fábrica', h:`
+    <p>El <b>TMP36</b> da un voltaje que sube 10 milivoltios por cada grado, arrancando en
+    500 mV a 0 °C. La cuenta es:</p>
+    <pre><code>float voltaje = analogRead(A0) * 5.0 / 1024.0;
+float temp = (voltaje - 0.5) * 100.0;</code></pre>
+    <p><b>Esa recta no la calibraron ustedes: la escribió el fabricante.</b> El sensor de
+    humedad de suelo no viene con ninguna y hay que construirla midiendo. Vale la pregunta:
+    <i>¿por qué le creemos al fabricante y no a nosotros mismos?</i></p>
+    <p>Mirando la cara plana, de izquierda a derecha: <b>5V · señal · GND</b>. Al revés se
+    calienta y se puede quemar.</p>
+    <p>Si les toca un BME280, mejor todavía: da los grados hechos y además la humedad.</p>`},
+  {k:'Componentes', t:'Dónde va el sensor cambia la respuesta', h:`
+    <p>La helada <b>se forma en el suelo</b>. En una noche despejada puede haber 3 °C a dos
+    metros y 0 °C a diez centímetros del piso, al mismo tiempo.</p>
+    <p>Así que el termómetro tiene que estar <b>a la altura de lo que se quiere proteger</b>,
+    no donde sea cómodo colgarlo.</p>
+    <p>Y a la sombra: si le pega el sol de la mañana, el aparato va a "ver" que la helada
+    terminó media hora antes de que realmente termine.</p>
+    <div class="hint">Este es el mejor ejemplo del año de que <b>una medición no es un hecho
+    neutro</b>: dónde y cómo medís es parte del resultado.</div>`},
+  {k:'Componentes', t:'Cómo avisa, y el problema de las 4 de la mañana', h:`
+    <p>Un <b>LED rojo</b> y un <b>buzzer</b> alcanzan para la demo. Pero la helada es a las
+    cuatro de la mañana y en la escuela no hay nadie: <b>un aviso que nadie escucha no es un
+    aviso.</b></p>
+    <p>Por eso la alarma también <b>escribe</b>: a la mañana siguiente se puede leer a qué
+    hora saltó, cuánto duró y hasta dónde bajó. El archivo es el aviso que sí llega.</p>
+    <p>Avisar al celular se puede — es lo que 2do está haciendo con Bluetooth — pero eso es
+    otro proyecto y otro cuatrimestre.</p>`}],
+ esq:{
+  filas:[['TMP36','5V · señal · GND','5V · A0 · GND'],
+         ['LED rojo','pata larga','pin 8 (con resistencia de 220 Ω)'],
+         ['LED rojo','pata corta','GND'],
+         ['Buzzer','+','pin 9'],
+         ['Buzzer','−','GND'],
+         ['Módulo microSD (si la tienen)','MOSI · MISO · SCK · CS','11 · 12 · 13 · 10']],
+  nota:'El TMP36 <b>al revés se calienta</b>: revisen la cara plana antes de enchufar. Este proyecto se puede armar entero en <b>Tinkercad</b>, porque no necesita ninguna librería.'},
+ eleg:[
+  {q:'¿Con cuántos grados avisa?', op:['5 °C','3 °C','1 °C'],
+   por:'Con 5 va a sonar muchas noches en que no hiela, y a la tercera nadie le da bola. Con 1 avisa cuando el daño ya empezó. <b>Esta decisión no es del programador: es de quien cuida la huerta</b>, y hay que ir a preguntársela.'},
+  {q:'¿Alcanza con la temperatura?', op:['Sí, con el umbral basta','No: además tiene que haberse mantenido varias lecturas','No: además tiene que ser de noche'],
+   por:'Un pico raro de una sola lectura no es una helada: es ruido, o alguien que pasó respirando cerca del sensor. Exigir que se mantenga <b>tres lecturas seguidas</b> es filtrar el ruido con lógica en vez de con promedio. Y cualquiera de las dos segundas opciones te obliga al <code>y</code>.'},
+  {q:'¿Cómo avisa?', op:['Solo el LED','LED y buzzer','LED, buzzer y lo escribe en la tarjeta'],
+   por:'A las cuatro de la mañana no hay nadie escuchando. El LED y el buzzer sirven para la demo del Paseo; <b>el archivo es el único aviso que llega a alguien</b>. Y de paso deja el dato para saber si la alarma acertó.'},
+  {q:'¿Con qué temperatura se apaga la alarma?', op:['Con la misma con la que se prendió','Con un grado más'],
+   por:'Si prende a 3 y apaga a 3, en el borde se prende y se apaga sin parar, varias veces por segundo. Prender a 3 y apagar a 4 deja una <b>zona muerta</b> donde no pasa nada. Eso se llama <b>histéresis</b>, y es decidir sobre un intervalo en vez de sobre un punto. Es el mismo termostato de cualquier estufa.'},
+  {q:'¿A qué altura va el sensor?', op:['A 10 cm del suelo','A la altura de las plantas','A dos metros, colgado'],
+   por:'La helada se forma abajo: puede haber tres grados donde está cómodo colgar el sensor y cero donde están las plantas. <b>La respuesta correcta depende de qué se quiere proteger</b>, y hay que poder explicarla.'}],
+ cod:{
+  consigna:'Escribí el programa que lee la temperatura, decide con <b>dos umbrales distintos</b> — uno para prender y otro para apagar — y avisa. La variable <code>alarma</code> es la novedad: es la primera vez que el aparato se acuerda de lo que ya estaba haciendo.',
+  base:`const int SENSOR = A0;
+const int LED    = 8;
+const int BUZZER = 9;
+
+float temp;
+bool alarma = false;   // AFUERA del loop: se acuerda entre una vuelta y otra
+
+void setup() {
+  pinMode(LED, OUTPUT);
+  pinMode(BUZZER, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  // 1. leé el sensor y convertilo a grados
+
+  // 2. decidí con DOS umbrales: uno para prender, otro para apagar
+
+  // 3. si hay alarma, prendé el LED y hacé sonar el buzzer
+
+  delay(1000);
+}`,
+  pistas:[
+   'La conversión del TMP36 son dos líneas: <code>float v = analogRead(SENSOR) * 5.0 / 1024.0;</code> y después <code>temp = (v - 0.5) * 100.0;</code>. Mostrala con <code>Serial.println(temp);</code> para ver si tiene sentido antes de seguir.',
+   'Dos umbrales, no uno: <b>prendé a 3 y apagá a 4</b>. Entre 3 y 4 no pasa nada, se queda como estaba. Son dos <code>if</code> separados, y cada uno pregunta además <b>en qué estado está</b>: <code>if (!alarma && temp &lt; 3.0)</code> y <code>if (alarma && temp &gt; 4.0)</code>.',
+   '<code>alarma</code> está declarada <b>afuera</b> del <code>loop()</code> a propósito. Si la declaran adentro, se crea de nuevo en cada vuelta y arranca siempre en <code>false</code>: el aparato pierde la memoria de lo que estaba haciendo. Eso es el <b>alcance</b> de una variable.'],
+  sol:`  float v = analogRead(SENSOR) * 5.0 / 1024.0;
+  temp = (v - 0.5) * 100.0;
+  Serial.println(temp);
+
+  if (!alarma && temp < 3.0) alarma = true;    // prende a 3
+  if (alarma  && temp > 4.0) alarma = false;   // apaga recien a 4
+
+  if (alarma) {
+    digitalWrite(LED, HIGH);
+    tone(BUZZER, 880);
+  } else {
+    digitalWrite(LED, LOW);
+    noTone(BUZZER);
+  }`}
+}];
+
+/* que lista de proyectos y que textos van, segun el año de la sesion */
+const PROYSET={
+ '4to':{lista:()=>PROY4, kick:'Proyectos · 2do cuatrimestre', tit:'De los datos al sistema',
+   baj:'Cada equipo elige uno de los tres, lo construye, lo calibra y lo hace decidir. Los tres miden algo real de la huerta y los tres terminan publicando su serie.',
+   guia:{n:'🔧 Antes de empezar · Tinkercad', d:'Cómo entrar con el código de la clase, cómo se arma un circuito y tres cosas para probar.', slides:()=>TINKER}},
+ '3ro':{lista:()=>PROY3, kick:'Proyectos · 2do cuatrimestre', tit:'El registrador',
+   baj:'Los tres son <b>el mismo aparato</b>: un sensor, la placa, una decisión y un archivo. Lo único que cambia es cada cuánto mide y qué hace con el dato. Y los tres terminan en un CSV que abre otro: la huerta, el Paseo, o 4to.',
+   guia:{n:'🔧 Antes de empezar · el simulador', d:'Por qué acá pasamos de Tinkercad a Wokwi, cómo se entra, qué es una librería y cómo saber si el archivo salió bien.', slides:()=>WOKWI}}
+};
+function proySet(){ return PROYSET[(SES&&SES.anio==='3ro')?'3ro':'4to']; }
+function proyLista(){ return proySet().lista(); }
+
 const PROY4=[
 {
  id:'riego', ic:'💧', nom:'El riego de la huerta',
@@ -4996,7 +5416,7 @@ function proyGuardar(d){ try{ localStorage.setItem(K_PROY,JSON.stringify(d)); }c
 function proyHome(){
   cur=null;
   const d=proyDatos();
-  const tarjetas=PROY4.map((p,i)=>{
+  const tarjetas=proyLista().map((p,i)=>{
     const el=(d[p.id]||{}).eleg;
     const hechas=el?Object.keys(el).length:0;
     return `<button class="item wide dest" onclick="proyVer(${i})">
@@ -5006,19 +5426,18 @@ function proyHome(){
         ${hechas?`<span class="hecho">${hechas} de ${p.eleg.length} elecciones</span>`:''}</div>
     </button>`;
   }).join('');
+  const S=proySet();
   app.innerHTML=`
     <div class="topbar"><button class="backb" onclick="menu()" aria-label="volver">← Menú</button></div>
     <div class="card">
-      <div class="concepto big">Proyectos · 2do cuatrimestre</div>
-      <h2 style="margin-top:0">De los datos al sistema</h2>
-      <p class="muted" style="margin:0;line-height:1.6">Cada equipo elige uno de los tres, lo
-      construye, lo calibra y lo hace decidir. Los tres miden algo real de la huerta y los tres
-      terminan publicando su serie.</p>
+      <div class="concepto big">${S.kick}</div>
+      <h2 style="margin-top:0">${S.tit}</h2>
+      <p class="muted" style="margin:0;line-height:1.6">${S.baj}</p>
     </div>
     <div class="grid" style="grid-template-columns:1fr">
-      <button class="item wide" onclick="verSlides(TINKER,'proyHome()','Elegir proyecto →',proyHome)">
-        <div class="n">🔧 Antes de empezar · Tinkercad</div>
-        <div class="d">Cómo entrar con el código de la clase, cómo se arma un circuito y tres cosas para probar.</div>
+      <button class="item wide" onclick="verSlides(proySet().guia.slides(),'proyHome()','Elegir proyecto →',proyHome)">
+        <div class="n">${S.guia.n}</div>
+        <div class="d">${S.guia.d}</div>
       </button>
       ${tarjetas}
     </div>`;
@@ -5028,7 +5447,7 @@ function proyHome(){
 /* ---- las cinco etapas de un proyecto ---- */
 function proyVer(i){
   cur=null;
-  const p=PROY4[i], d=proyDatos()[p.id]||{};
+  const p=proyLista()[i], d=proyDatos()[p.id]||{};
   const hechas=d.eleg?Object.keys(d.eleg).length:0;
   const paso=(n,t,desc,fn,marca)=>`
     <button class="item wide" onclick="${fn}">
@@ -5046,25 +5465,25 @@ function proyVer(i){
     </div>
     <div class="grid" style="grid-template-columns:1fr">
       ${paso(1,'Los componentes','Qué es cada pieza y cómo funciona.',`proyComp(${i})`,'')}
-      ${paso(2,'El esquema de conexión','Qué pata va a qué pin, para armarlo en Tinkercad.',`proyEsq(${i})`,'')}
+      ${paso(2,'El esquema de conexión',`Qué pata va a qué pin, para armarlo en ${p.sim||'Tinkercad'}.`,`proyEsq(${i})`,'')}
       ${paso(3,'Las elecciones','Lo que tiene que decidir el equipo, y por qué no hay una respuesta única.',`proyEleg(${i})`,'')}
       ${paso(4,'La tabla de elecciones','La actividad: eligen, queda guardado y se copia para la profe.',`proyTabla(${i})`, hechas?`${hechas} de ${p.eleg.length}`:'')}
-      ${paso(5,'La simulación','El código para escribir en Tinkercad, con pistas de a una.',`proyCod(${i})`,'')}
+      ${paso(5,'La simulación',`El código para escribir en ${p.sim||'Tinkercad'}, con pistas de a una.`,`proyCod(${i})`,'')}
     </div>`;
   window.scrollTo(0,0);
 }
 
-function proyComp(i){ verSlides(PROY4[i].comp, `proyVer(${i})`, 'Al esquema →', ()=>proyEsq(i)); }
+function proyComp(i){ verSlides(proyLista()[i].comp, `proyVer(${i})`, 'Al esquema →', ()=>proyEsq(i)); }
 
 function proyEsq(i){
   cur=null;
-  const p=PROY4[i];
+  const p=proyLista()[i];
   app.innerHTML=`
     <div class="topbar"><button class="backb" onclick="proyVer(${i})" aria-label="volver">← ${p.nom}</button>
       <div class="progtext">Etapa 2 de 5</div></div>
     <div class="card">
       <h2 style="margin-top:0">El esquema de conexión</h2>
-      <p class="muted">Armalo así en Tinkercad. Si algo no lee, lo primero que se revisa es esto.</p>
+      <p class="muted">Armalo así en ${p.sim||'Tinkercad'}. Si algo no lee, lo primero que se revisa es esto.</p>
       <table class="esqt">
         <tr><th>Componente</th><th>Pata</th><th>Va a</th></tr>
         ${p.esq.filas.map(f=>`<tr><td>${f[0]}</td><td class="mono">${f[1]}</td><td class="mono">${f[2]}</td></tr>`).join('')}
@@ -5077,7 +5496,7 @@ function proyEsq(i){
 
 function proyEleg(i){
   cur=null;
-  const p=PROY4[i];
+  const p=proyLista()[i];
   app.innerHTML=`
     <div class="topbar"><button class="backb" onclick="proyVer(${i})" aria-label="volver">← ${p.nom}</button>
       <div class="progtext">Etapa 3 de 5</div></div>
@@ -5099,7 +5518,7 @@ function proyEleg(i){
 /* ---- etapa 4: la tabla. Es lo único que produce algo guardado ---- */
 function proyTabla(i){
   cur=null;
-  const p=PROY4[i], d=proyDatos(), mias=(d[p.id]||{}).eleg||{};
+  const p=proyLista()[i], d=proyDatos(), mias=(d[p.id]||{}).eleg||{};
   app.innerHTML=`
     <div class="topbar"><button class="backb" onclick="proyVer(${i})" aria-label="volver">← ${p.nom}</button>
       <div class="progtext">Etapa 4 de 5</div></div>
@@ -5125,20 +5544,20 @@ function proyTabla(i){
   window.scrollTo(0,0);
 }
 function proyElegir(i,k,j){
-  const p=PROY4[i], d=proyDatos();
+  const p=proyLista()[i], d=proyDatos();
   d[p.id]=d[p.id]||{eleg:{}}; d[p.id].eleg=d[p.id].eleg||{};
   const prev=d[p.id].eleg[k]||{};
   d[p.id].eleg[k]={op:j, por:prev.por||''};
   proyGuardar(d); tono(659.25,.18); proyTabla(i);
 }
 function proyPor(i,k,txt){
-  const p=PROY4[i], d=proyDatos();
+  const p=proyLista()[i], d=proyDatos();
   d[p.id]=d[p.id]||{eleg:{}}; d[p.id].eleg=d[p.id].eleg||{};
   d[p.id].eleg[k]=Object.assign({op:null}, d[p.id].eleg[k], {por:txt});
   proyGuardar(d);
 }
 function proyCopiar(i){
-  const p=PROY4[i], mias=(proyDatos()[p.id]||{}).eleg||{};
+  const p=proyLista()[i], mias=(proyDatos()[p.id]||{}).eleg||{};
   let t=`FICHA DEL INSTRUMENTO — ${p.nom}\n`;
   t+=`Equipo: ${SES?SES.nombre:'(sin nombre)'}\nQué decide: ${txtPlano(p.que)}\n\n`;
   p.eleg.forEach((e,k)=>{
@@ -5153,15 +5572,15 @@ function proyCopiar(i){
 /* ---- etapa 5: el código, con pistas de a una ---- */
 function proyCod(i){
   cur=null;
-  const p=PROY4[i];
+  const p=proyLista()[i];
   app.innerHTML=`
     <div class="topbar"><button class="backb" onclick="proyVer(${i})" aria-label="volver">← ${p.nom}</button>
       <div class="progtext">Etapa 5 de 5</div></div>
     <div class="card">
       <h2 style="margin-top:0">La simulación</h2>
       <p>${p.cod.consigna}</p>
-      <div class="hint">Escribilo <b>en Tinkercad</b>, no acá. Acá está el esqueleto y las
-      pistas; el que tiene que andar es el de allá.</div>
+      <div class="hint">Escribilo <b>en ${p.sim||'Tinkercad'}</b>, no acá. Acá está el esqueleto y
+      las pistas; el que tiene que andar es el de allá.</div>
       <pre><code>${escapeHtml(p.cod.base)}</code></pre>
     </div>
     <div class="card">
@@ -5183,6 +5602,474 @@ function proyCod(i){
 }
 function proyPista(i,k){
   const h=document.getElementById('ph'+k), b=document.getElementById('pb'+k);
+  if(h){ h.hidden=false; } if(b){ b.hidden=true; }
+  tono(523.25,.18);
+}
+
+/* ==================== LOS JUEGOS DE 1ro ====================
+   Ocho juegos sobre UN MISMO circuito: 4 LEDs, 4 botones y un buzzer.
+   Se programan con BLOQUES en Tinkercad.
+
+   Escrito para 1er año: frases cortas, una idea por línea, los bloques
+   dibujados como se ven en la pantalla, y nada de vocabulario que no
+   hayan usado antes.
+
+   Cada ficha tiene seis partes:
+     1. Cómo se juega
+     2. Lo que necesitás       → los elementos y en qué pin va cada uno
+     3. Pensalo antes          → dos preguntas para la carpeta, sin máquina
+     4. Los pasos              → incompletos a propósito
+     5. Pistas de a una        → qué bloque y dónde. NO hay respuesta final
+     6. Si no anda / Más difícil / Para la carpeta
+
+   Los tres primeros los hace todo el curso. Del cuarto en adelante,
+   cada pareja elige uno. La etiqueta "Ya tenés que saber" dice qué hace
+   falta haber visto antes de meterse.
+   ========================================================== */
+
+const TINKERB=[
+ {k:'Antes de empezar', t:'Entrar a Tinkercad', h:`
+   <p>Tinkercad arma el circuito y hace funcionar el programa <b>en la pantalla</b>.</p>
+   <p>Lo que anda ahí, después anda en la placa de verdad.</p>
+   <p><b>Para entrar:</b></p>
+   <ol>
+     <li>Ir a <code>tinkercad.com</code></li>
+     <li>Apretar <i>Join a Class</i></li>
+     <li>Escribir el <b>código de la clase</b> que está en el pizarrón</li>
+     <li>Elegir un apodo</li>
+   </ol>
+   <p><b>No hace falta mail.</b></p>`},
+ {k:'Antes de empezar', t:'Armar el circuito', h:`
+   <p><b>Circuits → Create new Circuit.</b></p>
+   <ul>
+     <li>Arrastrá el <b>Arduino Uno</b> desde el panel de la derecha</li>
+     <li>Buscá las piezas por nombre: <i>LED</i>, <i>pushbutton</i> (el botón),
+     <i>piezo</i> (el buzzer), <i>resistor</i></li>
+     <li>Para conectar: clic en una pata, clic en el destino. Sale un cable</li>
+     <li>Cada LED lleva una <b>resistencia de 220</b>. Se le hace clic para cambiarle el número</li>
+   </ul>
+   <p><b>El circuito es el mismo para los ocho juegos.</b></p>
+   <p>Armalo una vez y guardalo. Después lo copiás.</p>`},
+ {k:'Antes de empezar', t:'Los bloques', h:`
+   <p>Apretá <b>Code</b>. Que diga <b>Blocks</b>, no Text.</p>
+   <p>Los bloques están separados por color. Con estos cinco grupos alcanza para todo:</p>
+   <table class="esqt">
+     <tr><th>Grupo</th><th>Sirve para</th></tr>
+     <tr><td><b>Salida</b></td><td>Prender y apagar. Hacer sonar el buzzer</td></tr>
+     <tr><td><b>Entrada</b></td><td>Ver si un botón está apretado</td></tr>
+     <tr><td><b>Control</b></td><td>Esperar. Repetir. Si… entonces</td></tr>
+     <tr><td><b>Matemáticas</b></td><td>Cuentas, comparar, y el <b>número al azar</b></td></tr>
+     <tr><td><b>Variables</b></td><td>Un nombre que guarda un número</td></tr>
+   </table>
+   <p><b>Start Simulation</b> lo enciende.</p>`},
+ {k:'Antes de empezar', t:'Cómo se usan estas fichas', h:`
+   <p><b>Acá no está el programa hecho.</b></p>
+   <p>Está lo que necesitás, los pasos con huecos, y pistas que se abren de a una.</p>
+   <p>Se usa así:</p>
+   <ol>
+     <li>Leé cómo se juega</li>
+     <li>Contestá las dos preguntas <b>en la carpeta</b>. Sin computadora</li>
+     <li>Armá el circuito</li>
+     <li>Probá los pasos solo. <b>Equivocarse no rompe nada</b></li>
+     <li>Cuando te trabás, abrí <b>una</b> pista. Una sola</li>
+   </ol>
+   <p class="muted">Si abrís todas las pistas de entrada, el juego lo armó la ficha.
+   Y después, cuando algo no funcione, no vas a saber dónde mirar.</p>`}
+];
+
+const JUEGOS=[
+{
+ id:'papa', ic:'🥔', nom:'Papa caliente', dif:1, blo:'6 bloques', todos:true,
+ sabe:'Esperar · el azar',
+ que:'Se lo pasan de mano en mano hasta que suena',
+ como:`Se enciende y se queda callado.<br>
+   <b>Nadie sabe cuánto.</b><br>
+   Se lo van pasando de mano en mano.<br>
+   Cuando suena, el que lo tiene pierde.`,
+ elem:[['Buzzer (piezo)','1','pin 8'],['LED','1','pin 13'],['Resistencia 220','1','con el LED']],
+ pensar:[
+  'Si esperara siempre 5 segundos, ¿se podría hacer trampa?',
+  '¿Cuánto tiene que esperar, entonces?'],
+ plan:[
+  'Esperar. Pero no siempre lo mismo',
+  'Que suene el buzzer'],
+ pistas:[
+  'En <b>Control</b> está el bloque <code>esperar (1) segundos</code>.',
+  'En <b>Matemáticas</b> está <code>número al azar entre (1) y (10)</code>.<br>Ese bloque <b>entra adentro del hueco</b> del bloque de esperar. Arrastralo justo encima del número.',
+  'En <b>Salida</b> está el bloque que hace sonar el buzzer. Va después de la espera.',
+  '¿Suena todo el tiempo? Es porque está dentro del bucle.<br>Sacalo de ahí, o hacelo esperar mucho después de sonar.'],
+ mas:[
+  'Que el LED parpadee mientras espera. <b>Es más difícil de lo que parece.</b>',
+  'Que a veces suene a los 3 segundos y otras a los 30.'],
+ nofunca:[
+  ['No suena nada','El número del pin del bloque y el del cable tienen que ser el mismo'],
+  ['Suena todo el tiempo','Está dentro del bucle'],
+  ['Suena siempre en el mismo momento','El bloque del azar quedó afuera del hueco']],
+ mate:`La espera va de 5 a 30 segundos.<br>
+   ¿Cuál es la más larga que puede tocar? ¿Y la más corta?<br>
+   ¿Cuánto es <b>la mitad</b> entre las dos?`
+},
+{
+ id:'dado', ic:'🎲', nom:'El dado', dif:2, blo:'10 bloques', todos:true,
+ sabe:'+ el botón · guardar un número',
+ que:'Apretás el botón y sale un número del 1 al 6',
+ como:`Reemplaza al dado de cualquier juego de mesa.<br>
+   Apretás el botón y sale un número del 1 al 6.<br>
+   <b>Lo difícil es mostrarlo con sólo 4 luces.</b>`,
+ elem:[['LED','4','pines 3, 4, 5 y 6'],['Resistencia 220','4','una por LED'],
+       ['Botón','1','pin 8'],['Buzzer (piezo)','1','pin 12']],
+ pensar:[
+  'Con 4 luces, ¿cómo mostrás un 6? Escribí <b>dos formas distintas</b>.',
+  'Si lo tirás 60 veces, ¿cuántas veces tendría que salir cada número?'],
+ plan:[
+  'Esperar hasta que apreten el botón',
+  'Sacar un número al azar del 1 al 6 y <b>guardarlo</b>',
+  'Mostrarlo. La forma la elegís vos'],
+ pistas:[
+  'En <b>Control</b> está <code>esperar hasta que</code>.<br>Adentro del hueco va el bloque de <b>Entrada</b> que lee el botón.',
+  'Guardá el número en una <b>variable</b>.<br>Si usás el bloque del azar dos veces, te va a dar <b>dos números distintos</b>.',
+  'La forma más fácil de mostrarlo: <b>parpadear un LED tantas veces como el número</b>.<br>En Control está <code>repetir (4) veces</code>. En el hueco va tu variable.',
+  'La forma difícil: prender las 4 luces en combinación.<br>Así se puede llegar hasta el 15. <b>Eso es el sistema binario</b> y lo vemos en noviembre.'],
+ mas:[
+  'Dos dados y la suma. ¿Por qué el 7 sale más seguido que el 2?',
+  'Que el aparato anote cuántas veces salió cada número.'],
+ nofunca:[
+  ['Cambia el número solo','No lo guardaste en una variable'],
+  ['Tira sin que apretes nada','Falta el <code>esperar hasta que</code>'],
+  ['Tira muchas veces de una apretada','Mientras tenés el botón apretado, el programa lo lee cientos de veces']],
+ mate:`Tírenlo <b>60 veces</b> y anoten cuántas veces salió cada número.<br>
+   Si el dado fuera perfecto, saldrían 10 de cada uno.<br>
+   <b>No va a dar 10.</b> Y eso no es un error del programa.`
+},
+{
+ id:'refl', ic:'⚡', nom:'Reflejos', dif:2, blo:'12 bloques', todos:true,
+ sabe:'+ restar · comparar',
+ que:'El primero que aprieta cuando se prende la luz, gana',
+ como:`Dos jugadores. Un botón cada uno.<br>
+   La luz se prende <b>cuando menos lo esperás</b>.<br>
+   El primero que aprieta, gana.<br>
+   El aparato dice cuánto tardó.`,
+ elem:[['LED','1','pin 13'],['Resistencia 220','1','con el LED'],
+       ['Botón','2','pines 8 y 9'],['Buzzer (piezo)','1','pin 12']],
+ pensar:[
+  'Para saber cuánto tardaste hay que anotar dos momentos. ¿Cuáles?',
+  '¿Qué pasa si alguien aprieta <b>antes</b> de que se prenda la luz?'],
+ plan:[
+  'Esperar un rato al azar',
+  'Prender la luz y <b>anotar el momento</b>',
+  'Esperar hasta que alguno apriete',
+  'Hacer la cuenta',
+  'Mostrar el número y decir quién ganó'],
+ pistas:[
+  'Hay un bloque que dice <b>cuántos milisegundos pasaron desde que la placa arrancó</b>.<br>Ese es el reloj del programa.',
+  'Guardá ese número en una variable <code>arranque</code>.<br><b>En el mismo momento</b> en que prendés la luz.',
+  'La cuenta es: <b>el tiempo de ahora menos <code>arranque</code></b>.',
+  'Para saber quién ganó: dos bloques <code>si</code>, uno por botón.',
+  'Lo de la trampa es lo más difícil.<br>Habría que <b>mirar el botón mientras se espera</b>, y el bloque de esperar no mira nada. Pensalo.'],
+ mas:[
+  'Tres intentos cada uno y que muestre el promedio.',
+  'Que el que aprieta antes de tiempo pierda.'],
+ nofunca:[
+  ['Siempre da 0','La cuenta se hace antes de que apreten'],
+  ['Da números enormes','Estás midiendo desde que arrancó la placa, no desde que se prendió la luz'],
+  ['Gana siempre el mismo','Mirá el orden de los dos <code>si</code>']],
+ mate:`Te sale <b>312</b>. ¿312 qué?<br>
+   Son <b>milisegundos</b>: 312 milésimos de segundo. O sea <b>0,312 segundos</b>.<br>
+   Tiren tres veces cada uno. Armamos la tabla de todo el curso y sacamos el promedio.`
+},
+{
+ id:'topo', ic:'🔨', nom:'El topo', dif:3, blo:'18 bloques',
+ sabe:'+ llevar puntos · repetir',
+ que:'Apretá el botón de la luz que se prendió, antes de que se apague',
+ como:`Se prende una luz cualquiera.<br>
+   Tenés que apretar <b>el botón de esa luz</b> antes de que se apague.<br>
+   Cada acierto suma un punto.<br>
+   El juego dura 30 segundos.`,
+ elem:[['LED','4','pines 3, 4, 5 y 6'],['Resistencia 220','4','una por LED'],
+       ['Botón','4','pines 8, 9, 10 y 11'],['Buzzer (piezo)','1','pin 12']],
+ pensar:[
+  'La luz 1 va con el botón 1. ¿Cómo se da cuenta el programa de eso?',
+  '¿Qué hace que el juego sea más difícil? Es una sola cosa, y es un número.'],
+ plan:[
+  'Poner los puntos en 0',
+  'Elegir un topo al azar del 1 al 4 y prender su luz',
+  'Darle un rato para que apriete',
+  'Si apretó el que va → punto y sonido',
+  'Apagar y volver al paso 2'],
+ pistas:[
+  'Sorteá el topo con el bloque del azar entre 1 y 4.<br>Guardalo en una variable <code>topo</code>.',
+  'Para prender la luz que toca hay dos caminos:<br>• cuatro <code>si</code> (si topo = 1, prender el 3…)<br>• o la cuenta <code>pin = topo + 2</code><br><b>El segundo es más corto y más difícil de entender. Elegí vos.</b>',
+  'El rato que la luz queda prendida, guardalo en una variable.<br>Así después lo bajás sin tocar el programa en diez lugares.',
+  'Para ver si apretó a tiempo <b>no alcanza mirar el botón una vez</b>.<br>Hay que mirarlo muchas veces mientras la luz está prendida. Eso es un <code>repetir</code> con esperas cortas adentro.',
+  'Los puntos se llevan con <code>cambiar puntos por (1)</code>, del grupo Variables.'],
+ mas:[
+  'Que se acelere solo: cada 5 aciertos, la luz dura menos.',
+  'Que reste puntos si apretás el botón equivocado.',
+  'Una perilla para elegir la dificultad sin reprogramar.'],
+ nofunca:[
+  ['Suma puntos sin que apretes','Fijate si tu botón da 1 o 0 cuando está suelto'],
+  ['No suma nunca','La luz dura muy poco, o mirás el botón una sola vez'],
+  ['Suma muchos puntos de una apretada','Hay que esperar a que suelten el botón']],
+ mate:`Hizo <b>12 topos en 30 segundos</b>.<br>
+   ¿Cuántos son en un minuto?<br>
+   Después probá: ¿con cuántos milisegundos de luz prendida el juego se vuelve imposible?`
+},
+{
+ id:'rule', ic:'🎡', nom:'La ruleta', dif:3, blo:'15 bloques',
+ sabe:'+ dar la vuelta al círculo',
+ que:'La luz gira cada vez más lento hasta parar en un premio',
+ como:`Apretás el botón y la luz empieza a girar.<br>
+   Va <b>cada vez más lento</b>, hasta que para.<br>
+   Donde queda, es el premio.`,
+ elem:[['LED','4','pines 3, 4, 5 y 6'],['Resistencia 220','4','una por LED'],
+       ['Botón','1','pin 8'],['Buzzer (piezo)','1','pin 12']],
+ pensar:[
+  'Después de la luz 4 viene otra vez la 1. ¿Cómo le decís eso a un programa que sabe sumar?',
+  '¿Qué número tiene que ir cambiando para que vaya cada vez más lento?'],
+ plan:[
+  'Esperar el botón',
+  'Repetir: prender la luz que sigue, apagar la anterior, esperar',
+  'Cada vuelta, esperar <b>un poco más</b>',
+  'Cuando la espera se hizo muy larga, parar. Ahí quedó el premio'],
+ pistas:[
+  'Para pasar a la que sigue: <code>posicion = posicion + 1</code>.<br>Y un <code>si</code> que la devuelva a 1 cuando se pasa de 4.',
+  'Hay una forma más corta.<br>En Matemáticas está el bloque del <b>resto de la división</b>. El resto de dividir por 4 nunca se sale del rango.<br><b>Es el truco que usan los relojes.</b>',
+  'Para ir más lento: una variable <code>espera</code> que arranca en 50 y le sumás 20 en cada vuelta.',
+  '¿Cuándo para? Cuando <code>espera</code> pasa de un número que elegís vos.<br><b>Ese número decide cuánto dura el suspenso.</b>'],
+ mas:[
+  'Que un premio salga menos seguido que los otros. ¿Cómo, si las 4 posiciones son iguales?',
+  'Una nota distinta del buzzer para cada premio.'],
+ nofunca:[
+  ['La luz salta y no se ve girar','La espera arranca muy corta'],
+  ['Se prenden dos luces juntas','Falta apagar la anterior'],
+  ['Nunca para','La espera no está creciendo']],
+ mate:`Con 4 premios iguales, cada uno sale <b>1 de cada 4</b>.<br>
+   Eso es el <b>25 %</b>.<br>
+   ¿Y si querés que uno salga sólo 1 de cada 10?`
+},
+{
+ id:'soga', ic:'🪢', nom:'La soga', dif:4, blo:'20 bloques',
+ sabe:'+ números negativos',
+ que:'Dos jugadores aprietan a lo loco y la luz se corre para el que va ganando',
+ como:`Un botón cada uno. Aprietan lo más rápido que pueden.<br>
+   La luz se corre para el lado del que va ganando.<br>
+   El que la lleva hasta su punta, gana.<br>
+   <b>Dura quince segundos y deja a todos agitados.</b>`,
+ elem:[['LED','4','pines 3, 4, 5 y 6'],['Resistencia 220','4','una por LED'],
+       ['Botón','2','pines 8 y 11'],['Buzzer (piezo)','1','pin 12']],
+ pensar:[
+  'La luz va para los dos lados. ¿Qué número le sumás para un lado y qué número para el otro?',
+  '¿Qué pasa si los dos aprietan al mismo tiempo?'],
+ plan:[
+  'Poner <code>posicion</code> en el medio',
+  'Si aprieta A → mover la luz para un lado',
+  'Si aprieta B → mover la luz para el otro',
+  'Prender la luz de <code>posicion</code>',
+  'Si llegó a una punta → ganó ese, sonido, y termina'],
+ pistas:[
+  'Mover para el otro lado es <b>sumar un número negativo</b>.<br><code>posicion + 1</code> y <code>posicion − 1</code> son el <b>mismo bloque</b> con distinto signo.',
+  'Acá aparece el problema de todos los juegos con botones:<br><b>mientras lo tenés apretado, el programa lo lee cientos de veces por segundo</b>, y la luz vuela.',
+  'Cómo se arregla: después de contar la apretada, <b>esperar a que lo suelten</b>.',
+  'Si los dos aprietan en la misma vuelta, los movimientos se cancelan solos.<br>Probalo y decidí si te gusta que sea así.'],
+ mas:[
+  'Que hagan falta 3 apretadas para mover la luz un lugar.',
+  'Que el buzzer suene más agudo cuando uno está por ganar.'],
+ nofunca:[
+  ['La luz vuela a la punta de una apretada','Es lo de la pista 2'],
+  ['No se prende ninguna luz','La posición se fue del rango: hay que frenarla en las puntas'],
+  ['Gana siempre el mismo','Fijate si los dos botones están cableados igual']],
+ mate:`<code>+1</code> para un lado. <code>−1</code> para el otro.<br>
+   Y el <b>cero</b> está justo en el medio de la fila.<br>
+   <b>Es la recta numérica hecha con luces.</b>`
+},
+{
+ id:'memo', ic:'🧠', nom:'Memoria', dif:5, blo:'25 bloques',
+ sabe:'+ comparar · muchas variables',
+ que:'La máquina muestra tres luces y hay que repetirlas',
+ como:`Es el <i>Touch Me</i>, un juego de arcade de los años 70.<br>
+   La máquina muestra <b>tres luces en orden</b>.<br>
+   Hay que repetirlas con los botones.<br>
+   Si te equivocás en una, perdiste.`,
+ elem:[['LED','4','pines 3, 4, 5 y 6'],['Resistencia 220','4','una por LED'],
+       ['Botón','4','pines 8, 9, 10 y 11'],['Buzzer (piezo)','1','pin 12']],
+ pensar:[
+  'La máquina tiene que acordarse de tres luces. ¿Dónde las guarda?',
+  '¿Cómo harías para que sean <b>cuatro</b> pasos en vez de tres?'],
+ plan:[
+  'Sortear tres números del 1 al 4. Guardarlos en <code>luz1</code>, <code>luz2</code> y <code>luz3</code>',
+  'Mostrarlos de a uno, con pausa',
+  'Esperar la primera apretada y compararla con <code>luz1</code>',
+  'Lo mismo con <code>luz2</code> y con <code>luz3</code>',
+  'Ganó, o perdió'],
+ pistas:[
+  'Tres variables, una por paso.<br>Cada una recibe su propio número al azar entre 1 y 4.',
+  'Mostrar una luz es siempre lo mismo: prender, esperar, apagar.<br>Lo vas a copiar y pegar tres veces. Por ahora está bien.<br><b>Pero contá cuántas veces lo copiaste.</b>',
+  'Para saber qué botón apretaron necesitás una variable <code>apretado</code>.<br>Son cuatro <code>si</code>, uno por botón.',
+  'Comparar es un <code>si</code>:<br>si <code>apretado</code> <b>no es igual</b> a <code>luz1</code> → perdió.',
+  'Cuando quieras cuatro pasos, vas a tener que copiar todo otra vez.<br>Con seis ya no te entra en la pantalla.<br><b>Ese es el límite de las variables sueltas, y tiene arreglo: se llama lista, y es de 2do año.</b><br>No la busques todavía. Primero que ande con tres.'],
+ mas:[
+  'Que cada luz tenga su propia nota, como el juego original.',
+  'Que te diga en qué paso te equivocaste.'],
+ nofunca:[
+  ['Muestra las luces y no espera nada','Falta el <code>esperar hasta que</code>'],
+  ['Pierde siempre en el primer paso','<code>apretado</code> no se está guardando'],
+  ['Toma una apretada como tres','Hay que esperar a que suelten el botón']],
+ mate:`Con 4 luces y 3 pasos hay <b>4 × 4 × 4 = 64</b> secuencias distintas.<br>
+   Con 4 pasos, <b>256</b>. Con 5, <b>1024</b>.<br>
+   <b>No crece sumando: crece multiplicando.</b> Por eso se vuelve imposible tan rápido.`
+},
+{
+ id:'pong', ic:'🏓', nom:'Ping pong', dif:5, blo:'28 bloques',
+ sabe:'+ negativos · velocidad',
+ que:'La luz va y viene, y hay que devolverla justo en la punta',
+ como:`La luz corre por la fila.<br>
+   Cuando llega a tu punta, tenés que apretar <b>justo ahí</b>.<br>
+   Si no llegás, punto para el otro.<br>
+   Cada rebote va más rápido.<br>
+   <b>Es el ping pong que hicimos en Scratch, fuera de la pantalla.</b>`,
+ elem:[['LED','4','pines 3, 4, 5 y 6'],['Resistencia 220','4','una por LED'],
+       ['Botón','2','pines 8 y 11'],['Buzzer (piezo)','1','pin 12']],
+ pensar:[
+  '¿Cómo sabe el programa que la luz está en tu punta?',
+  'Cuando rebota, la luz cambia de sentido. ¿Qué es lo que cambia en el programa?'],
+ plan:[
+  '<code>posicion</code> = 1 y <code>direccion</code> = 1',
+  'Prender la luz de <code>posicion</code>, esperar, apagar',
+  '<code>posicion = posicion + direccion</code>',
+  'Si llegó a la punta:<br>• si ese jugador apretó → dar la vuelta a <code>direccion</code><br>• si no → punto para el otro'],
+ pistas:[
+  '<code>direccion</code> vale <b>1</b> o <b>−1</b>.<br>Y sumar −1 es lo mismo que restar.<br><b>Por eso un solo bloque sirve para los dos sentidos.</b>',
+  'Para dar la vuelta: <code>direccion = direccion × (−1)</code>.<br>También sirve <code>0 − direccion</code>. Hacen lo mismo.',
+  'Para acelerar: una variable <code>espera</code> a la que le restás 20 en cada rebote.<br><b>Ojo: si llega a 0, el juego se rompe.</b> Ponele un piso.',
+  'Lo más difícil es el momento de apretar.<br>Si sólo mirás el botón un instante, devolverla es imposible.<br>Probá <b>dejando la luz un rato más en las puntas</b>. No es trampa: es diseño.'],
+ mas:[
+  'Llevar el puntaje hasta 5 y anunciar el ganador.',
+  'Un sonido en cada rebote, más agudo cuanto más rápido va.'],
+ nofunca:[
+  ['La luz se va y no vuelve','La dirección no se invierte, o se invierte dos veces'],
+  ['Se puede devolver en cualquier momento','Falta comprobar que la luz esté en tu punta'],
+  ['Se vuelve imposible de golpe','La espera bajó demasiado']],
+ mate:`Para que la luz vaya <b>más rápido</b> hay que poner un número <b>más chico</b>.<br>
+   <b>La espera y la velocidad van al revés una de la otra.</b>`
+}
+];
+
+/* ---- pantalla de inicio de los juegos ---- */
+function juegoHome(){
+  cur=null;
+  const bolas=d=>'●'.repeat(d)+'○'.repeat(5-d);
+  const tarjeta=(j,i)=>`
+    <button class="item wide${j.dif>=4?' dest':''}" onclick="juegoVer(${i})">
+      <div class="n">${j.ic} ${j.nom}</div>
+      <div class="d">${j.que}.</div>
+      <div class="foot"><span class="lvl">${bolas(j.dif)}</span>
+        <span class="hecho">${j.blo}</span></div>
+    </button>`;
+  const primeros=JUEGOS.map((j,i)=>j.todos?tarjeta(j,i):'').join('');
+  const resto=JUEGOS.map((j,i)=>j.todos?'':tarjeta(j,i)).join('');
+  app.innerHTML=`
+    <div class="topbar"><button class="backb" onclick="menu()" aria-label="volver">← Menú</button></div>
+    <div class="card">
+      <div class="concepto big">Los juegos</div>
+      <h2 style="margin-top:0">Un circuito, ocho juegos</h2>
+      <p style="margin:0;line-height:1.7">Se arma <b>una sola vez</b>: 4 luces, 4 botones y
+      un buzzer.<br>Con ese mismo aparato salen los ocho.</p>
+      <div class="hint" style="margin-top:10px">Acá <b>no está el programa hecho</b>. Están
+      los pasos con huecos y pistas que se abren de a una.<br><b>Pensarlo es la parte
+      divertida.</b></div>
+    </div>
+    <div class="grid" style="grid-template-columns:1fr">
+      <button class="item wide" onclick="verSlides(TINKERB,'juegoHome()','Ver los juegos →',juegoHome)">
+        <div class="n">🔧 Antes de empezar</div>
+        <div class="d">Cómo entrar a Tinkercad, cómo se arma el circuito y dónde están los bloques.</div>
+      </button>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <div class="concepto">Estos tres los hacemos todos</div>
+      <p class="muted" style="margin:4px 0 0">En orden. Cada uno agrega una cosa nueva.</p>
+    </div>
+    <div class="grid" style="grid-template-columns:1fr">${primeros}</div>
+    <div class="card" style="margin-top:14px">
+      <div class="concepto">Y después elegí uno</div>
+      <p class="muted" style="margin:4px 0 0">Este es el de tu pareja para el Paseo.
+      Los de más bolitas son más difíciles, <b>no mejores</b>.</p>
+    </div>
+    <div class="grid" style="grid-template-columns:1fr">${resto}</div>`;
+  window.scrollTo(0,0);
+}
+
+/* ---- la ficha de un juego ---- */
+function juegoVer(i){
+  cur=null;
+  const j=JUEGOS[i];
+  app.innerHTML=`
+    <div class="topbar"><button class="backb" onclick="juegoHome()" aria-label="volver">← Los juegos</button>
+      <div class="progtext">${'●'.repeat(j.dif)}${'○'.repeat(5-j.dif)} · ${j.blo}</div></div>
+
+    <div class="card">
+      <div class="concepto big">${j.ic} ${j.nom}</div>
+      <h2 style="margin-top:0">${j.que}</h2>
+      <p style="margin:0;line-height:1.8">${j.como}</p>
+      <div class="hint" style="margin-top:10px"><b>Ya tenés que saber:</b> ${j.sabe}</div>
+    </div>
+
+    <div class="card">
+      <div class="concepto">Lo que necesitás</div>
+      <table class="esqt">
+        <tr><th>Qué</th><th>Cuántos</th><th>Va a</th></tr>
+        ${j.elem.map(e=>`<tr><td>${e[0]}</td><td class="mono">${e[1]}</td><td class="mono">${e[2]}</td></tr>`).join('')}
+      </table>
+      <div class="hint">Podés usar otros pines. Si los cambiás, <b>cambialos también en el
+      programa</b>. Es el error número uno.</div>
+    </div>
+
+    <div class="card">
+      <div class="concepto">Pensalo antes</div>
+      <p class="muted" style="margin-top:4px">Dos preguntas. <b>En la carpeta, sin computadora.</b></p>
+      <ol style="line-height:1.9">${j.pensar.map(p=>`<li>${p}</li>`).join('')}</ol>
+    </div>
+
+    <div class="card">
+      <div class="concepto">Los pasos</div>
+      <p class="muted" style="margin-top:4px">Están incompletos a propósito.</p>
+      <ol style="line-height:1.9">${j.plan.map(p=>`<li>${p}</li>`).join('')}</ol>
+    </div>
+
+    <div class="card">
+      <div class="concepto">Pistas</div>
+      <p class="muted" style="margin-top:4px">Se abren de a una. <b>Probá antes de abrir la
+      que sigue.</b> Al final no hay respuesta: el juego lo armás vos.</p>
+      ${j.pistas.map((h,k)=>`
+        <button class="btn ghost" id="jb${k}" onclick="juegoPista(${k})">Pista ${k+1}</button>
+        <div class="hint" id="jh${k}" hidden>${h}</div>`).join('')}
+    </div>
+
+    <div class="card">
+      <div class="concepto">Si no anda</div>
+      <table class="esqt">
+        <tr><th>Lo que pasa</th><th>Dónde mirar</th></tr>
+        ${j.nofunca.map(n=>`<tr><td>${n[0]}</td><td>${n[1]}</td></tr>`).join('')}
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="concepto">Cuando ya anda</div>
+      <ul style="line-height:1.8">${j.mas.map(m=>`<li>${m}</li>`).join('')}</ul>
+    </div>
+
+    <div class="card">
+      <div class="concepto">Para la carpeta</div>
+      <p style="margin:0;line-height:1.8">${j.mate}</p>
+    </div>
+
+    <div class="ardunav">
+      ${i>0?`<button class="btn ghost" onclick="juegoVer(${i-1})">← ${JUEGOS[i-1].nom}</button>`:'<span></span>'}
+      ${i<JUEGOS.length-1?`<button class="btn" onclick="juegoVer(${i+1})">${JUEGOS[i+1].nom} →</button>`:`<button class="btn" onclick="juegoHome()">Volver a los juegos</button>`}
+    </div>`;
+  window.scrollTo(0,0);
+}
+function juegoPista(k){
+  const h=document.getElementById('jh'+k), b=document.getElementById('jb'+k);
   if(h){ h.hidden=false; } if(b){ b.hidden=true; }
   tono(523.25,.18);
 }
