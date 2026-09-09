@@ -548,6 +548,8 @@
 .ckl .opch.on .cbox{border-color:currentColor}
 ol.cha{margin:6px 0 0;padding-left:22px}
 ol.cha li{margin:9px 0;line-height:1.55}
+
+.card.mate{border-left:4px solid var(--accent)}
 </style>
 </head>
 <body>
@@ -5242,6 +5244,7 @@ const ETAPAS3=[
   {id:'cliente', q:'¿Quién usa el dato y para qué decisión?', ph:'Una persona concreta'},
   {id:'necesita', q:'¿Qué piezas necesitamos? (la lista para pedir)', ph:'Sensor, placa, tarjeta...'},
   {id:'roles', q:'¿Quién hace qué? (programa · arma y cablea · calibra y anota · documenta)', ph:'Nombre y rol'}],
+ mate:`<b>¿Cuántas filas va a tener el archivo?</b> Si mide cada 10 minutos durante un fin de semana, son <code>filas = minutos / 10</code>. Es una <b>función lineal pura</b> — de las que el cuadernillo llama de proporcionalidad directa, sin la <i>b</i> — igual que el <i>tiempo de riego</i>, <code>V(t) = 10t</code>. Y no es un ejercicio: de la respuesta depende si entra en la tarjeta y si la batería llega al domingo.`,
  listo:[
   'Las ocho preguntas contestadas',
   'Las dos decisiones elegidas y justificadas',
@@ -5264,6 +5267,7 @@ const ETAPAS3=[
  campos:[
   {id:'fila', q:'Peguen acá la primera fila que salió bien', ph:'0,14.20,58.10,912.43'},
   {id:'costo', q:'¿Qué fue lo que más costó hacer andar?', ph:''}],
+ mate:`Cada fila del archivo es un <b>par (x, y)</b>. La tabla de valores con la que grafican en Matemática y la tabla que escribe el aparato <b>son la misma cosa</b>: la diferencia es que acá los números no los da el enunciado, los mide ustedes.`,
  listo:[
   'La fila sale completa y con puntos decimales, no comas',
   'El encabezado aparece <b>una sola vez</b>, no entre cada fila',
@@ -5285,6 +5289,7 @@ const ETAPAS3=[
   {id:'par2', q:'Par 2 — el otro estado y qué marcó', ph:'empapado → 310'},
   {id:'recta', q:'La fórmula que sacaron', ph:'valor = m * crudo + b'},
   {id:'sorpresa', q:'¿Da lo que esperaban? ¿Qué no cierra?', ph:''}],
+ mate:`⭐ <b>La clase del EPA.</b> Dos estados conocidos dan dos ecuaciones con dos incógnitas: <code>m·a + n = 0</code> y <code>m·b + n = 100</code>. <b>Resolver ese sistema es el único camino</b> para que el aparato diga algo cierto, y cada grupo tiene números distintos: no se pueden copiar.<br><br>Dos cosas finas para discutir con Caro Sanz: la recta que sale <b>no es lineal, es afín</b> (tiene <i>b</i>, y por eso el sensor en seco no marca cero) — es la distinción con la que abre el cuadernillo. Y <b>la raíz de esa recta</b> es el valor crudo que corresponde a cero: búsquenlo y comprueben si el sensor puede llegar ahí.`,
  listo:[
   'El sensor real conectado y dando números',
   'Los dos pares anotados <b>en papel también</b>',
@@ -5309,6 +5314,7 @@ const ETAPAS3=[
   {id:'donde', q:'¿Dónde quedó instalado, exactamente?', ph:'Lugar y altura'},
   {id:'hora', q:'¿A qué hora se enchufó? (día y hora)', ph:'La placa no sabe la hora: sin esto las filas no se traducen'},
   {id:'riesgo', q:'¿Qué puede salir mal este fin de semana?', ph:''}],
+ mate:`El <b>promedio</b> de las últimas cinco lecturas. Y la pregunta fina, que ya vieron con los datos del INTA: con un valor disparatado, ¿conviene el promedio o la <b>mediana</b>?`,
  listo:[
   'El promedio anda y se nota la diferencia',
   'Aguantó veinte minutos sin colgarse',
@@ -5331,6 +5337,7 @@ const ETAPAS3=[
   {id:'mal', q:'¿Qué salió mal en el archivo?', ph:'Filas repetidas, columnas corridas, el sensor colgado...'},
   {id:'compara', q:'¿Cuánta diferencia hay entre los tres lugares?', ph:'La pregunta de la helada'},
   {id:'demo', q:'El guion de 60 segundos para el Paseo', ph:'Esto es un... que mide... y sirve para...'}],
+ mate:`Busquen en el gráfico un tramo donde la temperatura baje <b>derecho</b>, de noche. Ahí una recta ajusta bien: saquen su <b>pendiente</b> y díganla en grados por hora. Es la misma cuenta de <i>cosecha de frutos</i>, <code>C(s) = 2s</code>, pero con datos de ustedes.<br><br>🚀 <b>Antes de volar, predigan.</b> Si el cohete sube 50 metros, ¿cuánto tarda en caer? La altura contra el tiempo es una <b>cuadrática</b>. Escriban la ecuación ahora y guárdenla.`,
  listo:[
   'El gráfico hecho y guardado (o impreso, para la mesa del Paseo)',
   'Los tres archivos juntados y comparados',
@@ -5352,6 +5359,7 @@ const ETAPAS3=[
   {id:'pregunto', q:'¿Qué preguntó la gente? (lo que más se repitió)', ph:''},
   {id:'fallo', q:'¿Qué falló en vivo?', ph:''},
   {id:'quienes6', q:'¿Quiénes lo explicaron? (todos tienen que pasar)', ph:''}],
+ mate:`Mostrar un gráfico es una decisión: qué va en cada eje, desde dónde arranca la escala. Una escala que empieza en 10 y no en 0 hace parecer enorme una diferencia chica. <b>El mismo dato, dos gráficos, dos impresiones distintas.</b>`,
  listo:[
   'El aparato funcionó delante de público',
   'Todos los del grupo lo explicaron por lo menos una vez',
@@ -5374,6 +5382,7 @@ const ETAPAS3=[
   {id:'paso', q:'¿Qué pasó?', ph:''},
   {id:'cambiaria', q:'¿Qué cambiaríamos si lo hiciéramos de nuevo?', ph:''},
   {id:'aprendi', q:'Tres cosas que sabemos hacer ahora y en agosto no', ph:'1... 2... 3...'}],
+ mate:`⭐⭐ <b>El vuelo es una parábola, y el vértice es el apogeo.</b> Al graficar la presión contra el tiempo sale una V: eso es una cuadrática. Sobre esa curva está todo lo del cuadernillo con un sentido físico:<br>• las <b>raíces</b> son el despegue y el aterrizaje<br>• el <b>vértice</b> es <b>el punto más alto que llegó el cohete</b><br>• la <b>ordenada al origen</b> es la presión en el suelo<br><br>Sáquenlo de dos formas: leyéndolo del gráfico y con <b>Bhaskara</b>. Si no coinciden, ahí está la clase. Y comparen con la predicción que escribieron en la etapa 5.`,
  listo:[
   'Hay un archivo con datos propios',
   'El gráfico del vuelo (o de la subida) hecho',
@@ -5585,7 +5594,8 @@ function cuadEtapa(n){
    +'<p style="margin:0"><b>Al terminar la clase:</b> '+et.obj+'</p>'
    +'<div class="hint" style="margin-top:10px"><b>Traen de la etapa anterior:</b> '+et.antes+'</div>'
    +(et.nota?'<div class="hint" style="margin-top:8px">'+et.nota+'</div>':'')
-   +(coh&&et.coh?'<div class="hint" style="margin-top:8px">🚀 '+et.coh+'</div>':'')+'</div>';
+   +(coh&&et.coh?'<div class="hint" style="margin-top:8px">🚀 '+et.coh+'</div>':'')+'</div>'
+   +(et.mate?'<div class="card mate"><div class="concepto">📐 Con Matemática</div><p style="margin:6px 0 0;line-height:1.6">'+et.mate+'</p></div>':'');
 
   h+='<div class="card"><div class="concepto">1 · Qué hacemos hoy</div><ol class="cha">'
    +et.hacer.map(function(x){ return '<li>'+x+'</li>'; }).join('')+'</ol></div>';
