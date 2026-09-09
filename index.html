@@ -5179,6 +5179,14 @@ const PROY4=[
  id:'riego', ic:'💧', nom:'El riego de la huerta',
  que:'El timer riega. El aparato mira si hacía falta',
  regla:'medir la tierra · anotarlo · <b>prender el LED si quedó seca</b>',
+ lista:[
+  ['Arduino Uno o Nano','Es la computadora del aparato: lee el sensor, hace la cuenta y manda las órdenes','Al USB de la PC'],
+  ['Protoboard','La plaquita de agujeritos donde se arma sin soldar. Las filas están unidas por dentro','—'],
+  ['Sensor de humedad de suelo','Se clava en la tierra. Cuanta más agua hay, mejor pasa la corriente entre las varillas. Devuelve un número de 0 a 1023','SIG → A0 · + → 5V · − → GND'],
+  ['LED','Avisa cuando la tierra quedó seca. No riega: informa','Pata larga → pin 8 · pata corta → GND'],
+  ['Resistencia de 220 Ω','Frena la corriente para que el LED no se queme','Entre el pin 8 y la pata larga del LED'],
+  ['Cables','Para unir todo. Conviene un color para 5V y otro para GND','—'],
+  ['(El timer)','Riega solo, a la hora que se le fije. NO se conecta al Arduino: es un aparato aparte','A la canilla']],
  comp:[
   {k:'Componentes', t:'El timer riega. Nosotros miramos', h:`
     <p>Un <b>timer</b> es un reloj que abre una canilla. Es barato, no se cuelga y no hay que
@@ -5228,7 +5236,19 @@ const PROY4=[
          ['Sensor de humedad','SIG','A0'],
          ['LED testigo','pata larga','pin 8 (con resistencia de 220 Ω)'],
          ['LED testigo','pata corta','GND']],
-  nota:'Eso es todo. <b>Cinco cables.</b> Sin relé, sin bomba y sin fuente aparte: el aparato no toca el agua, sólo la mira.'},
+  nota:'Eso es todo. <b>Cinco cables.</b> Sin relé, sin bomba y sin fuente aparte: el aparato no toca el agua, sólo la mira.',
+  pasos:[
+   'Poné el Arduino y la protoboard sobre la mesa, uno al lado del otro',
+   'Un cable del <b>5V</b> del Arduino al <b>riel rojo</b> (+) de la protoboard, y otro del <b>GND</b> al <b>riel azul</b> (−). Eso alimenta toda la placa de una vez',
+   'El sensor: el <code>+</code> al riel rojo, el <code>−</code> al riel azul, y el <code>SIG</code> derecho a <b>A0</b>',
+   'La resistencia de 220 Ω del <b>pin 8</b> a una fila libre de la protoboard',
+   'La <b>pata larga</b> del LED en esa misma fila, y la <b>pata corta</b> al riel azul',
+   'Recién ahora conectá el USB. <b>Nunca cablear con la placa enchufada</b>'],
+  revisar:[
+   '<b>¿El LED no prende?</b> Está al revés. La pata larga va del lado de la resistencia',
+   '<b>¿El número no cambia nunca?</b> El <code>SIG</code> no está en A0, o el sensor no tiene 5V',
+   '<b>¿El número está clavado en 0 o en 1023?</b> Falta el GND. Es el cable que más se olvida',
+   '<b>¿Prende apenas se enchufa y no se apaga?</b> Puede estar bien: fijate qué dice el monitor antes de tocar nada']},
  eleg:[
   {q:'¿A qué hora conviene que riegue el timer?', op:['Temprano a la mañana','Al mediodía','De noche'],
    por:'Con sol fuerte el agua se evapora antes de llegar a la raíz, y las gotas sobre las hojas queman. De noche las hojas quedan mojadas muchas horas y aparecen hongos. <b>Temprano es lo que hacen los que saben</b>, y ahora lo van a poder comprobar con el archivo.'},
@@ -5242,6 +5262,37 @@ const PROY4=[
    por:'Un sensor desconectado suele dar 0 o 1023 clavado. Si eso entra al archivo como si fuera un dato, la semana entera queda arruinada y nadie se entera. <b>Un sistema que no sabe cuándo no sabe es peligroso.</b>'}],
  cod:{
   consigna:'Escribí el programa que lee la humedad, la convierte con la recta de tu equipo, la escribe como una línea de CSV y prende el LED si la tierra quedó seca.',
+  ejs:[
+   {t:'Que la placa dé señales de vida',
+    q:'Hacé que el LED del pin 8 prenda un segundo y se apague un segundo, para siempre.',
+    obs:'El LED parpadea parejo. Si no lo hace, el problema es el circuito y no el programa.',
+    pista:'<code>pinMode(8, OUTPUT);</code> va en <code>setup()</code>. Después, adentro del <code>loop</code>: <code>digitalWrite(8, HIGH);</code> · <code>delay(1000);</code> · <code>digitalWrite(8, LOW);</code> · <code>delay(1000);</code>',
+    sol:'void setup() {\n  pinMode(8, OUTPUT);\n}\n\nvoid loop() {\n  digitalWrite(8, HIGH);\n  delay(1000);\n  digitalWrite(8, LOW);\n  delay(1000);\n}'},
+   {t:'Leer el sensor',
+    q:'Mostrá en el monitor el número crudo que devuelve el sensor, una vez por segundo.',
+    obs:'Al mojar la tierra (o mover la perilla) el número cambia, y siempre está entre 0 y 1023.',
+    pista:'<code>Serial.begin(9600);</code> en el <code>setup()</code>. En el <code>loop</code>: <code>crudo = analogRead(A0);</code> y <code>Serial.println(crudo);</code>. El monitor se abre con la lupita, abajo.',
+    sol:'int crudo;\n\nvoid setup() {\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  crudo = analogRead(A0);\n  Serial.println(crudo);\n  delay(1000);\n}'},
+   {t:'Traducir el número',
+    q:'Aplicá la recta de tu equipo y mostrá los dos valores: el crudo y la humedad en porcentaje.',
+    obs:'Se ven dos números. Con la tierra empapada el porcentaje se acerca a 100, y en seco a 0.',
+    pista:'La humedad tiene decimales, así que va <code>float</code>. <code>Serial.print(crudo);</code> después <code>Serial.print("  ->  ");</code> y al final <code>Serial.println(humedad);</code>. El <code>println</code> es el único que baja de renglón.',
+    sol:'int   crudo;\nfloat humedad;\n\nvoid loop() {\n  crudo = analogRead(A0);\n  humedad = -0.1883 * crudo + 162.3;   // la recta de TU equipo\n\n  Serial.print(crudo);\n  Serial.print("  ->  ");\n  Serial.println(humedad);\n  delay(1000);\n}'},
+   {t:'La línea de CSV',
+    q:'Cambiá la salida para que cada lectura sea una línea con tres valores separados por coma: el tiempo, el crudo y la humedad.',
+    obs:'Cada renglón tiene tres números y dos comas, sin espacios. Eso se copia a la planilla y ya queda en columnas.',
+    pista:'<code>millis()</code> devuelve los milisegundos desde que arrancó la placa. Entre valor y valor: <code>Serial.print(",");</code>. Y ojo con el decimal: tiene que ser <b>punto</b>, no coma, o la planilla lo lee mal.',
+    sol:'void loop() {\n  crudo = analogRead(A0);\n  humedad = -0.1883 * crudo + 162.3;\n\n  Serial.print(millis());   Serial.print(",");\n  Serial.print(crudo);      Serial.print(",");\n  Serial.println(humedad, 1);\n\n  delay(1000);\n}'},
+   {t:'La decisión',
+    q:'Prendé el LED cuando la humedad esté por debajo del umbral que eligió tu equipo.',
+    obs:'Al secar el sensor el LED prende, y al mojarlo se apaga. Y el número del monitor coincide con el umbral en el momento justo del cambio.',
+    pista:'<code>if (humedad &lt; 30) { digitalWrite(8, HIGH); } else { digitalWrite(8, LOW); }</code>. Ese 30 es el número que eligieron en la etapa 3: cambialo por el de ustedes.',
+    sol:'  if (humedad < 30) {\n    digitalWrite(8, HIGH);\n  } else {\n    digitalWrite(8, LOW);\n  }'},
+   {t:'Que no titile  (si llegaron hasta acá)',
+    q:'Justo en el borde del umbral el LED se prende y se apaga sin parar. Arreglalo usando DOS umbrales: uno para prender y otro para apagar.',
+    obs:'Entre los dos valores no pasa nada: el LED se queda como estaba.',
+    pista:'Hace falta una variable que <b>se acuerde</b>, declarada <u>afuera</u> del <code>loop</code>: <code>bool seca = false;</code>. Después: <code>if (!seca && humedad &lt; 30) seca = true;</code> y <code>if (seca && humedad &gt; 35) seca = false;</code>',
+    sol:'bool seca = false;   // AFUERA del loop: se acuerda entre una vuelta y otra\n\nvoid loop() {\n  // ... leer y convertir ...\n\n  if (!seca && humedad < 30) seca = true;    // prende a 30\n  if ( seca && humedad > 35) seca = false;   // apaga recien a 35\n\n  if (seca) digitalWrite(8, HIGH);\n  else      digitalWrite(8, LOW);\n}'}],
   base:`const int SENSOR = A0;
 const int LED    = 8;
 
@@ -5286,6 +5337,15 @@ void loop() {
  id:'hongos', ic:'🍄', nom:'El monitoreo del cultivo de hongos',
  que:'Vigila el aire del cultivo y lo corrige',
  regla:'humidificar si el aire está seco · ventilar si sube la temperatura · <b>y decidir qué gana</b>',
+ lista:[
+  ['Arduino Uno o Nano','Es la computadora del aparato: lee los dos sensores, decide y manda las órdenes','Al USB de la PC'],
+  ['Protoboard','Donde se arma sin soldar. Las filas están unidas por dentro','—'],
+  ['Sensor de humedad del AIRE (DHT22 o BME280)','Mide cuánta agua hay en el aire, en porcentaje, y la temperatura. Devuelve los valores ya convertidos','DATA → pin 2 · VCC → 5V · GND → GND'],
+  ['Perilla (potenciómetro)','El reemplazo del sensor de aire mientras no lo tengamos. Da 0 a 1023 y se mueve con el mouse','Del medio → A0 · los costados → 5V y GND'],
+  ['TMP36','Termómetro. Da un voltaje que sube 10 mV por cada grado','5V · señal → A1 · GND'],
+  ['Relé del humidificador','Un interruptor que el Arduino puede apretar. Del otro lado pasa la corriente grande del nebulizador','IN → pin 7 · VCC → 5V · GND → GND'],
+  ['Ventilador','Renueva el aire y saca el CO₂. También va por relé o transistor','IN → pin 6'],
+  ['LED','Testigo: muestra qué está decidiendo el programa sin abrir el cultivo','Pata larga → pin 13 (con resistencia de 220 Ω)']],
  comp:[
   {k:'Componentes', t:'Un hongo no quiere lo mismo que una planta', h:`
     <p>Una planta quiere <b>agua en la tierra</b>. Un hongo quiere <b>agua en el aire</b>: entre
@@ -5336,7 +5396,20 @@ void loop() {
          ['Relé del humidificador','VCC · GND · IN','5V · GND · pin 7'],
          ['Ventilador (por relé o transistor)','IN','pin 6'],
          ['LED testigo','pata larga','pin 13 (con resistencia de 220 Ω)']],
-  nota:'El humidificador y el ventilador tienen <b>su propia alimentación</b>: el Arduino nunca toca esa corriente, sólo aprieta el relé. Y el TMP36 <b>al revés se calienta</b>: mirá la cara plana antes de enchufar.'},
+  nota:'El humidificador y el ventilador tienen <b>su propia alimentación</b>: el Arduino nunca toca esa corriente, sólo aprieta el relé. Y el TMP36 <b>al revés se calienta</b>: mirá la cara plana antes de enchufar.',
+  pasos:[
+   'Llevá el <b>5V</b> al riel rojo de la protoboard y el <b>GND</b> al riel azul',
+   'La perilla: las dos patas de los costados a los rieles (una a rojo, otra a azul) y <b>la del medio a A0</b>',
+   'El TMP36: mirando <b>la cara plana</b>, de izquierda a derecha es <b>5V · señal · GND</b>. La señal a <b>A1</b>',
+   'El relé del humidificador: <code>VCC</code> y <code>GND</code> a los rieles, y <code>IN</code> al <b>pin 7</b>',
+   'El ventilador igual, pero su <code>IN</code> al <b>pin 6</b>',
+   'El LED con su resistencia entre el <b>pin 13</b> y GND',
+   'Recién ahora el USB'],
+  revisar:[
+   '<b>¿El TMP36 se calienta al tocarlo?</b> Está al revés. Desenchufá ya: se quema',
+   '<b>¿La temperatura da un número disparatado y fijo?</b> La señal no está en A1, o falta el GND',
+   '<b>¿El relé hace clic pero no pasa nada?</b> El relé funciona; lo que falta es la alimentación del otro lado, la del humidificador',
+   '<b>¿Los dos actuadores prenden juntos?</b> No es una falla del circuito: es que todavía no resolviste la prioridad en el programa']},
  eleg:[
   {q:'¿Con qué humedad prende el humidificador?', op:['75 %','80 %','85 %'],
    por:'Las gírgolas quieren entre 80 y 90. Muy abajo y los primordios se secan; muy arriba y aparece moho verde, que se come el cultivo. <b>El número lo elige el que cultiva, no el que programa.</b>'},
@@ -5351,6 +5424,37 @@ void loop() {
    por:'Un humidificador prendido sin control <b>inunda el cultivo y lo pudre en una noche</b>. <b>Cuando el aparato no sabe, lo seguro es no hacer nada</b> y avisar. Es la misma idea que en el riego, pero acá el daño es más rápido.'}],
  cod:{
   consigna:'Escribí el programa que lee la humedad del aire y la temperatura, decide si hay que humidificar y si hay que ventilar, y <b>resuelve qué pasa cuando los dos se piden a la vez</b>.',
+  ejs:[
+   {t:'Que la placa dé señales de vida',
+    q:'Hacé que el LED del pin 13 prenda y apague cada medio segundo.',
+    obs:'El LED parpadea. Si no, el problema es el circuito, no el programa.',
+    pista:'<code>pinMode(13, OUTPUT);</code> en <code>setup()</code>, y en el <code>loop</code> alternar <code>digitalWrite(13, HIGH)</code> y <code>LOW</code> con <code>delay(500)</code> en el medio.',
+    sol:'void setup() {\n  pinMode(13, OUTPUT);\n}\n\nvoid loop() {\n  digitalWrite(13, HIGH);\n  delay(500);\n  digitalWrite(13, LOW);\n  delay(500);\n}'},
+   {t:'La humedad, en porcentaje',
+    q:'Leé la perilla y mostrala como un porcentaje de 0 a 100, no como el número crudo.',
+    obs:'Girando la perilla el número recorre de 0 a 100 y no pasa de ahí.',
+    pista:'<code>map(analogRead(A0), 0, 1023, 0, 100)</code> hace la conversión. <b>Es una función lineal</b>: dice "esto iba de 0 a 1023 y ahora va de 0 a 100".',
+    sol:'float humedad;\n\nvoid setup() {\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  humedad = map(analogRead(A0), 0, 1023, 0, 100);\n  Serial.println(humedad);\n  delay(1000);\n}'},
+   {t:'La temperatura, en grados',
+    q:'Sumá la lectura del TMP36 y mostrá los dos valores juntos: la humedad y los grados.',
+    obs:'La temperatura da un número creíble, entre 15 y 30. Si te da 400, revisá el cableado antes que el código.',
+    pista:'El TMP36 tiene su recta, la del fabricante: <code>float v = analogRead(A1) * 5.0 / 1024.0;</code> y después <code>temp = (v - 0.5) * 100.0;</code>. Esa recta no la calibraron ustedes: vino escrita.',
+    sol:'float humedad, temp;\n\nvoid loop() {\n  humedad = map(analogRead(A0), 0, 1023, 0, 100);\n\n  float v = analogRead(A1) * 5.0 / 1024.0;\n  temp = (v - 0.5) * 100.0;\n\n  Serial.print(humedad); Serial.print(" %   ");\n  Serial.println(temp);\n  delay(1000);\n}'},
+   {t:'Las dos decisiones, con nombre',
+    q:'Guardá en dos variables si falta agua y si hace calor. Todavía sin prender nada: sólo mostralas.',
+    obs:'El monitor dice, por ejemplo, "falta agua: 1 · hace calor: 0", y los valores cambian al mover la perilla.',
+    pista:'<code>bool falta_agua = (humedad &lt; 80);</code> y <code>bool hace_calor = (temp &gt; 24);</code>. Un <code>bool</code> guarda sólo verdadero o falso. <b>Poner nombre a las decisiones antes de actuar</b> hace que el programa se lea solo.',
+    sol:'  bool falta_agua = (humedad < 80);\n  bool hace_calor = (temp > 24);\n\n  Serial.print("falta agua: "); Serial.print(falta_agua);\n  Serial.print("  ·  hace calor: "); Serial.println(hace_calor);'},
+   {t:'El conflicto  ⭐',
+    q:'Ahora sí, prendé el humidificador y el ventilador. Pero cuando los dos se piden a la vez, tiene que ganar UNO SOLO: el que eligió tu equipo en la etapa 3.',
+    obs:'Nunca están los dos prendidos al mismo tiempo. Y podés explicar en voz alta cuál gana y por qué.',
+    pista:'Poné primero el <code>if</code> del que gana, y <b>adentro apagá al otro</b>. Si gana ventilar: <code>if (hace_calor) { digitalWrite(6, HIGH); digitalWrite(7, LOW); } else { ... }</code>',
+    sol:'  if (hace_calor) {              // ventilar tiene prioridad\n    digitalWrite(6, HIGH);\n    digitalWrite(7, LOW);       // no humidifica mientras ventila\n  } else {\n    digitalWrite(6, LOW);\n    if (falta_agua) digitalWrite(7, HIGH);\n    else            digitalWrite(7, LOW);\n  }'},
+   {t:'Que no reaccione a un golpe de aire  (si llegaron hasta acá)',
+    q:'Abrir la puerta un segundo mete un pico de aire seco. Hacé que el humidificador prenda sólo si la humedad estuvo baja TRES lecturas seguidas.',
+    obs:'Un pico corto ya no lo prende. Uno sostenido sí.',
+    pista:'Una variable que cuenta, declarada <u>afuera</u> del <code>loop</code>: <code>int seguidas = 0;</code>. Si falta agua, <code>seguidas++</code>; si no, <code>seguidas = 0</code>. Y después preguntás <code>if (seguidas >= 3)</code>.',
+    sol:'int seguidas = 0;   // AFUERA del loop\n\nvoid loop() {\n  // ... leer y decidir ...\n\n  if (falta_agua) seguidas++;\n  else            seguidas = 0;\n\n  if (seguidas >= 3) digitalWrite(7, HIGH);\n  else               digitalWrite(7, LOW);\n}'}],
   base:`const int HUM  = A0;   // por ahora la perilla; despues el sensor real
 const int TMP  = A1;   // TMP36
 const int NEBU = 7;    // rele del humidificador
@@ -5462,16 +5566,35 @@ function proyVer(i){
       <p class="mono" style="margin:0">${p.regla}</p>
     </div>
     <div class="grid" style="grid-template-columns:1fr">
-      ${paso(1,'Los componentes','Qué es cada pieza y cómo funciona.',`proyComp(${i})`,'')}
-      ${paso(2,'El esquema de conexión','Qué pata va a qué pin, para armarlo en Tinkercad.',`proyEsq(${i})`,'')}
+      ${paso(1,'Los componentes','El listado completo: qué hace cada pieza y dónde va.',`proyComp(${i})`,'')}
+      ${paso(2,'El esquema y el armado','Qué pata va a qué pin, en qué orden armarlo y qué revisar si no anda.',`proyEsq(${i})`,'')}
       ${paso(3,'Las elecciones','Lo que tiene que decidir el equipo, y por qué no hay una respuesta única.',`proyEleg(${i})`,'')}
       ${paso(4,'La tabla de elecciones','La actividad: eligen, queda guardado y se copia para la profe.',`proyTabla(${i})`, hechas?`${hechas} de ${p.eleg.length}`:'')}
-      ${paso(5,'La simulación','El código para escribir en Tinkercad, con pistas de a una.',`proyCod(${i})`,'')}
+      ${paso(5,'Los ejercicios',p.cod.ejs?`${p.cod.ejs.length} ejercicios encadenados en Arduino, con pista y código.`:'El código para escribir, con pistas de a una.',`proyCod(${i})`,'')}
     </div>`;
   window.scrollTo(0,0);
 }
 
-function proyComp(i){ verSlides(PROY4[i].comp, `proyVer(${i})`, 'Al esquema →', ()=>proyEsq(i)); }
+function proyCompSlides(i){ verSlides(PROY4[i].comp, `proyComp(${i})`, 'Al esquema →', ()=>proyEsq(i)); }
+function proyComp(i){
+  cur=null;
+  const p=PROY4[i];
+  if(!p.lista) return proyCompSlides(i);
+  app.innerHTML=`
+    <div class="topbar"><button class="backb" onclick="proyVer(${i})" aria-label="volver">← ${p.nom}</button>
+      <div class="progtext">Etapa 1 de 5</div></div>
+    <div class="card">
+      <h2 style="margin-top:0">Los componentes</h2>
+      <p class="muted">Todo lo que hace falta, qué hace cada cosa y dónde va conectada.</p>
+      <table class="esqt">
+        <tr><th>Pieza</th><th>Qué hace</th><th>Dónde va</th></tr>
+        ${p.lista.map(f=>`<tr><td><b>${f[0]}</b></td><td>${f[1]}</td><td class="mono">${f[2]}</td></tr>`).join('')}
+      </table>
+    </div>
+    <button class="btn" onclick="proyCompSlides(${i})">Ver cada pieza explicada en detalle →</button>
+    <button class="btn ghost" onclick="proyEsq(${i})">Ir al esquema de conexión →</button>`;
+  window.scrollTo(0,0);
+}
 
 function proyEsq(i){
   cur=null;
@@ -5488,6 +5611,14 @@ function proyEsq(i){
       </table>
       <div class="hint">${p.esq.nota}</div>
     </div>
+    ${p.esq.pasos?`<div class="card">
+      <div class="concepto">Armalo en este orden</div>
+      <ol class="cha">${p.esq.pasos.map(x=>`<li>${x}</li>`).join('')}</ol>
+    </div>`:''}
+    ${p.esq.revisar?`<div class="card">
+      <div class="concepto">Si no anda, revisá esto</div>
+      <ul class="cha">${p.esq.revisar.map(x=>`<li>${x}</li>`).join('')}</ul>
+    </div>`:''}
     <button class="btn" onclick="proyEleg(${i})">A las elecciones →</button>`;
   window.scrollTo(0,0);
 }
@@ -5574,6 +5705,30 @@ function proyCod(i){
   app.innerHTML=`
     <div class="topbar"><button class="backb" onclick="proyVer(${i})" aria-label="volver">← ${p.nom}</button>
       <div class="progtext">Etapa 5 de 5</div></div>
+    ${p.cod.ejs?`
+    <div class="card">
+      <h2 style="margin-top:0">Los ejercicios</h2>
+      <p>${p.cod.consigna}</p>
+      <div class="hint">Son <b>${p.cod.ejs.length}</b> y van encadenados: cada uno es el programa
+      anterior más unas líneas. <b>No pasen al siguiente hasta que el de arriba ande.</b>
+      Se escribe en Tinkercad, en la pestaña <b>Código → Texto</b>.</div>
+    </div>
+    ${p.cod.ejs.map((e,k)=>`<div class="card">
+      <div class="concepto">Ejercicio ${k+1}</div>
+      <h3 style="margin:6px 0 10px">${e.t}</h3>
+      <p style="margin:0 0 10px">${e.q}</p>
+      <div class="hint"><b>Tiene que pasar esto:</b> ${e.obs}</div>
+      <button class="btn ghost" id="eb${k}" onclick="proyEjPista(${k})">Pista</button>
+      <div class="hint" id="eh${k}" hidden>${e.pista}</div>
+      <details><summary>Ver el código</summary><pre><code>${escapeHtml(e.sol)}</code></pre></details>
+    </div>`).join('')}
+    <div class="card">
+      <details><summary>El programa completo, todo junto</summary>
+        <pre><code>${escapeHtml(p.cod.sol)}</code></pre>
+        <div class="hint">Si llegaste acá sin escribir nada, volvé y probá. El código que
+        entendés es el que después podés arreglar cuando falle en la huerta.</div>
+      </details>
+    </div>`:`
     <div class="card">
       <h2 style="margin-top:0">La simulación</h2>
       <p>${p.cod.consigna}</p>
@@ -5592,11 +5747,14 @@ function proyCod(i){
     <div class="card">
       <details><summary>Ver cómo queda el cuerpo del loop</summary>
         <pre><code>${escapeHtml(p.cod.sol)}</code></pre>
-        <div class="hint">Si llegaste acá sin escribir nada, volvé y probá. El código que
-        entendés es el que después podés arreglar cuando falle en la huerta.</div>
+        <div class="hint">Si llegaste acá sin escribir nada, volvé y probá.</div>
       </details>
-    </div>`;
+    </div>`}`;
   window.scrollTo(0,0);
+}
+function proyEjPista(k){
+  const h=document.getElementById('eh'+k), b=document.getElementById('eb'+k);
+  if(h) h.hidden=false; if(b) b.hidden=true; tono(523.25,.18);
 }
 function proyPista(i,k){
   const h=document.getElementById('ph'+k), b=document.getElementById('pb'+k);
