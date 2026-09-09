@@ -1754,6 +1754,174 @@ const SALAS = [
         explica:'Cuatro lados girando 90 grados dan un cuadrado.' },
     ]
   },
+  {
+    id:'jue', nom:'Programá los juegos', desc:'Los pasos de cada juego, para practicar antes de armarlo en Tinkercad',
+    concepto:'Los juegos',
+    ejs:[
+      { type:'order', a1:true,
+        consigna:'PAPA CALIENTE. Ordená el programa.',
+        correcto:['elegir un número al azar entre 5 y 30','esperar esa cantidad de segundos','hacer sonar el buzzer','esperar 3 segundos y apagar el sonido'],
+        explica:'Primero se elige el número, después se espera, después suena. Si el número se elige al final, la espera no lo puede usar.' },
+      { type:'mc', a1:true,
+        consigna:'PAPA CALIENTE. Si ponés el bloque de esperar DESPUÉS del sonido, ¿qué pasa?',
+        opts:['Suena apenas se enciende y el juego se arruina','No suena nunca','Suena dos veces','No cambia nada'],
+        correcta:0,
+        explica:'La placa hace las cosas en el orden en que están escritas. Si el sonido va primero, suena al toque y nadie llega a pasarse nada.' },
+      { type:'fill', a1:true,
+        consigna:'EL DADO. Completá para que salgan números del 1 al 6.',
+        code:'numero = al azar entre 1 y ___',
+        opts:['6','5','7','60'], correcta:0,
+        explica:'Un dado tiene 6 caras. El bloque del azar incluye los dos números que le ponés: del 1 al 6 son las seis caras.' },
+      { type:'mc', a1:true,
+        consigna:'EL DADO. ¿Por qué hay que guardar el número en una variable en vez de usar el bloque del azar dos veces?',
+        opts:['Porque si lo usás dos veces te da dos números distintos','Porque el bloque del azar sólo se puede usar una vez','Porque las variables son más rápidas','Porque si no, no compila'],
+        correcta:0,
+        explica:'Cada vez que se usa el bloque del azar, sale un número nuevo. Si lo usás para mostrar y después para comparar, son dos dados distintos.' },
+      { type:'order', a1:true,
+        consigna:'REFLEJOS. Ordená el programa del duelo.',
+        correcto:['esperar un rato al azar','prender la luz y anotar el momento','esperar hasta que alguno apriete','restar para saber cuánto tardó','mostrar el número y decir quién ganó'],
+        explica:'El momento se anota justo cuando se prende la luz. Si lo anotás antes, estás midiendo también la espera al azar.' },
+      { type:'bug', a1:true,
+        consigna:'REFLEJOS. Este programa siempre da un número negativo. ¿Qué línea está mal?',
+        lineas:['prender la luz','arranque = tiempo de ahora','esperar hasta que apriete','tardo = arranque - tiempo de ahora','mostrar tardo'],
+        bug:3,
+        explica:'La resta está al revés. El tiempo de ahora es más grande que el de arranque, así que hay que hacer tiempo de ahora menos arranque.' },
+      { type:'mc', a1:true,
+        consigna:'EL TOPO. ¿Qué es lo que hace que el juego sea más difícil?',
+        opts:['Que la luz quede prendida menos tiempo','Que haya más luces','Que el buzzer suene más fuerte','Que los botones estén más lejos'],
+        correcta:0,
+        explica:'La dificultad es un número: los milisegundos que la luz queda prendida. Bajarlo es todo lo que hace falta.' },
+      { type:'fill', a1:true,
+        consigna:'EL TOPO. Las luces están en los pines 3, 4, 5 y 6. El topo 1 tiene que prender el pin 3. Completá.',
+        code:'pin = topo + ___',
+        opts:['2','1','3','0'], correcta:0,
+        explica:'Topo 1 con el pin 3: 1 + 2 = 3. Y sigue andando para los otros: el topo 4 prende el pin 6.' },
+      { type:'order', a1:true,
+        consigna:'LA RULETA. Ordená lo que pasa en cada vuelta.',
+        correcto:['apagar la luz anterior','pasar a la posición siguiente','prender la luz de la posición nueva','esperar un poco más que la vuelta anterior'],
+        explica:'Si no apagás la anterior, se van quedando todas prendidas y no se ve girar nada.' },
+      { type:'mc', a1:true,
+        consigna:'LA RULETA. La luz está en la posición 4, que es la última. ¿Qué tiene que pasar ahora?',
+        opts:['Volver a la posición 1','Ir a la posición 5','Quedarse en la 4','Apagarse todo'],
+        correcta:0,
+        explica:'La ruleta es un círculo: después de la última viene la primera. Para el programa eso es volver a 1, o usar el resto de la división.' },
+      { type:'fill', a1:true,
+        consigna:'LA SOGA. El jugador de la derecha corre la luz para su lado, o sea que la posición sube. Completá.',
+        code:'posicion = posicion + ___',
+        opts:['1','-1','0','4'], correcta:0,
+        explica:'Para el otro lado sería sumar -1, que es lo mismo que restar. Es el mismo bloque con distinto signo.' },
+      { type:'bug', a1:true,
+        consigna:'LA SOGA. Con una sola apretada la luz vuela hasta la punta. ¿Qué falta?',
+        lineas:['si el botón A está apretado:','    posicion = posicion + 1','    prender la luz de posicion','(y vuelve a empezar enseguida)'],
+        bug:3,
+        explica:'Mientras tenés el botón apretado, el programa lo lee cientos de veces por segundo y suma cientos de veces. Hay que esperar a que lo suelten antes de seguir.' },
+      { type:'order', a1:true,
+        consigna:'MEMORIA. Ordená el juego.',
+        correcto:['sortear las tres luces y guardarlas','mostrar las tres luces con pausa','esperar la primera apretada y compararla','esperar la segunda y compararla','esperar la tercera y compararla'],
+        explica:'Primero se sortea todo y se guarda. Si sorteás mientras mostrás, el programa después no se acuerda de qué mostró.' },
+      { type:'mc', a1:true,
+        consigna:'MEMORIA. Querés que sean 5 pasos en vez de 3. ¿Qué te pasa?',
+        opts:['Tenés que copiar y pegar el mismo bloque dos veces más','El programa se hace más corto','No se puede de ninguna manera','Hay que cambiar el circuito'],
+        correcta:0,
+        explica:'Con variables sueltas hay que copiar todo otra vez por cada paso. Ese es el límite, y tiene solución: se llama lista, y es de 2do año.' },
+      { type:'fill', a1:true,
+        consigna:'PING PONG. La luz llegó a la punta y hay que mandarla para el otro lado. Completá.',
+        code:'direccion = direccion × ___',
+        opts:['-1','1','0','2'], correcta:0,
+        explica:'Multiplicar por -1 da vuelta el signo: si iba con +1 ahora va con -1. Es el opuesto del número.' },
+      { type:'mc', a1:true,
+        consigna:'PING PONG. Querés que la luz vaya MÁS RÁPIDO. ¿Qué hacés con el número de la espera?',
+        opts:['Lo hago más chico','Lo hago más grande','Lo dejo igual','Lo pongo en cero'],
+        correcta:0,
+        explica:'La espera y la velocidad van al revés una de la otra: menos espera, más rápido. Ojo con ponerlo en cero, ahí se rompe.' },
+      { type:'mc', a1:true,
+        consigna:'LA CONSOLA. Le cargamos otro programa a la misma caja, sin tocar ningún cable. ¿Qué cambió?',
+        opts:['El programa. El aparato es el mismo','El aparato','Los dos','Ninguno de los dos'],
+        correcta:0,
+        explica:'Eso es la diferencia entre hardware y software. La caja no sabe a qué juega: se lo dice el programa. Un microondas no se puede convertir en otra cosa; una computadora sí.' }
+    ]
+  },
+  {
+    id:'juem', nom:'Las cuentas de los juegos', desc:'La matemática que aparece adentro de cada juego',
+    concepto:'La cuenta del juego',
+    ejs:[
+      { type:'mc', a1:true,
+        consigna:'LA SOGA. La luz está en la posición 3. El jugador de la izquierda la corre 2 lugares para su lado, o sea que suma -2. ¿En qué posición queda?',
+        opts:['1','5','2','-1'], correcta:0,
+        explica:'3 + (-2) = 1. Sumar un número negativo es lo mismo que restar.' },
+      { type:'mc', a1:true,
+        consigna:'LA SOGA. La dirección vale -1. ¿Cuál es su opuesto?',
+        opts:['+1','-2','0','+2'], correcta:0,
+        explica:'El opuesto de un número es el mismo número con el signo cambiado. Por eso el rebote se programa multiplicando por -1.' },
+      { type:'fill', a1:true,
+        consigna:'LA SOGA. La luz está en -2 y el jugador de la derecha la corre 3 lugares. Completá.',
+        code:'-2 + 3 = ___',
+        opts:['1','-5','5','-1'], correcta:0,
+        explica:'En la recta numérica: arrancás en -2 y te movés 3 lugares hacia la derecha. Pasás por -1, por 0 y llegás a 1.' },
+      { type:'mc', a1:true,
+        consigna:'MEMORIA. Hay 4 luces y la secuencia es de 3 pasos. ¿Cuántas secuencias distintas puede sortear?',
+        opts:['64','12','7','16'], correcta:0,
+        explica:'4 para la primera, 4 para la segunda y 4 para la tercera: 4 × 4 × 4 = 64. Se escribe 4³ y no crece sumando, crece multiplicando.' },
+      { type:'mc', a1:true,
+        consigna:'MEMORIA. ¿Cuánto vale 4³?',
+        opts:['64','12','43','16'], correcta:0,
+        explica:'4³ es 4 × 4 × 4 = 64. No es 4 × 3. El de arriba dice cuántas veces se multiplica, no por cuánto.' },
+      { type:'mc', a1:true,
+        consigna:'LA CERRADURA. La clave son 4 apretadas y hay 4 botones: 256 combinaciones. Si probás una por segundo, ¿cuánto tardás en probarlas todas?',
+        opts:['Un poco más de 4 minutos','Casi una hora','Un día entero','256 minutos'],
+        correcta:0,
+        explica:'256 segundos son 4 minutos y 16 segundos. Por eso las claves cortas no sirven: una máquina las prueba todas en nada.' },
+      { type:'mc', a1:true,
+        consigna:'EL DADO. Lo tiran 60 veces. Si el dado fuera perfecto, ¿cuántas veces saldría cada número?',
+        opts:['10','6','12','60'], correcta:0,
+        explica:'60 tiradas repartidas en 6 números: 60 ÷ 6 = 10. En la vida real nunca da exactamente 10, y eso no es un error.' },
+      { type:'mc', a1:true,
+        consigna:'EL DADO. De 60 tiradas, el 3 salió 12 veces. ¿Qué parte del total es?',
+        opts:['20 %','12 %','30 %','60 %'], correcta:0,
+        explica:'12 de 60 es 12/60, que simplificado es 1/5. Y 1/5 es el 20 %.' },
+      { type:'fill', a1:true,
+        consigna:'LA RULETA. Hay 4 posiciones. La luz está en la 4 y avanza una más. Para saber dónde queda se usa el resto de dividir por 4. Completá.',
+        code:'el resto de dividir 5 por 4 es ___',
+        opts:['1','0','5','4'], correcta:0,
+        explica:'5 dividido 4 da 1 y sobra 1. Ese resto es la posición nueva. Es el mismo truco que usan los relojes cuando pasan de las 12.' },
+      { type:'mc', a1:true,
+        consigna:'LA RULETA. Los 4 premios ocupan sectores iguales. ¿Qué chance tiene cada uno de salir?',
+        opts:['1 de cada 4, o sea el 25 %','1 de cada 100','La mitad','Depende del color'],
+        correcta:0,
+        explica:'Cuatro sectores iguales reparten la vuelta en cuatro partes iguales: 1/4 de 100 % es 25 %.' },
+      { type:'mc', a1:true,
+        consigna:'REFLEJOS. El aparato marcó 312 milisegundos. ¿Cuántos segundos son?',
+        opts:['0,312 segundos','3,12 segundos','31,2 segundos','312 segundos'],
+        correcta:0,
+        explica:'Un milisegundo es la milésima parte de un segundo. 312 milésimos se escriben 0,312.' },
+      { type:'mc', a1:true,
+        consigna:'REFLEJOS. Tiraste tres veces: 300, 250 y 350 milisegundos. ¿Cuál es tu promedio?',
+        opts:['300','250','350','900'], correcta:0,
+        explica:'Se suman los tres y se divide por tres: 300 + 250 + 350 = 900, y 900 ÷ 3 = 300.' },
+      { type:'mc', a1:true,
+        consigna:'REFLEJOS. Uno hizo 0,28 segundos y el otro 0,3. ¿Quién ganó?',
+        opts:['El de 0,28, porque tardó menos','El de 0,3, porque el número es más largo','Empataron','No se puede comparar'],
+        correcta:0,
+        explica:'0,28 es menor que 0,3 aunque tenga más cifras. Y en este juego gana el que tarda menos.' },
+      { type:'mc', a1:true,
+        consigna:'EL TOPO. Hiciste 12 topos en 30 segundos. ¿Cuántos serían en un minuto, si seguís igual?',
+        opts:['24','12','42','6'], correcta:0,
+        explica:'Un minuto son 60 segundos, o sea el doble de 30. Si el ritmo se mantiene, el doble de topos: 24.' },
+      { type:'mc', a1:true,
+        consigna:'EL PUNTAJE. El programa dice puntos = 2 + 3 × 4. ¿Cuánto vale?',
+        opts:['14','20','24','9'], correcta:0,
+        explica:'Primero se resuelve la multiplicación y después la suma: 3 × 4 = 12, y 12 + 2 = 14. La máquina respeta la jerarquía igual que en la carpeta.' },
+      { type:'fill', a1:true,
+        consigna:'EL PUNTAJE. Ahora con paréntesis. Completá el resultado.',
+        code:'(2 + 3) × 4 = ___',
+        opts:['20','14','24','9'], correcta:0,
+        explica:'El paréntesis va primero: 2 + 3 = 5, y 5 × 4 = 20. Los mismos números y otro resultado: por eso el paréntesis se pone o no se pone a propósito.' },
+      { type:'mc', a1:true,
+        consigna:'BINARIO. Con 4 luces, prendida o apagada, ¿hasta qué número se puede contar?',
+        opts:['15','4','8','16'], correcta:0,
+        explica:'Cada luz vale el doble que la anterior: 1, 2, 4 y 8. Todas prendidas suman 15, y con todas apagadas es el 0.' }
+    ]
+  },
 ];
 
 /* ============================================================
@@ -3061,7 +3229,8 @@ function tallerHTML(){
 
 const NIVEL={sec:1,alg:1,flow:1,ope:1,tip:1,buc:1,con:1,dib:1,robot1:1,caja:2,
              var:2,dec:2,miniprog:2,bug:2,sensores:2,teoria:2,repaso:2,
-             situac:3,desafios:3,desafios2:3};
+             situac:3,desafios:3,desafios2:3,
+             jue:1,juem:1};
 const NIVELN=['','Inicial','Intermedio','Avanzado'];
 
 /* ============================================================
@@ -3082,6 +3251,8 @@ const NIVELN=['','Inicial','Intermedio','Avanzado'];
    ============================================================ */
 const ANIOS = {
  '1ro':{ nom:'1er año', sub:'Empezar a programar', mods:[
+   {t:'Los juegos del cuatrimestre', d:'Lo principal de ahora. Practicás acá y después lo armás con bloques en Tinkercad.',
+    esp:['juegos'], ids:[{id:'jue',tag:'a1'},{id:'juem',tag:'a1'}]},
    {t:'Para arrancar', d:'Si es tu primera vez con esto, empezá por acá.',
     esp:['intro']},
    /* Sección visual de 1ro: se juega con dibujos, sin nada para leer.
@@ -3826,6 +3997,7 @@ const ESPECIALES={
  mezcla:{n:'Modo mezcla', d:'Ocho ejercicios tomados al azar de las salas de tu año.', fn:"startSala('mezcla')", wide:true},
  arduino:{n:'Arduino de verdad', d:'Los mismos conceptos, en el lenguaje real de la placa. Doce proyectos con sensores básicos y el código listo para copiar al simulador o a un Arduino. Más un banco de código que compila pero está mal.', fn:"arduHome('proy')", wide:true, dest:true},
  cuaderno:{n:'El cuaderno del proyecto', d:'Las seis etapas del proyecto, del 16/09 al 04/11. En cada una: qué hacer, qué decidir, qué queda escrito, el checklist de salida y la bitácora. Se copia todo con un botón.', fn:'cuadHome()', wide:true, dest:true},
+ juegos:{n:'Los juegos', d:'Ocho juegos sobre la misma consola: 4 luces, 4 botones y un buzzer. Cada uno trae los elementos, los pasos con huecos y pistas que se abren de a una. El programa no está hecho: se arma con bloques en Tinkercad.', fn:'juegoHome()', wide:true, dest:true},
  misiones:{n:'Misiones: programá la placa', d:'Escribís código de verdad y la placa reacciona: se prenden las luces, suena el buzzer, se mueve el servo y el sensor te da un número. Se abren de a una.', fn:'misHome()', wide:true, dest:true}
 };
 
@@ -5717,6 +5889,512 @@ function cuadFichas(){
    +'<div class="card">'+FICHAS3.map(function(f){
       return '<details class="aglos"><summary>'+f.t+'</summary>'+f.h+'</details>'; }).join('')+'</div>';
   window.scrollTo(0,0);
+}
+
+/* ==================== LOS JUEGOS DE 1ro ====================
+   Ocho juegos sobre UN MISMO circuito: 4 LEDs, 4 botones y un buzzer.
+   Se programan con BLOQUES en Tinkercad.
+
+   Escrito para 1er año: frases cortas, una idea por línea, los bloques
+   dibujados como se ven en la pantalla, y nada de vocabulario que no
+   hayan usado antes.
+
+   Cada ficha tiene seis partes:
+     1. Cómo se juega
+     2. Lo que necesitás       → los elementos y en qué pin va cada uno
+     3. Pensalo antes          → dos preguntas para la carpeta, sin máquina
+     4. Los pasos              → incompletos a propósito
+     5. Pistas de a una        → qué bloque y dónde. NO hay respuesta final
+     6. Si no anda / Más difícil / Para la carpeta
+
+   Los tres primeros los hace todo el curso. Del cuarto en adelante,
+   cada pareja elige uno. La etiqueta "Ya tenés que saber" dice qué hace
+   falta haber visto antes de meterse.
+   ========================================================== */
+
+const TINKERB=[
+ {k:'Antes de empezar', t:'Entrar a Tinkercad', h:`
+   <p>Tinkercad arma el circuito y hace funcionar el programa <b>en la pantalla</b>.</p>
+   <p>Lo que anda ahí, después anda en la placa de verdad.</p>
+   <p><b>Para entrar:</b></p>
+   <ol>
+     <li>Ir a <code>tinkercad.com</code></li>
+     <li>Apretar <i>Join a Class</i></li>
+     <li>Escribir el <b>código de la clase</b> que está en el pizarrón</li>
+     <li>Elegir un apodo</li>
+   </ol>
+   <p><b>No hace falta mail.</b></p>`},
+ {k:'Antes de empezar', t:'Armar el circuito', h:`
+   <p>El aparato de verdad ya está armado: es <b>la consola</b> del aula, la caja con las
+   cuatro luces y los cuatro botones.</p>
+   <p><b>En Tinkercad lo armás igual, en la pantalla</b>, para poder probar tu juego sin
+   esperar turno.</p>
+   <p><b>Circuits → Create new Circuit.</b></p>
+   <ul>
+     <li>Arrastrá el <b>Arduino Uno</b> desde el panel de la derecha</li>
+     <li>Buscá las piezas por nombre: <i>LED</i>, <i>pushbutton</i> (el botón),
+     <i>piezo</i> (el buzzer), <i>resistor</i></li>
+     <li>Para conectar: clic en una pata, clic en el destino. Sale un cable</li>
+     <li>Cada LED lleva una <b>resistencia de 220</b>. Se le hace clic para cambiarle el número</li>
+   </ul>
+   <p><b>El circuito es el mismo para los ocho juegos.</b></p>
+   <p>Armalo una vez y guardalo. Después lo copiás.</p>`},
+ {k:'Antes de empezar', t:'Los bloques', h:`
+   <p>Apretá <b>Code</b>. Que diga <b>Blocks</b>, no Text.</p>
+   <p>Los bloques están separados por color. Con estos cinco grupos alcanza para todo:</p>
+   <table class="esqt">
+     <tr><th>Grupo</th><th>Sirve para</th></tr>
+     <tr><td><b>Salida</b></td><td>Prender y apagar. Hacer sonar el buzzer</td></tr>
+     <tr><td><b>Entrada</b></td><td>Ver si un botón está apretado</td></tr>
+     <tr><td><b>Control</b></td><td>Esperar. Repetir. Si… entonces</td></tr>
+     <tr><td><b>Matemáticas</b></td><td>Cuentas, comparar, y el <b>número al azar</b></td></tr>
+     <tr><td><b>Variables</b></td><td>Un nombre que guarda un número</td></tr>
+   </table>
+   <p><b>Start Simulation</b> lo enciende.</p>`},
+ {k:'Antes de empezar', t:'De la pantalla a la consola', h:`
+   <p>Tu juego anda en Tinkercad. ¿Cómo pasa a la caja de verdad?</p>
+   <p><b>Tinkercad no habla con la placa</b>: simula. Para pasarlo hay dos caminos, y los
+   dos terminan con el programa <b>guardado adentro</b> de la consola.</p>
+   <table class="esqt">
+     <tr><th></th><th>Cómo</th></tr>
+     <tr><td><b>Bajar el código</b></td><td>En el panel de código, <b>Download Code</b>. Baja un archivo. Se abre con el <b>IDE de Arduino</b> y se aprieta subir. <b>Es el camino que usamos.</b></td></tr>
+     <tr><td><b>mBlock</b></td><td>Otro programa de bloques, parecido a Scratch, que <b>sube directo</b>. Hay que instalarlo y los bloques no son los mismos, así que el juego habría que rehacerlo ahí</td></tr>
+   </table>
+   <p><b>Lo importante:</b> una vez subido, el programa queda adentro de la placa. Se
+   desenchufa de la computadora, se le pone una batería y <b>sigue funcionando solo</b>.
+   Por eso la consola anda en el Paseo sin ninguna compu al lado.</p>`},
+ {k:'Antes de empezar', t:'Cómo se usan estas fichas', h:`
+   <p><b>Acá no está el programa hecho.</b></p>
+   <p>Está lo que necesitás, los pasos con huecos, y pistas que se abren de a una.</p>
+   <p>Se usa así:</p>
+   <ol>
+     <li>Leé cómo se juega</li>
+     <li>Contestá las dos preguntas <b>en la carpeta</b>. Sin computadora</li>
+     <li>Armá el circuito</li>
+     <li>Probá los pasos solo. <b>Equivocarse no rompe nada</b></li>
+     <li>Cuando te trabás, abrí <b>una</b> pista. Una sola</li>
+   </ol>
+   <p class="muted">Si abrís todas las pistas de entrada, el juego lo armó la ficha.
+   Y después, cuando algo no funcione, no vas a saber dónde mirar.</p>`}
+];
+
+const JUEGOS=[
+{
+ id:'papa', ic:'🥔', nom:'Papa caliente', dif:1, blo:'6 bloques', todos:true,
+ sabe:'Esperar · el azar',
+ que:'Se lo pasan de mano en mano hasta que suena',
+ como:`Se enciende y se queda callado.<br>
+   <b>Nadie sabe cuánto.</b><br>
+   Se lo van pasando de mano en mano.<br>
+   Cuando suena, el que lo tiene pierde.`,
+ elem:[['Buzzer (piezo)','1','pin 8'],['LED','1','pin 13'],['Resistencia 220','1','con el LED']],
+ pensar:[
+  'Si esperara siempre 5 segundos, ¿se podría hacer trampa?',
+  '¿Cuánto tiene que esperar, entonces?'],
+ plan:[
+  'Esperar. Pero no siempre lo mismo',
+  'Que suene el buzzer'],
+ pistas:[
+  'En <b>Control</b> está el bloque <code>esperar (1) segundos</code>.',
+  'En <b>Matemáticas</b> está <code>número al azar entre (1) y (10)</code>.<br>Ese bloque <b>entra adentro del hueco</b> del bloque de esperar. Arrastralo justo encima del número.',
+  'En <b>Salida</b> está el bloque que hace sonar el buzzer. Va después de la espera.',
+  '¿Suena todo el tiempo? Es porque está dentro del bucle.<br>Sacalo de ahí, o hacelo esperar mucho después de sonar.'],
+ mas:[
+  'Que el LED parpadee mientras espera. <b>Es más difícil de lo que parece.</b>',
+  'Que a veces suene a los 3 segundos y otras a los 30.'],
+ nofunca:[
+  ['No suena nada','El número del pin del bloque y el del cable tienen que ser el mismo'],
+  ['Suena todo el tiempo','Está dentro del bucle'],
+  ['Suena siempre en el mismo momento','El bloque del azar quedó afuera del hueco']],
+ mate:`La espera va de 5 a 30 segundos.<br>
+   ¿Cuál es la más larga que puede tocar? ¿Y la más corta?<br>
+   ¿Cuánto es <b>la mitad</b> entre las dos?`
+},
+{
+ id:'dado', ic:'🎲', nom:'El dado', dif:2, blo:'10 bloques', todos:true,
+ sabe:'+ el botón · guardar un número',
+ que:'Apretás el botón y sale un número del 1 al 6',
+ como:`Reemplaza al dado de cualquier juego de mesa.<br>
+   Apretás el botón y sale un número del 1 al 6.<br>
+   <b>Lo difícil es mostrarlo con sólo 4 luces.</b>`,
+ elem:[['LED','4','pines 3, 4, 5 y 6'],['Resistencia 220','4','una por LED'],
+       ['Botón','1','pin 8'],['Buzzer (piezo)','1','pin 12']],
+ pensar:[
+  'Con 4 luces, ¿cómo mostrás un 6? Escribí <b>dos formas distintas</b>.',
+  'Si lo tirás 60 veces, ¿cuántas veces tendría que salir cada número?'],
+ plan:[
+  'Esperar hasta que apreten el botón',
+  'Sacar un número al azar del 1 al 6 y <b>guardarlo</b>',
+  'Mostrarlo. La forma la elegís vos'],
+ pistas:[
+  'En <b>Control</b> está <code>esperar hasta que</code>.<br>Adentro del hueco va el bloque de <b>Entrada</b> que lee el botón.',
+  'Guardá el número en una <b>variable</b>.<br>Si usás el bloque del azar dos veces, te va a dar <b>dos números distintos</b>.',
+  'La forma más fácil de mostrarlo: <b>parpadear un LED tantas veces como el número</b>.<br>En Control está <code>repetir (4) veces</code>. En el hueco va tu variable.',
+  'La forma difícil: prender las 4 luces en combinación.<br>Así se puede llegar hasta el 15. <b>Eso es el sistema binario</b> y lo vemos en noviembre.'],
+ mas:[
+  'Dos dados y la suma. ¿Por qué el 7 sale más seguido que el 2?',
+  'Que el aparato anote cuántas veces salió cada número.'],
+ nofunca:[
+  ['Cambia el número solo','No lo guardaste en una variable'],
+  ['Tira sin que apretes nada','Falta el <code>esperar hasta que</code>'],
+  ['Tira muchas veces de una apretada','Mientras tenés el botón apretado, el programa lo lee cientos de veces']],
+ mate:`Tírenlo <b>60 veces</b> y anoten cuántas veces salió cada número.<br>
+   Si el dado fuera perfecto, saldrían 10 de cada uno.<br>
+   <b>No va a dar 10.</b> Y eso no es un error del programa.`
+},
+{
+ id:'refl', ic:'⚡', nom:'Reflejos', dif:2, blo:'12 bloques', todos:true,
+ sabe:'+ restar · comparar',
+ que:'El primero que aprieta cuando se prende la luz, gana',
+ como:`Dos jugadores. Un botón cada uno.<br>
+   La luz se prende <b>cuando menos lo esperás</b>.<br>
+   El primero que aprieta, gana.<br>
+   El aparato dice cuánto tardó.`,
+ elem:[['LED','1','pin 13'],['Resistencia 220','1','con el LED'],
+       ['Botón','2','pines 8 y 9'],['Buzzer (piezo)','1','pin 12']],
+ pensar:[
+  'Para saber cuánto tardaste hay que anotar dos momentos. ¿Cuáles?',
+  '¿Qué pasa si alguien aprieta <b>antes</b> de que se prenda la luz?'],
+ plan:[
+  'Esperar un rato al azar',
+  'Prender la luz y <b>anotar el momento</b>',
+  'Esperar hasta que alguno apriete',
+  'Hacer la cuenta',
+  'Mostrar el número y decir quién ganó'],
+ pistas:[
+  'Hay un bloque que dice <b>cuántos milisegundos pasaron desde que la placa arrancó</b>.<br>Ese es el reloj del programa.',
+  'Guardá ese número en una variable <code>arranque</code>.<br><b>En el mismo momento</b> en que prendés la luz.',
+  'La cuenta es: <b>el tiempo de ahora menos <code>arranque</code></b>.',
+  'Para saber quién ganó: dos bloques <code>si</code>, uno por botón.',
+  'Lo de la trampa es lo más difícil.<br>Habría que <b>mirar el botón mientras se espera</b>, y el bloque de esperar no mira nada. Pensalo.'],
+ mas:[
+  'Tres intentos cada uno y que muestre el promedio.',
+  'Que el que aprieta antes de tiempo pierda.'],
+ nofunca:[
+  ['Siempre da 0','La cuenta se hace antes de que apreten'],
+  ['Da números enormes','Estás midiendo desde que arrancó la placa, no desde que se prendió la luz'],
+  ['Gana siempre el mismo','Mirá el orden de los dos <code>si</code>']],
+ mate:`Te sale <b>312</b>. ¿312 qué?<br>
+   Son <b>milisegundos</b>: 312 milésimos de segundo. O sea <b>0,312 segundos</b>.<br>
+   Tiren tres veces cada uno. Armamos la tabla de todo el curso y sacamos el promedio.`
+},
+{
+ id:'topo', ic:'🔨', nom:'El topo', dif:3, blo:'18 bloques',
+ sabe:'+ llevar puntos · repetir',
+ que:'Apretá el botón de la luz que se prendió, antes de que se apague',
+ como:`Se prende una luz cualquiera.<br>
+   Tenés que apretar <b>el botón de esa luz</b> antes de que se apague.<br>
+   Cada acierto suma un punto.<br>
+   El juego dura 30 segundos.`,
+ elem:[['LED','4','pines 3, 4, 5 y 6'],['Resistencia 220','4','una por LED'],
+       ['Botón','4','pines 8, 9, 10 y 11'],['Buzzer (piezo)','1','pin 12']],
+ pensar:[
+  'La luz 1 va con el botón 1. ¿Cómo se da cuenta el programa de eso?',
+  '¿Qué hace que el juego sea más difícil? Es una sola cosa, y es un número.'],
+ plan:[
+  'Poner los puntos en 0',
+  'Elegir un topo al azar del 1 al 4 y prender su luz',
+  'Darle un rato para que apriete',
+  'Si apretó el que va → punto y sonido',
+  'Apagar y volver al paso 2'],
+ pistas:[
+  'Sorteá el topo con el bloque del azar entre 1 y 4.<br>Guardalo en una variable <code>topo</code>.',
+  'Para prender la luz que toca hay dos caminos:<br>• cuatro <code>si</code> (si topo = 1, prender el 3…)<br>• o la cuenta <code>pin = topo + 2</code><br><b>El segundo es más corto y más difícil de entender. Elegí vos.</b>',
+  'El rato que la luz queda prendida, guardalo en una variable.<br>Así después lo bajás sin tocar el programa en diez lugares.',
+  'Para ver si apretó a tiempo <b>no alcanza mirar el botón una vez</b>.<br>Hay que mirarlo muchas veces mientras la luz está prendida. Eso es un <code>repetir</code> con esperas cortas adentro.',
+  'Los puntos se llevan con <code>cambiar puntos por (1)</code>, del grupo Variables.'],
+ mas:[
+  'Que se acelere solo: cada 5 aciertos, la luz dura menos.',
+  'Que reste puntos si apretás el botón equivocado.',
+  'Una perilla para elegir la dificultad sin reprogramar.'],
+ nofunca:[
+  ['Suma puntos sin que apretes','Fijate si tu botón da 1 o 0 cuando está suelto'],
+  ['No suma nunca','La luz dura muy poco, o mirás el botón una sola vez'],
+  ['Suma muchos puntos de una apretada','Hay que esperar a que suelten el botón']],
+ mate:`Hizo <b>12 topos en 30 segundos</b>.<br>
+   ¿Cuántos son en un minuto?<br>
+   Después probá: ¿con cuántos milisegundos de luz prendida el juego se vuelve imposible?`
+},
+{
+ id:'rule', ic:'🎡', nom:'La ruleta', dif:3, blo:'15 bloques',
+ sabe:'+ dar la vuelta al círculo',
+ que:'La luz gira cada vez más lento hasta parar en un premio',
+ como:`Apretás el botón y la luz empieza a girar.<br>
+   Va <b>cada vez más lento</b>, hasta que para.<br>
+   Donde queda, es el premio.`,
+ elem:[['LED','4','pines 3, 4, 5 y 6'],['Resistencia 220','4','una por LED'],
+       ['Botón','1','pin 8'],['Buzzer (piezo)','1','pin 12']],
+ pensar:[
+  'Después de la luz 4 viene otra vez la 1. ¿Cómo le decís eso a un programa que sabe sumar?',
+  '¿Qué número tiene que ir cambiando para que vaya cada vez más lento?'],
+ plan:[
+  'Esperar el botón',
+  'Repetir: prender la luz que sigue, apagar la anterior, esperar',
+  'Cada vuelta, esperar <b>un poco más</b>',
+  'Cuando la espera se hizo muy larga, parar. Ahí quedó el premio'],
+ pistas:[
+  'Para pasar a la que sigue: <code>posicion = posicion + 1</code>.<br>Y un <code>si</code> que la devuelva a 1 cuando se pasa de 4.',
+  'Hay una forma más corta.<br>En Matemáticas está el bloque del <b>resto de la división</b>. El resto de dividir por 4 nunca se sale del rango.<br><b>Es el truco que usan los relojes.</b>',
+  'Para ir más lento: una variable <code>espera</code> que arranca en 50 y le sumás 20 en cada vuelta.',
+  '¿Cuándo para? Cuando <code>espera</code> pasa de un número que elegís vos.<br><b>Ese número decide cuánto dura el suspenso.</b>'],
+ mas:[
+  'Que un premio salga menos seguido que los otros. ¿Cómo, si las 4 posiciones son iguales?',
+  'Una nota distinta del buzzer para cada premio.'],
+ nofunca:[
+  ['La luz salta y no se ve girar','La espera arranca muy corta'],
+  ['Se prenden dos luces juntas','Falta apagar la anterior'],
+  ['Nunca para','La espera no está creciendo']],
+ mate:`Con 4 premios iguales, cada uno sale <b>1 de cada 4</b>.<br>
+   Eso es el <b>25 %</b>.<br>
+   ¿Y si querés que uno salga sólo 1 de cada 10?`
+},
+{
+ id:'soga', ic:'🪢', nom:'La soga', dif:4, blo:'20 bloques',
+ sabe:'+ números negativos',
+ que:'Dos jugadores aprietan a lo loco y la luz se corre para el que va ganando',
+ como:`Un botón cada uno. Aprietan lo más rápido que pueden.<br>
+   La luz se corre para el lado del que va ganando.<br>
+   El que la lleva hasta su punta, gana.<br>
+   <b>Dura quince segundos y deja a todos agitados.</b>`,
+ elem:[['LED','4','pines 3, 4, 5 y 6'],['Resistencia 220','4','una por LED'],
+       ['Botón','2','pines 8 y 11'],['Buzzer (piezo)','1','pin 12']],
+ pensar:[
+  'La luz va para los dos lados. ¿Qué número le sumás para un lado y qué número para el otro?',
+  '¿Qué pasa si los dos aprietan al mismo tiempo?'],
+ plan:[
+  'Poner <code>posicion</code> en el medio',
+  'Si aprieta A → mover la luz para un lado',
+  'Si aprieta B → mover la luz para el otro',
+  'Prender la luz de <code>posicion</code>',
+  'Si llegó a una punta → ganó ese, sonido, y termina'],
+ pistas:[
+  'Mover para el otro lado es <b>sumar un número negativo</b>.<br><code>posicion + 1</code> y <code>posicion − 1</code> son el <b>mismo bloque</b> con distinto signo.',
+  'Acá aparece el problema de todos los juegos con botones:<br><b>mientras lo tenés apretado, el programa lo lee cientos de veces por segundo</b>, y la luz vuela.',
+  'Cómo se arregla: después de contar la apretada, <b>esperar a que lo suelten</b>.',
+  'Si los dos aprietan en la misma vuelta, los movimientos se cancelan solos.<br>Probalo y decidí si te gusta que sea así.'],
+ mas:[
+  'Que hagan falta 3 apretadas para mover la luz un lugar.',
+  'Que el buzzer suene más agudo cuando uno está por ganar.'],
+ nofunca:[
+  ['La luz vuela a la punta de una apretada','Es lo de la pista 2'],
+  ['No se prende ninguna luz','La posición se fue del rango: hay que frenarla en las puntas'],
+  ['Gana siempre el mismo','Fijate si los dos botones están cableados igual']],
+ mate:`<code>+1</code> para un lado. <code>−1</code> para el otro.<br>
+   Y el <b>cero</b> está justo en el medio de la fila.<br>
+   <b>Es la recta numérica hecha con luces.</b>`
+},
+{
+ id:'memo', ic:'🧠', nom:'Memoria', dif:5, blo:'25 bloques',
+ sabe:'+ comparar · muchas variables',
+ que:'La máquina muestra tres luces y hay que repetirlas',
+ como:`Es el <i>Touch Me</i>, un juego de arcade de los años 70.<br>
+   La máquina muestra <b>tres luces en orden</b>.<br>
+   Hay que repetirlas con los botones.<br>
+   Si te equivocás en una, perdiste.`,
+ elem:[['LED','4','pines 3, 4, 5 y 6'],['Resistencia 220','4','una por LED'],
+       ['Botón','4','pines 8, 9, 10 y 11'],['Buzzer (piezo)','1','pin 12']],
+ pensar:[
+  'La máquina tiene que acordarse de tres luces. ¿Dónde las guarda?',
+  '¿Cómo harías para que sean <b>cuatro</b> pasos en vez de tres?'],
+ plan:[
+  'Sortear tres números del 1 al 4. Guardarlos en <code>luz1</code>, <code>luz2</code> y <code>luz3</code>',
+  'Mostrarlos de a uno, con pausa',
+  'Esperar la primera apretada y compararla con <code>luz1</code>',
+  'Lo mismo con <code>luz2</code> y con <code>luz3</code>',
+  'Ganó, o perdió'],
+ pistas:[
+  'Tres variables, una por paso.<br>Cada una recibe su propio número al azar entre 1 y 4.',
+  'Mostrar una luz es siempre lo mismo: prender, esperar, apagar.<br>Lo vas a copiar y pegar tres veces. Por ahora está bien.<br><b>Pero contá cuántas veces lo copiaste.</b>',
+  'Para saber qué botón apretaron necesitás una variable <code>apretado</code>.<br>Son cuatro <code>si</code>, uno por botón.',
+  'Comparar es un <code>si</code>:<br>si <code>apretado</code> <b>no es igual</b> a <code>luz1</code> → perdió.',
+  'Cuando quieras cuatro pasos, vas a tener que copiar todo otra vez.<br>Con seis ya no te entra en la pantalla.<br><b>Ese es el límite de las variables sueltas, y tiene arreglo: se llama lista, y es de 2do año.</b><br>No la busques todavía. Primero que ande con tres.'],
+ mas:[
+  'Que cada luz tenga su propia nota, como el juego original.',
+  'Que te diga en qué paso te equivocaste.'],
+ nofunca:[
+  ['Muestra las luces y no espera nada','Falta el <code>esperar hasta que</code>'],
+  ['Pierde siempre en el primer paso','<code>apretado</code> no se está guardando'],
+  ['Toma una apretada como tres','Hay que esperar a que suelten el botón']],
+ mate:`Con 4 luces y 3 pasos hay <b>4 × 4 × 4 = 64</b> secuencias distintas.<br>
+   Con 4 pasos, <b>256</b>. Con 5, <b>1024</b>.<br>
+   <b>No crece sumando: crece multiplicando.</b> Por eso se vuelve imposible tan rápido.`
+},
+{
+ id:'pong', ic:'🏓', nom:'Ping pong', dif:5, blo:'28 bloques',
+ sabe:'+ negativos · velocidad',
+ que:'La luz va y viene, y hay que devolverla justo en la punta',
+ como:`La luz corre por la fila.<br>
+   Cuando llega a tu punta, tenés que apretar <b>justo ahí</b>.<br>
+   Si no llegás, punto para el otro.<br>
+   Cada rebote va más rápido.<br>
+   <b>Es el ping pong que hicimos en Scratch, fuera de la pantalla.</b>`,
+ elem:[['LED','4','pines 3, 4, 5 y 6'],['Resistencia 220','4','una por LED'],
+       ['Botón','2','pines 8 y 11'],['Buzzer (piezo)','1','pin 12']],
+ pensar:[
+  '¿Cómo sabe el programa que la luz está en tu punta?',
+  'Cuando rebota, la luz cambia de sentido. ¿Qué es lo que cambia en el programa?'],
+ plan:[
+  '<code>posicion</code> = 1 y <code>direccion</code> = 1',
+  'Prender la luz de <code>posicion</code>, esperar, apagar',
+  '<code>posicion = posicion + direccion</code>',
+  'Si llegó a la punta:<br>• si ese jugador apretó → dar la vuelta a <code>direccion</code><br>• si no → punto para el otro'],
+ pistas:[
+  '<code>direccion</code> vale <b>1</b> o <b>−1</b>.<br>Y sumar −1 es lo mismo que restar.<br><b>Por eso un solo bloque sirve para los dos sentidos.</b>',
+  'Para dar la vuelta: <code>direccion = direccion × (−1)</code>.<br>También sirve <code>0 − direccion</code>. Hacen lo mismo.',
+  'Para acelerar: una variable <code>espera</code> a la que le restás 20 en cada rebote.<br><b>Ojo: si llega a 0, el juego se rompe.</b> Ponele un piso.',
+  'Lo más difícil es el momento de apretar.<br>Si sólo mirás el botón un instante, devolverla es imposible.<br>Probá <b>dejando la luz un rato más en las puntas</b>. No es trampa: es diseño.'],
+ mas:[
+  'Llevar el puntaje hasta 5 y anunciar el ganador.',
+  'Un sonido en cada rebote, más agudo cuanto más rápido va.'],
+ nofunca:[
+  ['La luz se va y no vuelve','La dirección no se invierte, o se invierte dos veces'],
+  ['Se puede devolver en cualquier momento','Falta comprobar que la luz esté en tu punta'],
+  ['Se vuelve imposible de golpe','La espera bajó demasiado']],
+ mate:`Para que la luz vaya <b>más rápido</b> hay que poner un número <b>más chico</b>.<br>
+   <b>La espera y la velocidad van al revés una de la otra.</b>`
+}
+];
+
+/* ---- pantalla de inicio de los juegos ---- */
+function juegoHome(){
+  cur=null;
+  const bolas=d=>'●'.repeat(d)+'○'.repeat(5-d);
+  const tarjeta=(j,i)=>`
+    <button class="item wide${j.dif>=4?' dest':''}" onclick="juegoVer(${i})">
+      <div class="n">${j.ic} ${j.nom}</div>
+      <div class="d">${j.que}.</div>
+      <div class="foot"><span class="lvl">${bolas(j.dif)}</span>
+        <span class="hecho">${j.blo}</span></div>
+    </button>`;
+  const primeros=JUEGOS.map((j,i)=>j.todos?tarjeta(j,i):'').join('');
+  const resto=JUEGOS.map((j,i)=>j.todos?'':tarjeta(j,i)).join('');
+  app.innerHTML=`
+    <div class="topbar"><button class="backb" onclick="menu()" aria-label="volver">← Menú</button></div>
+    <div class="card">
+      <div class="concepto big">Los juegos</div>
+      <h2 style="margin-top:0">Un circuito, ocho juegos</h2>
+      <p style="margin:0;line-height:1.7">Se arma <b>una sola vez</b>: 4 luces, 4 botones y
+      un buzzer.<br>Con ese mismo aparato salen los ocho.</p>
+      <div class="hint" style="margin-top:10px">Acá <b>no está el programa hecho</b>. Están
+      los pasos con huecos y pistas que se abren de a una.<br><b>Pensarlo es la parte
+      divertida.</b></div>
+    </div>
+    <div class="grid" style="grid-template-columns:1fr">
+      <button class="item wide" onclick="verSlides(TINKERB,'juegoHome()','Ver los juegos →',juegoHome)">
+        <div class="n">🔧 Antes de empezar</div>
+        <div class="d">Cómo entrar a Tinkercad, cómo se arma el circuito y dónde están los bloques.</div>
+      </button>
+    </div>
+    <div class="grid" style="grid-template-columns:1fr">
+      <button class="item wide dest" onclick="startSala('jue')">
+        <div class="n">✏️ Practicá: programá los juegos</div>
+        <div class="d">Los pasos de cada juego, el bloque que falta y el error escondido. Se corrige solo.</div></button>
+      <button class="item wide dest" onclick="startSala('juem')">
+        <div class="n">🔢 Practicá: las cuentas de los juegos</div>
+        <div class="d">Negativos, potencias, el resto de la división, promedios y la jerarquía de las operaciones.</div></button>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <div class="concepto">Estos tres los hacemos todos</div>
+      <p class="muted" style="margin:4px 0 0">En orden. Cada uno agrega una cosa nueva.</p>
+    </div>
+    <div class="grid" style="grid-template-columns:1fr">${primeros}</div>
+    <div class="card" style="margin-top:14px">
+      <div class="concepto">Y después elegí uno</div>
+      <p class="muted" style="margin:4px 0 0">Este es el de tu pareja para el Paseo.
+      Los de más bolitas son más difíciles, <b>no mejores</b>.</p>
+    </div>
+    <div class="grid" style="grid-template-columns:1fr">${resto}</div>`;
+  window.scrollTo(0,0);
+}
+
+/* ---- la ficha de un juego ---- */
+function juegoVer(i){
+  cur=null;
+  const j=JUEGOS[i];
+  app.innerHTML=`
+    <div class="topbar"><button class="backb" onclick="juegoHome()" aria-label="volver">← Los juegos</button>
+      <div class="progtext">${'●'.repeat(j.dif)}${'○'.repeat(5-j.dif)} · ${j.blo}</div></div>
+
+    <div class="card">
+      <div class="concepto big">${j.ic} ${j.nom}</div>
+      <h2 style="margin-top:0">${j.que}</h2>
+      <p style="margin:0;line-height:1.8">${j.como}</p>
+      <div class="hint" style="margin-top:10px"><b>Ya tenés que saber:</b> ${j.sabe}</div>
+    </div>
+
+    <div class="card">
+      <div class="concepto">Lo que necesitás</div>
+      <table class="esqt">
+        <tr><th>Qué</th><th>Cuántos</th><th>Va a</th></tr>
+        ${j.elem.map(e=>`<tr><td>${e[0]}</td><td class="mono">${e[1]}</td><td class="mono">${e[2]}</td></tr>`).join('')}
+      </table>
+      <div class="hint">Podés usar otros pines. Si los cambiás, <b>cambialos también en el
+      programa</b>. Es el error número uno.</div>
+    </div>
+
+    <div class="card">
+      <div class="concepto">Practicá primero</div>
+      <p class="muted" style="margin-top:4px">Antes de abrir Tinkercad, probá estas dos.
+      Se corrigen solas.</p>
+      <div class="grid" style="grid-template-columns:1fr">
+        <button class="item wide" onclick="startSala('jue')">
+          <div class="n">Programá los juegos</div>
+          <div class="d">Ordenar los pasos, encontrar el bloque que falta y cazar el error.</div></button>
+        <button class="item wide" onclick="startSala('juem')">
+          <div class="n">Las cuentas de los juegos</div>
+          <div class="d">La matemática que aparece adentro: negativos, potencias, el resto y el promedio.</div></button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="concepto">Pensalo antes</div>
+      <p class="muted" style="margin-top:4px">Dos preguntas. <b>En la carpeta, sin computadora.</b></p>
+      <ol style="line-height:1.9">${j.pensar.map(p=>`<li>${p}</li>`).join('')}</ol>
+    </div>
+
+    <div class="card">
+      <div class="concepto">Los pasos</div>
+      <p class="muted" style="margin-top:4px">Están incompletos a propósito.</p>
+      <ol style="line-height:1.9">${j.plan.map(p=>`<li>${p}</li>`).join('')}</ol>
+    </div>
+
+    <div class="card">
+      <div class="concepto">Pistas</div>
+      <p class="muted" style="margin-top:4px">Se abren de a una. <b>Probá antes de abrir la
+      que sigue.</b> Al final no hay respuesta: el juego lo armás vos.</p>
+      ${j.pistas.map((h,k)=>`
+        <button class="btn ghost" id="jb${k}" onclick="juegoPista(${k})">Pista ${k+1}</button>
+        <div class="hint" id="jh${k}" hidden>${h}</div>`).join('')}
+    </div>
+
+    <div class="card">
+      <div class="concepto">Si no anda</div>
+      <table class="esqt">
+        <tr><th>Lo que pasa</th><th>Dónde mirar</th></tr>
+        ${j.nofunca.map(n=>`<tr><td>${n[0]}</td><td>${n[1]}</td></tr>`).join('')}
+      </table>
+    </div>
+
+    <div class="card">
+      <div class="concepto">Cuando ya anda</div>
+      <ul style="line-height:1.8">${j.mas.map(m=>`<li>${m}</li>`).join('')}</ul>
+    </div>
+
+    <div class="card">
+      <div class="concepto">Para la carpeta</div>
+      <p style="margin:0;line-height:1.8">${j.mate}</p>
+    </div>
+
+    <div class="ardunav">
+      ${i>0?`<button class="btn ghost" onclick="juegoVer(${i-1})">← ${JUEGOS[i-1].nom}</button>`:'<span></span>'}
+      ${i<JUEGOS.length-1?`<button class="btn" onclick="juegoVer(${i+1})">${JUEGOS[i+1].nom} →</button>`:`<button class="btn" onclick="juegoHome()">Volver a los juegos</button>`}
+    </div>`;
+  window.scrollTo(0,0);
+}
+function juegoPista(k){
+  const h=document.getElementById('jh'+k), b=document.getElementById('jb'+k);
+  if(h){ h.hidden=false; } if(b){ b.hidden=true; }
+  tono(523.25,.18);
 }
 
 /* -------------------- FIN DE SALA -------------------- */
