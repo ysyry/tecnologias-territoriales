@@ -2547,7 +2547,7 @@ const TALLERES = {
       <b>2 · Diseñar</b> — cómo lo van a hacer &nbsp;<span style="opacity:.7">(16/09)</span><br>
       <b>3 · Implementar</b> — construirlo &nbsp;<span style="opacity:.7">(23/09 y 30/09)</span><br>
       <b>4 · Validar</b> — probar que sirve &nbsp;<span style="opacity:.7">(el Paseo)</span><br>
-      <b>5 · Evolucionar</b> — arreglarlo y mejorarlo &nbsp;<span style="opacity:.7">(28/10)</span></div>`}
+      <b>5 · Evolucionar</b> — arreglarlo y mejorarlo &nbsp;<span style="opacity:.7">(30/10)</span></div>`}
     ],
     ejs:[
       { type:'mc',
@@ -3117,7 +3117,7 @@ const ANIOS = {
     ids:['teoria','repaso'], esp:['mezcla']}
  ]},
  '3ro':{ nom:'3er año', sub:'Del programa al aparato', mods:[
-   {t:'El proyecto', d:'Acá se trabaja: una etapa por clase, del 16/09 al 28/10.',
+   {t:'El proyecto', d:'Acá se trabaja: una etapa por clase, del 16/09 al 04/11.',
     esp:['cuaderno']},
    {t:'Programá la placa', d:'Lo principal del cuatrimestre: escribís el código y el aparato reacciona.',
     esp:['misiones']},
@@ -3825,7 +3825,7 @@ const ESPECIALES={
  estudio:{n:'Estudio de dibujo', d:'Modo libre: movés las perillas y la tortuga dibuja en vivo.', fn:'estudio()'},
  mezcla:{n:'Modo mezcla', d:'Ocho ejercicios tomados al azar de las salas de tu año.', fn:"startSala('mezcla')", wide:true},
  arduino:{n:'Arduino de verdad', d:'Los mismos conceptos, en el lenguaje real de la placa. Doce proyectos con sensores básicos y el código listo para copiar al simulador o a un Arduino. Más un banco de código que compila pero está mal.', fn:"arduHome('proy')", wide:true, dest:true},
- cuaderno:{n:'El cuaderno del proyecto', d:'Las siete etapas del proyecto, del 16/09 al 28/10. En cada una: qué hacer, qué decidir, qué queda escrito, el checklist de salida y la bitácora. Se copia todo con un botón.', fn:'cuadHome()', wide:true, dest:true},
+ cuaderno:{n:'El cuaderno del proyecto', d:'Las seis etapas del proyecto, del 16/09 al 04/11. En cada una: qué hacer, qué decidir, qué queda escrito, el checklist de salida y la bitácora. Se copia todo con un botón.', fn:'cuadHome()', wide:true, dest:true},
  misiones:{n:'Misiones: programá la placa', d:'Escribís código de verdad y la placa reacciona: se prenden las luces, suena el buzzer, se mueve el servo y el sensor te da un número. Se abren de a una.', fn:'misHome()', wide:true, dest:true}
 };
 
@@ -5207,7 +5207,7 @@ function proyPista(i,k){
    EL CUADERNO DEL PROYECTO — 3ro
    ------------------------------------------------------------
    No es material de lectura: es donde el grupo trabaja. Siete
-   etapas, una por clase, del 16/09 al 28/10. Cada etapa pide
+   etapas, una por clase, del 16/09 al 04/11. Cada etapa pide
    lo mismo: hacer, decidir, escribir y dejar bitacora.
    Todo lo que se escribe queda guardado en esta maquina y se
    copia en un boton para pegar en el Classroom.
@@ -5218,178 +5218,191 @@ const K_CUAD='pps.cuaderno3.v1';
 
 const ETAPAS3=[
 {
- n:1, fecha:'16/09', tit:'El proyecto escrito',
- obj:'Que el grupo salga con su proyecto escrito: qué construye, para quién, qué mide y qué necesita.',
+ n:1, fecha:'16/09', tit:'Armar, y que el sensor dé números',
+ obj:'Que el aparato esté armado y devolviendo números. Todavía no significan nada, y está bien.',
  antes:'Nada. Esta es la primera.',
  hacer:[
-  'Pónganle un <b>nombre</b> al aparato. Uno de verdad, no "proyecto de informática"',
-  'Contesten las ocho preguntas de abajo. Cortas, una o dos líneas cada una',
-  'Miren la <b>ficha del sensor</b> y la <b>del esquema</b> para saber qué piezas hay que pedir',
-  'Repártanse los cuatro roles. <b>Todos rotan</b>: nadie hace lo mismo las siete clases'],
+  'Armen el circuito siguiendo la <b>ficha del esquema</b>',
+  'Háganlo mostrar el <b>número crudo</b> del sensor en el monitor',
+  'Metan el sensor en tierra seca y en tierra mojada. <b>Anoten el número más chico y el más grande</b> que consigan',
+  'Contesten las preguntas de abajo: eso es el proyecto escrito'],
  dec:[
   {q:'¿Cada cuánto mide?',
    op:['Cada 1 minuto','Cada 10 minutos','Cada 30 minutos'],
-   por:'Un fin de semana entero a un minuto son más de 4300 filas, casi todas diciendo lo mismo. A treinta minutos podés perderte la hora exacta en que empezó a bajar. <b>Se llama frecuencia de muestreo</b> y es la decisión de fondo del aparato.',
-   coh:'Si su proyecto es el cohete, las opciones son otras: <b>10, 20 o 50 veces por segundo</b>. El vuelo dura cinco segundos.'},
-  {q:'¿Dónde va a estar instalado?',
-   op:['Adentro (aula o invernadero)','En la huerta, a la altura de las plantas','Afuera, a la sombra y ventilada'],
-   por:'A pleno sol el sensor mide el sol, no el aire. Y la helada se forma abajo: puede haber 3 grados a dos metros y 0 a diez centímetros. <b>Dónde lo ponen es parte del resultado.</b>',
-   coh:'El cohete va adentro de la ojiva, arriba de la botella y sellado del agua.'}],
+   por:'Un fin de semana a un minuto son más de 4300 filas, casi todas diciendo lo mismo. A treinta podés perderte la hora exacta en que empezó a bajar. <b>Se llama frecuencia de muestreo.</b>',
+   coh:'En el cohete son otras: <b>10, 20 o 50 veces por segundo</b>. El vuelo dura cinco segundos.'}],
  campos:[
   {id:'nombre', q:'¿Cómo se llama el aparato?', ph:'Un nombre propio'},
-  {id:'quienes', q:'¿Quiénes son el grupo?', ph:'Los nombres'},
+  {id:'quienes', q:'¿Quiénes son el grupo y quién hace qué?', ph:'programa · arma · anota · documenta'},
   {id:'que', q:'¿Qué construimos, en una oración?', ph:'Un aparato que...'},
-  {id:'mide', q:'¿Qué mide exactamente?', ph:'Temperatura, humedad, presión...'},
-  {id:'hace', q:'¿Qué hace cuando pasa algo? ¿Avisa, guarda, las dos?', ph:'Cuando... entonces...'},
   {id:'cliente', q:'¿Quién usa el dato y para qué decisión?', ph:'Una persona concreta'},
-  {id:'necesita', q:'¿Qué piezas necesitamos? (la lista para pedir)', ph:'Sensor, placa, tarjeta...'},
-  {id:'roles', q:'¿Quién hace qué? (programa · arma y cablea · calibra y anota · documenta)', ph:'Nombre y rol'}],
- mate:`<b>¿Cuántas filas va a tener el archivo?</b> Si mide cada 10 minutos durante un fin de semana, son <code>filas = minutos / 10</code>. Es una <b>función lineal pura</b> — de las que el cuadernillo llama de proporcionalidad directa, sin la <i>b</i> — igual que el <i>tiempo de riego</i>, <code>V(t) = 10t</code>. Y no es un ejercicio: de la respuesta depende si entra en la tarjeta y si la batería llega al domingo.`,
+  {id:'donde', q:'¿Dónde va a estar instalado?', ph:'Lugar y altura'},
+  {id:'min', q:'El número más CHICO que conseguimos, y en qué estaba el sensor', ph:'310 — en un vaso de agua'},
+  {id:'max', q:'El número más GRANDE, y en qué estaba', ph:'812 — al aire'},
+  {id:'falta', q:'¿Qué piezas nos faltan?', ph:''}],
+ mate:('<b>La pregunta para dejar picando, sin contestarla.</b> El aparato dice <b>640</b>. ' +
+  '¿La tierra está seca o mojada? Nadie lo puede saber, y ahí está el punto: <b>un número ' +
+  'crudo no significa nada solo</b>.<br><br>Preguntales cuánto sería «la mitad» entre el ' +
+  'mínimo y el máximo que anotaron, y dejá que discutan sin resolverlo. Esa discusión es la ' +
+  'que abre la clase del 30/09.'),
  listo:[
-  'Las ocho preguntas contestadas',
-  'Las dos decisiones elegidas y justificadas',
-  'La lista de piezas escrita',
+  'El circuito armado y el sensor dando números',
+  'El mínimo y el máximo anotados <b>en papel también</b>',
+  'Las preguntas contestadas: eso es el proyecto escrito',
   'El proyecto copiado y pegado en el Classroom']
 },
 {
- n:2, fecha:'23/09', tit:'El programa que escribe',
- obj:'Que el programa lea el sensor y escriba una fila bien formada.',
- antes:'El proyecto de la etapa 1 escrito y los roles repartidos.',
+ n:2, fecha:'30/09', tit:'La calibración', ic:' ⭐',
+ obj:'Que el aparato deje de decir números crudos y empiece a decir algo que una persona entiende.',
+ antes:'El sensor dando números, y el mínimo y el máximo anotados.',
  hacer:[
-  'Armen el circuito en <b>Wokwi</b> siguiendo la ficha del esquema',
-  'Peguen el código base de la ficha y háganlo correr',
-  'Miren el monitor: tiene que salir <b>una fila por medición</b>, con sus comas',
-  'Recién cuando la fila sale bien, agréguenle la tarjeta'],
+  '<b>Antes de tocar la compu:</b> el aparato dice 640. ¿Seca o mojada? Nadie puede contestar. <b>Hay que traducir</b>',
+  'Elijan sus <b>dos puntos de referencia</b> y midan. Anoten los dos pares',
+  '<b>En papel cuadriculado:</b> marquen los dos puntos, únanlos con una regla y <b>lean del dibujo</b> cuánto da un valor del medio',
+  'Recién ahora la cuenta. Escriban la fórmula en el programa',
+  '<b>Prueben mojando la tierra.</b> Si la fórmula está mal, se ve'],
  dec:[
-  {q:'¿Cómo se llaman las columnas del archivo?',
-   op:['temp, hum, pres','temperatura, humedad, presion','temp_C, humedad_pct, presion_hPa'],
-   por:'El que abre este archivo es <b>otro grupo, o 4to</b>, y no les va a poder preguntar nada. Si la columna dice <code>temp</code>, tiene que adivinar si son grados o Fahrenheit. <b>La unidad va en el nombre.</b> Y los tres grupos de la estación tienen que usar <u>los mismos nombres</u>, o los archivos no se dejan juntar.'}],
+  {q:'¿Qué es "seco" y qué es "empapado"?',
+   op:['Al aire y en un vaso de agua','Tierra sin regar y tierra recién regada','Tierra del cantero a la mañana y después de regar'],
+   por:'<b>Los dos puntos de referencia los eligen ustedes, y de eso depende la traducción entera.</b> Si toman un vaso de agua como 100 %, ninguna maceta va a llegar nunca a 100 y el aparato va a decir siempre que está seca. Es la misma pregunta del umbral: <b>el número lo elige el que usa el dato</b>.'},
+  {q:'¿La pendiente les va a dar positiva o negativa?',
+   op:['Positiva','Negativa','Depende del sensor'],
+   por:'En el sensor de humedad de suelo, <b>a más agua menos número</b>: cuando uno sube el otro baja. Eso es una <b>pendiente negativa</b>, y no está mal — está al revés a propósito. Si les da positiva, hay un error de signo. Contesten <u>antes</u> de hacer la cuenta y después comprueben.'}],
  campos:[
-  {id:'fila', q:'Peguen acá la primera fila que salió bien', ph:'0,14.20,58.10,912.43'},
-  {id:'costo', q:'¿Qué fue lo que más costó hacer andar?', ph:''}],
- mate:`Cada fila del archivo es un <b>par (x, y)</b>. La tabla de valores con la que grafican en Matemática y la tabla que escribe el aparato <b>son la misma cosa</b>: la diferencia es que acá los números no los da el enunciado, los mide ustedes.`,
- listo:[
-  'La fila sale completa y con puntos decimales, no comas',
-  'El encabezado aparece <b>una sola vez</b>, no entre cada fila',
-  'El código está copiado en el Classroom',
-  'Los tres grupos de la estación acordaron los mismos nombres de columna']
-},
-{
- n:3, fecha:'30/09', tit:'El aparato de verdad y la calibración', ic:'⭐',
- obj:'Que el sensor real esté conectado y leyendo, y que el grupo tenga escrita su recta.',
- antes:'El programa de la etapa 2 andando en el simulador.',
- hacer:[
-  'Armen el circuito <b>en la protoboard</b>, con el sensor de verdad',
-  'Comprueben que lee. El valor real <b>no es</b> el del simulador',
-  'Midan en <b>dos estados conocidos</b> y anoten los dos pares',
-  'Saquen la recta y escríbanla adentro del programa'],
- dec:[],
- campos:[
-  {id:'par1', q:'Par 1 — estado conocido y qué marcó el sensor', ph:'seco → 812'},
+  {id:'par1', q:'Par 1 — qué estado y qué marcó el sensor', ph:'seco → 812'},
   {id:'par2', q:'Par 2 — el otro estado y qué marcó', ph:'empapado → 310'},
-  {id:'recta', q:'La fórmula que sacaron', ph:'valor = m * crudo + b'},
-  {id:'sorpresa', q:'¿Da lo que esperaban? ¿Qué no cierra?', ph:''}],
- mate:`⭐ <b>La clase del EPA.</b> Dos estados conocidos dan dos ecuaciones con dos incógnitas: <code>m·a + n = 0</code> y <code>m·b + n = 100</code>. <b>Resolver ese sistema es el único camino</b> para que el aparato diga algo cierto, y cada grupo tiene números distintos: no se pueden copiar.<br><br>Dos cosas finas para discutir con Caro Sanz: la recta que sale <b>no es lineal, es afín</b> (tiene <i>b</i>, y por eso el sensor en seco no marca cero) — es la distinción con la que abre el cuadernillo. Y <b>la raíz de esa recta</b> es el valor crudo que corresponde a cero: búsquenlo y comprueben si el sensor puede llegar ahí.`,
+  {id:'palabras', q:'La pendiente DICHA EN PALABRAS (esto es lo que se evalúa)', ph:'Por cada punto que baja el sensor, la humedad sube ...'},
+  {id:'recta', q:'La fórmula que sacaron', ph:'humedad = m · crudo + b'},
+  {id:'prueba', q:'Al probar mojando la tierra, ¿qué dio? ¿Tiene sentido?', ph:''}],
+ mate:('⭐ <b>El hito con Caro Sanz.</b> Y la idea que ordena todo, dicha una vez y repetida ' +
+  'todo el día:<br><br><b>Una función lineal es una máquina de traducir entre dos escalas.</b> ' +
+  'Entra un número de una escala y sale el de la otra. Para construirla sólo hacen falta ' +
+  '<b>dos pares conocidos</b>.<br><br>Es la misma máquina que ya usan sin darse cuenta: pesos ' +
+  'a dólares, grados Celsius a Fahrenheit, y ahora crudo del sensor a humedad. En el cohete va ' +
+  'a ser hectopascales a metros. <b>Cuatro casos, una sola máquina.</b><br><br>' +
+  'Los dos pares medidos dan el sistema <code>m·812 + n = 0</code> y <code>m·310 + n = 100</code>. ' +
+  'Cada grupo mide distinto, así que <b>cada grupo tiene un sistema distinto y no se pueden copiar</b>.' +
+  '<br><br><b>Dos cosas para nombrar en voz alta:</b> la pendiente es <i>cuánto se mueve uno ' +
+  'cuando se mueve el otro</i> — y hay que poder decirla en una oración, no sólo calcularla. ' +
+  'Y la recta que sale <b>no es lineal, es afín</b>: tiene <i>b</i>, y por eso el sensor en seco ' +
+  'no marca cero. Es la distinción con la que abre el cuadernillo, acá con una causa física.'),
  listo:[
-  'El sensor real conectado y dando números',
-  'Los dos pares anotados <b>en papel también</b>',
-  'La fórmula escrita adentro del programa y probada',
-  'Los pares copiados para llevar a Matemática'],
- nota:'<b>Esta es la clase del EPA con Caro Sanz.</b> Los dos pares que midan son un sistema de dos ecuaciones con dos incógnitas, y la solución es la fórmula que va adentro del aparato. Cada grupo tiene números distintos: no se pueden copiar.'
+  'Los dos pares medidos y anotados en papel',
+  'El gráfico hecho <b>a mano</b>, con los dos puntos y la recta',
+  'La pendiente escrita <b>en palabras</b>, no sólo el número',
+  'La fórmula adentro del programa y probada mojando la tierra'],
+ nota:'<b>El orden importa: primero el problema, después el dibujo, y la fórmula al final.</b> Si arranca por <code>y = mx + b</code>, la clase se pierde.'
 },
 {
- n:4, fecha:'07/10', tit:'Que no mienta, y quede instalado',
- obj:'Que la lectura deje de saltar y que el aparato quede grabando solo.',
- antes:'El sensor real leyendo y la recta escrita.',
+ n:3, fecha:'07/10', tit:'El vuelo y la toma de datos',
+ obj:'Que haya un archivo con datos medidos por ustedes.',
+ antes:'El aparato traduciendo bien, con la fórmula adentro.',
  hacer:[
-  'Guarden las <b>últimas 5 lecturas</b> y muestren el promedio. Comparen con el valor suelto',
-  'Déjenlo corriendo <b>veinte minutos seguidos</b> y miren si se cuelga',
-  'Resuelvan la caja, el soporte y la alimentación',
-  '<b>Instálenlo</b> y anoten la hora exacta en que lo enchufaron'],
- dec:[
-  {q:'¿Qué escribe cuando el sensor no leyó?',
-   op:['Nada, se saltea la fila','Un 0','Siempre la misma marca, por ejemplo NA'],
-   por:'El 0 es un valor <b>posible</b> de temperatura acá. Si escriben 0, el que abre el archivo no puede saber si hacía cero grados o si el sensor estaba desconectado. Elijan algo que no se confunda con un dato, y que sea siempre lo mismo.'}],
- campos:[
-  {id:'donde', q:'¿Dónde quedó instalado, exactamente?', ph:'Lugar y altura'},
-  {id:'hora', q:'¿A qué hora se enchufó? (día y hora)', ph:'La placa no sabe la hora: sin esto las filas no se traducen'},
-  {id:'riesgo', q:'¿Qué puede salir mal este fin de semana?', ph:''}],
- mate:`El <b>promedio</b> de las últimas cinco lecturas. Y la pregunta fina, que ya vieron con los datos del INTA: con un valor disparatado, ¿conviene el promedio o la <b>mediana</b>?`,
- listo:[
-  'El promedio anda y se nota la diferencia',
-  'Aguantó veinte minutos sin colgarse',
-  'Está instalado, alimentado y grabando',
-  'La hora de arranque anotada en el cuaderno <b>y</b> en papel'],
- coh:'Si su proyecto es el cohete: en vez de instalar, <b>monten el payload y pésenlo</b>. Prueben que graba desde que se enciende, sin apretar nada.'
-},
-{
- n:5, fecha:'14/10', tit:'El archivo',
- obj:'Que abran su propio CSV, lo grafiquen y sepan decir qué muestra.',
- antes:'La tarjeta con los datos del fin de semana.',
- hacer:[
-  'Saquen la tarjeta y abran el archivo <b>en la planilla</b>',
-  'Grafiquen la magnitud contra el tiempo. Busquen la noche y el amanecer',
-  '<b>Junten los archivos de los tres grupos</b> y compárenlos en un solo gráfico',
-  'Anoten todo lo que salió torcido en el archivo'],
- dec:[],
- campos:[
-  {id:'ve1', q:'Tres cosas que se ven en el gráfico', ph:'1... 2... 3...'},
-  {id:'mal', q:'¿Qué salió mal en el archivo?', ph:'Filas repetidas, columnas corridas, el sensor colgado...'},
-  {id:'compara', q:'¿Cuánta diferencia hay entre los tres lugares?', ph:'La pregunta de la helada'},
-  {id:'demo', q:'El guion de 60 segundos para el Paseo', ph:'Esto es un... que mide... y sirve para...'}],
- mate:`Busquen en el gráfico un tramo donde la temperatura baje <b>derecho</b>, de noche. Ahí una recta ajusta bien: saquen su <b>pendiente</b> y díganla en grados por hora. Es la misma cuenta de <i>cosecha de frutos</i>, <code>C(s) = 2s</code>, pero con datos de ustedes.<br><br>🚀 <b>Antes de volar, predigan.</b> Si el cohete sube 50 metros, ¿cuánto tarda en caer? La altura contra el tiempo es una <b>cuadrática</b>. Escriban la ecuación ahora y guárdenla.`,
- listo:[
-  'El gráfico hecho y guardado (o impreso, para la mesa del Paseo)',
-  'Los tres archivos juntados y comparados',
-  'El guion de 60 segundos escrito y dicho en voz alta una vez',
-  'Plan B pensado por si el aparato falla en la feria'],
- nota:'<b>Es el primer dato producido por la escuela en todo el año.</b> Lo que salga torcido no es un accidente: es el contenido de la clase.'
-},
-{
- n:6, fecha:'21/10', tit:'El Paseo Don Jaime',
- obj:'Que el aparato funcione delante de gente y que cada integrante lo explique al menos una vez.',
- antes:'El aparato andando, el gráfico impreso y el guion ensayado.',
- hacer:[
-  'Cartel con el nombre del aparato y la pregunta que contesta',
-  'El gráfico del fin de semana <b>impreso, sobre la mesa</b>',
-  'Dejen que la gente lo <b>provoque</b>: soplar el sensor, tapar la luz, mojar la tierra',
-  'Uno del grupo anota <b>qué pregunta la gente</b>'],
- dec:[],
- campos:[
-  {id:'pregunto', q:'¿Qué preguntó la gente? (lo que más se repitió)', ph:''},
-  {id:'fallo', q:'¿Qué falló en vivo?', ph:''},
-  {id:'quienes6', q:'¿Quiénes lo explicaron? (todos tienen que pasar)', ph:''}],
- mate:`Mostrar un gráfico es una decisión: qué va en cada eje, desde dónde arranca la escala. Una escala que empieza en 10 y no en 0 hace parecer enorme una diferencia chica. <b>El mismo dato, dos gráficos, dos impresiones distintas.</b>`,
- listo:[
-  'El aparato funcionó delante de público',
-  'Todos los del grupo lo explicaron por lo menos una vez',
-  'Está anotado qué preguntó la gente']
-},
-{
- n:7, fecha:'28/10', tit:'El lanzamiento y el cierre',
- obj:'Que haya un archivo del vuelo — o del mirador — y el cuaderno completo.',
- antes:'Todo lo anterior. Es la última del proyecto.',
- hacer:[
-  '<b>Cohete:</b> pesar la carga, montar, lanzar, recuperar y bajar el archivo',
-  '<b>Estaciones:</b> segunda tanda de datos, o acompañar el lanzamiento y cronometrar',
-  'Abrir el archivo del vuelo <b>el mismo día</b>: el gráfico de presión es una V',
-  'Completar el cuaderno y copiarlo entero al Classroom'],
+  '<b>Cohete:</b> pesar la carga, montar, comprobar que graba desde que se enciende, lanzar y recuperar',
+  '<b>Estaciones:</b> instalar donde va, alimentarla y dejarla grabando',
+  '<b>Anoten la hora exacta</b> en que se encendió: la placa no sabe qué hora es',
+  'Alguien cronometra y alguien filma. Después sirve para comparar con el archivo'],
  dec:[
   {q:'Si no se puede lanzar, ¿qué hacemos?',
    op:['Se suspende','El aparato sube al mirador','Se lo tira desde tres metros'],
-   por:'<b>El contenido no depende del cohete: depende de que haya un archivo.</b> Subir 300 metros al mirador son más de 30 hPa, seis veces la señal del vuelo, sin ningún riesgo y con la subida y la bajada perfectamente dibujadas. Esto se decide <b>antes</b>, no el día anterior.'}],
+   por:'<b>El contenido no depende del cohete: depende de que haya un archivo.</b> Subir 300 metros al mirador son más de 30 hPa, seis veces la señal del vuelo, sin riesgo y con la subida y la bajada bien dibujadas. <b>Esto se decide antes, no el día anterior.</b>'}],
  campos:[
-  {id:'paso', q:'¿Qué pasó?', ph:''},
-  {id:'cambiaria', q:'¿Qué cambiaríamos si lo hiciéramos de nuevo?', ph:''},
-  {id:'aprendi', q:'Tres cosas que sabemos hacer ahora y en agosto no', ph:'1... 2... 3...'}],
- mate:`⭐⭐ <b>El vuelo es una parábola, y el vértice es el apogeo.</b> Al graficar la presión contra el tiempo sale una V: eso es una cuadrática. Sobre esa curva está todo lo del cuadernillo con un sentido físico:<br>• las <b>raíces</b> son el despegue y el aterrizaje<br>• el <b>vértice</b> es <b>el punto más alto que llegó el cohete</b><br>• la <b>ordenada al origen</b> es la presión en el suelo<br><br>Sáquenlo de dos formas: leyéndolo del gráfico y con <b>Bhaskara</b>. Si no coinciden, ahí está la clase. Y comparen con la predicción que escribieron en la etapa 5.`,
+  {id:'hora', q:'Día y hora exacta en que se encendió', ph:'Sin esto las filas no se traducen a hora real'},
+  {id:'peso', q:'¿Cuánto pesó la carga?', ph:'En gramos'},
+  {id:'crono', q:'¿Cuánto duró el vuelo, cronometrado?', ph:'Segundos'},
+  {id:'paso', q:'¿Qué pasó? ¿Qué falló?', ph:''}],
+ mate:('<b>Antes de lanzar, predigan.</b> Si el cohete sube 50 metros, ¿cuánto tarda en bajar? ' +
+  'La altura contra el tiempo es una <b>cuadrática</b>. Escriban ahora lo que creen que va a ' +
+  'dar y guárdenlo: el 14/10 lo comparan con el archivo.<br><br>Y el cronómetro sirve: el ' +
+  'tiempo total de vuelo que midan a mano tiene que coincidir con el que diga el archivo. ' +
+  '<b>Dos formas de medir lo mismo</b> es la mejor manera de saber si el aparato miente.'),
  listo:[
-  'Hay un archivo con datos propios',
-  'El gráfico del vuelo (o de la subida) hecho',
-  'El cuaderno completo copiado al Classroom',
-  'El archivo entregado a 4to en el formato acordado']
+  'Hay un archivo con datos',
+  'La hora de encendido anotada en papel',
+  'El peso de la carga y el tiempo cronometrado',
+  'La predicción de la parábola escrita antes de volar']
+},
+{
+ n:4, fecha:'14/10', tit:'El CSV, y que 4to lo pueda abrir',
+ obj:'Que el archivo se abra, se grafique, y que 4to lo pueda usar sin preguntarles nada.',
+ antes:'La tarjeta con los datos.',
+ hacer:[
+  'Abran el archivo <b>en la planilla</b> y grafiquen',
+  'Arreglen lo que esté torcido: encabezado repetido, columnas corridas, comas donde van puntos',
+  '<b>Revisen los seis acuerdos</b> con 4to, uno por uno',
+  'Entréguenlo. <b>Si no se deja abrir del otro lado, no está terminado</b>'],
+ dec:[
+  {q:'¿Cómo se llaman las columnas?',
+   op:['t, temp, pres','tiempo, temperatura, presion','t_ms, temp_C, presion_hPa'],
+   por:'El que abre este archivo es <b>4to, el jueves siguiente</b>, y no les va a poder preguntar nada. Si dice <code>t</code>, tienen que adivinar si son segundos o milisegundos. <b>La unidad va en el nombre.</b> Y los otros grupos tienen que usar los mismos nombres, o los archivos no se dejan juntar.'}],
+ campos:[
+  {id:'ve', q:'Tres cosas que se ven en el gráfico', ph:'1... 2... 3...'},
+  {id:'apogeo', q:'🚀 ¿Cuál fue el punto más alto, y en qué segundo?', ph:'El vértice de la parábola'},
+  {id:'mal', q:'¿Qué salió mal en el archivo?', ph:''},
+  {id:'entrega', q:'¿Qué dijo 4to al abrirlo?', ph:''}],
+ mate:('⭐⭐ <b>El vuelo es una parábola, y el vértice es el apogeo.</b> Al graficar la presión ' +
+  'contra el tiempo sale una V. Sobre esa curva está toda la unidad de cuadrática, con ' +
+  'sentido físico:<br>• las <b>raíces</b> son el despegue y el aterrizaje<br>' +
+  '• el <b>vértice</b> es <b>el punto más alto que llegó</b><br>' +
+  '• la <b>ordenada al origen</b> es la presión en el suelo<br><br>' +
+  'Sáquenlo de dos formas: leyéndolo del gráfico y con <b>Bhaskara</b>. Comparen con la ' +
+  'predicción del 07/10 y con el cronómetro.<br><br>Y para pasar de presión a metros hace falta ' +
+  '<b>otra vez la máquina de traducir</b>: 1 hPa cada 9 metros. Es la misma función lineal ' +
+  'del 30/09 con otro par de magnitudes.'),
+ listo:[
+  'El gráfico hecho y guardado',
+  'Los seis acuerdos del CSV cumplidos, revisados uno por uno',
+  'El archivo entregado a 4to',
+  '4to lo pudo abrir sin preguntar nada']
+},
+{
+ n:5, fecha:'30/10', tit:'Cierre: qué salió mal y qué quedó',
+ obj:'Que cada uno pueda decir por escrito tres cosas que sabe hacer ahora y no sabía en agosto.',
+ antes:'Todo lo anterior.',
+ hacer:[
+  'Repasen la bitácora de las cuatro etapas anteriores',
+  'Armen la lista de <b>lo que falló</b> y de <b>qué cambiarían</b>',
+  'Completen el cuaderno y cópienlo entero al Classroom',
+  'Arreglen lo que se pueda arreglar todavía'],
+ dec:[],
+ campos:[
+  {id:'fallo', q:'¿Qué salió mal? (sin suavizarlo)', ph:''},
+  {id:'cambiaria', q:'¿Qué haríamos distinto si empezáramos de nuevo?', ph:''},
+  {id:'quedo', q:'¿Qué quedó? (el aparato, el archivo, lo aprendido)', ph:''},
+  {id:'arreglo', q:'¿Qué alcanzamos a arreglar hoy?', ph:''}],
+ mate:('Una sola pregunta, y es la que dice si la función lineal quedó: <b>expliquen con sus ' +
+  'palabras, sin fórmula, qué hacía la cuenta que le pusieron al aparato.</b> Si pueden decir ' +
+  '«traducía el número del sensor a humedad, y por cada punto que bajaba uno subía el otro ' +
+  'tanto», entendieron. Si sólo saben escribir <code>y = mx + b</code>, no.'),
+ listo:[
+  'La bitácora completa de las cinco etapas',
+  'El cuaderno copiado al Classroom',
+  'Cada integrante escribió sus tres cosas, con su nombre']
+},
+{
+ n:6, fecha:'04/11', tit:'Mostrar y entregar',
+ obj:'Que cada uno pueda decir, por escrito y con su nombre, tres cosas que sabe hacer ahora y no sabía en agosto.',
+ antes:'El cierre del 30/10 hecho y el archivo entregado.',
+ hacer:[
+  'Armen el portfolio del grupo: el aparato, el código, el archivo y el gráfico',
+  'Muéstrenlo: cinco minutos por grupo, delante de los demás',
+  'Cada uno escribe lo suyo. <b>No vale una sola respuesta por grupo</b>',
+  'Copien el cuaderno entero al Classroom. Con eso se cierra el proyecto'],
+ dec:[],
+ campos:[
+  {id:'porta', q:'¿Qué entregamos? (la lista de lo que hay)', ph:'Aparato, código, CSV, gráfico...'},
+  {id:'aprendi', q:'Tres cosas que sé hacer ahora y en agosto no — CON TU NOMBRE', ph:'Nombre: 1... 2... 3...'},
+  {id:'otro', q:'¿Qué le dirías a un grupo que empieza este proyecto el año que viene?', ph:''}],
+ mate:('Una sola pregunta, y es la que dice si la función lineal quedó: <b>expliquen con sus ' +
+  'palabras, sin escribir la fórmula, qué hacía la cuenta que le pusieron al aparato.</b> ' +
+  'Si pueden decir «traducía el número del sensor a humedad, y por cada punto que bajaba uno ' +
+  'subía el otro tanto», entendieron. Si sólo saben escribir <code>y = mx + b</code>, no.'),
+ listo:[
+  'El portfolio armado',
+  'Lo mostraron delante del curso',
+  'Cada integrante escribió sus tres cosas, con su nombre',
+  'El cuaderno completo en el Classroom']
 }];
-
 const FICHAS3=[
  {t:'El sensor: BME280', h:`
    <p>Un cuadradito de menos de un centímetro que mide <b>temperatura, humedad y presión</b>
@@ -5566,7 +5579,7 @@ function cuadHome(){
   }).join('');
   app.innerHTML='<div class="topbar"><button class="backb" onclick="menu()" aria-label="volver">← Menú</button></div>'
    +'<div class="card"><div class="concepto big">El cuaderno del proyecto</div>'
-   +'<h2 style="margin-top:0">Siete clases, del 16/09 al 28/10</h2>'
+   +'<h2 style="margin-top:0">Seis clases, del 16/09 al 04/11</h2>'
    +'<p class="muted" style="margin:0;line-height:1.6">Acá se trabaja, no se lee. En cada etapa'
    +' hay algo que <b>hacer</b>, algo que <b>decidir</b>, algo que <b>escribir</b> y una'
    +' <b>bitácora</b>. Todo queda guardado y se copia con un botón para pegar en el Classroom.</p></div>'
@@ -5588,7 +5601,7 @@ function cuadEtapa(n){
   cur=null;
   const et=ETAPAS3[n-1], d=cuadLee(), e=cuadE(d,n), p=cuadProg(n), coh=d.tipo==='coh';
   let h='<div class="topbar"><button class="backb" onclick="cuadHome()" aria-label="volver">← El cuaderno</button>'
-   +'<div class="progtext">Etapa '+n+' de 7</div></div>'
+   +'<div class="progtext">Etapa '+n+' de '+ETAPAS3.length+'</div></div>'
    +'<div class="card"><div class="concepto big">'+et.fecha+' · Etapa '+n+(et.ic||'')+'</div>'
    +'<h2 style="margin-top:0">'+et.tit+'</h2>'
    +'<p style="margin:0"><b>Al terminar la clase:</b> '+et.obj+'</p>'
@@ -5643,7 +5656,7 @@ function cuadEtapa(n){
    +'<div id="ccopia"></div></div>'
    +'<div class="ardunav">'
    +(n>1?'<button class="btn ghost" onclick="cuadEtapa('+(n-1)+')">← Etapa '+(n-1)+'</button>':'<span></span>')
-   +(n<7?'<button class="btn ghost" onclick="cuadEtapa('+(n+1)+')">Etapa '+(n+1)+' →</button>':'<span></span>')
+   +(n<ETAPAS3.length?'<button class="btn ghost" onclick="cuadEtapa('+(n+1)+')">Etapa '+(n+1)+' →</button>':'<span></span>')
    +'</div>';
   app.innerHTML=h; window.scrollTo(0,0);
 }
