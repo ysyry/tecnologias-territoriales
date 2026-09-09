@@ -11,8 +11,13 @@ Es un solo `index.html`. Corre en el navegador, sin servidor y sin instalar nada
 
 Al abrir se elige el año y se escribe el nombre. Cada año entra a lo suyo.
 
-**1ro** — primeros pasos: secuencia, algoritmo, bucles, dibujar con código. Incluye un
-modo simple, sin texto ni audio, para quien necesite otra entrada.
+**1ro** — primeros pasos: secuencia, algoritmo, bucles, dibujar con código. Y el **Modo
+Jr**, una sección visual sin nada escrito para leer: el camino de la tortuga, el baile,
+poner cada cosa en su lugar y **el mapa** (los países vecinos, las provincias y Neuquén
+con Villa La Angostura adentro). Todo se resuelve arrastrando o tocando, y todo se puede
+hacer también con el teclado. La voz dice el nombre de lo que se toca, pero es refuerzo:
+apagada, la actividad funciona igual. Con el botón 🖼️ una máquina queda abriendo directo
+ahí, sin pasar por el menú de texto.
 
 **2do** — taller de robótica por unidades, más las salas de variables, operadores,
 condicionales y programas enteros.
