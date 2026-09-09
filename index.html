@@ -5258,181 +5258,125 @@ void loop() {
   }`}
 },
 {
- id:'interna', ic:'🏠', nom:'La estación del invernadero',
- que:'Decide si ventilar',
- regla:'ventilar = (temperatura adentro − temperatura afuera) &gt; diferencia',
+ id:'hongos', ic:'🍄', nom:'El monitoreo del cultivo de hongos',
+ que:'Vigila el aire del cultivo y lo corrige',
+ regla:'humidificar si el aire está seco · ventilar si sube la temperatura · <b>y decidir qué gana</b>',
  comp:[
-  {k:'Componentes', t:'Dos sensores, no uno', h:`
-    <p>Este proyecto es distinto de los otros dos en algo grande: <b>no decide mirando un
-    número, sino la diferencia entre dos.</b></p>
-    <p>Van dos sensores de temperatura: uno adentro del invernadero y otro afuera. Si adentro
-    hace mucho más calor que afuera, hay que ventilar. Si afuera hace el mismo calor, abrir la
-    ventana no sirve de nada.</p>
-    <p><b>Eso es comparar dos series</b>, y es exactamente lo que están viendo con Ana.</p>`},
-  {k:'Componentes', t:'El TMP36 y su recta de fábrica', h:`
-    <p>El <b>TMP36</b> da un voltaje que sube 10 milivoltios por cada grado, arrancando en
-    500 mV a 0 °C. La cuenta es:</p>
-    <pre><code>float voltaje = analogRead(A0) * 5.0 / 1024.0;
-float temp = (voltaje - 0.5) * 100.0;</code></pre>
-    <p><b>Esa recta no la calibraron ustedes: la escribió el fabricante.</b> El sensor de
-    humedad no viene con ninguna y hay que construirla. Vale la pregunta:
+  {k:'Componentes', t:'Un hongo no quiere lo mismo que una planta', h:`
+    <p>Una planta quiere <b>agua en la tierra</b>. Un hongo quiere <b>agua en el aire</b>: entre
+    <b>80 y 90 % de humedad relativa</b>. Si baja, los primordios —los hongos chiquitos que
+    recién asoman— se secan y no crecen más.</p>
+    <p>También quiere <b>temperatura estable</b>, alrededor de 18 a 24 °C para las gírgolas, y
+    <b>aire fresco</b>: el hongo respira y suelta CO₂. Si el CO₂ se acumula, salen deformes —
+    pie largo y sombrero chico.</p>
+    <div class="hint"><b>El sensor de humedad de suelo que usa el riego no sirve acá.</b> Mide
+    agua en la tierra, y esto necesita medir agua en el aire. Son dos magnitudes distintas con
+    el mismo nombre, y confundirlas es el error clásico.</div>`},
+  {k:'Componentes', t:'El sensor de humedad del aire', h:`
+    <p>El <b>DHT22</b> (o el BME280) mide <b>humedad relativa en % y temperatura en grados</b>,
+    y los devuelve <b>ya convertidos</b>. No entrega un número de 0 a 1023: habla por un
+    protocolo y contesta valores hechos.</p>
+    <p><b>Y ahí está la diferencia grande con el riego:</b> en el riego hay que construir la
+    recta midiendo. Acá <b>la recta la trae el fabricante</b>, hecha de antes. Vale la pregunta:
     <i>¿por qué le creemos al fabricante y no a nosotros mismos?</i></p>
-    <p>Mirando la cara plana, de izquierda a derecha: <b>5V · señal · GND</b>. Al revés se
-    calienta.</p>`},
-  {k:'Componentes', t:'El servo: abrir la ventana', h:`
-    <p>El <b>servo</b> gira hasta un ángulo que vos le decís, entre 0 y 180 grados, y se queda
-    ahí. No es un motor que da vueltas: es un motor que va a una posición.</p>
-    <pre><code>#include &lt;Servo.h&gt;
-Servo ventana;
-ventana.attach(9);
-ventana.write(90);   // medio abierta</code></pre>
-    <p>Y ahí aparece una decisión que los otros proyectos no tienen: <b>la ventana no es
-    abierta o cerrada, puede estar a medias.</b></p>`}],
+    <div class="hint"><b>Para simular hoy:</b> el DHT necesita una librería y en Tinkercad no se
+    pueden instalar librerías. Buscá <code>DHT</code> en el panel de componentes por las dudas;
+    si no está, <b>una perilla en A0 hace de higrómetro</b> y el <b>TMP36 en A1</b> de
+    termómetro. El programa se escribe igual: <b>cambia el sensor, no la estructura</b>.</div>`},
+  {k:'Componentes', t:'Dos salidas que se pelean', h:`
+    <p>Van dos actuadores: un <b>humidificador</b> (un nebulizador, por relé) y un
+    <b>ventilador</b> para renovar el aire.</p>
+    <p><b>Y acá aparece algo que los otros proyectos no tienen:</b> ventilar renueva el aire y
+    saca el CO₂, pero <b>también se lleva la humedad</b>. Humidificar y ventilar
+    <b>se contradicen</b>.</p>
+    <p>Por eso no alcanza con dos <code>si</code> sueltos. Hay que decidir <b>cuál gana</b>
+    cuando los dos se piden a la vez: ventilar poco y seguido, alternar, o dar prioridad a uno.
+    <b>Esa regla la inventan ustedes y es lo más interesante del proyecto.</b></p>
+    <div class="hint">Es la primera vez en el año que un aparato tiene dos salidas que no pueden
+    estar prendidas al mismo tiempo. Un sistema que no resuelve eso hace las dos cosas y no
+    consigue ninguna.</div>`},
+  {k:'Componentes', t:'Por qué hongos, y por qué acá', h:`
+    <p><b>Es un ambiente cerrado.</b> A diferencia de la huerta, que está a la intemperie y donde
+    el clima manda, un cultivo de hongos entra en una caja o en un cuarto chico: lo que el
+    aparato hace <b>se nota</b>.</p>
+    <p><b>El ciclo es corto.</b> En semanas hay resultado. La huerta tarda meses.</p>
+    <p>Y es un <b>producto</b>: un cultivo que funciona tiene algo para mostrar y para vender en
+    el Paseo Don Jaime, con el aparato al lado explicando cómo se lo cuidó.</p>`}],
  esq:{
-  filas:[['TMP36 adentro','5V · señal · GND','5V · A0 · GND'],
-         ['TMP36 afuera','5V · señal · GND','5V · A1 · GND'],
-         ['Servo','naranja (señal)','pin 9'],
-         ['Servo','rojo · marrón','5V · GND'],
+  filas:[['Sensor de humedad de aire','VCC · GND','5V · GND'],
+         ['Sensor de humedad de aire','DATA','pin 2'],
+         ['(o la perilla, si no hay sensor)','patas de los costados','5V y GND'],
+         ['(o la perilla)','pata del medio','A0'],
+         ['TMP36','5V · señal · GND','5V · A1 · GND'],
+         ['Relé del humidificador','VCC · GND · IN','5V · GND · pin 7'],
+         ['Ventilador (por relé o transistor)','IN','pin 6'],
          ['LED testigo','pata larga','pin 13 (con resistencia de 220 Ω)']],
-  nota:'Los dos sensores son iguales y van a <b>pines distintos</b>: A0 y A1. El programa los lee por separado.'},
+  nota:'El humidificador y el ventilador tienen <b>su propia alimentación</b>: el Arduino nunca toca esa corriente, sólo aprieta el relé. Y el TMP36 <b>al revés se calienta</b>: mirá la cara plana antes de enchufar.'},
  eleg:[
-  {q:'¿Con cuántos grados de diferencia ventila?', op:['3 °C','5 °C','8 °C'],
-   por:'Muy poca diferencia y la ventana se pasa el día abriendo y cerrando. Mucha, y el invernadero se cocina antes de que reaccione.'},
-  {q:'¿La ventana abre del todo o a medias?', op:['Abierta o cerrada, nada más','Abre proporcional a la diferencia'],
-   por:'La segunda usa el servo de verdad: a más diferencia, más ángulo. <b>Eso es otra vez una función lineal</b>, ahora de la diferencia al ángulo.'},
-  {q:'¿Qué hace de noche?', op:['Lo mismo que de día','De noche no ventila nunca','De noche cierra siempre'],
-   por:'De noche afuera enfría rápido y el invernadero guarda calor. Ventilar puede arruinar justamente lo que el invernadero protege.'},
-  {q:'¿Cada cuánto mide?', op:['Cada 30 segundos','Cada 5 minutos','Cada 30 minutos'],
-   por:'La temperatura del aire cambia mucho más rápido que la humedad de la tierra. <b>La frecuencia depende del fenómeno, no del gusto.</b>'},
-  {q:'¿Qué pasa si los dos sensores dan lo mismo siempre?', op:['Está todo bien','Probablemente uno está desconectado'],
-   por:'Dos sensores que coinciden perfectamente son sospechosos. En el mundo real siempre hay diferencia, aunque sea de ruido.'}],
+  {q:'¿Con qué humedad prende el humidificador?', op:['75 %','80 %','85 %'],
+   por:'Las gírgolas quieren entre 80 y 90. Muy abajo y los primordios se secan; muy arriba y aparece moho verde, que se come el cultivo. <b>El número lo elige el que cultiva, no el que programa.</b>'},
+  {q:'¿Cada cuánto se ventila?', op:['Sólo cuando sube la temperatura','5 minutos cada hora, siempre','Nunca: se abre la puerta a mano'],
+   por:'Ventilar saca el CO₂ que el hongo va largando, y sin eso los hongos salen con pie largo y sombrero chico. Pero cada ventilada <b>se lleva humedad</b>. La segunda opción es la que usan los cultivos de verdad: <b>poco y seguido</b>.'},
+  {q:'Si hay que humidificar y ventilar al mismo tiempo, ¿qué gana?',
+   op:['Los dos a la vez','Primero ventila, y cuando termina humidifica','No ventila mientras humidifica'],
+   por:'<b>Esta es la decisión del proyecto.</b> Los dos a la vez es tirar agua al ventilador. Las otras dos son válidas y opuestas, y hay que poder defender la elegida. Sea cual sea, <b>tiene que estar escrita en el programa</b>: dos salidas que se contradicen no se pueden dejar libradas al azar.'},
+  {q:'¿Cuánto tiene que durar la condición para que el aparato actúe?', op:['Al instante','3 lecturas seguidas'],
+   por:'Abrir la puerta un segundo mete un golpe de aire seco. Si el aparato reacciona a eso, prende el humidificador al pedo y encima descalibra la lectura. Exigir que se mantenga es <b>filtrar el ruido con lógica</b> en vez de con promedio.'},
+  {q:'¿Qué hace si el sensor deja de responder?', op:['Sigue con la última lectura buena','Apaga todo y prende la alarma','Prende el humidificador por las dudas'],
+   por:'Un humidificador prendido sin control <b>inunda el cultivo y lo pudre en una noche</b>. <b>Cuando el aparato no sabe, lo seguro es no hacer nada</b> y avisar. Es la misma idea que en el riego, pero acá el daño es más rápido.'}],
  cod:{
-  consigna:'Escribí el programa que lee las dos temperaturas, calcula la diferencia y abre la ventana si adentro hace mucho más calor.',
-  base:`#include <Servo.h>
-Servo ventana;
+  consigna:'Escribí el programa que lee la humedad del aire y la temperatura, decide si hay que humidificar y si hay que ventilar, y <b>resuelve qué pasa cuando los dos se piden a la vez</b>.',
+  base:`const int HUM  = A0;   // por ahora la perilla; despues el sensor real
+const int TMP  = A1;   // TMP36
+const int NEBU = 7;    // rele del humidificador
+const int VENT = 6;    // ventilador
+const int LED  = 13;   // testigo
 
-float adentro, afuera, diferencia;
+float humedad, temp;
 
 void setup() {
-  ventana.attach(9);
-  pinMode(13, OUTPUT);
+  pinMode(NEBU, OUTPUT);
+  pinMode(VENT, OUTPUT);
+  pinMode(LED, OUTPUT);
   Serial.begin(9600);
 }
 
 void loop() {
-  // 1. leé los dos sensores y convertilos a grados
+  // 1. lee la humedad y convertila a 0-100 %
 
-  // 2. calculá la diferencia
+  // 2. lee el TMP36 y convertilo a grados
 
-  // 3. mostrá las tres cosas
+  // 3. guarda las dos decisiones en variables con nombre
 
-  // 4. si la diferencia es grande, abrí la ventana
+  // 4. resolve el conflicto: cual gana si los dos se piden
 
-  delay(2000);
+  delay(1000);
 }`,
   pistas:[
-   'La conversión del TMP36 es siempre la misma, y la vas a escribir dos veces: una para A0 y otra para A1. <code>float adentro = (analogRead(A0) * 5.0 / 1024.0 - 0.5) * 100.0;</code>',
-   'La diferencia es una resta: <code>diferencia = adentro - afuera;</code>. Puede dar negativa, y eso significa que afuera hace más calor que adentro.',
-   'Para abrir: <code>ventana.write(90);</code> y para cerrar <code>ventana.write(0);</code>. Si elegiste la apertura proporcional, probá <code>ventana.write(diferencia * 18);</code> y fijate qué pasa cuando la diferencia es grande.'],
-  sol:`  adentro = (analogRead(A0) * 5.0 / 1024.0 - 0.5) * 100.0;
-  afuera  = (analogRead(A1) * 5.0 / 1024.0 - 0.5) * 100.0;
-  diferencia = adentro - afuera;
+   'La perilla da 0 a 1023 y hay que pasarla a porcentaje: <code>humedad = map(analogRead(HUM), 0, 1023, 0, 100);</code>. Es la misma función lineal de siempre. El TMP36 tiene su propia recta, la del fabricante: <code>float v = analogRead(TMP) * 5.0 / 1024.0;</code> y después <code>temp = (v - 0.5) * 100.0;</code>',
+   'Antes de actuar, <b>guardá cada decisión en una variable con nombre</b>: <code>bool falta_agua = (humedad &lt; 80);</code> y <code>bool hace_calor = (temp &gt; 24);</code>. El programa se lee solo, y después las podés combinar sin enredarte.',
+   'El conflicto se resuelve con <b>prioridad</b>: poné primero el <code>if</code> del que gana, y adentro <b>apagá al otro</b>. Lo que elijan es su regla, pero tiene que quedar escrita.'],
+  sol:`  humedad = map(analogRead(HUM), 0, 1023, 0, 100);
+  float v = analogRead(TMP) * 5.0 / 1024.0;
+  temp = (v - 0.5) * 100.0;
 
-  Serial.print(adentro);
-  Serial.print("  ");
-  Serial.print(afuera);
-  Serial.print("  dif ");
-  Serial.println(diferencia);
+  Serial.print(humedad); Serial.print(" %   ");
+  Serial.println(temp);
 
-  if (diferencia > 5) {
-    ventana.write(90);
-    digitalWrite(13, HIGH);
+  bool falta_agua = (humedad < 80);
+  bool hace_calor = (temp > 24);
+
+  if (hace_calor) {                 // ventilar tiene prioridad
+    digitalWrite(VENT, HIGH);
+    digitalWrite(NEBU, LOW);        // no humidifica mientras ventila
   } else {
-    ventana.write(0);
-    digitalWrite(13, LOW);
-  }`}
-},
-{
- id:'externa', ic:'🌤️', nom:'La estación meteorológica',
- que:'Informa, y avisa la helada',
- regla:'alerta = (temperatura &lt; 3) <b>Y</b> (viene bajando)',
- comp:[
-  {k:'Componentes', t:'Varios sensores, una sola fila', h:`
-    <p>Esta estación no decide gran cosa: <b>produce la serie más larga y más rica de los tres
-    proyectos.</b> Temperatura, luz, y humedad del aire si se consigue el sensor.</p>
-    <p>La idea que ordena todo: cada vez que mide, <b>escribe una fila</b> con todo junto. Una
-    fila = un momento. Eso después es una tabla, y esa tabla es el material de la unidad 2.</p>`},
-  {k:'Componentes', t:'El fotorresistor y su divisor', h:`
-    <p>El <b>LDR</b> no da un número solo: cambia su resistencia según la luz. Para que la
-    placa pueda leerlo necesita un <b>divisor de tensión</b>: el LDR de 5V a A1, y desde A1
-    una resistencia de <b>10 kΩ</b> a GND.</p>
-    <p>Sin esa resistencia, A1 queda flotando y el número que sale es basura. <b>Es el error
-    número uno con este sensor.</b></p>`},
-  {k:'Componentes', t:'La alerta: por qué esta estación también decide', h:`
-    <p>La unidad 3 se llama <i>el sistema decide</i>. Una estación que sólo informa se queda
-    afuera de esa unidad.</p>
-    <p>Por eso este proyecto se compromete a <b>una</b> decisión automática: la <b>alerta de
-    helada</b>. Y no es cualquier decisión — es la única de los tres proyectos que necesita
-    mirar el <b>pasado</b>, no sólo el presente: no alcanza con que haga frío, tiene que
-    <b>venir bajando</b>.</p>`}],
- esq:{
-  filas:[['TMP36','5V · señal · GND','5V · A0 · GND'],
-         ['Fotorresistor','una pata','5V'],
-         ['Fotorresistor','otra pata','A1 <b>y</b> resistencia de 10 kΩ a GND'],
-         ['LED de alerta','pata larga','pin 13 (con resistencia de 220 Ω)'],
-         ['Buzzer (opcional)','+ · −','pin 8 · GND']],
-  nota:'El divisor del fotorresistor no es opcional: sin la resistencia de 10 kΩ a GND, la lectura de A1 no significa nada.'},
- eleg:[
-  {q:'¿Con qué temperatura avisa helada?', op:['5 °C — avisa antes','3 °C — el margen justo','0 °C — cuando ya está helando'],
-   por:'A 0 °C ya es tarde para tapar la huerta. Avisar antes da tiempo, pero avisar de más hace que nadie le crea.'},
-  {q:'¿Cada cuánto guarda una fila?', op:['Cada 1 minuto','Cada 10 minutos','Cada 1 hora'],
-   por:'Cada minuto son 525.600 filas por año. Cada hora, 8.760. <b>Hacé la cuenta antes de elegir</b>: esa es la diferencia entre que entre en la placa o no.'},
-  {q:'¿Qué columnas tiene cada fila?', op:['Sólo el valor','Momento y valor','Momento, temperatura, luz y humedad'],
-   por:'Un número sin momento no sirve para nada. <b>Y las unidades van en el nombre de la columna</b>: no <code>temp</code> sino <code>temp_c</code>.'},
-  {q:'¿Qué escribe si un sensor no midió?', op:['Un 0','Nada, deja el lugar vacío','Siempre lo mismo, y está avisado'],
-   por:'El 0 es la peor opción: un 0 parece un dato y ensucia todos los promedios. <b>Lo importante no es qué se escribe, sino que sea siempre igual.</b>'},
-  {q:'¿Cómo sabe que "viene bajando"?', op:['No hace falta, alcanza con el frío','Compara con la lectura anterior','Compara con el promedio de la última hora'],
-   por:'Para comparar con el pasado el programa tiene que <b>recordar</b>. Y eso significa una variable que sobrevive de una vuelta a la otra del <code>loop</code>.'}],
- cod:{
-  consigna:'Escribí el programa que mide, escribe una fila con todo junto, y prende la alerta si hace frío y además viene bajando.',
-  base:`float temp, luz;
-float anterior = 99;      // la última temperatura, para saber si baja
-
-void setup() {
-  pinMode(13, OUTPUT);
-  Serial.begin(9600);
-  Serial.println("temp_c,luz_cruda");    // el encabezado, una sola vez
-}
-
-void loop() {
-  // 1. leé la temperatura y la luz
-
-  // 2. escribí la fila: los valores separados por coma
-
-  // 3. si hace frío Y bajó respecto de la anterior, prendé la alerta
-
-  // 4. guardá esta temperatura para la próxima vuelta
-
-  delay(5000);
-}`,
-  pistas:[
-   'La fila se escribe con <code>Serial.print(temp); Serial.print(","); Serial.println(luz);</code>. El <code>println</code> del final es el que corta el renglón: <b>cada renglón es una fila</b>.',
-   'La alerta necesita las dos cosas a la vez, así que va con <code>&&</code>: <code>if (temp &lt; 3 && temp &lt; anterior)</code>.',
-   'El paso 4 es el que casi todos olvidan: <code>anterior = temp;</code> al final del loop. Sin eso, <code>anterior</code> se queda en 99 para siempre y la alerta nunca entiende que bajó. Y fijate que <code>anterior</code> está declarada <b>afuera</b> del loop: si estuviera adentro, se borraría en cada vuelta.'],
-  sol:`  temp = (analogRead(A0) * 5.0 / 1024.0 - 0.5) * 100.0;
-  luz  = analogRead(A1);
-
-  Serial.print(temp);
-  Serial.print(",");
-  Serial.println(luz);
-
-  if (temp < 3 && temp < anterior) {
-    digitalWrite(13, HIGH);
-  } else {
-    digitalWrite(13, LOW);
+    digitalWrite(VENT, LOW);
+    if (falta_agua) digitalWrite(NEBU, HIGH);
+    else            digitalWrite(NEBU, LOW);
   }
 
-  anterior = temp;`}
+  if (falta_agua || hace_calor) digitalWrite(LED, HIGH);
+  else                          digitalWrite(LED, LOW);`}
 }];
 
 const K_PROY='pps.proy4.v1';
@@ -5458,9 +5402,10 @@ function proyHome(){
     <div class="card">
       <div class="concepto big">Proyectos · 2do cuatrimestre</div>
       <h2 style="margin-top:0">De los datos al sistema</h2>
-      <p class="muted" style="margin:0;line-height:1.6">Cada equipo elige uno de los tres, lo
-      construye, lo calibra y lo hace decidir. Los tres miden algo real de la huerta y los tres
-      terminan publicando su serie.</p>
+      <p class="muted" style="margin:0;line-height:1.6"><b>Dos proyectos, y cada equipo tiene
+      el suyo asignado.</b> Los dos miden algo real, los dos deciden y los dos actúan sobre el
+      mundo. Uno mide <b>la tierra</b> y el otro mide <b>el aire</b>, y esa diferencia se paga
+      en todo lo demás: el sensor, la recta y hasta la forma de la decisión.</p>
     </div>
     <div class="grid" style="grid-template-columns:1fr">
       <button class="item wide" onclick="verSlides(TINKER,'proyHome()','Elegir proyecto →',proyHome)">
@@ -5654,7 +5599,8 @@ const ETAPAS3=[
  obj:'Que el aparato esté armado y devolviendo números. Todavía no significan nada, y está bien.',
  antes:'Nada. Esta es la primera.',
  hacer:[
-  'Armen el circuito siguiendo la <b>ficha del esquema</b>',
+  'Arranquen por el circuito más simple que existe: <b>un botón que prende un LED</b>. Está en la primera ficha',
+  'Cuando ande, cámbienle el botón por el <b>sensor</b> y sigan la ficha del esquema',
   'Háganlo mostrar el <b>número crudo</b> del sensor en el monitor',
   'Metan el sensor en tierra seca y en tierra mojada. <b>Anoten el número más chico y el más grande</b> que consigan',
   'Contesten las preguntas de abajo: eso es el proyecto escrito'],
@@ -5678,7 +5624,8 @@ const ETAPAS3=[
   'mínimo y el máximo que anotaron, y dejá que discutan sin resolverlo. Esa discusión es la ' +
   'que abre la clase del 30/09.'),
  listo:[
-  'El circuito armado y el sensor dando números',
+  'El botón prende el LED, armado en la placa de verdad',
+  'El circuito del sensor armado y dando números',
   'El mínimo y el máximo anotados <b>en papel también</b>',
   'Las preguntas contestadas: eso es el proyecto escrito',
   'El proyecto copiado y pegado en el Classroom']
@@ -5836,6 +5783,57 @@ const ETAPAS3=[
   'El cuaderno completo en el Classroom']
 }];
 const FICHAS3=[
+ {t:'Primero: el botón y el LED', h:`
+   <p>Antes del sensor, el circuito más simple que existe: un <b>botón</b> que prende una
+   <b>luz</b>. Parece poca cosa y es <b>el aparato entero en chiquito</b>: algo que entra
+   (el botón), una decisión (el <code>si</code>), algo que sale (el LED).</p>
+   <p>Después el botón se cambia por el sensor y el LED por lo que haga falta.
+   <b>Esa estructura no cambia nunca más</b>, ni en la estación ni en el cohete.</p>
+   <p><b>En bloques</b> (Tinkercad), son cuatro:</p>
+   <pre><code>si  ( leer patilla digital [2]  =  [1] )  entonces
+        fijar patilla [8] en [ALTA]
+si no
+        fijar patilla [8] en [BAJA]</code></pre>
+   <p>Y así se cablea <b>para la versión en bloques</b>:</p>
+   <table class="esqt">
+     <tr><th>Componente</th><th>Pata</th><th>Va a</th></tr>
+     <tr><td>Pulsador</td><td class="mono">una pata</td><td class="mono">5V</td></tr>
+     <tr><td>Pulsador</td><td class="mono">la otra</td><td class="mono">pin 2</td></tr>
+     <tr><td>Resistencia 10 kΩ</td><td class="mono">del pin 2</td><td class="mono">a GND</td></tr>
+     <tr><td>LED</td><td class="mono">pata larga</td><td class="mono">pin 8, con resistencia de 220 Ω</td></tr>
+     <tr><td>LED</td><td class="mono">pata corta</td><td class="mono">GND</td></tr>
+   </table>
+   <p>Esa resistencia de 10 kΩ mantiene el pin en cero cuando el botón está suelto. Con este
+   cableado, <b>apretado da 1 y suelto da 0</b>, que es lo que uno esperaría.</p>
+   <p><b>En texto</b>, el mismo programa se puede escribir sin la resistencia de 10 kΩ, porque
+   la placa tiene una adentro que se prende por software:</p>
+   <pre><code>const int BOTON = 2;
+const int LED   = 8;
+
+void setup() {
+  pinMode(BOTON, INPUT_PULLUP);   // este pin RECIBE
+  pinMode(LED, OUTPUT);           // este pin MANDA corriente
+}
+
+void loop() {
+  if (digitalRead(BOTON) == LOW) {   // LOW = apretado. Sí, al revés
+    digitalWrite(LED, HIGH);
+  } else {
+    digitalWrite(LED, LOW);
+  }
+}</code></pre>
+   <p>Con <code>INPUT_PULLUP</code> la placa mantiene el pin en alto por su cuenta, y apretar
+   el botón lo baja a GND: por eso <b>apretado se lee LOW</b>. Es al revés que en la versión
+   de bloques, y ahí se traba todo el mundo la primera vez. Pero se ahorra una resistencia:
+   el botón va directo del pin 2 a GND.</p>
+   <div class="hint"><b>El truco que conviene usar:</b> Tinkercad tiene el selector
+   <b>Bloques + Texto</b>. Armás con bloques y el código en C++ aparece al lado, cambiando en
+   vivo. Ahí se ve con los ojos que <code>si</code> es <code>if</code> y que
+   <i>fijar patilla en ALTA</i> es <code>digitalWrite(8, HIGH)</code>.</div>
+   <p><b>Para probar que entendieron:</b> que hagan que el botón funcione como interruptor de
+   verdad — una apretada prende y la siguiente apaga. Para eso el programa tiene que
+   <b>acordarse</b> de en qué estado estaba, y esa variable es la misma idea que después usa el
+   aparato para no titilar.</p>`},
  {t:'El sensor: BME280', h:`
    <p>Un cuadradito de menos de un centímetro que mide <b>temperatura, humedad y presión</b>
    a la vez. No devuelve 0 a 1023 como el sensor de humedad de suelo: <b>habla</b>. Se le
