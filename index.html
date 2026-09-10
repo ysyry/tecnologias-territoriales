@@ -5801,172 +5801,195 @@ const PROY2=[
 {
  id:'maceta2', ic:'🪴', nom:'La maceta inteligente',
  que:'Se da cuenta de que tiene sed, y lo dice',
- regla:'si la tierra está seca → <b>luz azul</b> · si está bien → <b>luz verde</b>',
+ regla:'mide la tierra → traduce el número a % → <b>lo muestra en la pantalla y con una luz</b>',
  presenta:[
-  ['¿Qué vamos a construir?','Una <b>maceta que avisa cuando tiene sed</b>. Un sensor clavado en la tierra, dos luces, y un programa que decide cuál prender. Cuando la tierra está seca prende la <b>luz azul</b>; cuando está bien, la <b>verde</b>.'],
-  ['¿Para qué sirve?','Una planta no puede decir que tiene sed: se seca y cuando te das cuenta ya es tarde. <b>El aparato habla por ella.</b> Y sirve igual para la maceta del aula, para una planta de tu casa o para un vivero con cien macetas.'],
-  ['¿Es un robot?','Sí, aunque no se mueva. <b>Robot no es el que camina: es el que percibe, decide y actúa.</b><br><br>• <b>Percibe</b> — el sensor se entera de cómo está la tierra<br>• <b>Decide</b> — el programa compara con un número<br>• <b>Actúa</b> — prende una luz u otra'],
-  ['¿Cómo vamos a trabajar?','<b>Primero cada pieza por separado</b>, hasta que ande sola. Después las juntamos. Es más lento al principio y muchísimo más rápido después: cuando algo falla, ya sabés qué parte funciona.<br><br>Se prueba en <b>Tinkercad</b>, donde nada se rompe, y después va a una maceta de verdad.']],
- piezas:[
-  {ic:'🟢', n:'El LED verde', pin:'pin 9',
-   que:'Es la luz que dice <b>"estoy bien"</b>. Un LED es un foquito chiquito que sólo deja pasar la corriente <b>en un sentido</b>.',
-   conex:'La <b>pata larga</b> va a una resistencia de 220 Ω, y de ahí al <b>pin 9</b>. La <b>pata corta</b> va a <b>GND</b>.',
-   como:'Cuando el pin 9 manda corriente, el LED prende. <b>La resistencia no es un adorno:</b> sin ella pasa más corriente de la que aguanta y se quema, a veces al rato. Y la pata larga tiene que ir del lado del pin: al revés no se rompe, pero tampoco prende.',
-   blo:'fijar patilla [9] en [ALTA]\nesperar [1] segundos\nfijar patilla [9] en [BAJA]\nesperar [1] segundos',
-   cod:'void setup() {\n  pinMode(9, OUTPUT);   // el pin 9 va a MANDAR corriente\n}\n\nvoid loop() {\n  digitalWrite(9, HIGH);   // prende\n  delay(1000);             // espera 1 segundo\n  digitalWrite(9, LOW);    // apaga\n  delay(1000);\n}',
-   probar:'El LED verde parpadea: un segundo prendido, uno apagado.'},
-  {ic:'🔵', n:'El LED azul', pin:'pin 10',
-   que:'Es la luz que dice <b>"tengo sed"</b>. Funciona <b>exactamente igual</b> que el verde: lo único que cambia es el pin.',
-   conex:'La <b>pata larga</b> a una resistencia de 220 Ω y de ahí al <b>pin 10</b>. La <b>pata corta</b> a <b>GND</b>.',
-   como:'Igual que el verde. Y por eso es la mejor pieza para comprobar algo: <b>si el verde anda y el azul no, el problema está en el cable o en la pata larga, no en el programa</b> — porque el programa es el mismo con otro número.',
-   blo:'fijar patilla [10] en [ALTA]\nesperar [1] segundos\nfijar patilla [10] en [BAJA]\nesperar [1] segundos',
-   cod:'void setup() {\n  pinMode(10, OUTPUT);\n}\n\nvoid loop() {\n  digitalWrite(10, HIGH);\n  delay(1000);\n  digitalWrite(10, LOW);\n  delay(1000);\n}',
-   probar:'El LED azul parpadea igual que el verde.'},
-  {ic:'💧', n:'El sensor de humedad', pin:'A0',
-   que:'Se clava en la tierra y devuelve un <b>número de 0 a 1023</b> según cuánta agua hay.',
-   conex:'Tres patas: el <code>+</code> a <b>5V</b>, el <code>−</code> a <b>GND</b>, y el <code>SIG</code> — que es la que trae el dato — a <b>A0</b>.',
-   como:'Entre las dos varillas pasa una corriente chiquita, y <b>cuanta más agua hay, mejor pasa</b>. La placa convierte eso en un número.<br><br><b>Ojo, que va al revés de lo que uno esperaría:</b> tierra <b>seca</b> da un número <b>grande</b> (cerca de 1000) y tierra <b>mojada</b> da uno <b>chico</b> (cerca de 300). No está roto: es así.',
-   blo:'imprimir en monitor serie ( leer patilla analógica [A0] )\nesperar [1] segundos',
-   cod:'void setup() {\n  Serial.begin(9600);   // abre el canal hacia la computadora\n}\n\nvoid loop() {\n  Serial.println(analogRead(A0));   // lee y muestra\n  delay(1000);\n}',
-   probar:'En el <b>monitor serie</b> (el botón de abajo) aparece un número entre 0 y 1023, y cambia al mojar o secar la tierra.'}],
+  ['¿Qué es una maceta inteligente?',
+   'Es una maceta común con un aparato adentro que <b>se da cuenta de cómo está la planta y lo dice</b>. No riega ni se mueve: mira, piensa y avisa.<br><br>La nuestra va a tener un sensor clavado en la tierra, <b>una pantalla que escribe qué le pasa</b> y dos luces de colores. Cuando la tierra se seca, la pantalla dice <b>TENGO SED</b> y se prende la luz azul.'],
+  ['¿Por qué hace falta? ¿No se ve a ojo?',
+   'No, y ahí está lo interesante. <b>La tierra se seca de arriba hacia abajo.</b> La superficie puede estar seca y dura mientras abajo, donde están las raíces, todavía hay agua de sobra. Y al revés: puede verse húmeda arriba y estar seca abajo.<br><br>Por eso mucha gente riega de más y termina pudriendo las raíces. <b>El ojo mira la superficie; el sensor mide adonde importa.</b>'],
+  ['¿Qué es la humedad del suelo?',
+   'No es que haya agua "encima" de la tierra. Es <b>cuánta agua está reteniendo la tierra entre sus partículas</b>, como una esponja.<br><br>Una esponja empapada gotea; una seca está dura. La tierra hace lo mismo, y lo que le importa a la planta es justamente eso: si queda agua para chupar con las raíces.<br><br>Se mide en <b>porcentaje</b>: 0 % es tierra completamente seca y 100 % es tierra empapada.'],
+  ['¿Y cómo hace el sensor para medirla?',
+   'Con un truco simple: <b>el agua conduce la electricidad y la tierra seca casi no.</b><br><br>El sensor tiene dos varillas. Manda una corriente muy chiquita por una y mide cuánta llega a la otra. Si hay mucha agua, pasa fácil. Si está seco, casi no pasa.<br><br>Esa cantidad de corriente la placa la convierte en <b>un número de 0 a 1023</b>. Y ese número, solo, todavía no significa nada: <b>hay que traducirlo</b>. Eso lo vamos a hacer en la etapa 4.'],
+  ['¿Es un robot?',
+   'Sí, aunque no se mueva. <b>Robot no es el que camina: es el que percibe, decide y actúa.</b><br><br>• <b>Percibe</b> — el sensor se entera de cuánta agua hay<br>• <b>Decide</b> — el programa compara con un número<br>• <b>Actúa</b> — escribe en la pantalla y prende una luz'],
+  ['¿Cómo vamos a trabajar?',
+   '<b>Pieza por pieza.</b> Primero hacemos andar cada componente <u>solo</u>, con un programa cortito de cinco renglones, hasta que funcione. Recién cuando las cuatro andan, las juntamos.<br><br>Es más lento al principio y muchísimo más rápido después: <b>cuando algo falla, ya sabés qué parte anda bien</b> y no tenés que revisar todo.<br><br>Todo se prueba primero en <b>Tinkercad</b>, donde nada se rompe ni se quema. Después va a una maceta de verdad.']],
  lista:[
-  ['Arduino Uno o Nano','La computadora del aparato: lee el sensor, decide y prende la luz','Al USB de la PC'],
+  ['Arduino Uno o Nano','La computadora del aparato: lee el sensor, decide y escribe en la pantalla','Al USB de la PC'],
   ['Protoboard','La plaquita de agujeritos donde se arma sin soldar. Las filas están unidas por dentro','—'],
-  ['Sensor de humedad de suelo','Se clava en la tierra. Devuelve un número de 0 a 1023. <b>Seco = número grande</b>','SIG → A0 · + → 5V · − → GND'],
-  ['LED verde','Dice "estoy bien"','Pata larga → pin 9'],
-  ['LED azul','Dice "tengo sed"','Pata larga → pin 10'],
+  ['Sensor de humedad de suelo','Se clava en la tierra y devuelve un número de 0 a 1023 según cuánta agua hay','SIG → A0 · + → 5V · − → GND'],
+  ['Pantalla LCD 16x2 (I2C)','Escribe dos renglones de 16 letras. La versión I2C usa sólo 4 cables','SDA → A4 · SCL → A5 · VCC → 5V · GND → GND'],
+  ['LED verde','La luz que dice "estoy bien"','Pata larga → pin 9'],
+  ['LED azul','La luz que dice "tengo sed"','Pata larga → pin 10'],
   ['2 resistencias de 220 Ω','Una para cada LED, o se queman','Entre cada pin y su LED'],
   ['Cables','Conviene un color para el 5V y otro para el GND','—'],
-  ['Una maceta con tierra','La parte más importante y la que siempre se olvida','—']],
+  ['Una maceta con tierra','La parte más importante, y la que siempre se olvida','—']],
  comp:[
-  {k:'Componentes', t:'Una maceta que avisa', h:`
-    <p>Una planta no puede decir que tiene sed. <b>El aparato habla por ella.</b></p>
-    <p>Y fijate que tiene las tres partes de un robot, las mismas que vimos:</p>
+  {k:'Componentes', t:'Por qué cada pieza está', h:`
+    <p>Un aparato no es una pila de componentes: <b>cada uno está por un motivo</b>, y si sacás
+    uno se cae algo.</p>
     <ul>
-      <li><b>Percibe</b> — el sensor se entera de cómo está la tierra</li>
-      <li><b>Decide</b> — el programa compara con un número</li>
-      <li><b>Actúa</b> — prende una luz u otra</li>
+      <li><b>El sensor</b> — sin él el aparato no se entera de nada y sólo puede repetir siempre lo mismo</li>
+      <li><b>La placa</b> — es la que compara y decide. Sin ella el sensor mide pero nadie hace nada con eso</li>
+      <li><b>La pantalla</b> — es la que <b>dice</b>. Una luz azul te avisa que pasa algo; la pantalla te dice <u>qué</u> pasa y <u>cuánto</u></li>
+      <li><b>Las luces</b> — se ven de lejos y de reojo. La pantalla hay que ir a leerla</li>
     </ul>
-    <div class="hint">No se mueve, y es un robot igual. <b>Robot no es el que camina: es el que
-    percibe, decide y actúa.</b></div>`},
-  {k:'Componentes', t:'El sensor, y la sorpresa que trae', h:`
-    <p>Dos varillas que se clavan en la tierra. Entre ellas pasa una corriente chiquita, y
-    cuanta más agua hay, mejor pasa. La placa lo convierte en un número de <b>0 a 1023</b>.</p>
-    <p><b>Y acá está la sorpresa:</b> el número va al revés de lo que uno esperaría.</p>
-    <table class="esqt">
-      <tr><th>La tierra está...</th><th>El número es...</th></tr>
-      <tr><td>Seca</td><td><b>Grande</b> (cerca de 1000)</td></tr>
-      <tr><td>Mojada</td><td><b>Chico</b> (cerca de 300)</td></tr>
-    </table>
-    <p>No está roto: es así. <b>Antes de programar nada, medí</b> — clavá el sensor en tierra
-    seca y anotá el número, mojala y anotá el otro. Esos dos números son tuyos y los vas a
-    necesitar.</p>`},
-  {k:'Componentes', t:'De la simulación a la maceta de verdad', h:`
-    <p>Primero se prueba en <b>Tinkercad</b>, donde nada se rompe y el sensor se mueve con el
-    mouse. Después va a una maceta posta, y ahí cambian cuatro cosas:</p>
-    <ul>
-      <li><b>Los números son otros.</b> El sensor de verdad no da lo mismo que el simulado.
-      Hay que volver a medir seco y mojado</li>
-      <li><b>Hay agua cerca de la electrónica.</b> La placa va en una caja aparte; en la tierra
-      entra <b>sólo la punta del sensor</b></li>
-      <li><b>Los cables se sueltan.</b> Todo lo que se pueda pegar, pegado</li>
-      <li><b>Alguien va a mover la maceta.</b> Contá con eso</li>
-    </ul>
-    <div class="hint"><b>Elegí una planta difícil de matar.</b> Para probar un aparato que
-    todavía no anda bien, no uses la planta preferida de nadie.</div>`}],
+    <div class="hint"><b>Pantalla y luces no se pisan, se completan.</b> La luz te hace mirar;
+    la pantalla te explica. Es la misma diferencia que hay entre que suene el timbre y que
+    alguien te diga quién es.</div>`}],
+ piezas:[
+  {ic:'🟢', n:'El LED verde', pin:'pin 9',
+   que:'La luz que dice <b>"estoy bien"</b>. Un LED es un foquito que sólo deja pasar la corriente <b>en un sentido</b>.',
+   conex:'La <b>pata larga</b> va a una resistencia de 220 Ω, y de ahí al <b>pin 9</b>. La <b>pata corta</b> va a <b>GND</b>.',
+   como:'Cuando el pin 9 manda corriente, prende.<br><br><b>La resistencia no es un adorno:</b> sin ella pasa más corriente de la que el LED aguanta y se quema — a veces en el momento, a veces al rato, que es peor porque no se entiende por qué.<br><br>Y la <b>pata larga va del lado del pin</b>. Al revés no se rompe, pero tampoco prende: es lo primero que hay que revisar cuando un LED no anda.',
+   blo:'fijar patilla [9] en [ALTA]\\nesperar [1] segundos\\nfijar patilla [9] en [BAJA]\\nesperar [1] segundos',
+   cod:'void setup() {\\n  pinMode(9, OUTPUT);   // el pin 9 va a MANDAR corriente\\n}\\n\\nvoid loop() {\\n  digitalWrite(9, HIGH);   // prende\\n  delay(1000);             // espera 1 segundo\\n  digitalWrite(9, LOW);    // apaga\\n  delay(1000);\\n}',
+   probar:'El LED verde parpadea: un segundo prendido, uno apagado.'},
+  {ic:'🔵', n:'El LED azul', pin:'pin 10',
+   que:'La luz que dice <b>"tengo sed"</b>. Funciona <b>exactamente igual</b> que el verde: lo único que cambia es el número del pin.',
+   conex:'La <b>pata larga</b> a una resistencia de 220 Ω y de ahí al <b>pin 10</b>. La <b>pata corta</b> a <b>GND</b>.',
+   como:'Igual que el verde, y por eso es la mejor pieza para aprender a buscar fallas: <b>si el verde anda y el azul no, el problema no puede estar en el programa</b> — porque el programa es el mismo con otro número. Está en el cable, en la pata larga o en la resistencia.',
+   blo:'fijar patilla [10] en [ALTA]\\nesperar [1] segundos\\nfijar patilla [10] en [BAJA]\\nesperar [1] segundos',
+   cod:'void setup() {\\n  pinMode(10, OUTPUT);\\n}\\n\\nvoid loop() {\\n  digitalWrite(10, HIGH);\\n  delay(1000);\\n  digitalWrite(10, LOW);\\n  delay(1000);\\n}',
+   probar:'El LED azul parpadea igual que el verde.'},
+  {ic:'💧', n:'El sensor de humedad', pin:'A0',
+   que:'Se clava en la tierra y devuelve un <b>número de 0 a 1023</b> según cuánta agua está reteniendo la tierra.',
+   conex:'Tiene tres patas: el <code>+</code> va a <b>5V</b>, el <code>−</code> a <b>GND</b>, y el <code>SIG</code> —que es la que trae el dato— a <b>A0</b>.',
+   como:'Manda una corriente chiquita por una varilla y mide cuánta llega a la otra. <b>El agua conduce; la tierra seca casi no.</b><br><br><b>Ojo, que el número va al revés de lo que uno esperaría:</b><br>• tierra <b>seca</b> → número <b>grande</b>, cerca de 1000<br>• tierra <b>mojada</b> → número <b>chico</b>, cerca de 300<br><br>No está roto: es así, porque lo que mide es <i>cuánto le cuesta pasar</i> a la corriente. Esto se resuelve al traducirlo, en la etapa 4.',
+   blo:'imprimir en monitor serie ( leer patilla analógica [A0] )\\nesperar [1] segundos',
+   cod:'void setup() {\\n  Serial.begin(9600);   // abre el canal hacia la computadora\\n}\\n\\nvoid loop() {\\n  Serial.println(analogRead(A0));   // lee y muestra\\n  delay(1000);\\n}',
+   probar:'En el <b>monitor serie</b> (el botón de abajo) aparece un número entre 0 y 1023, y cambia al mojar o secar la tierra.'},
+  {ic:'📺', n:'La pantalla LCD 16x2', pin:'A4 y A5',
+   que:'Escribe <b>dos renglones de 16 letras</b> cada uno. Es lo que convierte al aparato en algo que <b>habla</b> en vez de sólo hacer señas.',
+   conex:'Buscá en Tinkercad <b>LCD 16x2 (I2C)</b> — la versión I2C, que usa <b>4 cables</b> en vez de 16. <br><br><code>GND</code> → GND · <code>VCC</code> → 5V · <code>SDA</code> → <b>A4</b> · <code>SCL</code> → <b>A5</b>',
+   como:'La pantalla es un aparato con su propia cabecita adentro. La placa no le dibuja las letras: <b>se las pide</b>, por los dos cables de datos (SDA y SCL).<br><br>Por eso hace falta una <b>librería</b>: código que escribió otra persona para no tener que resolver de cero cómo se le habla. Ustedes escriben <code>pantalla.print("HOLA")</code> y adentro hay cientos de líneas que no tienen por qué mirar.<br><br><b>Dos cosas para saber:</b> la pantalla no se borra sola, así que si escribís algo corto encima de algo largo quedan letras viejas colgando — por eso se usa <code>clear()</code>. Y <code>setCursor(0, 1)</code> significa "empezá en la columna 0 del renglón de abajo": <b>se cuenta desde cero</b>.',
+   blo:'(la pantalla no tiene bloques: va en texto)',
+   cod:'#include <LiquidCrystal_I2C.h>\\n\\nLiquidCrystal_I2C pantalla(0x27, 16, 2);   // 16 columnas, 2 renglones\\n\\nvoid setup() {\\n  pantalla.init();        // la enciende\\n  pantalla.backlight();   // prende la luz de atras\\n  pantalla.print("HOLA");\\n}\\n\\nvoid loop() {\\n}',
+   probar:'La pantalla se ilumina y dice HOLA en el renglón de arriba.'}],
+ convertir:{
+  titulo:'De un número a algo que se entiende',
+  bloques:[
+   ['El problema','El sensor dice <b>812</b>.<br><br>¿Eso es mucha o poca agua? <b>Nadie lo puede saber.</b> El número solo no significa nada: hay que <b>traducirlo</b> a algo que una persona entienda, que es el porcentaje.'],
+   ['Para traducir hacen falta dos puntos conocidos','Es igual que traducir de pesos a dólares: si sabés cuánto vale <u>un</u> dólar, podés pasar cualquier precio. Con el sensor pasa lo mismo, pero hay que medir <b>dos</b> puntos, no uno:<br><br>• Clavá el sensor en <b>tierra seca</b> y anotá el número. Eso es <b>0 % de agua</b><br>• Mojá bien la tierra y anotá el otro número. Eso es <b>100 %</b><br><br><b>Esos dos números son de tu maceta y de tu sensor.</b> El equipo de al lado va a tener otros, y está bien.'],
+   ['Un ejemplo con números','Supongamos que midieron:<br><br>• seco → <b>1000</b> &nbsp;=&nbsp; 0 %<br>• mojado → <b>300</b> &nbsp;=&nbsp; 100 %<br><br>Entonces, si ahora el sensor dice <b>650</b> —que está justo en el medio— la tierra está más o menos al <b>50 %</b>.<br><br>Y si dice <b>812</b>, está bastante más cerca del seco que del mojado: alrededor del <b>27 %</b>.'],
+   ['La orden que lo hace sola','Arduino ya trae una orden para esto. Se llama <code>map</code> y se lee así: <i>"esto iba de acá a acá, y ahora va de acá a acá"</i>.<br><br><pre><code>humedad = map(valor, 1000, 300, 0, 100);</code></pre>Traducido: <i>el valor iba de 1000 a 300, y ahora quiero que vaya de 0 a 100</i>.<br><br><b>Fijate que el 1000 va antes que el 300</b>, al revés de como uno los escribiría. Eso es lo que hace que el número dado vuelta se acomode solo: donde el sensor da mucho, el porcentaje da poco.'],
+   ['Ojo con esto','El sensor puede dar valores un poco afuera de los dos que midieron, y entonces el porcentaje se va abajo de 0 o arriba de 100.<br><br>Se arregla con otra orden, <code>constrain</code>, que recorta lo que se pasa:<br><br><pre><code>humedad = constrain(humedad, 0, 100);</code></pre><b>Un porcentaje de 112 % no existe</b>, y si aparece en la pantalla la gente deja de creerle al aparato.']]},
  esq:{
-  filas:[['Sensor de humedad','+','5V'],['Sensor de humedad','−','GND'],
-         ['Sensor de humedad','SIG','A0'],
+  filas:[['Sensor de humedad','+ · − · SIG','5V · GND · A0'],
+         ['Pantalla LCD (I2C)','VCC · GND','5V · GND'],
+         ['Pantalla LCD (I2C)','SDA · SCL','A4 · A5'],
          ['LED verde','pata larga','pin 9 (con resistencia de 220 Ω)'],
          ['LED azul','pata larga','pin 10 (con resistencia de 220 Ω)'],
          ['Los dos LEDs','pata corta','GND']],
-  nota:'Ocho cables en total. <b>La pata larga del LED va siempre del lado de la resistencia:</b> si lo ponés al revés no se rompe, pero tampoco prende.',
+  nota:'En el Uno y en el Nano, <b>los cables de la pantalla van siempre a A4 y A5</b>: no se eligen, la placa los tiene ahí. Y la <b>pata larga</b> del LED va siempre del lado de la resistencia.',
   pasos:[
    'Poné el Arduino y la protoboard sobre la mesa, uno al lado del otro',
-   'Un cable del <b>5V</b> del Arduino al <b>riel rojo</b> (+) de la protoboard, y otro del <b>GND</b> al <b>riel azul</b> (−). Eso alimenta toda la placa de una vez',
+   'Un cable del <b>5V</b> del Arduino al <b>riel rojo</b> (+) de la protoboard, y otro del <b>GND</b> al <b>riel azul</b> (−). Eso alimenta toda la placa de una vez y te ahorra cables después',
    'El sensor: el <code>+</code> al riel rojo, el <code>−</code> al riel azul, y el <code>SIG</code> derecho a <b>A0</b>',
+   'La pantalla: <code>VCC</code> al riel rojo, <code>GND</code> al azul, <code>SDA</code> a <b>A4</b> y <code>SCL</code> a <b>A5</b>',
    'Una resistencia de 220 Ω del <b>pin 9</b> a una fila libre. Ahí la <b>pata larga</b> del LED verde, y la pata corta al riel azul',
    'Lo mismo con el LED azul, pero desde el <b>pin 10</b>',
    'Recién ahora conectá el USB. <b>Nunca cablear con la placa enchufada</b>'],
   revisar:[
    '<b>¿Un LED no prende nunca?</b> Está al revés. La pata larga va del lado de la resistencia',
+   '<b>¿La pantalla se ilumina pero no escribe nada?</b> Está alimentada pero no le llegan los datos: revisá SDA en A4 y SCL en A5',
+   '<b>¿La pantalla no se ilumina?</b> Le falta el 5V o el GND',
    '<b>¿El número del sensor no cambia?</b> El <code>SIG</code> no está en A0, o al sensor le falta el 5V',
    '<b>¿El número está clavado en 0 o en 1023?</b> Falta el cable de GND. Es el que más se olvida',
-   '<b>¿Prenden los dos LEDs juntos?</b> No es el circuito: al programa le falta el <code>si no</code>']},
+   '<b>¿Quedan letras viejas colgando en la pantalla?</b> Falta un <code>pantalla.clear()</code> antes de escribir']},
  eleg:[
-  {q:'¿Con qué número decimos que tiene sed?', op:['600','700','800'],
-   por:'<b>Este número no está escrito en ningún lado: lo tienen que medir ustedes.</b> Claven el sensor en tierra seca y anoten, mójenla y anoten. El umbral va en el medio de esos dos. Y si eligen mal, la maceta va a pedir agua todo el día o no pedir nunca.'},
-  {q:'¿Qué hace cuando está todo bien?', op:['Verde prendido siempre','Todo apagado','Un destello verde cada tanto'],
-   por:'<b>Apagado no se distingue de rota</b>, y esa es la peor de las tres: nadie sabe si la planta está bien o si el aparato se desenchufó. Un destello cada tanto dice dos cosas juntas: <i>estoy viva</i> y <i>está todo bien</i>.'},
-  {q:'¿El azul queda fijo o parpadea?', op:['Fijo','Parpadea despacio','Parpadea rápido'],
-   por:'Una luz fija se vuelve parte del mueble y a los dos días nadie la ve. Una que parpadea rápido molesta tanto que la van a desenchufar. <b>La pregunta real es cuánto tiene que molestar un aviso</b> para que alguien haga algo.'},
+  {q:'¿Con qué porcentaje decimos que tiene sed?', op:['20 % — aguanta bastante seco','30 % — el término medio','45 % — quiere agua seguido'],
+   por:'Depende de qué plantaron: un cactus y un helecho no quieren lo mismo. <b>Esta decisión no es del programador: es de la planta</b>, y hay que averiguarla antes de escribirla. Si eligen mal, la maceta va a pedir agua todo el día, o no pedir nunca.'},
+  {q:'¿Qué muestra la pantalla cuando está todo bien?', op:['Nada, queda en blanco','El porcentaje de humedad','Un mensaje tipo "TODO BIEN"'],
+   por:'Una pantalla en blanco <b>no se distingue de una pantalla rota</b>. Mostrar el número enseña algo más: la gente empieza a ver <b>cómo baja la humedad día a día</b>, y eso es más útil que un cartel fijo.'},
+  {q:'¿Qué hace la luz verde cuando está todo bien?', op:['Prendida siempre','Apagada','Un destello cada tanto'],
+   por:'<b>Apagada no se distingue de rota</b>, y prendida todo el día se vuelve parte del mueble: a los dos días nadie la ve. Un destello cada tanto dice dos cosas juntas: <i>estoy viva</i> y <i>está todo bien</i>.'},
+  {q:'¿Cada cuánto mide?', op:['Todo el tiempo','Cada 10 segundos','Cada 10 minutos'],
+   por:'La tierra no se seca en un segundo: medir todo el tiempo hace que el número tiemble en la pantalla y no deja leerlo. Pero si mide muy espaciado, tarda en darse cuenta de que la regaste. <b>Para la demo conviene rápido; para la maceta de verdad, lento.</b>'},
   {q:'¿Dónde va clavado el sensor?', op:['En el borde de la maceta','En el medio, cerca de la planta','Bien al fondo'],
    por:'En el borde la tierra se seca antes que en el medio, así que el aparato va a decir que tiene sed cuando la raíz todavía tiene agua. <b>Dónde medís cambia la respuesta</b>, y hay que poder explicar por qué eligieron ese lugar.'}],
  cod:{
-  consigna:'Escribí el programa que lee el sensor y prende la luz azul si la tierra está seca, o la verde si está bien. <b>Cada ejercicio está en bloques y en texto</b>: son el mismo programa dicho de dos maneras.',
+  consigna:'Ahora que las cuatro piezas andan por separado, hay que juntarlas. Son cuatro ejercicios y cada uno es el anterior más unas líneas: <b>no pases al siguiente hasta que el de arriba funcione</b>.',
   ejs:[
-   {t:'Medir tu maceta y elegir el número',
-    q:'Todavía sin programar: usá lo que ya anda para medir, y elegí el umbral de tu equipo.',
-    pasos:['Con el programa anterior corriendo, poné el sensor en <b>tierra seca</b> y anotá el número',
-     'Mojá la tierra y anotá el otro número',
-     '<b>Escribilos en el cuaderno</b>, no sólo en la cabeza. Los vas a necesitar en el próximo ejercicio',
-     'Elegí un número <b>en el medio</b> de los dos: ese es tu umbral',
-     'Acordate: <b>seco = número grande</b>. Así que "tiene sed" es cuando el número es <b>mayor</b> que el umbral'],
-    obs:'Tenés dos números anotados y un tercero elegido, con una razón para haberlo elegido.',
+   {t:'Medir tu maceta y anotar los dos números',
+    q:'Todavía sin programar nada nuevo: usá el programa del sensor para conseguir los dos números que necesitás para traducir.',
+    pasos:['Cargá el programa del sensor (el de la etapa 5) y dale play',
+     'Poné el sensor en <b>tierra seca</b> y anotá el número que aparece',
+     'Mojá bien la tierra, esperá unos segundos y anotá el otro número',
+     '<b>Escribilos en el cuaderno, no sólo en la cabeza.</b> Los vas a usar en el ejercicio que sigue y en la maceta de verdad',
+     'Comprobá que tengan sentido: el de seco tiene que ser <b>más grande</b> que el de mojado'],
+    obs:'Tenés dos números anotados, y el de seco es más grande que el de mojado.',
     blo:'(este ejercicio no se programa: se mide)',
-    pista:'Si los dos números te dan casi iguales, el sensor no está haciendo buen contacto con la tierra. Clavalo más.',
-    sol:'seco     ->  ______\nmojado   ->  ______\numbral   ->  ______   (un numero en el medio)'},
-   {t:'La decisión  ⭐',
-    q:'Ahora sí: que prenda el azul si la tierra está seca, y el verde si está bien.',
-    pasos:['Arriba de todo, <b>afuera de las llaves</b>, declará <code>int valor;</code>',
+    pista:'Si los dos números te dan casi iguales, el sensor no está haciendo buen contacto con la tierra: clavalo más hondo y apretá la tierra alrededor.',
+    sol:'seco     ->  ______\nmojado   ->  ______'},
+   {t:'Mostrar el porcentaje en la pantalla',
+    q:'Juntá el sensor con la pantalla: que la pantalla muestre la humedad en porcentaje, traducida con tus dos números.',
+    pasos:['Empezá del programa de la pantalla, el que dice HOLA',
+     'Arriba de todo, <b>afuera de las llaves</b>, declará <code>int valor;</code> e <code>int humedad;</code>',
      'En <code>loop()</code>, escribí <code>valor = analogRead(A0);</code>',
-     'Debajo, <code>if (valor > 700) {</code> — poné <b>tu</b> umbral en lugar del 700',
-     'Adentro de las llaves: <code>digitalWrite(10, HIGH);</code> prende el azul y <code>digitalWrite(9, LOW);</code> apaga el verde',
-     'Cerrá con <code>} else {</code> y adentro al revés: el verde prendido y el azul apagado',
-     'Probá moviendo el sensor de seco a mojado. <b>Nunca se tienen que prender los dos.</b> Si se prenden los dos, te falta el <code>else</code>'],
-    obs:'Con la tierra seca prende el azul; al mojarla, el verde. Y sólo uno a la vez.',
-    blo:'fijar [valor] a ( leer patilla analógica [A0] )\n\nsi  ⟨ [valor] > [700] ⟩  entonces\n      fijar patilla [10] en [ALTA]      ← azul: tiene sed\n      fijar patilla [9]  en [BAJA]\nsi no\n      fijar patilla [10] en [BAJA]\n      fijar patilla [9]  en [ALTA]      ← verde: todo bien',
-    pista:'El bloque <b>si ... entonces / si no</b> está en <b>Control</b>, y el comparador <code>&gt;</code> en <b>Matemáticas</b>. En texto es <code>if ( ) { } else { }</code>. <b>Es el mismo programa</b>: mirá los dos y buscá qué parte de uno es qué parte del otro.',
-    sol:'int valor;\n\nvoid setup() {\n  pinMode(9, OUTPUT);\n  pinMode(10, OUTPUT);\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  valor = analogRead(A0);\n  Serial.println(valor);\n\n  if (valor > 700) {          // poné TU umbral\n    digitalWrite(10, HIGH);   // azul: tiene sed\n    digitalWrite(9,  LOW);\n  } else {\n    digitalWrite(10, LOW);\n    digitalWrite(9,  HIGH);   // verde: todo bien\n  }\n\n  delay(1000);\n}'},
-   {t:'Que se note que está viva',
-    q:'Cuando está todo bien, en vez de dejar el verde prendido, que dé un destello cada tanto.',
-    pasos:['Buscá la rama del <code>else</code>, la del verde',
-     'Después de <code>digitalWrite(9, HIGH);</code> agregá <code>delay(80);</code>',
-     'Y debajo, <code>digitalWrite(9, LOW);</code>',
-     'Play. El verde ahora da un destello corto y se apaga hasta la próxima vuelta'],
-    obs:'Un destello corto cada vez que mide. Y se distingue clarísimo de una maceta desenchufada.',
-    blo:'si no\n      fijar patilla [10] en [BAJA]\n      fijar patilla [9]  en [ALTA]\n      esperar [0.08] segundos\n      fijar patilla [9]  en [BAJA]',
-    pista:'Ochenta milisegundos alcanzan para verlo. Si ponés menos no se ve; si ponés mucho más, deja de parecer un destello.',
-    sol:'  } else {\n    digitalWrite(10, LOW);\n    digitalWrite(9, HIGH);\n    delay(80);\n    digitalWrite(9, LOW);\n  }'},
+     'Debajo, la traducción: <code>humedad = map(valor, 1000, 300, 0, 100);</code> — <b>con tus dos números</b> en lugar de 1000 y 300',
+     'Y recortá lo que se pasa: <code>humedad = constrain(humedad, 0, 100);</code>',
+     'Ahora a la pantalla: <code>pantalla.clear();</code> primero, después <code>pantalla.print("HUMEDAD: ");</code> y <code>pantalla.print(humedad);</code>',
+     'Cerrá con <code>delay(1000);</code> para que no titile'],
+    obs:'La pantalla muestra un número entre 0 y 100 que sube al mojar la tierra y baja al secarla.',
+    blo:'fijar [valor] a ( leer patilla analógica [A0] )\nfijar [humedad] a ( map [valor] de [1000] [300] a [0] [100] )',
+    pista:'El <code>clear()</code> va <b>antes</b> de escribir, siempre. Si no, cuando el número pase de dos cifras a una te va a quedar una cifra vieja colgando: 100 se convierte en 90 y en pantalla queda "900".',
+    sol:'#include <LiquidCrystal_I2C.h>\nLiquidCrystal_I2C pantalla(0x27, 16, 2);\n\nint valor, humedad;\n\nvoid setup() {\n  pantalla.init();\n  pantalla.backlight();\n}\n\nvoid loop() {\n  valor   = analogRead(A0);\n  humedad = map(valor, 1000, 300, 0, 100);   // TUS dos numeros\n  humedad = constrain(humedad, 0, 100);\n\n  pantalla.clear();\n  pantalla.print("HUMEDAD: ");\n  pantalla.print(humedad);\n  pantalla.print("%");\n\n  delay(1000);\n}'},
+   {t:'La decisión  ⭐',
+    q:'Ahora la parte que la vuelve inteligente: que decida qué escribir y qué luz prender según la humedad.',
+    pasos:['En <code>setup()</code>, agregá <code>pinMode(9, OUTPUT);</code> y <code>pinMode(10, OUTPUT);</code>',
+     'Después de calcular la humedad, escribí <code>if (humedad &lt; 30) {</code> — poné <b>tu</b> umbral en lugar del 30',
+     'Adentro: <code>pantalla.setCursor(0, 1);</code> para pasar al renglón de abajo, y <code>pantalla.print("TENGO SED");</code>',
+     'También adentro: <code>digitalWrite(10, HIGH);</code> prende el azul y <code>digitalWrite(9, LOW);</code> apaga el verde',
+     'Cerrá con <code>} else {</code> y adentro poné el mensaje de todo bien y las luces al revés',
+     'Probá moviendo el sensor de seco a mojado. <b>Nunca se tienen que prender las dos luces.</b> Si se prenden las dos, te falta el <code>else</code>'],
+    obs:'Con la tierra seca: pantalla dice TENGO SED y prende el azul. Al mojarla: cambia el mensaje y prende el verde. Nunca las dos luces juntas.',
+    blo:'si  ⟨ [humedad] < [30] ⟩  entonces\n      escribir en pantalla [TENGO SED]\n      fijar patilla [10] en [ALTA]\n      fijar patilla [9]  en [BAJA]\nsi no\n      escribir en pantalla [TODO BIEN]\n      fijar patilla [10] en [BAJA]\n      fijar patilla [9]  en [ALTA]',
+    pista:'<code>setCursor(0, 1)</code> quiere decir "columna 0, renglón 1". <b>Se cuenta desde cero</b>, así que el renglón 1 es el de abajo y el 0 es el de arriba. El porcentaje queda arriba y el mensaje abajo.',
+    sol:'void loop() {\n  valor   = analogRead(A0);\n  humedad = constrain(map(valor, 1000, 300, 0, 100), 0, 100);\n\n  pantalla.clear();\n  pantalla.print("HUMEDAD: ");\n  pantalla.print(humedad);\n  pantalla.print("%");\n\n  pantalla.setCursor(0, 1);       // renglon de abajo\n\n  if (humedad < 30) {             // poné TU umbral\n    pantalla.print("TENGO SED");\n    digitalWrite(10, HIGH);       // azul\n    digitalWrite(9,  LOW);\n  } else {\n    pantalla.print("TODO BIEN");\n    digitalWrite(10, LOW);\n    digitalWrite(9,  HIGH);       // verde\n  }\n\n  delay(1000);\n}'},
    {t:'Para seguir  (si llegaron hasta acá)',
     q:'Tres cosas para agrandar la maceta, de más fácil a más difícil.',
-    pasos:['<b>Que el azul parpadee</b> en vez de quedarse fijo, para que moleste más',
-     '<b>Sumá un buzzer</b> en el pin 8 y que suene una vez cuando pasa a tener sed',
-     '<b>Sumá un tercer estado</b>: un LED rojo para cuando está <u>muy</u> seca. Ahí ya no alcanza con <code>si / si no</code>: hace falta preguntar dos veces'],
+    pasos:['<b>El destello del verde:</b> que en vez de quedarse prendido dé un destello corto. Se hace con <code>delay(80)</code> y apagarlo, adentro del <code>else</code>',
+     '<b>Un tercer estado:</b> un mensaje distinto para cuando está <u>muy</u> seca. Ahí ya no alcanza con <code>si / si no</code>: hace falta preguntar dos veces, con <code>else if</code>',
+     '<b>Una carita:</b> la pantalla puede mostrar <code>:)</code> o <code>:(</code> además del mensaje. Suena tonto y cambia por completo cómo la gente reacciona al aparato'],
     obs:'Cada agregado sigue respetando la regla de oro: nunca hay dos luces prendidas al mismo tiempo.',
-    blo:'si  ⟨ [valor] > [900] ⟩  entonces      ← muy seca\n      rojo\nsi no  si  ⟨ [valor] > [700] ⟩  entonces   ← seca\n      azul\nsi no\n      verde',
-    pista:'Para el tercer estado, el orden importa: preguntá <b>primero por el caso más extremo</b>. Si preguntás primero por 700, el 900 nunca se llega a mirar, porque 900 también es mayor que 700.',
-    sol:'  if (valor > 900) {\n    // rojo: muy seca\n  } else if (valor > 700) {\n    // azul: tiene sed\n  } else {\n    // verde: todo bien\n  }'}],
-  sol:`int valor;
+    blo:'si  ⟨ [humedad] < [15] ⟩  entonces        ← muy seca\n      escribir [ME MUERO]\nsi no  si  ⟨ [humedad] < [30] ⟩  entonces  ← seca\n      escribir [TENGO SED]\nsi no\n      escribir [TODO BIEN]',
+    pista:'Para el tercer estado, <b>el orden importa</b>: preguntá primero por el caso más extremo. Si preguntás primero por 30, el 15 nunca se llega a mirar — porque 15 también es menor que 30.',
+    sol:'  if (humedad < 15) {\n    pantalla.print("ME MUERO");\n  } else if (humedad < 30) {\n    pantalla.print("TENGO SED");\n  } else {\n    pantalla.print("TODO BIEN");\n  }'}],
+  sol:`#include <LiquidCrystal_I2C.h>
+LiquidCrystal_I2C pantalla(0x27, 16, 2);
+
+int valor, humedad;
 
 void setup() {
   pinMode(9, OUTPUT);
   pinMode(10, OUTPUT);
-  Serial.begin(9600);
+  pantalla.init();
+  pantalla.backlight();
 }
 
 void loop() {
-  valor = analogRead(A0);
-  Serial.println(valor);
+  valor   = analogRead(A0);
+  humedad = constrain(map(valor, 1000, 300, 0, 100), 0, 100);
 
-  if (valor > 700) {           // poné TU umbral
-    digitalWrite(10, HIGH);    // azul: tiene sed
+  pantalla.clear();
+  pantalla.print("HUMEDAD: ");
+  pantalla.print(humedad);
+  pantalla.print("%");
+
+  pantalla.setCursor(0, 1);
+
+  if (humedad < 30) {
+    pantalla.print("TENGO SED");
+    digitalWrite(10, HIGH);
     digitalWrite(9,  LOW);
   } else {
+    pantalla.print("TODO BIEN");
     digitalWrite(10, LOW);
-    digitalWrite(9,  HIGH);    // verde: todo bien
+    digitalWrite(9,  HIGH);
     delay(80);
-    digitalWrite(9,  LOW);     // un destello, y se apaga
+    digitalWrite(9,  LOW);
   }
 
   delay(1000);
@@ -6038,7 +6061,7 @@ function proyVer(i){
     </button>`;
   app.innerHTML=`
     <div class="topbar"><button class="backb" onclick="proyHome()" aria-label="volver">← Proyectos</button>
-      <div class="progtext">Etapa 1 a ${p.presenta?6:5}</div></div>
+      <div class="progtext">Etapa 1 a ${p.presenta?7:5}</div></div>
     <div class="card">
       <div class="concepto big">${p.ic} ${p.nom}</div>
       <h2 style="margin-top:0">${p.que}</h2>
@@ -6049,9 +6072,10 @@ function proyVer(i){
       ${paso(1,'El proyecto','De qué se trata, para qué sirve y cómo vamos a trabajar.',`proyPresenta(${i})`,'')}
       ${paso(2,'Los componentes','El listado completo: qué hace cada pieza y dónde va.',`proyComp(${i})`,'')}
       ${paso(3,'Cómo se conecta y funciona cada uno','Pieza por pieza, sin programar todavía.',`proyPiezas(${i})`,'')}
-      ${paso(4,'El código de cada pieza','Un programa cortito por pieza, en bloques y en texto.',`proyPiezasCod(${i})`,'')}
-      ${paso(5,'Juntarlo todo',`${p.cod.ejs.length} ejercicios: medir, decidir y que funcione.`,`proyCod(${i})`,'')}
-      ${paso(6,'Las decisiones del equipo','Lo que decide el equipo, y la tabla que se entrega.',`proyTabla(${i})`,'')}
+      ${paso(4,'De un número a algo que se entiende','Qué es la humedad, cómo la mide el sensor y cómo se traduce a porcentaje. Sin código.',`proyConvertir(${i})`,'')}
+      ${paso(5,'El código de cada pieza','Un programa cortito por pieza, en bloques y en texto.',`proyPiezasCod(${i})`,'')}
+      ${paso(6,'Juntarlo todo',`${p.cod.ejs.length} ejercicios: medir, traducir, decidir.`,`proyCod(${i})`,'')}
+      ${paso(7,'Las decisiones del equipo','Lo que decide el equipo, y la tabla que se entrega.',`proyTabla(${i})`,'')}
       `:`
       ${paso(1,'Los componentes','El listado completo: qué hace cada pieza y dónde va.',`proyComp(${i})`,'')}
       ${paso(2,'El esquema y el armado','Qué pata va a qué pin, en qué orden armarlo y qué revisar si no anda.',`proyEsq(${i})`,'')}
@@ -6093,11 +6117,27 @@ function proyPiezas(i){
     <button class="btn" onclick="proyPiezasCod(${i})">Al código de cada uno →</button>`;
   window.scrollTo(0,0);
 }
+function proyConvertir(i){
+  cur=null; const p=proyLista()[i], c=p.convertir;
+  app.innerHTML=`
+    <div class="topbar"><button class="backb" onclick="proyVer(${i})" aria-label="volver">← ${p.nom}</button>
+      <div class="progtext">Etapa 4</div></div>
+    <div class="card"><h2 style="margin-top:0">${c.titulo}</h2>
+      <p class="muted" style="margin:0">Esta es la idea más importante del proyecto, y no tiene
+      nada de código. Léanla despacio antes de escribir nada.</p></div>
+    ${c.bloques.map((x,k)=>`<div class="card">
+      <div class="concepto">${k+1}</div>
+      <h3 style="margin:6px 0 10px">${x[0]}</h3>
+      <p style="margin:0;line-height:1.65">${x[1]}</p>
+    </div>`).join('')}
+    <button class="btn" onclick="proyPiezasCod(${i})">Al código de cada pieza →</button>`;
+  window.scrollTo(0,0);
+}
 function proyPiezasCod(i){
   cur=null; const p=proyLista()[i];
   app.innerHTML=`
     <div class="topbar"><button class="backb" onclick="proyVer(${i})" aria-label="volver">← ${p.nom}</button>
-      <div class="progtext">Etapa 4</div></div>
+      <div class="progtext">Etapa 5</div></div>
     <div class="card"><h2 style="margin-top:0">El código de cada pieza, por separado</h2>
       <p class="muted" style="margin:0 0 10px">Cada programa prueba <b>una sola pieza</b>. Son
       cortos a propósito: si andan, esa pieza está bien conectada y te podés olvidar de ella.</p>
