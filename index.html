@@ -5783,6 +5783,171 @@ void loop() {
   digitalWrite(13, LOW);
   delay(600000);      // 10 minutos
 }`}
+},
+{
+ id:'maceta', ic:'🪴', nom:'La maceta inteligente',
+ que:'Se da cuenta de qué le falta, y lo dice',
+ regla:'mira tres cosas · elige <b>el problema más importante</b> · lo muestra con un color',
+ lista:[
+  ['Arduino Uno o Nano','Es la computadora de la maceta: lee los tres sensores y decide qué mostrar','Al USB de la PC'],
+  ['Protoboard','Donde se arma sin soldar. Las filas están unidas por dentro','—'],
+  ['Sensor de humedad de suelo','Se clava en la tierra. A más agua, mejor pasa la corriente. Devuelve 0 a 1023','SIG → A0 · + → 5V · − → GND'],
+  ['Fotorresistor (LDR)','Mide cuánta luz le llega a la planta. Cambia su resistencia, por eso necesita el divisor','Una pata → 5V · la otra → A1'],
+  ['Resistencia de 10 kΩ','<b>El divisor del LDR.</b> Sin ella A1 queda flotando y el número es basura','De A1 a GND'],
+  ['TMP36','Termómetro. 10 mV por cada grado, arrancando en 500 mV a 0 °C','5V · señal → A2 · GND'],
+  ['3 LEDs: verde, azul y rojo','<b>La cara de la maceta.</b> Verde: está bien · Azul: tiene sed · Rojo: le falta luz o tiene frío','Pata larga → pines 9, 10 y 11'],
+  ['3 resistencias de 220 Ω','Una para cada LED, o se queman','Entre cada pin y su LED'],
+  ['Buzzer (opcional)','Para que además se escuche. Se usa poco: molesta','+ → pin 8 · − → GND']],
+ comp:[
+  {k:'Componentes', t:'Una maceta que se da cuenta', h:`
+    <p>Este aparato no riega ni mueve nada. <b>Diagnostica.</b> Mira tres cosas a la vez —el
+    agua de la tierra, la luz que le llega y la temperatura— y tiene que decidir
+    <b>cuál es el problema más importante ahora</b>.</p>
+    <p>Es lo que hace alguien que revisa a un enfermo: hay varios síntomas y no se atienden
+    todos juntos. <b>Se atiende el que más apura.</b></p>
+    <div class="hint">Ahí está la diferencia con los otros proyectos. El riego decide entre dos
+    cosas: regar o no regar. Acá hay <b>varios estados posibles y hay que elegir uno solo</b>.
+    Eso en programación se llama <b>decisiones encadenadas</b>, y es el contenido de este
+    proyecto.</div>`},
+  {k:'Componentes', t:'Los tres sentidos, tres escalas distintas', h:`
+    <p>Los tres sensores devuelven números, pero <b>ninguno significa lo mismo</b>:</p>
+    <ul>
+      <li><b>La humedad del suelo</b> da 0 a 1023, y al revés: <b>a más agua, menos número</b></li>
+      <li><b>La luz</b> da 0 a 1023, pero nadie sabe a cuántos "lux" equivale. Sirve para
+      comparar consigo misma, no con una tabla</li>
+      <li><b>La temperatura</b> ya viene traducida a grados, con la recta del fabricante</li>
+    </ul>
+    <p><b>El trabajo del programa es dejarlos comparables.</b> Antes de decidir nada hay que
+    traducir cada uno a algo que se entienda: la humedad a porcentaje, la temperatura a grados,
+    y la luz al menos a "mucha o poca" respecto de lo que esta maceta suele ver.</p>`},
+  {k:'Componentes', t:'La cara: un color, un mensaje', h:`
+    <p>Tres LEDs, y <b>uno solo prendido a la vez</b>.</p>
+    <table class="esqt">
+      <tr><th>Color</th><th>Qué dice</th></tr>
+      <tr><td>🟢 Verde</td><td>Está todo bien</td></tr>
+      <tr><td>🔵 Azul</td><td>Tengo sed</td></tr>
+      <tr><td>🔴 Rojo</td><td>Me falta luz, o tengo frío</td></tr>
+    </table>
+    <p><b>Si se prenden dos, el aparato no diagnosticó: mostró todo.</b> Y una maceta que
+    prende todo junto no le sirve a nadie, porque la persona sigue sin saber qué hacer.</p>
+    <div class="hint">Se puede hacer con un <b>LED RGB</b>, que es una sola pieza y hace los
+    tres colores. Anda igual y se cablea parecido: tres pines con sus tres resistencias.</div>`},
+  {k:'Componentes', t:'De la simulación a la maceta de verdad', h:`
+    <p>Primero se prototipa en <b>Tinkercad</b>, donde nada se rompe y el sensor se mueve con
+    el mouse. Después va a una maceta real, y ahí cambian cuatro cosas:</p>
+    <ul>
+      <li><b>Los números son otros.</b> El sensor real en tierra seca no marca lo mismo que el
+      simulado. Hay que <b>calibrarlo</b>: medir en seco y en mojado, y sacar la recta</li>
+      <li><b>Hay agua cerca de la electrónica.</b> La placa va en una caja aparte; adentro de
+      la tierra entra <b>sólo la punta del sensor</b></li>
+      <li><b>Los cables se sueltan.</b> Todo lo que se pueda pegar o atornillar, pegado</li>
+      <li><b>La maceta se mueve.</b> Alguien la va a correr de lugar, y con eso cambia la luz
+      que recibe. Ese es un dato, no una falla</li>
+    </ul>
+    <div class="hint"><b>Elegí una planta que aguante.</b> Para probar un aparato que todavía
+    no anda bien, conviene algo difícil de matar antes que la planta preferida de alguien.</div>`}],
+ esq:{
+  filas:[['Sensor de humedad','+ · − · SIG','5V · GND · A0'],
+         ['Fotorresistor','una pata','5V'],
+         ['Fotorresistor','otra pata','A1 <b>y</b> resistencia de 10 kΩ a GND'],
+         ['TMP36','5V · señal · GND','5V · A2 · GND'],
+         ['LED verde','pata larga','pin 9 (con resistencia de 220 Ω)'],
+         ['LED azul','pata larga','pin 10 (con resistencia de 220 Ω)'],
+         ['LED rojo','pata larga','pin 11 (con resistencia de 220 Ω)'],
+         ['Los tres LEDs','pata corta','GND']],
+  nota:'El divisor del fotorresistor <b>no es opcional</b>: sin la resistencia de 10 kΩ a GND, A1 queda flotando — y lo peor es que igual devuelve un número, así que parece que anda.',
+  pasos:[
+   'Llevá el <b>5V</b> del Arduino al riel rojo de la protoboard y el <b>GND</b> al riel azul',
+   'El sensor de humedad: <code>+</code> y <code>−</code> a los rieles, <code>SIG</code> a <b>A0</b>',
+   'El fotorresistor: una pata al riel rojo, la otra a una fila libre. De esa fila, un cable a <b>A1</b>',
+   'De <b>esa misma fila</b>, la resistencia de <b>10 kΩ</b> al riel azul. Ese es el divisor',
+   'El TMP36: mirando <b>la cara plana</b>, de izquierda a derecha es <b>5V · señal · GND</b>. La señal a <b>A2</b>',
+   'Los tres LEDs, cada uno con su resistencia de 220 Ω, en los pines <b>9, 10 y 11</b>. Las tres patas cortas al riel azul',
+   'Recién ahora conectá el USB'],
+  revisar:[
+   '<b>¿El TMP36 se calienta al tocarlo?</b> Está al revés. Desenchufá ya: se quema',
+   '<b>¿Se prenden dos LEDs juntos?</b> No es el circuito: al programa le falta el <code>else</code>. Cada rama tiene que apagar a las otras',
+   '<b>¿El número de la luz no cambia al taparlo?</b> Falta la resistencia de 10 kΩ a GND',
+   '<b>¿Un LED no prende nunca?</b> Está al revés. La pata larga va del lado de la resistencia']},
+ eleg:[
+  {q:'¿Cuál es el problema más importante?', op:['Primero el agua','Primero la luz','Primero la temperatura'],
+   por:'<b>La maceta sólo puede decir una cosa a la vez</b>, así que hay que ordenar los síntomas. Sin agua una planta se muere en días; sin luz suficiente tarda semanas; el frío depende de la planta. <b>El orden lo eligen ustedes y es el corazón del programa</b>: define qué <code>if</code> va primero.'},
+  {q:'¿Con qué humedad dice que tiene sed?', op:['25 % — aguanta más seco','30 % — el término medio','40 % — quiere agua seguido'],
+   por:'Depende de qué planta pusieron: un cactus y un helecho no quieren lo mismo. <b>Esta decisión no es del programador: es de la planta</b>, y hay que averiguarla antes de escribirla.'},
+  {q:'¿Qué es "poca luz"? Ojo con la trampa', op:['Cuando el sensor da poco en este momento','Cuando estuvo bajo todo el día'],
+   por:'<b>De noche siempre hay poca luz.</b> Si el aparato mira sólo el instante, va a estar avisando de falta de luz a las tres de la mañana, todas las noches. Para que el aviso sirva hay que mirar <b>cómo estuvo el día entero</b>, no el momento — y eso obliga a que el programa se acuerde de algo.'},
+  {q:'¿El color queda fijo o parpadea?', op:['Fijo','Parpadea despacio','Parpadea rápido'],
+   por:'Un color fijo se vuelve parte del mueble y a los dos días nadie lo ve. Uno que parpadea rápido molesta tanto que lo van a desenchufar. <b>La pregunta real es cuánto tiene que molestar un aviso</b> para que alguien haga algo, sin que lo apaguen.'},
+  {q:'¿Qué hace cuando está todo bien?', op:['Verde prendido siempre','Todo apagado','Un destello verde cada tanto'],
+   por:'<b>Apagado no se distingue de rota</b>, y esa es la peor opción de las tres: nadie sabe si la maceta está contenta o si se quedó sin pilas. Un destello cada tanto dice dos cosas al mismo tiempo: <i>estoy viva</i> y <i>está todo bien</i>.'}],
+ cod:{
+  consigna:'Escribí el programa que lee los tres sensores, decide <b>cuál es el problema más importante</b> y prende un solo LED. Lo prototipan en Tinkercad y después va a la maceta de verdad.',
+  ejs:[
+   {t:'Que la cara dé señales de vida',
+    q:'Hacé que los tres LEDs prendan uno después del otro, medio segundo cada uno, en loop.',
+    obs:'Los tres prenden por turno. Si alguno no prende nunca, está al revés o le falta la resistencia.',
+    pista:'<code>pinMode(9, OUTPUT);</code> para cada uno, en <code>setup()</code>. Después, en el <code>loop</code>, prender y apagar de a uno con <code>delay(500)</code> en el medio.',
+    sol:'void setup() {\n  pinMode(9, OUTPUT);\n  pinMode(10, OUTPUT);\n  pinMode(11, OUTPUT);\n}\n\nvoid loop() {\n  digitalWrite(9, HIGH);  delay(500); digitalWrite(9, LOW);\n  digitalWrite(10, HIGH); delay(500); digitalWrite(10, LOW);\n  digitalWrite(11, HIGH); delay(500); digitalWrite(11, LOW);\n}'},
+   {t:'Los tres sentidos',
+    q:'Leé los tres sensores y mostralos en el monitor, en una línea, para ver que los tres responden.',
+    obs:'Los tres números cambian: la humedad al mover el sensor, la luz al taparla con la mano, la temperatura al calentar el TMP36 con los dedos.',
+    pista:'<code>analogRead(A0)</code>, <code>analogRead(A1)</code> y <code>analogRead(A2)</code>. Mostralos con <code>Serial.print</code> separados por espacios, y el último con <code>println</code> para que baje de renglón.',
+    sol:'void setup() {\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  Serial.print(analogRead(A0)); Serial.print("  ");\n  Serial.print(analogRead(A1)); Serial.print("  ");\n  Serial.println(analogRead(A2));\n  delay(1000);\n}'},
+   {t:'Traducir, para poder comparar',
+    q:'Pasá la humedad a porcentaje y la temperatura a grados. La luz dejala cruda por ahora.',
+    obs:'La humedad va de 0 a 100 y la temperatura da un número creíble. Si la temperatura da 400, revisá el cableado antes que el código.',
+    pista:'La humedad, con la recta de tu equipo (acordate: <b>pendiente negativa</b>, porque a más agua menos número). La temperatura, con la recta del fabricante: <code>float v = analogRead(A2) * 5.0 / 1024.0;</code> y <code>temp = (v - 0.5) * 100.0;</code>',
+    sol:'float humedad, temp;\nint   luz;\n\nvoid loop() {\n  humedad = -0.1883 * analogRead(A0) + 162.3;   // la recta de TU equipo\n  luz     = analogRead(A1);\n\n  float v = analogRead(A2) * 5.0 / 1024.0;\n  temp    = (v - 0.5) * 100.0;\n\n  Serial.print(humedad); Serial.print(" %   luz: ");\n  Serial.print(luz);     Serial.print("   ");\n  Serial.println(temp);\n  delay(1000);\n}'},
+   {t:'Un solo diagnóstico  ⭐',
+    q:'Ahora la parte que importa: que prenda UN SOLO LED, el del problema más importante según el orden que eligió tu equipo.',
+    obs:'Nunca hay dos prendidos. Y podés explicar en voz alta por qué gana ese y no otro.',
+    pista:'Se usa <code>if</code> ... <code>else if</code> ... <code>else</code>. <b>El orden en que los escribís ES la prioridad:</b> el primero que se cumple gana y los demás ni se miran. Y conviene una función <code>cara(verde, azul, rojo)</code> que prenda uno y apague los otros dos: así no te olvidás de apagar ninguno.',
+    sol:'void cara(bool v, bool a, bool r) {\n  digitalWrite(9,  v);\n  digitalWrite(10, a);\n  digitalWrite(11, r);\n}\n\nvoid loop() {\n  // ... leer y traducir ...\n\n  if (humedad < 30) {\n    cara(false, true, false);      // azul: tiene sed\n  } else if (luz < 200) {\n    cara(false, false, true);      // rojo: le falta luz\n  } else if (temp < 10) {\n    cara(false, false, true);      // rojo: tiene frio\n  } else {\n    cara(true, false, false);      // verde: todo bien\n  }\n}'},
+   {t:'Que se note que está viva',
+    q:'Cuando está todo bien, en vez de dejar el verde prendido, que dé un destello cada tanto.',
+    obs:'Un destello corto y después nada. Y se distingue clarísimo de una maceta desenchufada.',
+    pista:'En la rama del <code>else</code>: prender el verde, <code>delay(80)</code>, apagarlo. El resto del tiempo queda apagado. Ochenta milisegundos alcanzan para verlo.',
+    sol:'  } else {\n    cara(true, false, false);\n    delay(80);\n    cara(false, false, false);   // y se queda apagada hasta la proxima vuelta\n  }'},
+   {t:'Que no avise de luz a las 3 de la mañana',
+    q:'De noche siempre hay poca luz. Hacé que avise por falta de luz sólo si la luz estuvo baja TODO el día, no en este instante.',
+    obs:'Al tapar el sensor un rato, no avisa. Si estuvo tapado desde que arrancó, sí.',
+    pista:'Una variable declarada <u>afuera</u> del <code>loop</code> que guarde <b>la luz más alta vista hasta ahora</b>: <code>int luzMax = 0;</code>, y cada vuelta <code>if (luz > luzMax) luzMax = luz;</code>. Después preguntás por <code>luzMax</code> y no por <code>luz</code>. <b>El aparato se acuerda del día entero.</b>',
+    sol:'int luzMax = 0;   // AFUERA del loop: se acuerda de todo el dia\n\nvoid loop() {\n  // ... leer ...\n  if (luz > luzMax) luzMax = luz;\n\n  if (humedad < 30) {\n    cara(false, true, false);\n  } else if (luzMax < 200) {        // el maximo del dia, no el de ahora\n    cara(false, false, true);\n  } else {\n    cara(true, false, false);\n  }\n}'}],
+  sol:`void cara(bool v, bool a, bool r) {
+  digitalWrite(9, v); digitalWrite(10, a); digitalWrite(11, r);
+}
+
+int   luzMax = 0;
+float humedad, temp;
+int   luz;
+
+void setup() {
+  pinMode(9, OUTPUT); pinMode(10, OUTPUT); pinMode(11, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  humedad = -0.1883 * analogRead(A0) + 162.3;   // la recta de TU equipo
+  luz     = analogRead(A1);
+  float v = analogRead(A2) * 5.0 / 1024.0;
+  temp    = (v - 0.5) * 100.0;
+
+  if (luz > luzMax) luzMax = luz;
+
+  if (humedad < 30) {
+    cara(false, true, false);          // azul: tiene sed
+  } else if (luzMax < 200) {
+    cara(false, false, true);          // rojo: le falta luz
+  } else if (temp < 10) {
+    cara(false, false, true);          // rojo: tiene frio
+  } else {
+    cara(true, false, false);          // verde: todo bien
+    delay(80);
+    cara(false, false, false);
+  }
+
+  delay(2000);
+}`}
 }
 ];
 
@@ -5810,8 +5975,7 @@ function proyHome(){
       <div class="concepto big">Proyectos · 2do cuatrimestre</div>
       <h2 style="margin-top:0">De los datos al sistema</h2>
       <p class="muted" style="margin:0;line-height:1.6"><b>Cada equipo tiene su proyecto
-      asignado.</b> Los cuatro miden algo real y los cuatro terminan dejando una serie de
-      datos. Tres actúan sobre el mundo —riegan, ventilan, avisan— y uno <b>sólo registra</b>,
+      asignado.</b> Todos miden algo real y todos terminan dejando una serie de datos. Tres actúan sobre el mundo —riegan, ventilan, avisan— y uno <b>sólo registra</b>,
       que suena más fácil y no lo es: cuando un aparato decide, el error se ve; cuando sólo
       anota, el error queda escondido adentro del archivo.</p>
     </div>
