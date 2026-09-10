@@ -5506,7 +5506,143 @@ void loop() {
 
   if (falta_agua || hace_calor) digitalWrite(LED, HIGH);
   else                          digitalWrite(LED, LOW);`}
-}];
+},
+{
+ id:'externa', ic:'🌤️', nom:'La estación meteorológica',
+ que:'Informa, y avisa la helada',
+ regla:'alerta = (temperatura &lt; 3) <b>Y</b> (viene bajando)',
+ lista:[
+  ['Arduino Uno o Nano','Es la computadora del aparato: lee los sensores, decide y escribe','Al USB de la PC'],
+  ['Protoboard','Donde se arma sin soldar. Las filas están unidas por dentro','—'],
+  ['TMP36','Termómetro. Da un voltaje que sube 10 mV por cada grado, arrancando en 500 mV a 0 °C','5V · señal → A0 · GND'],
+  ['Fotorresistor (LDR)','Mide cuánta luz hay. No devuelve un número: cambia su resistencia, y por eso necesita el divisor','Una pata → 5V · la otra → A1'],
+  ['Resistencia de 10 kΩ','<b>El divisor.</b> Sin ella el pin A1 queda flotando y el número que sale es basura','De A1 a GND'],
+  ['LED de alerta','Avisa cuando hay riesgo de helada','Pata larga → pin 13 (con resistencia de 220 Ω)'],
+  ['Resistencia de 220 Ω','Frena la corriente para que el LED no se queme','Entre el pin 13 y el LED'],
+  ['Buzzer (opcional)','Para que el aviso también se escuche','+ → pin 8 · − → GND']],
+ comp:[
+  {k:'Componentes', t:'Varios sensores, una sola fila', h:`
+    <p>Esta estación no decide gran cosa: <b>produce la serie más larga y más rica de los tres
+    proyectos.</b> Temperatura, luz, y humedad del aire si se consigue el sensor.</p>
+    <p>La idea que ordena todo: cada vez que mide, <b>escribe una fila</b> con todo junto. Una
+    fila = un momento. Eso después es una tabla, y esa tabla es el material de la unidad 2.</p>`},
+  {k:'Componentes', t:'El fotorresistor y su divisor', h:`
+    <p>El <b>LDR</b> no da un número solo: cambia su resistencia según la luz. Para que la
+    placa pueda leerlo necesita un <b>divisor de tensión</b>: el LDR de 5V a A1, y desde A1
+    una resistencia de <b>10 kΩ</b> a GND.</p>
+    <p>Sin esa resistencia, A1 queda flotando y el número que sale es basura. <b>Es el error
+    número uno con este sensor.</b></p>`},
+  {k:'Componentes', t:'La alerta: por qué esta estación también decide', h:`
+    <p>La unidad 3 se llama <i>el sistema decide</i>. Una estación que sólo informa se queda
+    afuera de esa unidad.</p>
+    <p>Por eso este proyecto se compromete a <b>una</b> decisión automática: la <b>alerta de
+    helada</b>. Y no es cualquier decisión — es la única de los tres proyectos que necesita
+    mirar el <b>pasado</b>, no sólo el presente: no alcanza con que haga frío, tiene que
+    <b>venir bajando</b>.</p>`}],
+ esq:{
+  filas:[['TMP36','5V · señal · GND','5V · A0 · GND'],
+         ['Fotorresistor','una pata','5V'],
+         ['Fotorresistor','otra pata','A1 <b>y</b> resistencia de 10 kΩ a GND'],
+         ['LED de alerta','pata larga','pin 13 (con resistencia de 220 Ω)'],
+         ['Buzzer (opcional)','+ · −','pin 8 · GND']],
+  nota:'El divisor del fotorresistor no es opcional: sin la resistencia de 10 kΩ a GND, la lectura de A1 no significa nada.',
+  pasos:[
+   'Llevá el <b>5V</b> del Arduino al riel rojo de la protoboard y el <b>GND</b> al riel azul',
+   'El TMP36: mirando <b>la cara plana</b>, de izquierda a derecha es <b>5V · señal · GND</b>. La señal va a <b>A0</b>',
+   'El fotorresistor: una pata al riel rojo, la otra a una fila libre de la protoboard',
+   'De <b>esa misma fila</b>, un cable a <b>A1</b>',
+   'Y de <b>esa misma fila</b>, la resistencia de <b>10 kΩ</b> al riel azul. <b>Ese es el divisor, y no es opcional</b>',
+   'El LED con su resistencia de 220 Ω, entre el <b>pin 13</b> y GND',
+   'Recién ahora conectá el USB'],
+  revisar:[
+   '<b>¿El TMP36 se calienta al tocarlo?</b> Está al revés. Desenchufá ya: se quema',
+   '<b>¿El número de la luz no cambia nunca?</b> Falta la resistencia de 10 kΩ a GND. A1 está flotando y lo que lee no significa nada',
+   '<b>¿La temperatura da 400 y pico?</b> La señal no está en A0, o falta el GND',
+   '<b>¿El LED no prende?</b> Está al revés: la pata larga va del lado de la resistencia']},
+ eleg:[
+  {q:'¿Con qué temperatura avisa helada?', op:['5 °C — avisa antes','3 °C — el margen justo','0 °C — cuando ya está helando'],
+   por:'A 0 °C ya es tarde para tapar la huerta. Avisar antes da tiempo, pero avisar de más hace que nadie le crea.'},
+  {q:'¿Cada cuánto guarda una fila?', op:['Cada 1 minuto','Cada 10 minutos','Cada 1 hora'],
+   por:'Cada minuto son 525.600 filas por año. Cada hora, 8.760. <b>Hacé la cuenta antes de elegir</b>: esa es la diferencia entre que entre en la placa o no.'},
+  {q:'¿Qué columnas tiene cada fila?', op:['Sólo el valor','Momento y valor','Momento, temperatura, luz y humedad'],
+   por:'Un número sin momento no sirve para nada. <b>Y las unidades van en el nombre de la columna</b>: no <code>temp</code> sino <code>temp_c</code>.'},
+  {q:'¿Qué escribe si un sensor no midió?', op:['Un 0','Nada, deja el lugar vacío','Siempre lo mismo, y está avisado'],
+   por:'El 0 es la peor opción: un 0 parece un dato y ensucia todos los promedios. <b>Lo importante no es qué se escribe, sino que sea siempre igual.</b>'},
+  {q:'¿Cómo sabe que "viene bajando"?', op:['No hace falta, alcanza con el frío','Compara con la lectura anterior','Compara con el promedio de la última hora'],
+   por:'Para comparar con el pasado el programa tiene que <b>recordar</b>. Y eso significa una variable que sobrevive de una vuelta a la otra del <code>loop</code>.'}],
+ cod:{
+  consigna:'Escribí el programa que mide, escribe una fila con todo junto, y prende la alerta si hace frío y además viene bajando.',
+  ejs:[
+   {t:'Que la placa dé señales de vida',
+    q:'Hacé que el LED del pin 13 prenda un segundo y se apague un segundo.',
+    obs:'El LED parpadea parejo. Si no, el problema es el circuito y no el programa.',
+    pista:'<code>pinMode(13, OUTPUT);</code> en <code>setup()</code>. En el <code>loop</code>: <code>digitalWrite(13, HIGH); delay(1000); digitalWrite(13, LOW); delay(1000);</code>',
+    sol:'void setup() {\n  pinMode(13, OUTPUT);\n}\n\nvoid loop() {\n  digitalWrite(13, HIGH);\n  delay(1000);\n  digitalWrite(13, LOW);\n  delay(1000);\n}'},
+   {t:'La temperatura, en grados',
+    q:'Leé el TMP36 y mostrá la temperatura en grados, no el número crudo.',
+    obs:'Da un número creíble, entre 15 y 30 adentro del aula. Si te da 400, revisá el cableado antes que el código.',
+    pista:'Son dos líneas: <code>float v = analogRead(A0) * 5.0 / 1024.0;</code> y después <code>temp = (v - 0.5) * 100.0;</code>. <b>Esa recta no la calibraron ustedes: la escribió el fabricante.</b>',
+    sol:'float temp;\n\nvoid setup() {\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  float v = analogRead(A0) * 5.0 / 1024.0;\n  temp = (v - 0.5) * 100.0;\n\n  Serial.println(temp);\n  delay(1000);\n}'},
+   {t:'La luz',
+    q:'Sumá la lectura del fotorresistor y mostrá los dos valores juntos.',
+    obs:'Tapando el sensor con la mano el número cambia mucho. Si no cambia, falta el divisor.',
+    pista:'<code>int luz = analogRead(A1);</code>. Por ahora dejalo en crudo, de 0 a 1023: todavía no sabemos a qué unidad traducirlo, y eso es honesto.',
+    sol:'  float v = analogRead(A0) * 5.0 / 1024.0;\n  temp = (v - 0.5) * 100.0;\n  int luz = analogRead(A1);\n\n  Serial.print(temp); Serial.print("   luz: ");\n  Serial.println(luz);'},
+   {t:'La fila completa',
+    q:'Cambiá la salida para que cada lectura sea UNA fila con el momento, la temperatura y la luz, separados por coma.',
+    obs:'Cada renglón tiene tres números y dos comas, sin espacios. Eso se copia a la planilla y ya queda en columnas.',
+    pista:'<code>millis()</code> da los milisegundos desde que arrancó. Entre valor y valor, <code>Serial.print(",");</code>. Ojo: el decimal tiene que ser <b>punto</b>, no coma.',
+    sol:'  Serial.print(millis());  Serial.print(",");\n  Serial.print(temp, 1);   Serial.print(",");\n  Serial.println(luz);'},
+   {t:'La alerta, versión simple',
+    q:'Prendé el LED cuando la temperatura esté por debajo del umbral que eligió tu equipo.',
+    obs:'Enfriando el sensor (o bajando el valor en la simulación) el LED prende, y al subir se apaga.',
+    pista:'<code>if (temp &lt; 3) { digitalWrite(13, HIGH); } else { digitalWrite(13, LOW); }</code>. Ese 3 es el número que eligieron en la etapa 3.',
+    sol:'  if (temp < 3) {\n    digitalWrite(13, HIGH);\n  } else {\n    digitalWrite(13, LOW);\n  }'},
+   {t:'Que mire el pasado  ⭐',
+    q:'La alerta de verdad no es sólo que haga frío: la temperatura además tiene que VENIR BAJANDO. Hacé que el aparato compare con la lectura anterior.',
+    obs:'Si hace frío pero la temperatura está subiendo, no avisa. Si hace frío y viene bajando, avisa.',
+    pista:'Hace falta una variable declarada <u>afuera</u> del <code>loop</code> para que sobreviva de una vuelta a la otra: <code>float anterior = 100;</code>. Al final del loop, <code>anterior = temp;</code>. <b>Es el único de los tres proyectos que necesita acordarse del pasado.</b>',
+    sol:'float anterior = 100;   // AFUERA del loop: se acuerda entre una vuelta y otra\n\nvoid loop() {\n  // ... leer temp y luz ...\n\n  bool hace_frio     = (temp < 3);\n  bool viene_bajando = (temp < anterior);\n\n  if (hace_frio && viene_bajando) digitalWrite(13, HIGH);\n  else                            digitalWrite(13, LOW);\n\n  anterior = temp;   // guardar para la proxima vuelta\n}'}],
+  base:`float temp, luz;
+float anterior = 99;      // la última temperatura, para saber si baja
+
+void setup() {
+  pinMode(13, OUTPUT);
+  Serial.begin(9600);
+  Serial.println("temp_c,luz_cruda");    // el encabezado, una sola vez
+}
+
+void loop() {
+  // 1. leé la temperatura y la luz
+
+  // 2. escribí la fila: los valores separados por coma
+
+  // 3. si hace frío Y bajó respecto de la anterior, prendé la alerta
+
+  // 4. guardá esta temperatura para la próxima vuelta
+
+  delay(5000);
+}`,
+  pistas:[
+   'La fila se escribe con <code>Serial.print(temp); Serial.print(","); Serial.println(luz);</code>. El <code>println</code> del final es el que corta el renglón: <b>cada renglón es una fila</b>.',
+   'La alerta necesita las dos cosas a la vez, así que va con <code>&&</code>: <code>if (temp &lt; 3 && temp &lt; anterior)</code>.',
+   'El paso 4 es el que casi todos olvidan: <code>anterior = temp;</code> al final del loop. Sin eso, <code>anterior</code> se queda en 99 para siempre y la alerta nunca entiende que bajó. Y fijate que <code>anterior</code> está declarada <b>afuera</b> del loop: si estuviera adentro, se borraría en cada vuelta.'],
+  sol:`  temp = (analogRead(A0) * 5.0 / 1024.0 - 0.5) * 100.0;
+  luz  = analogRead(A1);
+
+  Serial.print(temp);
+  Serial.print(",");
+  Serial.println(luz);
+
+  if (temp < 3 && temp < anterior) {
+    digitalWrite(13, HIGH);
+  } else {
+    digitalWrite(13, LOW);
+  }
+
+  anterior = temp;`}
+}
+];
 
 const K_PROY='pps.proy4.v1';
 function proyDatos(){ return _lee(K_PROY,{}); }
@@ -5531,10 +5667,11 @@ function proyHome(){
     <div class="card">
       <div class="concepto big">Proyectos · 2do cuatrimestre</div>
       <h2 style="margin-top:0">De los datos al sistema</h2>
-      <p class="muted" style="margin:0;line-height:1.6"><b>Dos proyectos, y cada equipo tiene
-      el suyo asignado.</b> Los dos miden algo real, los dos deciden y los dos actúan sobre el
-      mundo. Uno mide <b>la tierra</b> y el otro mide <b>el aire</b>, y esa diferencia se paga
-      en todo lo demás: el sensor, la recta y hasta la forma de la decisión.</p>
+      <p class="muted" style="margin:0;line-height:1.6"><b>Cada equipo tiene su proyecto
+      asignado.</b> Los tres miden algo real y los tres terminan dejando una serie de datos.
+      Uno mide <b>la tierra</b>, otro mide <b>el aire de adentro</b> y otro <b>el aire de
+      afuera</b>, y esa diferencia se paga en todo lo demás: el sensor, la recta y hasta la
+      forma de la decisión.</p>
     </div>
     <div class="grid" style="grid-template-columns:1fr">
       <button class="item wide" onclick="verSlides(TINKER,'proyHome()','Elegir proyecto →',proyHome)">
