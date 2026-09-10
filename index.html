@@ -5996,15 +5996,27 @@ function proyHome(){
   app.innerHTML=`
     <div class="topbar"><button class="backb" onclick="menu()" aria-label="volver">← Menú</button></div>
     <div class="card">
+      ${(SES&&SES.anio==='2do')?`
+      <div class="concepto big">El proyecto del cuatrimestre</div>
+      <h2 style="margin-top:0">Aparatos que deciden</h2>
+      <p class="muted" style="margin:0;line-height:1.6">Vamos a construir <b>una maceta que
+      avisa cuando tiene sed</b>. Un sensor que se entera, un programa que decide y una luz que
+      lo dice: <b>eso es un robot, aunque no se mueva</b>.<br><br>
+      Se trabaja así: <b>primero cada pieza por separado</b>, hasta que ande sola, y después se
+      juntan. Los cuatro equipos hacen el mismo aparato, así que al final se puede comparar:
+      mismo programa, distinta maceta, <b>distintos números</b>.</p>
+      `:`
       <div class="concepto big">Proyectos · 2do cuatrimestre</div>
       <h2 style="margin-top:0">De los datos al sistema</h2>
       <p class="muted" style="margin:0;line-height:1.6"><b>Cada equipo tiene su proyecto
-      asignado.</b> Todos miden algo real y todos terminan dejando una serie de datos. Tres actúan sobre el mundo —riegan, ventilan, avisan— y uno <b>sólo registra</b>,
-      que suena más fácil y no lo es: cuando un aparato decide, el error se ve; cuando sólo
-      anota, el error queda escondido adentro del archivo.</p>
+      asignado.</b> Todos miden algo real y todos terminan dejando una serie de datos. Tres
+      actúan sobre el mundo —riegan, ventilan, avisan— y uno <b>sólo registra</b>, que suena
+      más fácil y no lo es: cuando un aparato decide, el error se ve; cuando sólo anota, el
+      error queda escondido adentro del archivo.</p>
+      `}
     </div>
     <div class="grid" style="grid-template-columns:1fr">
-      <button class="item wide" onclick="verSlides(TINKER,'proyHome()','Elegir proyecto →',proyHome)">
+      <button class="item wide" onclick="verSlides(TINKER,'proyHome()',(SES&&SES.anio==='2do')?'Empezar →':'Elegir proyecto →',proyHome)">
         <div class="n">🔧 Antes de empezar · Tinkercad</div>
         <div class="d">Cómo entrar con el código de la clase, cómo se arma un circuito y tres cosas para probar.</div>
       </button>
