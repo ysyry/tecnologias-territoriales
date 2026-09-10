@@ -3315,6 +3315,8 @@ const ANIOS = {
     ids:[{id:'teoria',tag:'a1'}], esp:['mezcla']}
  ]},
  '2do':{ nom:'2do año', sub:'Programas de verdad', mods:[
+   {t:'El proyecto', d:'La maceta inteligente: un sensor, dos luces y una decisión.',
+    esp:['proy2']},
    {t:'Programá la placa', d:'Escribís el código y la placa reacciona. Se abren de a una.',
     esp:['misiones']},
    {t:'1 · Repaso y lectura', d:'Volver sobre lo básico, ahora leyendo código escrito.',
@@ -4033,6 +4035,7 @@ function arduRotoVer(i,b){
 const ESPECIALES={
  intro:{n:'Introducción a la robótica', d:'Qué es un robot, de dónde viene y cómo está hecho. Once pantallas para leer de corrido.', fn:'introHome()', wide:true, dest:true},
  jr:   {n:'Modo Jr', d:'Nivel más simple, sin texto para leer: llevá al personaje hasta su objetivo con flechas.', fn:'jrMission(0)', lvl:0},
+ proy2:{n:'La maceta inteligente', d:'El proyecto del cuatrimestre, paso a paso: los componentes, cómo se arma, lo que decide el equipo y el código en seis ejercicios — cada uno en bloques y en texto.', fn:'proyHome()', wide:true, dest:true},
  proy4:{n:'Los proyectos', d:'Los tres proyectos del cuatrimestre, cada uno en cinco etapas: los componentes, el esquema de conexión, las elecciones del equipo, la tabla de elecciones y la simulación en Tinkercad con pistas.', fn:'proyHome()', wide:true, dest:true},
  poner:{n:'Poner en su lugar', d:'Emparejar, armar y ubicar en el mapa. Se puede arrastrar la pieza o tocarla y después tocar el lugar. Sin texto para leer.', fn:'poInicio(0)', lvl:0},
  mapas:{n:'El mapa', d:'Dónde queda cada cosa: los países vecinos, las provincias, y Neuquén con Villa La Angostura adentro. La pieza tiene la forma del lugar, así que se resuelve mirando. Se arrastra o se toca la pieza y después el lugar. Sin texto para leer.', fn:'geInicio(0)', lvl:0},
@@ -5783,204 +5786,194 @@ void loop() {
   digitalWrite(13, LOW);
   delay(600000);      // 10 minutos
 }`}
-},
+}
+];
+/* ============================================================
+   LOS PROYECTOS DE 2do
+   ------------------------------------------------------------
+   Mismo motor que los de 4to, pero mas simples: UN sensor, DOS
+   luces y UNA decision. Y cada ejercicio en bloques y en texto,
+   uno al lado del otro, que es el puente que 2do tiene que
+   cruzar este año.
+   ============================================================ */
+
+const PROY2=[
 {
- id:'maceta', ic:'🪴', nom:'La maceta inteligente',
- que:'Se da cuenta de qué le falta, y lo dice',
- regla:'mira tres cosas · elige <b>el problema más importante</b> · lo muestra con un color',
+ id:'maceta2', ic:'🪴', nom:'La maceta inteligente',
+ que:'Se da cuenta de que tiene sed, y lo dice',
+ regla:'si la tierra está seca → <b>luz azul</b> · si está bien → <b>luz verde</b>',
+ presenta:[
+  ['¿Qué vamos a construir?','Una <b>maceta que avisa cuando tiene sed</b>. Un sensor clavado en la tierra, dos luces, y un programa que decide cuál prender. Cuando la tierra está seca prende la <b>luz azul</b>; cuando está bien, la <b>verde</b>.'],
+  ['¿Para qué sirve?','Una planta no puede decir que tiene sed: se seca y cuando te das cuenta ya es tarde. <b>El aparato habla por ella.</b> Y sirve igual para la maceta del aula, para una planta de tu casa o para un vivero con cien macetas.'],
+  ['¿Es un robot?','Sí, aunque no se mueva. <b>Robot no es el que camina: es el que percibe, decide y actúa.</b><br><br>• <b>Percibe</b> — el sensor se entera de cómo está la tierra<br>• <b>Decide</b> — el programa compara con un número<br>• <b>Actúa</b> — prende una luz u otra'],
+  ['¿Cómo vamos a trabajar?','<b>Primero cada pieza por separado</b>, hasta que ande sola. Después las juntamos. Es más lento al principio y muchísimo más rápido después: cuando algo falla, ya sabés qué parte funciona.<br><br>Se prueba en <b>Tinkercad</b>, donde nada se rompe, y después va a una maceta de verdad.']],
+ piezas:[
+  {ic:'🟢', n:'El LED verde', pin:'pin 9',
+   que:'Es la luz que dice <b>"estoy bien"</b>. Un LED es un foquito chiquito que sólo deja pasar la corriente <b>en un sentido</b>.',
+   conex:'La <b>pata larga</b> va a una resistencia de 220 Ω, y de ahí al <b>pin 9</b>. La <b>pata corta</b> va a <b>GND</b>.',
+   como:'Cuando el pin 9 manda corriente, el LED prende. <b>La resistencia no es un adorno:</b> sin ella pasa más corriente de la que aguanta y se quema, a veces al rato. Y la pata larga tiene que ir del lado del pin: al revés no se rompe, pero tampoco prende.',
+   blo:'fijar patilla [9] en [ALTA]\nesperar [1] segundos\nfijar patilla [9] en [BAJA]\nesperar [1] segundos',
+   cod:'void setup() {\n  pinMode(9, OUTPUT);   // el pin 9 va a MANDAR corriente\n}\n\nvoid loop() {\n  digitalWrite(9, HIGH);   // prende\n  delay(1000);             // espera 1 segundo\n  digitalWrite(9, LOW);    // apaga\n  delay(1000);\n}',
+   probar:'El LED verde parpadea: un segundo prendido, uno apagado.'},
+  {ic:'🔵', n:'El LED azul', pin:'pin 10',
+   que:'Es la luz que dice <b>"tengo sed"</b>. Funciona <b>exactamente igual</b> que el verde: lo único que cambia es el pin.',
+   conex:'La <b>pata larga</b> a una resistencia de 220 Ω y de ahí al <b>pin 10</b>. La <b>pata corta</b> a <b>GND</b>.',
+   como:'Igual que el verde. Y por eso es la mejor pieza para comprobar algo: <b>si el verde anda y el azul no, el problema está en el cable o en la pata larga, no en el programa</b> — porque el programa es el mismo con otro número.',
+   blo:'fijar patilla [10] en [ALTA]\nesperar [1] segundos\nfijar patilla [10] en [BAJA]\nesperar [1] segundos',
+   cod:'void setup() {\n  pinMode(10, OUTPUT);\n}\n\nvoid loop() {\n  digitalWrite(10, HIGH);\n  delay(1000);\n  digitalWrite(10, LOW);\n  delay(1000);\n}',
+   probar:'El LED azul parpadea igual que el verde.'},
+  {ic:'💧', n:'El sensor de humedad', pin:'A0',
+   que:'Se clava en la tierra y devuelve un <b>número de 0 a 1023</b> según cuánta agua hay.',
+   conex:'Tres patas: el <code>+</code> a <b>5V</b>, el <code>−</code> a <b>GND</b>, y el <code>SIG</code> — que es la que trae el dato — a <b>A0</b>.',
+   como:'Entre las dos varillas pasa una corriente chiquita, y <b>cuanta más agua hay, mejor pasa</b>. La placa convierte eso en un número.<br><br><b>Ojo, que va al revés de lo que uno esperaría:</b> tierra <b>seca</b> da un número <b>grande</b> (cerca de 1000) y tierra <b>mojada</b> da uno <b>chico</b> (cerca de 300). No está roto: es así.',
+   blo:'imprimir en monitor serie ( leer patilla analógica [A0] )\nesperar [1] segundos',
+   cod:'void setup() {\n  Serial.begin(9600);   // abre el canal hacia la computadora\n}\n\nvoid loop() {\n  Serial.println(analogRead(A0));   // lee y muestra\n  delay(1000);\n}',
+   probar:'En el <b>monitor serie</b> (el botón de abajo) aparece un número entre 0 y 1023, y cambia al mojar o secar la tierra.'}],
  lista:[
-  ['Arduino Uno o Nano','Es la computadora de la maceta: lee los tres sensores y decide qué mostrar','Al USB de la PC'],
-  ['Protoboard','Donde se arma sin soldar. Las filas están unidas por dentro','—'],
-  ['Sensor de humedad de suelo','Se clava en la tierra. A más agua, mejor pasa la corriente. Devuelve 0 a 1023','SIG → A0 · + → 5V · − → GND'],
-  ['Fotorresistor (LDR)','Mide cuánta luz le llega a la planta. Cambia su resistencia, por eso necesita el divisor','Una pata → 5V · la otra → A1'],
-  ['Resistencia de 10 kΩ','<b>El divisor del LDR.</b> Sin ella A1 queda flotando y el número es basura','De A1 a GND'],
-  ['TMP36','Termómetro. 10 mV por cada grado, arrancando en 500 mV a 0 °C','5V · señal → A2 · GND'],
-  ['3 LEDs: verde, azul y rojo','<b>La cara de la maceta.</b> Verde: está bien · Azul: tiene sed · Rojo: le falta luz o tiene frío','Pata larga → pines 9, 10 y 11'],
-  ['3 resistencias de 220 Ω','Una para cada LED, o se queman','Entre cada pin y su LED'],
-  ['Buzzer (opcional)','Para que además se escuche. Se usa poco: molesta','+ → pin 8 · − → GND']],
+  ['Arduino Uno o Nano','La computadora del aparato: lee el sensor, decide y prende la luz','Al USB de la PC'],
+  ['Protoboard','La plaquita de agujeritos donde se arma sin soldar. Las filas están unidas por dentro','—'],
+  ['Sensor de humedad de suelo','Se clava en la tierra. Devuelve un número de 0 a 1023. <b>Seco = número grande</b>','SIG → A0 · + → 5V · − → GND'],
+  ['LED verde','Dice "estoy bien"','Pata larga → pin 9'],
+  ['LED azul','Dice "tengo sed"','Pata larga → pin 10'],
+  ['2 resistencias de 220 Ω','Una para cada LED, o se queman','Entre cada pin y su LED'],
+  ['Cables','Conviene un color para el 5V y otro para el GND','—'],
+  ['Una maceta con tierra','La parte más importante y la que siempre se olvida','—']],
  comp:[
-  {k:'Componentes', t:'Una maceta que se da cuenta', h:`
-    <p>Este aparato no riega ni mueve nada. <b>Diagnostica.</b> Mira tres cosas a la vez —el
-    agua de la tierra, la luz que le llega y la temperatura— y tiene que decidir
-    <b>cuál es el problema más importante ahora</b>.</p>
-    <p>Es lo que hace alguien que revisa a un enfermo: hay varios síntomas y no se atienden
-    todos juntos. <b>Se atiende el que más apura.</b></p>
-    <div class="hint">Ahí está la diferencia con los otros proyectos. El riego decide entre dos
-    cosas: regar o no regar. Acá hay <b>varios estados posibles y hay que elegir uno solo</b>.
-    Eso en programación se llama <b>decisiones encadenadas</b>, y es el contenido de este
-    proyecto.</div>`},
-  {k:'Componentes', t:'Los tres sentidos, tres escalas distintas', h:`
-    <p>Los tres sensores devuelven números, pero <b>ninguno significa lo mismo</b>:</p>
+  {k:'Componentes', t:'Una maceta que avisa', h:`
+    <p>Una planta no puede decir que tiene sed. <b>El aparato habla por ella.</b></p>
+    <p>Y fijate que tiene las tres partes de un robot, las mismas que vimos:</p>
     <ul>
-      <li><b>La humedad del suelo</b> da 0 a 1023, y al revés: <b>a más agua, menos número</b></li>
-      <li><b>La luz</b> da 0 a 1023, pero nadie sabe a cuántos "lux" equivale. Sirve para
-      comparar consigo misma, no con una tabla</li>
-      <li><b>La temperatura</b> ya viene traducida a grados, con la recta del fabricante</li>
+      <li><b>Percibe</b> — el sensor se entera de cómo está la tierra</li>
+      <li><b>Decide</b> — el programa compara con un número</li>
+      <li><b>Actúa</b> — prende una luz u otra</li>
     </ul>
-    <p><b>El trabajo del programa es dejarlos comparables.</b> Antes de decidir nada hay que
-    traducir cada uno a algo que se entienda: la humedad a porcentaje, la temperatura a grados,
-    y la luz al menos a "mucha o poca" respecto de lo que esta maceta suele ver.</p>`},
-  {k:'Componentes', t:'La cara: un color, un mensaje', h:`
-    <p>Tres LEDs, y <b>uno solo prendido a la vez</b>.</p>
+    <div class="hint">No se mueve, y es un robot igual. <b>Robot no es el que camina: es el que
+    percibe, decide y actúa.</b></div>`},
+  {k:'Componentes', t:'El sensor, y la sorpresa que trae', h:`
+    <p>Dos varillas que se clavan en la tierra. Entre ellas pasa una corriente chiquita, y
+    cuanta más agua hay, mejor pasa. La placa lo convierte en un número de <b>0 a 1023</b>.</p>
+    <p><b>Y acá está la sorpresa:</b> el número va al revés de lo que uno esperaría.</p>
     <table class="esqt">
-      <tr><th>Color</th><th>Qué dice</th></tr>
-      <tr><td>🟢 Verde</td><td>Está todo bien</td></tr>
-      <tr><td>🔵 Azul</td><td>Tengo sed</td></tr>
-      <tr><td>🔴 Rojo</td><td>Me falta luz, o tengo frío</td></tr>
+      <tr><th>La tierra está...</th><th>El número es...</th></tr>
+      <tr><td>Seca</td><td><b>Grande</b> (cerca de 1000)</td></tr>
+      <tr><td>Mojada</td><td><b>Chico</b> (cerca de 300)</td></tr>
     </table>
-    <p><b>Si se prenden dos, el aparato no diagnosticó: mostró todo.</b> Y una maceta que
-    prende todo junto no le sirve a nadie, porque la persona sigue sin saber qué hacer.</p>
-    <div class="hint">Se puede hacer con un <b>LED RGB</b>, que es una sola pieza y hace los
-    tres colores. Anda igual y se cablea parecido: tres pines con sus tres resistencias.</div>`},
+    <p>No está roto: es así. <b>Antes de programar nada, medí</b> — clavá el sensor en tierra
+    seca y anotá el número, mojala y anotá el otro. Esos dos números son tuyos y los vas a
+    necesitar.</p>`},
   {k:'Componentes', t:'De la simulación a la maceta de verdad', h:`
-    <p>Primero se prototipa en <b>Tinkercad</b>, donde nada se rompe y el sensor se mueve con
-    el mouse. Después va a una maceta real, y ahí cambian cuatro cosas:</p>
+    <p>Primero se prueba en <b>Tinkercad</b>, donde nada se rompe y el sensor se mueve con el
+    mouse. Después va a una maceta posta, y ahí cambian cuatro cosas:</p>
     <ul>
-      <li><b>Los números son otros.</b> El sensor real en tierra seca no marca lo mismo que el
-      simulado. Hay que <b>calibrarlo</b>: medir en seco y en mojado, y sacar la recta</li>
-      <li><b>Hay agua cerca de la electrónica.</b> La placa va en una caja aparte; adentro de
-      la tierra entra <b>sólo la punta del sensor</b></li>
-      <li><b>Los cables se sueltan.</b> Todo lo que se pueda pegar o atornillar, pegado</li>
-      <li><b>La maceta se mueve.</b> Alguien la va a correr de lugar, y con eso cambia la luz
-      que recibe. Ese es un dato, no una falla</li>
+      <li><b>Los números son otros.</b> El sensor de verdad no da lo mismo que el simulado.
+      Hay que volver a medir seco y mojado</li>
+      <li><b>Hay agua cerca de la electrónica.</b> La placa va en una caja aparte; en la tierra
+      entra <b>sólo la punta del sensor</b></li>
+      <li><b>Los cables se sueltan.</b> Todo lo que se pueda pegar, pegado</li>
+      <li><b>Alguien va a mover la maceta.</b> Contá con eso</li>
     </ul>
-    <div class="hint"><b>Elegí una planta que aguante.</b> Para probar un aparato que todavía
-    no anda bien, conviene algo difícil de matar antes que la planta preferida de alguien.</div>`}],
+    <div class="hint"><b>Elegí una planta difícil de matar.</b> Para probar un aparato que
+    todavía no anda bien, no uses la planta preferida de nadie.</div>`}],
  esq:{
-  filas:[['Sensor de humedad','+ · − · SIG','5V · GND · A0'],
-         ['Fotorresistor','una pata','5V'],
-         ['Fotorresistor','otra pata','A1 <b>y</b> resistencia de 10 kΩ a GND'],
-         ['TMP36','5V · señal · GND','5V · A2 · GND'],
+  filas:[['Sensor de humedad','+','5V'],['Sensor de humedad','−','GND'],
+         ['Sensor de humedad','SIG','A0'],
          ['LED verde','pata larga','pin 9 (con resistencia de 220 Ω)'],
          ['LED azul','pata larga','pin 10 (con resistencia de 220 Ω)'],
-         ['LED rojo','pata larga','pin 11 (con resistencia de 220 Ω)'],
-         ['Los tres LEDs','pata corta','GND']],
-  nota:'El divisor del fotorresistor <b>no es opcional</b>: sin la resistencia de 10 kΩ a GND, A1 queda flotando — y lo peor es que igual devuelve un número, así que parece que anda.',
+         ['Los dos LEDs','pata corta','GND']],
+  nota:'Ocho cables en total. <b>La pata larga del LED va siempre del lado de la resistencia:</b> si lo ponés al revés no se rompe, pero tampoco prende.',
   pasos:[
-   'Llevá el <b>5V</b> del Arduino al riel rojo de la protoboard y el <b>GND</b> al riel azul',
-   'El sensor de humedad: <code>+</code> y <code>−</code> a los rieles, <code>SIG</code> a <b>A0</b>',
-   'El fotorresistor: una pata al riel rojo, la otra a una fila libre. De esa fila, un cable a <b>A1</b>',
-   'De <b>esa misma fila</b>, la resistencia de <b>10 kΩ</b> al riel azul. Ese es el divisor',
-   'El TMP36: mirando <b>la cara plana</b>, de izquierda a derecha es <b>5V · señal · GND</b>. La señal a <b>A2</b>',
-   'Los tres LEDs, cada uno con su resistencia de 220 Ω, en los pines <b>9, 10 y 11</b>. Las tres patas cortas al riel azul',
-   'Recién ahora conectá el USB'],
+   'Poné el Arduino y la protoboard sobre la mesa, uno al lado del otro',
+   'Un cable del <b>5V</b> del Arduino al <b>riel rojo</b> (+) de la protoboard, y otro del <b>GND</b> al <b>riel azul</b> (−). Eso alimenta toda la placa de una vez',
+   'El sensor: el <code>+</code> al riel rojo, el <code>−</code> al riel azul, y el <code>SIG</code> derecho a <b>A0</b>',
+   'Una resistencia de 220 Ω del <b>pin 9</b> a una fila libre. Ahí la <b>pata larga</b> del LED verde, y la pata corta al riel azul',
+   'Lo mismo con el LED azul, pero desde el <b>pin 10</b>',
+   'Recién ahora conectá el USB. <b>Nunca cablear con la placa enchufada</b>'],
   revisar:[
-   '<b>¿El TMP36 se calienta al tocarlo?</b> Está al revés. Desenchufá ya: se quema',
-   '<b>¿Se prenden dos LEDs juntos?</b> No es el circuito: al programa le falta el <code>else</code>. Cada rama tiene que apagar a las otras',
-   '<b>¿El número de la luz no cambia al taparlo?</b> Falta la resistencia de 10 kΩ a GND',
-   '<b>¿Un LED no prende nunca?</b> Está al revés. La pata larga va del lado de la resistencia']},
+   '<b>¿Un LED no prende nunca?</b> Está al revés. La pata larga va del lado de la resistencia',
+   '<b>¿El número del sensor no cambia?</b> El <code>SIG</code> no está en A0, o al sensor le falta el 5V',
+   '<b>¿El número está clavado en 0 o en 1023?</b> Falta el cable de GND. Es el que más se olvida',
+   '<b>¿Prenden los dos LEDs juntos?</b> No es el circuito: al programa le falta el <code>si no</code>']},
  eleg:[
-  {q:'¿Cuál es el problema más importante?', op:['Primero el agua','Primero la luz','Primero la temperatura'],
-   por:'<b>La maceta sólo puede decir una cosa a la vez</b>, así que hay que ordenar los síntomas. Sin agua una planta se muere en días; sin luz suficiente tarda semanas; el frío depende de la planta. <b>El orden lo eligen ustedes y es el corazón del programa</b>: define qué <code>if</code> va primero.'},
-  {q:'¿Con qué humedad dice que tiene sed?', op:['25 % — aguanta más seco','30 % — el término medio','40 % — quiere agua seguido'],
-   por:'Depende de qué planta pusieron: un cactus y un helecho no quieren lo mismo. <b>Esta decisión no es del programador: es de la planta</b>, y hay que averiguarla antes de escribirla.'},
-  {q:'¿Qué es "poca luz"? Ojo con la trampa', op:['Cuando el sensor da poco en este momento','Cuando estuvo bajo todo el día'],
-   por:'<b>De noche siempre hay poca luz.</b> Si el aparato mira sólo el instante, va a estar avisando de falta de luz a las tres de la mañana, todas las noches. Para que el aviso sirva hay que mirar <b>cómo estuvo el día entero</b>, no el momento — y eso obliga a que el programa se acuerde de algo.'},
-  {q:'¿El color queda fijo o parpadea?', op:['Fijo','Parpadea despacio','Parpadea rápido'],
-   por:'Un color fijo se vuelve parte del mueble y a los dos días nadie lo ve. Uno que parpadea rápido molesta tanto que lo van a desenchufar. <b>La pregunta real es cuánto tiene que molestar un aviso</b> para que alguien haga algo, sin que lo apaguen.'},
+  {q:'¿Con qué número decimos que tiene sed?', op:['600','700','800'],
+   por:'<b>Este número no está escrito en ningún lado: lo tienen que medir ustedes.</b> Claven el sensor en tierra seca y anoten, mójenla y anoten. El umbral va en el medio de esos dos. Y si eligen mal, la maceta va a pedir agua todo el día o no pedir nunca.'},
   {q:'¿Qué hace cuando está todo bien?', op:['Verde prendido siempre','Todo apagado','Un destello verde cada tanto'],
-   por:'<b>Apagado no se distingue de rota</b>, y esa es la peor opción de las tres: nadie sabe si la maceta está contenta o si se quedó sin pilas. Un destello cada tanto dice dos cosas al mismo tiempo: <i>estoy viva</i> y <i>está todo bien</i>.'}],
+   por:'<b>Apagado no se distingue de rota</b>, y esa es la peor de las tres: nadie sabe si la planta está bien o si el aparato se desenchufó. Un destello cada tanto dice dos cosas juntas: <i>estoy viva</i> y <i>está todo bien</i>.'},
+  {q:'¿El azul queda fijo o parpadea?', op:['Fijo','Parpadea despacio','Parpadea rápido'],
+   por:'Una luz fija se vuelve parte del mueble y a los dos días nadie la ve. Una que parpadea rápido molesta tanto que la van a desenchufar. <b>La pregunta real es cuánto tiene que molestar un aviso</b> para que alguien haga algo.'},
+  {q:'¿Dónde va clavado el sensor?', op:['En el borde de la maceta','En el medio, cerca de la planta','Bien al fondo'],
+   por:'En el borde la tierra se seca antes que en el medio, así que el aparato va a decir que tiene sed cuando la raíz todavía tiene agua. <b>Dónde medís cambia la respuesta</b>, y hay que poder explicar por qué eligieron ese lugar.'}],
  cod:{
-  consigna:'Escribí el programa que lee los tres sensores, decide <b>cuál es el problema más importante</b> y prende un solo LED. Lo prototipan en Tinkercad y después va a la maceta de verdad.',
+  consigna:'Escribí el programa que lee el sensor y prende la luz azul si la tierra está seca, o la verde si está bien. <b>Cada ejercicio está en bloques y en texto</b>: son el mismo programa dicho de dos maneras.',
   ejs:[
-   {t:'Que la cara dé señales de vida',
-    pasos:['Escribí las dos partes que tiene <b>todo</b> programa de Arduino: <code>void setup() { }</code> y abajo <code>void loop() { }</code>',
-     'Adentro de <code>setup()</code>, escribí <code>pinMode(9, OUTPUT);</code> — le avisa a la placa que el pin 9 va a <b>mandar</b> corriente',
-     'Copiá esa línea dos veces más, y cambiá el 9 por <b>10</b> y por <b>11</b>',
-     'Adentro de <code>loop()</code>, escribí <code>digitalWrite(9, HIGH);</code> — <b>prende</b> el verde',
-     'Debajo, <code>delay(500);</code> — espera medio segundo. Y debajo, <code>digitalWrite(9, LOW);</code> — lo <b>apaga</b>',
-     'Dale <b>play</b>. Si el verde parpadea, repetí esos tres renglones para el 10 y para el 11'],
-    q:'Hacé que los tres LEDs prendan uno después del otro, medio segundo cada uno, en loop.',
-    obs:'Los tres prenden por turno. Si alguno no prende nunca, está al revés o le falta la resistencia.',
-    pista:'<code>pinMode(9, OUTPUT);</code> para cada uno, en <code>setup()</code>. Después, en el <code>loop</code>, prender y apagar de a uno con <code>delay(500)</code> en el medio.',
-    sol:'void setup() {\n  pinMode(9, OUTPUT);\n  pinMode(10, OUTPUT);\n  pinMode(11, OUTPUT);\n}\n\nvoid loop() {\n  digitalWrite(9, HIGH);  delay(500); digitalWrite(9, LOW);\n  digitalWrite(10, HIGH); delay(500); digitalWrite(10, LOW);\n  digitalWrite(11, HIGH); delay(500); digitalWrite(11, LOW);\n}'},
-   {t:'Los tres sentidos',
-    pasos:['En <code>setup()</code>, agregá <code>Serial.begin(9600);</code> — abre el canal para mandarle texto a la computadora',
-     'En <code>loop()</code>, borrá por ahora lo de los LEDs. Vamos a mirar números',
-     'Escribí <code>Serial.println(analogRead(A0));</code> — lee el sensor de humedad y lo muestra',
-     'Play, y abrí el <b>monitor serie</b> (el botón de abajo). Movés el sensor y el número tiene que cambiar',
-     'Cuando ande, sumá <code>A1</code> y <code>A2</code>. Usá <code>Serial.print</code> para los dos primeros y <code>Serial.println</code> <b>sólo en el último</b>: el <code>println</code> es el que baja de renglón'],
-    q:'Leé los tres sensores y mostralos en el monitor, en una línea, para ver que los tres responden.',
-    obs:'Los tres números cambian: la humedad al mover el sensor, la luz al taparla con la mano, la temperatura al calentar el TMP36 con los dedos.',
-    pista:'<code>analogRead(A0)</code>, <code>analogRead(A1)</code> y <code>analogRead(A2)</code>. Mostralos con <code>Serial.print</code> separados por espacios, y el último con <code>println</code> para que baje de renglón.',
-    sol:'void setup() {\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  Serial.print(analogRead(A0)); Serial.print("  ");\n  Serial.print(analogRead(A1)); Serial.print("  ");\n  Serial.println(analogRead(A2));\n  delay(1000);\n}'},
-   {t:'Traducir, para poder comparar',
-    pasos:['Arriba de todo, <b>afuera de las llaves</b>, declará <code>float humedad;</code> — <i>float</i> es una variable que admite decimales',
-     'En <code>loop()</code>, escribí <code>humedad = -0.1883 * analogRead(A0) + 162.3;</code> pero con <b>los números de la calibración de ustedes</b>',
-     'Mostrala con <code>Serial.println(humedad);</code> y fijate que vaya de 0 a 100. <b>Si te da negativo o más de 100, la recta está mal</b>',
-     'Ahora la temperatura, en dos renglones: <code>float v = analogRead(A2) * 5.0 / 1024.0;</code> y después <code>temp = (v - 0.5) * 100.0;</code>',
-     'Mostrá los tres valores juntos y comprobá que los tres tengan sentido antes de seguir'],
-    q:'Pasá la humedad a porcentaje y la temperatura a grados. La luz dejala cruda por ahora.',
-    obs:'La humedad va de 0 a 100 y la temperatura da un número creíble. Si la temperatura da 400, revisá el cableado antes que el código.',
-    pista:'La humedad, con la recta de tu equipo (acordate: <b>pendiente negativa</b>, porque a más agua menos número). La temperatura, con la recta del fabricante: <code>float v = analogRead(A2) * 5.0 / 1024.0;</code> y <code>temp = (v - 0.5) * 100.0;</code>',
-    sol:'float humedad, temp;\nint   luz;\n\nvoid loop() {\n  humedad = -0.1883 * analogRead(A0) + 162.3;   // la recta de TU equipo\n  luz     = analogRead(A1);\n\n  float v = analogRead(A2) * 5.0 / 1024.0;\n  temp    = (v - 0.5) * 100.0;\n\n  Serial.print(humedad); Serial.print(" %   luz: ");\n  Serial.print(luz);     Serial.print("   ");\n  Serial.println(temp);\n  delay(1000);\n}'},
-   {t:'Un solo diagnóstico  ⭐',
-    pasos:['<b>Primero la función.</b> Arriba de <code>setup()</code>, copiá esto tal cual: <code>void cara(bool v, bool a, bool r) { digitalWrite(9, v); digitalWrite(10, a); digitalWrite(11, r); }</code>',
-     'Esa función prende uno y <b>apaga los otros dos, siempre</b>. Con eso ya no te podés olvidar de apagar ninguno',
-     'Probala: escribí <code>cara(true, false, false);</code> en el <code>loop</code> y fijate que prenda <b>sólo</b> el verde',
-     'Ahora la decisión. Escribí <code>if (humedad &lt; 30) { cara(false, true, false); }</code> — si tiene sed, azul',
-     'Pegado abajo, <code>else if (luz &lt; 200) { cara(false, false, true); }</code> — si no tiene sed pero le falta luz, rojo',
-     'Y al final <code>else { cara(true, false, false); }</code> — si no pasó nada de lo anterior, verde',
-     'Probá moviendo los sensores. <b>Nunca se tienen que prender dos.</b> Si se prenden dos, te falta un <code>else</code>'],
-    q:'Ahora la parte que importa: que prenda UN SOLO LED, el del problema más importante según el orden que eligió tu equipo.',
-    obs:'Nunca hay dos prendidos. Y podés explicar en voz alta por qué gana ese y no otro.',
-    pista:'Se usa <code>if</code> ... <code>else if</code> ... <code>else</code>. <b>El orden en que los escribís ES la prioridad:</b> el primero que se cumple gana y los demás ni se miran. Y conviene una función <code>cara(verde, azul, rojo)</code> que prenda uno y apague los otros dos: así no te olvidás de apagar ninguno.',
-    sol:'void cara(bool v, bool a, bool r) {\n  digitalWrite(9,  v);\n  digitalWrite(10, a);\n  digitalWrite(11, r);\n}\n\nvoid loop() {\n  // ... leer y traducir ...\n\n  if (humedad < 30) {\n    cara(false, true, false);      // azul: tiene sed\n  } else if (luz < 200) {\n    cara(false, false, true);      // rojo: le falta luz\n  } else if (temp < 10) {\n    cara(false, false, true);      // rojo: tiene frio\n  } else {\n    cara(true, false, false);      // verde: todo bien\n  }\n}'},
+   {t:'Medir tu maceta y elegir el número',
+    q:'Todavía sin programar: usá lo que ya anda para medir, y elegí el umbral de tu equipo.',
+    pasos:['Con el programa anterior corriendo, poné el sensor en <b>tierra seca</b> y anotá el número',
+     'Mojá la tierra y anotá el otro número',
+     '<b>Escribilos en el cuaderno</b>, no sólo en la cabeza. Los vas a necesitar en el próximo ejercicio',
+     'Elegí un número <b>en el medio</b> de los dos: ese es tu umbral',
+     'Acordate: <b>seco = número grande</b>. Así que "tiene sed" es cuando el número es <b>mayor</b> que el umbral'],
+    obs:'Tenés dos números anotados y un tercero elegido, con una razón para haberlo elegido.',
+    blo:'(este ejercicio no se programa: se mide)',
+    pista:'Si los dos números te dan casi iguales, el sensor no está haciendo buen contacto con la tierra. Clavalo más.',
+    sol:'seco     ->  ______\nmojado   ->  ______\numbral   ->  ______   (un numero en el medio)'},
+   {t:'La decisión  ⭐',
+    q:'Ahora sí: que prenda el azul si la tierra está seca, y el verde si está bien.',
+    pasos:['Arriba de todo, <b>afuera de las llaves</b>, declará <code>int valor;</code>',
+     'En <code>loop()</code>, escribí <code>valor = analogRead(A0);</code>',
+     'Debajo, <code>if (valor > 700) {</code> — poné <b>tu</b> umbral en lugar del 700',
+     'Adentro de las llaves: <code>digitalWrite(10, HIGH);</code> prende el azul y <code>digitalWrite(9, LOW);</code> apaga el verde',
+     'Cerrá con <code>} else {</code> y adentro al revés: el verde prendido y el azul apagado',
+     'Probá moviendo el sensor de seco a mojado. <b>Nunca se tienen que prender los dos.</b> Si se prenden los dos, te falta el <code>else</code>'],
+    obs:'Con la tierra seca prende el azul; al mojarla, el verde. Y sólo uno a la vez.',
+    blo:'fijar [valor] a ( leer patilla analógica [A0] )\n\nsi  ⟨ [valor] > [700] ⟩  entonces\n      fijar patilla [10] en [ALTA]      ← azul: tiene sed\n      fijar patilla [9]  en [BAJA]\nsi no\n      fijar patilla [10] en [BAJA]\n      fijar patilla [9]  en [ALTA]      ← verde: todo bien',
+    pista:'El bloque <b>si ... entonces / si no</b> está en <b>Control</b>, y el comparador <code>&gt;</code> en <b>Matemáticas</b>. En texto es <code>if ( ) { } else { }</code>. <b>Es el mismo programa</b>: mirá los dos y buscá qué parte de uno es qué parte del otro.',
+    sol:'int valor;\n\nvoid setup() {\n  pinMode(9, OUTPUT);\n  pinMode(10, OUTPUT);\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  valor = analogRead(A0);\n  Serial.println(valor);\n\n  if (valor > 700) {          // poné TU umbral\n    digitalWrite(10, HIGH);   // azul: tiene sed\n    digitalWrite(9,  LOW);\n  } else {\n    digitalWrite(10, LOW);\n    digitalWrite(9,  HIGH);   // verde: todo bien\n  }\n\n  delay(1000);\n}'},
    {t:'Que se note que está viva',
-    pasos:['Buscá la rama del <code>else</code>, la del verde. Es la última',
-     'Adentro, justo después de <code>cara(true, false, false);</code>, agregá <code>delay(80);</code>',
-     'Y debajo, <code>cara(false, false, false);</code> — apaga los tres',
-     'Play. El verde ahora da un destello corto en vez de quedarse prendido'],
     q:'Cuando está todo bien, en vez de dejar el verde prendido, que dé un destello cada tanto.',
-    obs:'Un destello corto y después nada. Y se distingue clarísimo de una maceta desenchufada.',
-    pista:'En la rama del <code>else</code>: prender el verde, <code>delay(80)</code>, apagarlo. El resto del tiempo queda apagado. Ochenta milisegundos alcanzan para verlo.',
-    sol:'  } else {\n    cara(true, false, false);\n    delay(80);\n    cara(false, false, false);   // y se queda apagada hasta la proxima vuelta\n  }'},
-   {t:'Que no avise de luz a las 3 de la mañana',
-    pasos:['Arriba de todo, <b>afuera de las llaves</b>, declará <code>int luzMax = 0;</code>',
-     'En <code>loop()</code>, justo después de leer la luz, escribí <code>if (luz > luzMax) luzMax = luz;</code> — guarda la luz más alta que vio en todo el día',
-     'En la decisión, cambiá <code>luz &lt; 200</code> por <code>luzMax &lt; 200</code>. Ahora mira el día entero y no el instante',
-     'Probá: tapá el sensor un rato y destapalo — <b>no</b> tiene que avisar. Si lo tapás desde que arranca, <b>sí</b>'],
-    q:'De noche siempre hay poca luz. Hacé que avise por falta de luz sólo si la luz estuvo baja TODO el día, no en este instante.',
-    obs:'Al tapar el sensor un rato, no avisa. Si estuvo tapado desde que arrancó, sí.',
-    pista:'Una variable declarada <u>afuera</u> del <code>loop</code> que guarde <b>la luz más alta vista hasta ahora</b>: <code>int luzMax = 0;</code>, y cada vuelta <code>if (luz > luzMax) luzMax = luz;</code>. Después preguntás por <code>luzMax</code> y no por <code>luz</code>. <b>El aparato se acuerda del día entero.</b>',
-    sol:'int luzMax = 0;   // AFUERA del loop: se acuerda de todo el dia\n\nvoid loop() {\n  // ... leer ...\n  if (luz > luzMax) luzMax = luz;\n\n  if (humedad < 30) {\n    cara(false, true, false);\n  } else if (luzMax < 200) {        // el maximo del dia, no el de ahora\n    cara(false, false, true);\n  } else {\n    cara(true, false, false);\n  }\n}'}],
-  sol:`void cara(bool v, bool a, bool r) {
-  digitalWrite(9, v); digitalWrite(10, a); digitalWrite(11, r);
-}
-
-int   luzMax = 0;
-float humedad, temp;
-int   luz;
+    pasos:['Buscá la rama del <code>else</code>, la del verde',
+     'Después de <code>digitalWrite(9, HIGH);</code> agregá <code>delay(80);</code>',
+     'Y debajo, <code>digitalWrite(9, LOW);</code>',
+     'Play. El verde ahora da un destello corto y se apaga hasta la próxima vuelta'],
+    obs:'Un destello corto cada vez que mide. Y se distingue clarísimo de una maceta desenchufada.',
+    blo:'si no\n      fijar patilla [10] en [BAJA]\n      fijar patilla [9]  en [ALTA]\n      esperar [0.08] segundos\n      fijar patilla [9]  en [BAJA]',
+    pista:'Ochenta milisegundos alcanzan para verlo. Si ponés menos no se ve; si ponés mucho más, deja de parecer un destello.',
+    sol:'  } else {\n    digitalWrite(10, LOW);\n    digitalWrite(9, HIGH);\n    delay(80);\n    digitalWrite(9, LOW);\n  }'},
+   {t:'Para seguir  (si llegaron hasta acá)',
+    q:'Tres cosas para agrandar la maceta, de más fácil a más difícil.',
+    pasos:['<b>Que el azul parpadee</b> en vez de quedarse fijo, para que moleste más',
+     '<b>Sumá un buzzer</b> en el pin 8 y que suene una vez cuando pasa a tener sed',
+     '<b>Sumá un tercer estado</b>: un LED rojo para cuando está <u>muy</u> seca. Ahí ya no alcanza con <code>si / si no</code>: hace falta preguntar dos veces'],
+    obs:'Cada agregado sigue respetando la regla de oro: nunca hay dos luces prendidas al mismo tiempo.',
+    blo:'si  ⟨ [valor] > [900] ⟩  entonces      ← muy seca\n      rojo\nsi no  si  ⟨ [valor] > [700] ⟩  entonces   ← seca\n      azul\nsi no\n      verde',
+    pista:'Para el tercer estado, el orden importa: preguntá <b>primero por el caso más extremo</b>. Si preguntás primero por 700, el 900 nunca se llega a mirar, porque 900 también es mayor que 700.',
+    sol:'  if (valor > 900) {\n    // rojo: muy seca\n  } else if (valor > 700) {\n    // azul: tiene sed\n  } else {\n    // verde: todo bien\n  }'}],
+  sol:`int valor;
 
 void setup() {
-  pinMode(9, OUTPUT); pinMode(10, OUTPUT); pinMode(11, OUTPUT);
+  pinMode(9, OUTPUT);
+  pinMode(10, OUTPUT);
   Serial.begin(9600);
 }
 
 void loop() {
-  humedad = -0.1883 * analogRead(A0) + 162.3;   // la recta de TU equipo
-  luz     = analogRead(A1);
-  float v = analogRead(A2) * 5.0 / 1024.0;
-  temp    = (v - 0.5) * 100.0;
+  valor = analogRead(A0);
+  Serial.println(valor);
 
-  if (luz > luzMax) luzMax = luz;
-
-  if (humedad < 30) {
-    cara(false, true, false);          // azul: tiene sed
-  } else if (luzMax < 200) {
-    cara(false, false, true);          // rojo: le falta luz
-  } else if (temp < 10) {
-    cara(false, false, true);          // rojo: tiene frio
+  if (valor > 700) {           // poné TU umbral
+    digitalWrite(10, HIGH);    // azul: tiene sed
+    digitalWrite(9,  LOW);
   } else {
-    cara(true, false, false);          // verde: todo bien
+    digitalWrite(10, LOW);
+    digitalWrite(9,  HIGH);    // verde: todo bien
     delay(80);
-    cara(false, false, false);
+    digitalWrite(9,  LOW);     // un destello, y se apaga
   }
 
-  delay(2000);
+  delay(1000);
 }`}
-}
-];
+}];
+function proyLista(){ return (SES && SES.anio==='2do') ? PROY2 : PROY4; }
+
 
 const K_PROY='pps.proy4.v1';
 function proyDatos(){ return _lee(K_PROY,{}); }
@@ -5990,7 +5983,7 @@ function proyGuardar(d){ try{ localStorage.setItem(K_PROY,JSON.stringify(d)); }c
 function proyHome(){
   cur=null;
   const d=proyDatos();
-  const tarjetas=PROY4.map((p,i)=>{
+  const tarjetas=proyLista().map((p,i)=>{
     const el=(d[p.id]||{}).eleg;
     const hechas=el?Object.keys(el).length:0;
     return `<button class="item wide dest" onclick="proyVer(${i})">
@@ -6023,7 +6016,7 @@ function proyHome(){
 /* ---- las cinco etapas de un proyecto ---- */
 function proyVer(i){
   cur=null;
-  const p=PROY4[i], d=proyDatos()[p.id]||{};
+  const p=proyLista()[i], d=proyDatos()[p.id]||{};
   const hechas=d.eleg?Object.keys(d.eleg).length:0;
   const paso=(n,t,desc,fn,marca)=>`
     <button class="item wide" onclick="${fn}">
@@ -6033,26 +6026,87 @@ function proyVer(i){
     </button>`;
   app.innerHTML=`
     <div class="topbar"><button class="backb" onclick="proyHome()" aria-label="volver">← Proyectos</button>
-      <div class="progtext">Etapa 1 a 5</div></div>
+      <div class="progtext">Etapa 1 a ${p.presenta?6:5}</div></div>
     <div class="card">
       <div class="concepto big">${p.ic} ${p.nom}</div>
       <h2 style="margin-top:0">${p.que}</h2>
       <p class="mono" style="margin:0">${p.regla}</p>
     </div>
     <div class="grid" style="grid-template-columns:1fr">
+      ${p.presenta?`
+      ${paso(1,'El proyecto','De qué se trata, para qué sirve y cómo vamos a trabajar.',`proyPresenta(${i})`,'')}
+      ${paso(2,'Los componentes','El listado completo: qué hace cada pieza y dónde va.',`proyComp(${i})`,'')}
+      ${paso(3,'Cómo se conecta y funciona cada uno','Pieza por pieza, sin programar todavía.',`proyPiezas(${i})`,'')}
+      ${paso(4,'El código de cada pieza','Un programa cortito por pieza, en bloques y en texto.',`proyPiezasCod(${i})`,'')}
+      ${paso(5,'Juntarlo todo',`${p.cod.ejs.length} ejercicios: medir, decidir y que funcione.`,`proyCod(${i})`,'')}
+      ${paso(6,'Las decisiones del equipo','Lo que decide el equipo, y la tabla que se entrega.',`proyTabla(${i})`,'')}
+      `:`
       ${paso(1,'Los componentes','El listado completo: qué hace cada pieza y dónde va.',`proyComp(${i})`,'')}
       ${paso(2,'El esquema y el armado','Qué pata va a qué pin, en qué orden armarlo y qué revisar si no anda.',`proyEsq(${i})`,'')}
       ${paso(3,'Las elecciones','Lo que tiene que decidir el equipo, y por qué no hay una respuesta única.',`proyEleg(${i})`,'')}
       ${paso(4,'La tabla de elecciones','La actividad: eligen, queda guardado y se copia para la profe.',`proyTabla(${i})`, hechas?`${hechas} de ${p.eleg.length}`:'')}
       ${paso(5,'Los ejercicios',p.cod.ejs?`${p.cod.ejs.length} ejercicios encadenados en Arduino, con pista y código.`:'El código para escribir, con pistas de a una.',`proyCod(${i})`,'')}
+      `}
     </div>`;
   window.scrollTo(0,0);
 }
 
-function proyCompSlides(i){ verSlides(PROY4[i].comp, `proyComp(${i})`, 'Al esquema →', ()=>proyEsq(i)); }
+function proyPresenta(i){
+  cur=null; const p=proyLista()[i];
+  app.innerHTML=`
+    <div class="topbar"><button class="backb" onclick="proyVer(${i})" aria-label="volver">← ${p.nom}</button>
+      <div class="progtext">Etapa 1</div></div>
+    <div class="card"><div class="concepto big">${p.ic} ${p.nom}</div>
+      <h2 style="margin-top:0">${p.que}</h2>
+      <p class="mono" style="margin:0">${p.regla}</p></div>
+    ${p.presenta.map(x=>`<div class="card"><h3 style="margin:0 0 10px">${x[0]}</h3>
+      <p style="margin:0;line-height:1.65">${x[1]}</p></div>`).join('')}
+    <button class="btn" onclick="proyComp(${i})">Ver los componentes →</button>`;
+  window.scrollTo(0,0);
+}
+function proyPiezas(i){
+  cur=null; const p=proyLista()[i];
+  app.innerHTML=`
+    <div class="topbar"><button class="backb" onclick="proyVer(${i})" aria-label="volver">← ${p.nom}</button>
+      <div class="progtext">Etapa 3</div></div>
+    <div class="card"><h2 style="margin-top:0">Cómo se conecta y cómo funciona cada uno</b></h2>
+      <p class="muted" style="margin:0">Una pieza por vez. Conectá ésta, entendé qué hace, y
+      recién después pasá a la siguiente.</p></div>
+    ${p.piezas.map(z=>`<div class="card">
+      <div class="concepto">${z.ic} ${z.n} · <span class="mono">${z.pin}</span></div>
+      <p style="margin:8px 0 12px">${z.que}</p>
+      <div class="acard"><h4>Cómo se conecta</h4><p>${z.conex}</p></div>
+      <div class="acard nota"><h4>Cómo funciona</h4><p>${z.como}</p></div>
+    </div>`).join('')}
+    <button class="btn" onclick="proyPiezasCod(${i})">Al código de cada uno →</button>`;
+  window.scrollTo(0,0);
+}
+function proyPiezasCod(i){
+  cur=null; const p=proyLista()[i];
+  app.innerHTML=`
+    <div class="topbar"><button class="backb" onclick="proyVer(${i})" aria-label="volver">← ${p.nom}</button>
+      <div class="progtext">Etapa 4</div></div>
+    <div class="card"><h2 style="margin-top:0">El código de cada pieza, por separado</h2>
+      <p class="muted" style="margin:0 0 10px">Cada programa prueba <b>una sola pieza</b>. Son
+      cortos a propósito: si andan, esa pieza está bien conectada y te podés olvidar de ella.</p>
+      <div class="hint">Está en <b>bloques</b> y en <b>texto</b>. Son el mismo programa dicho de
+      dos maneras: en Tinkercad podés ver los dos al lado con el selector <b>Bloques + Texto</b>.</div>
+    </div>
+    ${p.piezas.map(z=>`<div class="card">
+      <div class="concepto">${z.ic} ${z.n}</div>
+      <h4 style="margin:10px 0 6px">En bloques</h4>
+      <pre><code>${escapeHtml(z.blo)}</code></pre>
+      <h4 style="margin:14px 0 6px">En texto (Arduino)</h4>
+      <pre><code>${escapeHtml(z.cod)}</code></pre>
+      <div class="hint"><b>Tiene que pasar esto:</b> ${z.probar}</div>
+    </div>`).join('')}
+    <button class="btn" onclick="proyCod(${i})">Ahora sí, juntarlo todo →</button>`;
+  window.scrollTo(0,0);
+}
+function proyCompSlides(i){ verSlides(proyLista()[i].comp, `proyComp(${i})`, 'Al esquema →', ()=>proyEsq(i)); }
 function proyComp(i){
   cur=null;
-  const p=PROY4[i];
+  const p=proyLista()[i];
   if(!p.lista) return proyCompSlides(i);
   app.innerHTML=`
     <div class="topbar"><button class="backb" onclick="proyVer(${i})" aria-label="volver">← ${p.nom}</button>
@@ -6072,7 +6126,7 @@ function proyComp(i){
 
 function proyEsq(i){
   cur=null;
-  const p=PROY4[i];
+  const p=proyLista()[i];
   app.innerHTML=`
     <div class="topbar"><button class="backb" onclick="proyVer(${i})" aria-label="volver">← ${p.nom}</button>
       <div class="progtext">Etapa 2 de 5</div></div>
@@ -6099,7 +6153,7 @@ function proyEsq(i){
 
 function proyEleg(i){
   cur=null;
-  const p=PROY4[i];
+  const p=proyLista()[i];
   app.innerHTML=`
     <div class="topbar"><button class="backb" onclick="proyVer(${i})" aria-label="volver">← ${p.nom}</button>
       <div class="progtext">Etapa 3 de 5</div></div>
@@ -6121,7 +6175,7 @@ function proyEleg(i){
 /* ---- etapa 4: la tabla. Es lo único que produce algo guardado ---- */
 function proyTabla(i){
   cur=null;
-  const p=PROY4[i], d=proyDatos(), mias=(d[p.id]||{}).eleg||{};
+  const p=proyLista()[i], d=proyDatos(), mias=(d[p.id]||{}).eleg||{};
   app.innerHTML=`
     <div class="topbar"><button class="backb" onclick="proyVer(${i})" aria-label="volver">← ${p.nom}</button>
       <div class="progtext">Etapa 4 de 5</div></div>
@@ -6147,20 +6201,20 @@ function proyTabla(i){
   window.scrollTo(0,0);
 }
 function proyElegir(i,k,j){
-  const p=PROY4[i], d=proyDatos();
+  const p=proyLista()[i], d=proyDatos();
   d[p.id]=d[p.id]||{eleg:{}}; d[p.id].eleg=d[p.id].eleg||{};
   const prev=d[p.id].eleg[k]||{};
   d[p.id].eleg[k]={op:j, por:prev.por||''};
   proyGuardar(d); tono(659.25,.18); proyTabla(i);
 }
 function proyPor(i,k,txt){
-  const p=PROY4[i], d=proyDatos();
+  const p=proyLista()[i], d=proyDatos();
   d[p.id]=d[p.id]||{eleg:{}}; d[p.id].eleg=d[p.id].eleg||{};
   d[p.id].eleg[k]=Object.assign({op:null}, d[p.id].eleg[k], {por:txt});
   proyGuardar(d);
 }
 function proyCopiar(i){
-  const p=PROY4[i], mias=(proyDatos()[p.id]||{}).eleg||{};
+  const p=proyLista()[i], mias=(proyDatos()[p.id]||{}).eleg||{};
   let t=`FICHA DEL INSTRUMENTO — ${p.nom}\n`;
   t+=`Equipo: ${SES?SES.nombre:'(sin nombre)'}\nQué decide: ${txtPlano(p.que)}\n\n`;
   p.eleg.forEach((e,k)=>{
@@ -6175,7 +6229,7 @@ function proyCopiar(i){
 /* ---- etapa 5: el código, con pistas de a una ---- */
 function proyCod(i){
   cur=null;
-  const p=PROY4[i];
+  const p=proyLista()[i];
   app.innerHTML=`
     <div class="topbar"><button class="backb" onclick="proyVer(${i})" aria-label="volver">← ${p.nom}</button>
       <div class="progtext">Etapa 5 de 5</div></div>
