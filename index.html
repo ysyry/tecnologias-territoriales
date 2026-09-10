@@ -5641,6 +5641,148 @@ void loop() {
   }
 
   anterior = temp;`}
+},
+{
+ id:'monitor', ic:'🔎', nom:'El monitor del ambiente',
+ que:'No decide nada: registra. Y el dato tiene que servir',
+ regla:'una fila por momento · <b>el promedio de las últimas lecturas</b> · y una marca fija cuando el sensor falla',
+ lista:[
+  ['Arduino Uno o Nano','Es la computadora del aparato: lee los sensores y escribe una fila','Al USB de la PC'],
+  ['Protoboard','Donde se arma sin soldar. Las filas están unidas por dentro','—'],
+  ['TMP36','Termómetro. Da un voltaje que sube 10 mV por cada grado, arrancando en 500 mV a 0 °C','5V · señal → A0 · GND'],
+  ['Fotorresistor (LDR)','Mide cuánta luz hay. No devuelve un número: cambia su resistencia, y por eso necesita el divisor','Una pata → 5V · la otra → A1'],
+  ['Resistencia de 10 kΩ','<b>El divisor.</b> Sin ella el pin A1 queda flotando y el número que sale es basura','De A1 a GND'],
+  ['LED testigo','Parpadea cada vez que escribe una fila. Sirve para ver de lejos que sigue vivo','Pata larga → pin 13 (con resistencia de 220 Ω)'],
+  ['Resistencia de 220 Ω','Frena la corriente para que el LED no se queme','Entre el pin 13 y el LED'],
+  ['Cables','Conviene un color para 5V y otro para GND','—']],
+ comp:[
+  {k:'Componentes', t:'Este aparato no decide. Y eso lo hace más difícil', h:`
+    <p>Los otros proyectos actúan: prenden algo, riegan, ventilan. <b>Este no hace nada con el
+    mundo: sólo lo anota.</b></p>
+    <p>Y suena más fácil, pero no lo es. Cuando el aparato decide, un error se ve al toque —el
+    LED prende cuando no tiene que prender—. <b>Cuando el aparato sólo registra, un error no se
+    ve nunca:</b> queda escondido adentro del archivo y lo descubre alguien, dos semanas
+    después, cuando ya no se puede volver a medir.</p>
+    <div class="hint">Por eso todo el peso de este proyecto está en una sola pregunta:
+    <b>¿el dato sirve?</b> Que se pueda abrir, que se entienda, que se sepa cuándo fue tomado
+    y que se note cuándo el sensor no estaba andando.</div>`},
+  {k:'Componentes', t:'Una fila por momento', h:`
+    <p>La idea que ordena todo el programa: <b>cada vez que mide, escribe una fila con todo
+    junto</b>. Una fila = un momento.</p>
+    <pre><code>momento,temp_C,luz
+0,18.4,712
+600000,18.1,698</code></pre>
+    <p>Eso <b>ya es una tabla</b>, y esa tabla es exactamente lo que saben analizar desde el
+    primer cuatrimestre: filtrar, contar, ordenar, agrupar, graficar.</p>
+    <p><b>Dos reglas que no se negocian</b>, porque el archivo lo va a abrir otro:
+    la <b>unidad va en el nombre de la columna</b> (<code>temp_C</code>, no <code>temp</code>),
+    y el decimal es <b>punto</b>, no coma.</p>`},
+  {k:'Componentes', t:'El sensor salta, y hay que decidir qué hacer', h:`
+    <p>Un sensor real no da el mismo número dos veces seguidas aunque nada cambie. Salta.</p>
+    <p>La solución habitual es <b>promediar las últimas lecturas</b>: en vez de guardar lo que
+    dio ahora, guardar el promedio de las últimas cinco. La serie sale mucho más limpia.</p>
+    <p><b>Pero hay una trampa, y es la mejor discusión del proyecto:</b> promediar
+    <b>esconde los picos</b>. Si lo interesante era justo el momento en que alguien abrió la
+    puerta y entró aire frío, el promedio se lo come.</p>
+    <div class="hint">No hay respuesta correcta. Hay una decisión, y hay que poder defenderla.
+    Una salida elegante: <b>guardar las dos columnas</b>, el valor suelto y el promedio.</div>`},
+  {k:'Componentes', t:'Cuando el sensor no sabe', h:`
+    <p>Un sensor desconectado no avisa: <b>sigue devolviendo un número</b>, casi siempre 0 o
+    1023 clavado. Si eso entra al archivo como si fuera un dato, arruina el análisis entero y
+    nadie se entera.</p>
+    <p>Por eso el programa tiene que reconocer los valores imposibles y escribir <b>siempre la
+    misma marca</b> en su lugar — nunca un 0, que es un valor posible de temperatura.</p>
+    <p style="text-align:center"><b>Un sistema que no sabe cuándo no sabe es peligroso.</b></p>`}],
+ esq:{
+  filas:[['TMP36','5V · señal · GND','5V · A0 · GND'],
+         ['Fotorresistor','una pata','5V'],
+         ['Fotorresistor','otra pata','A1 <b>y</b> resistencia de 10 kΩ a GND'],
+         ['LED testigo','pata larga','pin 13 (con resistencia de 220 Ω)'],
+         ['LED testigo','pata corta','GND']],
+  nota:'El divisor del fotorresistor <b>no es opcional</b>: sin la resistencia de 10 kΩ a GND, la lectura de A1 no significa nada — y lo peor es que igual devuelve un número, así que parece que anda.',
+  pasos:[
+   'Llevá el <b>5V</b> del Arduino al riel rojo de la protoboard y el <b>GND</b> al riel azul',
+   'El TMP36: mirando <b>la cara plana</b>, de izquierda a derecha es <b>5V · señal · GND</b>. La señal va a <b>A0</b>',
+   'El fotorresistor: una pata al riel rojo, la otra a una fila libre',
+   'De <b>esa misma fila</b>, un cable a <b>A1</b>',
+   'Y de <b>esa misma fila</b>, la resistencia de <b>10 kΩ</b> al riel azul. <b>Ese es el divisor</b>',
+   'El LED con su resistencia de 220 Ω entre el <b>pin 13</b> y GND',
+   'Recién ahora conectá el USB'],
+  revisar:[
+   '<b>¿El TMP36 se calienta al tocarlo?</b> Está al revés. Desenchufá ya: se quema',
+   '<b>¿El número de la luz no cambia al taparlo?</b> Falta la resistencia de 10 kΩ a GND',
+   '<b>¿La temperatura da 400 y pico?</b> La señal no está en A0, o falta el GND',
+   '<b>¿Las filas salen pegadas o con títulos en el medio?</b> El encabezado quedó adentro del loop: va en el setup, una sola vez']},
+ eleg:[
+  {q:'¿Cada cuánto guarda una fila?', op:['Cada 1 minuto','Cada 10 minutos','Cada 1 hora'],
+   por:'<b>Hagan la cuenta antes de elegir.</b> Cada minuto son 1440 filas por día; cada hora, 24. Medir de más llena el archivo de filas que dicen lo mismo; medir de menos te hace perder el momento en que algo cambió. <b>Esto es elegir la frecuencia de muestreo</b>, y es la decisión de fondo del proyecto.'},
+  {q:'¿Qué columnas tiene cada fila?', op:['Sólo el valor','El momento y el valor','El momento y todas las magnitudes juntas'],
+   por:'Sin el momento, una fila no dice <b>cuándo</b>, y una serie sin tiempo no se puede graficar. Y guardar todas las magnitudes en la misma fila es lo que después permite <b>cruzarlas</b>: ¿la temperatura baja cuando baja la luz?'},
+  {q:'¿Guarda cada lectura suelta o el promedio de las últimas?', op:['La lectura suelta','El promedio de las últimas 5','Las dos cosas, en dos columnas'],
+   por:'El sensor salta y el promedio limpia la serie. <b>Pero esconde los picos</b>, y a veces el pico era el dato interesante. La tercera opción cuesta una columna más y no obliga a elegir: se decide después, cuando ya vieron los datos.'},
+  {q:'¿Qué escribe cuando el sensor da un valor imposible?', op:['Lo escribe igual','Un 0','Siempre la misma marca, por ejemplo NA'],
+   por:'Un sensor desconectado da 0 o 1023 clavado y <b>no avisa</b>. El 0 es un valor posible de temperatura acá: si lo escriben, nadie va a poder distinguir un día helado de un cable suelto. Elijan una marca que no se confunda con un dato.'},
+  {q:'¿Dónde se instala?', op:['Adentro del aula','Afuera, a la sombra y ventilado','Afuera, donde le dé el sol'],
+   por:'A pleno sol el sensor mide <b>el sol</b>, no el aire, y puede marcar diez grados de más. Las estaciones oficiales se ponen a la sombra y ventiladas justamente para que los datos de un lugar se puedan comparar con los de otro.'}],
+ cod:{
+  consigna:'Escribí el programa que lee los dos sensores y escribe una fila por momento, con el promedio de las últimas lecturas y una marca fija cuando algo falla.',
+  ejs:[
+   {t:'Que la placa dé señales de vida',
+    q:'Hacé que el LED del pin 13 prenda un segundo y se apague un segundo.',
+    obs:'El LED parpadea parejo. Si no, el problema es el circuito y no el programa.',
+    pista:'<code>pinMode(13, OUTPUT);</code> en <code>setup()</code>. En el <code>loop</code>: <code>digitalWrite(13, HIGH); delay(1000); digitalWrite(13, LOW); delay(1000);</code>',
+    sol:'void setup() {\n  pinMode(13, OUTPUT);\n}\n\nvoid loop() {\n  digitalWrite(13, HIGH);\n  delay(1000);\n  digitalWrite(13, LOW);\n  delay(1000);\n}'},
+   {t:'La temperatura, en grados',
+    q:'Leé el TMP36 y mostrá la temperatura en grados, no el número crudo.',
+    obs:'Da un número creíble, entre 15 y 30 adentro del aula. Si te da 400, revisá el cableado antes que el código.',
+    pista:'Son dos líneas: <code>float v = analogRead(A0) * 5.0 / 1024.0;</code> y después <code>temp = (v - 0.5) * 100.0;</code>. <b>Esa recta la escribió el fabricante</b>, no ustedes.',
+    sol:'float temp;\n\nvoid setup() {\n  Serial.begin(9600);\n}\n\nvoid loop() {\n  float v = analogRead(A0) * 5.0 / 1024.0;\n  temp = (v - 0.5) * 100.0;\n\n  Serial.println(temp);\n  delay(1000);\n}'},
+   {t:'La fila completa',
+    q:'Sumá la luz y armá UNA fila con el momento, la temperatura y la luz, separados por coma. Y escribí el encabezado una sola vez.',
+    obs:'La primera línea dice los nombres de las columnas. Después, cada renglón tiene tres números y dos comas, sin espacios.',
+    pista:'El encabezado va en <code>setup()</code>: <code>Serial.println("momento,temp_C,luz");</code>. Si lo ponés en el <code>loop</code> aparece entre cada fila y el archivo no se deja abrir como tabla. Y entre valor y valor, <code>Serial.print(",");</code>',
+    sol:'void setup() {\n  Serial.begin(9600);\n  Serial.println("momento,temp_C,luz");   // UNA sola vez\n}\n\nvoid loop() {\n  float v = analogRead(A0) * 5.0 / 1024.0;\n  temp = (v - 0.5) * 100.0;\n  int luz = analogRead(A1);\n\n  Serial.print(millis()); Serial.print(",");\n  Serial.print(temp, 1);  Serial.print(",");\n  Serial.println(luz);\n\n  delay(1000);\n}'},
+   {t:'El testigo',
+    q:'Hacé que el LED parpadee un instante cada vez que escribe una fila, para poder ver de lejos que el aparato sigue vivo.',
+    obs:'Un destello corto por fila. Si el LED se queda quieto, el aparato se colgó.',
+    pista:'Prendé antes de escribir y apagá después, con un <code>delay(50)</code> en el medio. Cincuenta milisegundos alcanzan para verlo y no atrasan la medición.',
+    sol:'  digitalWrite(13, HIGH);\n  // ... escribir la fila ...\n  delay(50);\n  digitalWrite(13, LOW);'},
+   {t:'Que no salte  ⭐',
+    q:'En vez de guardar la lectura de ahora, guardá el promedio de las últimas 5. Compará las dos series: ¿cuánto más limpia sale?',
+    obs:'El número se mueve mucho menos. Y si soplás el sensor, el promedio tarda unos segundos en reaccionar: eso es justamente lo que promediar hace.',
+    pista:'Una <b>lista</b> declarada afuera del <code>loop</code>: <code>float ultimas[5];</code> y un <code>int i = 0;</code>. Cada vuelta guardás en <code>ultimas[i]</code>, avanzás <code>i = (i + 1) % 5;</code> y sumás las cinco para dividir por 5.',
+    sol:'float ultimas[5];\nint   i = 0;\n\nfloat promedio() {\n  float suma = 0;\n  for (int k = 0; k < 5; k++) suma = suma + ultimas[k];\n  return suma / 5.0;\n}\n\nvoid loop() {\n  float v = analogRead(A0) * 5.0 / 1024.0;\n  ultimas[i] = (v - 0.5) * 100.0;\n  i = (i + 1) % 5;\n\n  Serial.print(millis());     Serial.print(",");\n  Serial.println(promedio(), 1);\n\n  delay(1000);\n}'},
+   {t:'Que avise cuando NO sabe',
+    q:'Si el sensor devuelve un valor imposible, que en vez del número escriba siempre la misma marca.',
+    obs:'Al desconectar el sensor, la columna se llena de la marca y no de números. Al reconectarlo, vuelven los números.',
+    pista:'Un valor crudo de 0 o de 1023 clavado casi siempre significa cable suelto. <code>int crudo = analogRead(A0); if (crudo &lt; 5 || crudo &gt; 1018) { Serial.print("NA"); } else { ... }</code>. El <code>||</code> es el "o".',
+    sol:'  int crudo = analogRead(A0);\n\n  Serial.print(millis()); Serial.print(",");\n\n  if (crudo < 5 || crudo > 1018) {\n    Serial.print("NA");          // el sensor no esta\n  } else {\n    float v = crudo * 5.0 / 1024.0;\n    Serial.print((v - 0.5) * 100.0, 1);\n  }\n\n  Serial.print(",");\n  Serial.println(analogRead(A1));'}],
+  sol:`void setup() {
+  pinMode(13, OUTPUT);
+  Serial.begin(9600);
+  Serial.println("momento,temp_C,luz");
+}
+
+void loop() {
+  digitalWrite(13, HIGH);
+
+  int crudo = analogRead(A0);
+  Serial.print(millis()); Serial.print(",");
+
+  if (crudo < 5 || crudo > 1018) {
+    Serial.print("NA");
+  } else {
+    float v = crudo * 5.0 / 1024.0;
+    Serial.print((v - 0.5) * 100.0, 1);
+  }
+
+  Serial.print(",");
+  Serial.println(analogRead(A1));
+
+  delay(50);
+  digitalWrite(13, LOW);
+  delay(600000);      // 10 minutos
+}`}
 }
 ];
 
@@ -5668,10 +5810,10 @@ function proyHome(){
       <div class="concepto big">Proyectos · 2do cuatrimestre</div>
       <h2 style="margin-top:0">De los datos al sistema</h2>
       <p class="muted" style="margin:0;line-height:1.6"><b>Cada equipo tiene su proyecto
-      asignado.</b> Los tres miden algo real y los tres terminan dejando una serie de datos.
-      Uno mide <b>la tierra</b>, otro mide <b>el aire de adentro</b> y otro <b>el aire de
-      afuera</b>, y esa diferencia se paga en todo lo demás: el sensor, la recta y hasta la
-      forma de la decisión.</p>
+      asignado.</b> Los cuatro miden algo real y los cuatro terminan dejando una serie de
+      datos. Tres actúan sobre el mundo —riegan, ventilan, avisan— y uno <b>sólo registra</b>,
+      que suena más fácil y no lo es: cuando un aparato decide, el error se ve; cuando sólo
+      anota, el error queda escondido adentro del archivo.</p>
     </div>
     <div class="grid" style="grid-template-columns:1fr">
       <button class="item wide" onclick="verSlides(TINKER,'proyHome()','Elegir proyecto →',proyHome)">
