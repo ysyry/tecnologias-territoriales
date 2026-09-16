@@ -1803,7 +1803,7 @@ const SALAS = [
     ejs:[
       { type:'order', a1:true,
         consigna:'PAPA CALIENTE. Ordená el programa.',
-        correcto:['elegir un número al azar entre 5 y 30','esperar esa cantidad de segundos','hacer sonar el buzzer','esperar 3 segundos y apagar el sonido'],
+        correcto:['elegir un número al azar entre 3 y 10','esperar esa cantidad de segundos','hacer sonar el buzzer','esperar 3 segundos y apagar el sonido'],
         explica:'Primero se elige el número, después se espera, después suena. Si el número se elige al final, la espera no lo puede usar.' },
       { type:'mc', a1:true,
         consigna:'PAPA CALIENTE. Si ponés el bloque de esperar DESPUÉS del sonido, ¿qué pasa?',
@@ -7180,7 +7180,7 @@ const JUEGOS=[
    <b>Nadie sabe cuánto.</b><br>
    Se lo van pasando de mano en mano.<br>
    Cuando suena, el que lo tiene pierde.`,
- elem:[['Buzzer (piezo)','1','pin 8'],['LED','1','pin 13'],['Resistencia 220','1','con el LED']],
+ elem:[['Buzzer (piezo)','1','pin 12'],['LED','1','pin 3'],['Resistencia 220','1','con el LED']],
  pensar:[
   'Si esperara siempre 5 segundos, ¿se podría hacer trampa?',
   '¿Cuánto tiene que esperar, entonces?'],
@@ -7189,17 +7189,17 @@ const JUEGOS=[
   'Que suene el buzzer'],
  pistas:[
   'En <b>Control</b> está el bloque <code>esperar (1) segundos</code>.',
-  'En <b>Matemáticas</b> está <code>número al azar entre (1) y (10)</code>.<br>Ese bloque <b>entra adentro del hueco</b> del bloque de esperar. Arrastralo justo encima del número.',
+  'En <b>Matemáticas</b> está <code>número al azar entre (3) y (10)</code>.<br>Ese bloque <b>entra adentro del hueco</b> del bloque de esperar. Arrastralo justo encima del número.',
   'En <b>Salida</b> está el bloque que hace sonar el buzzer. Va después de la espera.',
-  '¿Suena todo el tiempo? Es porque está dentro del bucle.<br>Sacalo de ahí, o hacelo esperar mucho después de sonar.'],
+  '¿Suena todo el tiempo, sin esperar nada? El bloque de esperar quedó <b>abajo</b> del sonido.<br>Tiene que ir <b>arriba</b>: primero se espera, después suena.'],
  mas:[
   'Que el LED parpadee mientras espera. <b>Es más difícil de lo que parece.</b>',
   'Que a veces suene a los 3 segundos y otras a los 30.'],
  nofunca:[
   ['No suena nada','El número del pin del bloque y el del cable tienen que ser el mismo'],
-  ['Suena todo el tiempo','Está dentro del bucle'],
+  ['Suena todo el tiempo, sin esperar','El bloque de esperar quedó abajo del sonido. Va arriba'],
   ['Suena siempre en el mismo momento','El bloque del azar quedó afuera del hueco']],
- mate:`La espera va de 5 a 30 segundos.<br>
+ mate:`La espera va de 3 a 10 segundos.<br>
    ¿Cuál es la más larga que puede tocar? ¿Y la más corta?<br>
    ¿Cuánto es <b>la mitad</b> entre las dos?`
 },
