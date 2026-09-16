@@ -3333,7 +3333,7 @@ const ANIOS = {
     ids:['teoria','repaso'], esp:['mezcla']}
  ]},
  '3ro':{ nom:'3er año', sub:'Del programa al aparato', mods:[
-   {t:'El proyecto', d:'Acá se trabaja: una etapa por clase, del 16/09 al 04/11.',
+   {t:'El proyecto', d:'Acá se trabaja: una misión por clase, del 16/09 al 04/11.',
     esp:['cuaderno']},
    {t:'Programá la placa', d:'Lo principal del cuatrimestre: escribís el código y el aparato reacciona.',
     esp:['misiones']},
@@ -4043,7 +4043,7 @@ const ESPECIALES={
  estudio:{n:'Estudio de dibujo', d:'Modo libre: movés las perillas y la tortuga dibuja en vivo.', fn:'estudio()'},
  mezcla:{n:'Modo mezcla', d:'Ocho ejercicios tomados al azar de las salas de tu año.', fn:"startSala('mezcla')", wide:true},
  arduino:{n:'Arduino de verdad', d:'Los mismos conceptos, en el lenguaje real de la placa. Doce proyectos con sensores básicos y el código listo para copiar al simulador o a un Arduino. Más un banco de código que compila pero está mal.', fn:"arduHome('proy')", wide:true, dest:true},
- cuaderno:{n:'El cuaderno del proyecto', d:'Las seis etapas del proyecto, del 16/09 al 04/11. En cada una: qué hacer, qué decidir, qué queda escrito, el checklist de salida y la bitácora. Se copia todo con un botón.', fn:'cuadHome()', wide:true, dest:true},
+ cuaderno:{n:'El cuaderno del proyecto', d:'Seis misiones, del 16/09 al 04/11. En cada una: qué hacer, qué decidir, qué queda escrito, los objetivos y el informe. Empieza por «De qué se trata todo esto». Se copia todo con un botón.', fn:'cuadHome()', wide:true, dest:true},
  juegos:{n:'Los juegos', d:'Ocho juegos sobre la misma consola: 4 luces, 4 botones y un buzzer. Cada uno trae los elementos, los pasos con huecos y pistas que se abren de a una. El programa no está hecho: se arma con bloques en Tinkercad.', fn:'juegoHome()', wide:true, dest:true},
  misiones:{n:'Misiones: programá la placa', d:'Escribís código de verdad y la placa reacciona: se prenden las luces, suena el buzzer, se mueve el servo y el sensor te da un número. Se abren de a una.', fn:'misHome()', wide:true, dest:true}
 };
@@ -6359,46 +6359,64 @@ const K_CUAD='pps.cuaderno3.v1';
 
 const ETAPAS3=[
 {
- n:1, fecha:'16/09', tit:'Armar, y que el sensor dé números',
- obj:'Que el aparato esté armado y devolviendo números. Todavía no significan nada, y está bien.',
+ n:1, cod:'Encendido', fecha:'16/09', tit:'Armar el circuito en el simulador',
+ obj:'que el circuito esté armado y andando en Tinkercad, y que el sensor ya esté dando un número que se mueve.',
  antes:'Nada. Esta es la primera.',
+ nota:'<b>Hoy es en la computadora, con Tinkercad.</b> A la placa de verdad van la clase que viene. En el simulador un cable al revés no quema nada y se puede probar veinte veces: por eso se empieza acá.',
+ coh:'Tinkercad no tiene el sensor de presión ni la tarjeta de memoria. Hoy arman <b>el mismo circuito que la estación</b> y el potenciómetro hace de sensor. Lo que se aprende hoy es la estructura, y esa es idéntica en los dos aparatos.',
  hacer:[
-  'Arranquen por el circuito más simple que existe: <b>un botón que prende un LED</b>. Está en la primera ficha',
-  'Cuando ande, cámbienle el botón por el <b>sensor</b> y sigan la ficha del esquema',
-  'Háganlo mostrar el <b>número crudo</b> del sensor en el monitor',
-  'Metan el sensor en tierra seca y en tierra mojada. <b>Anoten el número más chico y el más grande</b> que consigan',
-  'Contesten las preguntas de abajo: eso es el proyecto escrito'],
+  '<b>Primero el LED solo.</b> Que prenda, y nada más. Si no prende no sigan: falta el GND o falta la resistencia de 220 Ω',
+  '<b>Ahora que lo prenda el botón.</b> Ahí ya tienen el aparato entero en chiquito: algo que <b>entra</b>, una <b>decisión</b>, algo que <b>sale</b>. Está paso a paso en la ficha «Primero: el botón y el LED»',
+  '<b>Cambien el botón por un potenciómetro.</b> Tinkercad no tiene el sensor de humedad de suelo, así que el potenciómetro lo reemplaza: da el mismo número de <b>0 a 1023</b>, sólo que lo mueven ustedes con la mano en vez de moverlo el agua de la tierra',
+  '<b>Abran el monitor serie</b> y hagan que ese número aparezca. Gírenlo despacio de un extremo al otro y miren cómo cambia',
+  '<b>Anoten el número más chico y el más grande.</b> Con esos dos extremos van a trabajar todo el proyecto',
+  '<b>Que el número decida.</b> Si es menor que un número que eligen ustedes, se prende el LED. Prueben girando hasta que prenda y se apague',
+  'Contesten las preguntas de abajo: <b>eso es el proyecto escrito</b>'],
  dec:[
-  {q:'¿Cada cuánto mide?',
+  {q:'¿A partir de qué número el aparato tiene que hacer algo?',
+   op:['Justo en la mitad entre el mínimo y el máximo','Más cerca del extremo seco','Lo dejamos provisorio y lo ajustamos midiendo'],
+   por:'Ese número se llama <b>umbral</b> y no está escrito en ningún lado: <b>lo eligen ustedes</b>. Si lo ponen muy al medio, el aparato avisa todo el tiempo y nadie le da bola. Si lo ponen muy al extremo, cuando avisa ya es tarde. Y hay algo más incómodo todavía: el número que eligieron <b>no significa nada</b> — 640 no es ni seco ni mojado hasta que lo traduzcan. Eso es exactamente lo que van a resolver el 30/09.',
+   coh:'En el cohete no hay umbral: <b>graba todo desde que se enciende</b>. El motivo está en la ficha de seguridad — nadie puede estar al lado de un cohete presurizado para apretar un botón.'},
+  {q:'¿Cada cuánto va a medir?',
    op:['Cada 1 minuto','Cada 10 minutos','Cada 30 minutos'],
-   por:'Un fin de semana a un minuto son más de 4300 filas, casi todas diciendo lo mismo. A treinta podés perderte la hora exacta en que empezó a bajar. <b>Se llama frecuencia de muestreo.</b>',
-   coh:'En el cohete son otras: <b>10, 20 o 50 veces por segundo</b>. El vuelo dura cinco segundos.'}],
+   por:'El aparato no mide una vez sola: mide, <b>escribe una línea en la tarjeta de memoria</b>, espera, y vuelve a medir. Cada línea es una <b>fila</b> —con el momento y los valores— y el archivo que les queda al final es la pila de todas. Midiendo cada minuto, un fin de semana son <b>más de 4300 filas</b>, casi todas diciendo lo mismo. Cada 30 minutos son 144, pero si la helada empezó a las 3 de la mañana no van a poder decir a qué hora empezó. <b>Esto que están eligiendo se llama frecuencia de muestreo.</b>',
+   coh:'En el cohete las opciones son otras: <b>10, 20 o 50 veces por segundo</b>, porque el vuelo entero dura unos cinco segundos. A una vez por segundo, de todo el vuelo quedan cinco filas y no se ve nada.'}],
  campos:[
   {id:'nombre', q:'¿Cómo se llama el aparato?', ph:'Un nombre propio'},
   {id:'quienes', q:'¿Quiénes son el grupo y quién hace qué?', ph:'programa · arma · anota · documenta'},
-  {id:'que', q:'¿Qué construimos, en una oración?', ph:'Un aparato que...'},
-  {id:'cliente', q:'¿Quién usa el dato y para qué decisión?', ph:'Una persona concreta'},
-  {id:'donde', q:'¿Dónde va a estar instalado?', ph:'Lugar y altura'},
-  {id:'min', q:'El número más CHICO que conseguimos, y en qué estaba el sensor', ph:'310 — en un vaso de agua'},
-  {id:'max', q:'El número más GRANDE, y en qué estaba', ph:'812 — al aire'},
-  {id:'falta', q:'¿Qué piezas nos faltan?', ph:''}],
- mate:('<b>La pregunta para dejar picando, sin contestarla.</b> El aparato dice <b>640</b>. ' +
-  '¿La tierra está seca o mojada? Nadie lo puede saber, y ahí está el punto: <b>un número ' +
-  'crudo no significa nada solo</b>.<br><br>Preguntales cuánto sería «la mitad» entre el ' +
-  'mínimo y el máximo que anotaron, y dejá que discutan sin resolverlo. Esa discusión es la ' +
-  'que abre la clase del 30/09.'),
+  {id:'que', q:'¿Qué construimos, en una oración?', ph:'Un aparato que mide ... y ...'},
+  {id:'mide', q:'¿Qué mide exactamente, y en qué unidad?',
+   ph:'Humedad de la tierra. Hoy sale en número crudo; queremos que salga en porcentaje',
+   qcoh:'🚀 ¿Qué mide exactamente, y en qué unidad?',
+   phcoh:'Presión (hPa), temperatura (°C) y aceleración (g). De la presión sale la altura'},
+  {id:'cliente', q:'¿Quién usa el dato y para qué decisión?',
+   ph:'Una persona concreta, y qué hace distinto según el número',
+   qcoh:'🚀 ¿Quién usa el dato y para qué decisión?',
+   phcoh:'4to, el jueves siguiente: van a dibujar el vuelo con nuestro archivo'},
+  {id:'donde', q:'¿Dónde va a estar instalado?', ph:'Lugar y a qué altura del suelo',
+   qcoh:'🚀 ¿En qué parte del cohete va, y cómo lo sujetamos?', phcoh:''},
+  {id:'min', q:'El número más CHICO que conseguimos en el monitor', ph:'310 — con el potenciómetro todo para un lado'},
+  {id:'max', q:'El número más GRANDE', ph:'812 — todo para el otro lado'},
+  {id:'falta', q:'¿Qué piezas nos faltan para armarlo de verdad?', ph:'Mírenlo contra la ficha del esquema de conexión'}],
+ mate:('<b>Una pregunta que hoy no se puede contestar.</b> El aparato dice <b>640</b>. ¿La tierra ' +
+  'está seca o mojada?<br><br>Miren el mínimo y el máximo que anotaron y discútanlo en el grupo: ' +
+  '¿cuánto sería «la mitad» entre esos dos números? ¿Y esa mitad es «medio húmeda»?<br><br>' +
+  '<b>Escriban a qué llegaron, aunque no se pongan de acuerdo.</b> Un número crudo, solo, no ' +
+  'significa nada. El 30/09 lo van a convertir en algo que una persona entiende.'),
  listo:[
-  'El botón prende el LED, armado en la placa de verdad',
-  'El circuito del sensor armado y dando números',
+  'El LED prende solo, y después con el botón',
+  'El potenciómetro conectado y el número saliendo en el monitor serie',
+  'El LED se prende solo cuando el número pasa el umbral',
   'El mínimo y el máximo anotados <b>en papel también</b>',
-  'Las preguntas contestadas: eso es el proyecto escrito',
-  'El proyecto copiado y pegado en el Classroom']
+  'Las preguntas contestadas y el proyecto copiado al Classroom']
 },
 {
- n:2, fecha:'30/09', tit:'La calibración', ic:' ⭐',
- obj:'Que el aparato deje de decir números crudos y empiece a decir algo que una persona entiende.',
- antes:'El sensor dando números, y el mínimo y el máximo anotados.',
+ n:2, cod:'Traducción', fecha:'30/09', tit:'La calibración', ic:' ⭐',
+ obj:'que el aparato deje de decir números crudos y empiece a decir algo que una persona entiende.',
+ antes:'El circuito andando en Tinkercad, y el mínimo y el máximo anotados.',
+ nota:'El orden es: primero el problema, después el dibujo en papel, y la fórmula al final. <b>No empiecen por <code>y = mx + b</code></b> — así no se entiende de dónde sale.',
  hacer:[
+  '<b>Si llegaron las piezas:</b> armen en la placa de verdad el mismo circuito que simularon. Es el mismo esquema, ahora con las manos',
   '<b>Antes de tocar la compu:</b> el aparato dice 640. ¿Seca o mojada? Nadie puede contestar. <b>Hay que traducir</b>',
   'Elijan sus <b>dos puntos de referencia</b> y midan. Anoten los dos pares',
   '<b>En papel cuadriculado:</b> marquen los dos puntos, únanlos con una regla y <b>lean del dibujo</b> cuánto da un valor del medio',
@@ -6417,28 +6435,27 @@ const ETAPAS3=[
   {id:'palabras', q:'La pendiente DICHA EN PALABRAS (esto es lo que se evalúa)', ph:'Por cada punto que baja el sensor, la humedad sube ...'},
   {id:'recta', q:'La fórmula que sacaron', ph:'humedad = m · crudo + b'},
   {id:'prueba', q:'Al probar mojando la tierra, ¿qué dio? ¿Tiene sentido?', ph:''}],
- mate:('⭐ <b>El hito con Caro Sanz.</b> Y la idea que ordena todo, dicha una vez y repetida ' +
-  'todo el día:<br><br><b>Una función lineal es una máquina de traducir entre dos escalas.</b> ' +
-  'Entra un número de una escala y sale el de la otra. Para construirla sólo hacen falta ' +
-  '<b>dos pares conocidos</b>.<br><br>Es la misma máquina que ya usan sin darse cuenta: pesos ' +
-  'a dólares, grados Celsius a Fahrenheit, y ahora crudo del sensor a humedad. En el cohete va ' +
-  'a ser hectopascales a metros. <b>Cuatro casos, una sola máquina.</b><br><br>' +
-  'Los dos pares medidos dan el sistema <code>m·812 + n = 0</code> y <code>m·310 + n = 100</code>. ' +
-  'Cada grupo mide distinto, así que <b>cada grupo tiene un sistema distinto y no se pueden copiar</b>.' +
-  '<br><br><b>Dos cosas para nombrar en voz alta:</b> la pendiente es <i>cuánto se mueve uno ' +
-  'cuando se mueve el otro</i> — y hay que poder decirla en una oración, no sólo calcularla. ' +
-  'Y la recta que sale <b>no es lineal, es afín</b>: tiene <i>b</i>, y por eso el sensor en seco ' +
-  'no marca cero. Es la distinción con la que abre el cuadernillo, acá con una causa física.'),
+ mate:('⭐ <b>Hoy la clase es también de Matemática, con Caro Sanz.</b><br><br>' +
+  '<b>Una función lineal es una máquina de traducir entre dos escalas.</b> Entra un número de ' +
+  'una escala y sale el de la otra. Para construirla alcanza con <b>dos pares conocidos</b>.<br><br>' +
+  'Es la misma máquina que ya usan sin darse cuenta: pesos a dólares, grados Celsius a ' +
+  'Fahrenheit, y ahora crudo del sensor a humedad. En el cohete va a ser hectopascales a metros. ' +
+  '<b>Cuatro casos, una sola máquina.</b><br><br>Los dos pares que midieron les dan un sistema ' +
+  'de dos ecuaciones: <code>m·812 + n = 0</code> y <code>m·310 + n = 100</code>. Cada grupo mide ' +
+  'distinto, así que <b>cada grupo tiene su propio sistema</b>: los números del grupo de al lado ' +
+  'no les sirven.<br><br><b>Dos cosas que tienen que poder decir al terminar:</b> qué es la ' +
+  'pendiente —<i>cuánto se mueve uno cuando se mueve el otro</i>, dicho en una oración y no sólo ' +
+  'calculado— y por qué esta recta <b>es afín y no lineal</b>: tiene <i>b</i>, y por eso el sensor ' +
+  'en seco no marca cero.'),
  listo:[
   'Los dos pares medidos y anotados en papel',
   'El gráfico hecho <b>a mano</b>, con los dos puntos y la recta',
   'La pendiente escrita <b>en palabras</b>, no sólo el número',
-  'La fórmula adentro del programa y probada mojando la tierra'],
- nota:'<b>El orden importa: primero el problema, después el dibujo, y la fórmula al final.</b> Si arranca por <code>y = mx + b</code>, la clase se pierde.'
+  'La fórmula adentro del programa y probada mojando la tierra']
 },
 {
- n:3, fecha:'07/10', tit:'El vuelo y la toma de datos',
- obj:'Que haya un archivo con datos medidos por ustedes.',
+ n:3, cod:'Lanzamiento', fecha:'07/10', tit:'El vuelo y la toma de datos',
+ obj:'que haya un archivo con datos medidos por ustedes.',
  antes:'El aparato traduciendo bien, con la fórmula adentro.',
  hacer:[
   '<b>Cohete:</b> pesar la carga, montar, comprobar que graba desde que se enciende, lanzar y recuperar',
@@ -6466,8 +6483,8 @@ const ETAPAS3=[
   'La predicción de la parábola escrita antes de volar']
 },
 {
- n:4, fecha:'14/10', tit:'El CSV, y que 4to lo pueda abrir',
- obj:'Que el archivo se abra, se grafique, y que 4to lo pueda usar sin preguntarles nada.',
+ n:4, cod:'Transmisión', fecha:'14/10', tit:'El CSV, y que 4to lo pueda abrir',
+ obj:'que el archivo se abra, se grafique, y que 4to lo pueda usar sin tener que preguntarnos nada.',
  antes:'La tarjeta con los datos.',
  hacer:[
   'Abran el archivo <b>en la planilla</b> y grafiquen',
@@ -6499,8 +6516,8 @@ const ETAPAS3=[
   '4to lo pudo abrir sin preguntar nada']
 },
 {
- n:5, fecha:'30/10', tit:'Cierre: qué salió mal y qué quedó',
- obj:'Que cada uno pueda decir por escrito tres cosas que sabe hacer ahora y no sabía en agosto.',
+ n:5, cod:'Caja negra', fecha:'30/10', tit:'Cierre: qué salió mal y qué quedó',
+ obj:'que esté escrito qué falló, qué harían distinto y qué quedó — sin suavizarlo.',
  antes:'Todo lo anterior.',
  hacer:[
   'Repasen la bitácora de las cuatro etapas anteriores',
@@ -6513,18 +6530,19 @@ const ETAPAS3=[
   {id:'cambiaria', q:'¿Qué haríamos distinto si empezáramos de nuevo?', ph:''},
   {id:'quedo', q:'¿Qué quedó? (el aparato, el archivo, lo aprendido)', ph:''},
   {id:'arreglo', q:'¿Qué alcanzamos a arreglar hoy?', ph:''}],
- mate:('Una sola pregunta, y es la que dice si la función lineal quedó: <b>expliquen con sus ' +
-  'palabras, sin fórmula, qué hacía la cuenta que le pusieron al aparato.</b> Si pueden decir ' +
-  '«traducía el número del sensor a humedad, y por cada punto que bajaba uno subía el otro ' +
-  'tanto», entendieron. Si sólo saben escribir <code>y = mx + b</code>, no.'),
+ mate:('<b>Sin escribir la fórmula y sin usar la palabra «pendiente»:</b> expliquen con sus ' +
+  'palabras qué hacía la cuenta que le pusieron adentro al aparato. Qué número entraba, qué ' +
+  'número salía, y qué le pasaba a uno cuando el otro subía.<br><br>Escríbanlo en el cuaderno, ' +
+  'cada grupo el suyo. Si la oración se entiende leída por alguien que no estuvo en ninguna ' +
+  'clase, está lista.'),
  listo:[
   'La bitácora completa de las cinco etapas',
   'El cuaderno copiado al Classroom',
-  'Cada integrante escribió sus tres cosas, con su nombre']
+  'Escrito qué falló y qué harían distinto']
 },
 {
- n:6, fecha:'04/11', tit:'Mostrar y entregar',
- obj:'Que cada uno pueda decir, por escrito y con su nombre, tres cosas que sabe hacer ahora y no sabía en agosto.',
+ n:6, cod:'Informe final', fecha:'04/11', tit:'Mostrar y entregar',
+ obj:'que cada uno pueda decir, por escrito y con su nombre, tres cosas que sabe hacer ahora y no sabía en agosto.',
  antes:'El cierre del 30/10 hecho y el archivo entregado.',
  hacer:[
   'Armen el portfolio del grupo: el aparato, el código, el archivo y el gráfico',
@@ -6536,10 +6554,11 @@ const ETAPAS3=[
   {id:'porta', q:'¿Qué entregamos? (la lista de lo que hay)', ph:'Aparato, código, CSV, gráfico...'},
   {id:'aprendi', q:'Tres cosas que sé hacer ahora y en agosto no — CON TU NOMBRE', ph:'Nombre: 1... 2... 3...'},
   {id:'otro', q:'¿Qué le dirías a un grupo que empieza este proyecto el año que viene?', ph:''}],
- mate:('Una sola pregunta, y es la que dice si la función lineal quedó: <b>expliquen con sus ' +
-  'palabras, sin escribir la fórmula, qué hacía la cuenta que le pusieron al aparato.</b> ' +
-  'Si pueden decir «traducía el número del sensor a humedad, y por cada punto que bajaba uno ' +
-  'subía el otro tanto», entendieron. Si sólo saben escribir <code>y = mx + b</code>, no.'),
+ mate:('Cuando muestren el aparato va a haber gente que no estuvo en ninguna clase. ' +
+  '<b>Explíquenle en un minuto qué hace la cuenta que tiene adentro:</b> qué número entra, qué ' +
+  'número sale, y qué pasa con uno cuando el otro sube. Sin escribir la fórmula en el ' +
+  'pizarrón.<br><br>Si se entiende sin saber matemática, está bien contado — y eso es más ' +
+  'difícil que resolver el sistema.'),
  listo:[
   'El portfolio armado',
   'Lo mostraron delante del curso',
@@ -6623,11 +6642,15 @@ void loop() {
      <tr><td>Módulo microSD</td><td class="mono">VCC · GND</td><td class="mono">5V · GND</td></tr>
      <tr><td>Módulo microSD</td><td class="mono">MOSI · MISO · SCK</td><td class="mono">11 · 12 · 13</td></tr>
      <tr><td>Módulo microSD</td><td class="mono">CS</td><td class="mono">pin 10</td></tr>
+     <tr><td>🚀 MPU6050 <i>(sólo cohete)</i></td><td class="mono">VCC · GND</td><td class="mono">5V · GND</td></tr>
+     <tr><td>🚀 MPU6050 <i>(sólo cohete)</i></td><td class="mono">SDA · SCL</td><td class="mono">A4 · A5, los mismos del BME280</td></tr>
      <tr><td>LED testigo</td><td class="mono">pata larga</td><td class="mono">pin 8, con resistencia de 220 Ω</td></tr>
      <tr><td>LED testigo</td><td class="mono">pata corta</td><td class="mono">GND</td></tr>
    </table>
    <p>En el Uno y en el Nano <b>I2C es siempre A4 y A5</b>: no se eligen. El único que se puede
-   cambiar es el <code>CS</code> de la tarjeta. Y el testigo va al <b>8</b> y no al 13, porque
+   cambiar es el <code>CS</code> de la tarjeta. Por eso el acelerómetro del cohete va a
+   <b>los mismos dos pines</b> que el BME280: cada chip tiene su propia dirección y la placa les
+   habla de a uno. Y el testigo va al <b>8</b> y no al 13, porque
    el 13 acá lo usa la tarjeta.</p>`},
  {t:'El código de la estación', h:`
    <pre><code>#include &lt;Wire.h&gt;
@@ -6670,21 +6693,30 @@ void loop() {
  {t:'El código del cohete', h:`
    <p>Dos cambios respecto de la estación, y los dos por el mismo motivo: <b>acá no hay tiempo</b>.
    El archivo se abre <u>una sola vez</u> y se asegura cada tantas filas.</p>
-   <pre><code>File vuelo;
+   <pre><code>#include &lt;Adafruit_MPU6050.h&gt;   // además de las de la estación
+Adafruit_MPU6050 mpu;
+File vuelo;
 int filas = 0;
 
 void setup() {
   bme.begin(0x76);
+  mpu.begin();                                    // mismos dos cables
+  mpu.setAccelerometerRange(MPU6050_RANGE_16_G);  // el despegue pasa de 10 g
   SD.begin(10);
   vuelo = SD.open("vuelo.csv", FILE_WRITE);
-  vuelo.println("t_ms,presion_hPa,temp_C");
+  vuelo.println("t_ms,presion_hPa,temp_C,accel_z_g");
+  pinMode(8, OUTPUT);
   digitalWrite(8, HIGH);      // prendido = estoy grabando
 }
 
 void loop() {
+  sensors_event_t a, g, t;
+  mpu.getEvent(&amp;a, &amp;g, &amp;t);
+
   vuelo.print(millis());                      vuelo.print(",");
   vuelo.print(bme.readPressure() / 100.0, 2); vuelo.print(",");
-  vuelo.println(bme.readTemperature(), 1);
+  vuelo.print(bme.readTemperature(), 1);      vuelo.print(",");
+  vuelo.println(a.acceleration.z / 9.81, 2);  // de m/s² a g
 
   filas++;
   if (filas % 10 == 0) vuelo.flush();   // baja lo escrito sin cerrar
@@ -6692,14 +6724,17 @@ void loop() {
   delay(50);                            // 50 ms = 20 veces por segundo
 }</code></pre>
    <p><code>flush()</code> hace lo mismo que <code>close()</code> pero deja el archivo abierto.
-   Es la línea que salva el vuelo cuando el golpe corta la alimentación.</p>`},
+   Es la línea que salva el vuelo cuando el golpe corta la alimentación.</p>
+   <p><b>El rango del acelerómetro no se deja de fábrica.</b> Viene en 2 g, y el despegue pasa
+   de 10: el número se clava en el techo y el empuje no se ve. Por eso la línea del
+   <code>16_G</code>.</p>`},
  {t:'Wokwi en cinco pasos', h:`
    <ol>
      <li><code>wokwi.com</code> → <b>New project</b> → <b>Arduino Uno</b>. No pide cuenta
      para programar</li>
      <li>Con el <b>+</b> se agregan piezas por nombre: <code>BME280</code>,
-     <code>SD card</code>, <code>LED</code></li>
-     <li>Pestaña <b>Library Manager</b> → agregar <code>Adafruit BME280 Library</code></li>
+     <code>SD card</code>, <code>MPU6050</code>, <code>LED</code></li>
+     <li>Pestaña <b>Library Manager</b> → agregar <code>Adafruit BME280 Library</code> y, para el cohete, <code>Adafruit MPU6050</code></li>
      <li>Play para correr. El monitor serie está abajo</li>
      <li><b>Para guardar hace falta cuenta.</b> Si no se la hacen, copien el código al
      Classroom antes de irse</li>
@@ -6763,20 +6798,27 @@ function cuadTipo(t){ const d=cuadLee(); d.tipo=t; cuadSave(d); tono(659.25,.15)
 function cuadHome(){
   cur=null;
   const d=cuadLee(), hoy=cuadHoy();
+  let cumplidas=0; for(let i=1;i<=ETAPAS3.length;i++){ const q=cuadProg(i); if(q.c===q.t) cumplidas++; }
   const tarjetas=ETAPAS3.map(function(et){
     const p=cuadProg(et.n), lista=p.c===p.t;
     return '<button class="item wide'+(et.n===hoy?' dest':'')+'" onclick="cuadEtapa('+et.n+')">'
-      +'<div class="n">'+(lista?'✅ ':'')+'Etapa '+et.n+' · '+et.tit+(et.ic||'')+'</div>'
-      +'<div class="d"><b>'+et.fecha+'</b> — '+et.obj+'</div>'
-      +'<div class="foot"><span class="lvl">'+p.c+' de '+p.t+'</span>'
+      +'<div class="n">'+(lista?'✅ ':(et.n===hoy?'▶ ':'⬜ '))+'Misión '+et.n+' · «'+(et.cod||'')+'»'+(et.ic||'')+'</div>'
+      +'<div class="d">'+et.tit+'<br><b>'+et.fecha+'</b> — '+et.obj+'</div>'
+      +'<div class="foot"><span class="lvl">'+p.c+' de '+p.t+' objetivos</span>'
       +(et.n===hoy?'<span class="hecho">la de hoy</span>':'')+'</div></button>';
   }).join('');
   app.innerHTML='<div class="topbar"><button class="backb" onclick="menu()" aria-label="volver">← Menú</button></div>'
    +'<div class="card"><div class="concepto big">El cuaderno del proyecto</div>'
-   +'<h2 style="margin-top:0">Seis clases, del 16/09 al 04/11</h2>'
-   +'<p class="muted" style="margin:0;line-height:1.6">Acá se trabaja, no se lee. En cada etapa'
-   +' hay algo que <b>hacer</b>, algo que <b>decidir</b>, algo que <b>escribir</b> y una'
-   +' <b>bitácora</b>. Todo queda guardado y se copia con un botón para pegar en el Classroom.</p></div>'
+   +'<h2 style="margin-top:0">Seis misiones, del 16/09 al 04/11</h2>'
+   +'<p class="muted" style="margin:0 0 10px;line-height:1.6">Acá se trabaja, no se lee. Cada'
+   +' misión tiene algo que <b>hacer</b>, algo que <b>decidir</b>, algo que <b>queda escrito</b>,'
+   +' objetivos que se tildan y un <b>informe</b>. Todo se guarda solo y se copia con un botón.</p>'
+   +'<div class="hint"><b>Misiones cumplidas: '+cumplidas+' de '+ETAPAS3.length+'</b>'
+   +'<div style="margin-top:6px;height:10px;border-radius:99px;background:rgba(127,127,127,.25);overflow:hidden">'
+   +'<div style="height:100%;width:'+Math.round(cumplidas*100/ETAPAS3.length)+'%;background:var(--ok,#2e9e5b)"></div>'
+   +'</div></div></div>'
+   +'<button class="item wide" onclick="cuadIntro()"><div class="n">🧭 De qué se trata todo esto</div>'
+   +'<div class="d">Qué vamos a construir, qué es un sensor, cuáles podemos usar y qué mide cada uno. <b>Leer antes de la misión 1.</b></div></button>'
    +'<div class="card"><div class="concepto">Nuestro proyecto</div>'
    +'<div class="opsl" style="margin-top:8px">'
    +'<button class="opch sel'+(d.tipo==='est'?' on':'')+'" onclick="cuadTipo(\'est\')">🌡️ La estación</button>'
@@ -6790,14 +6832,143 @@ function cuadHome(){
   window.scrollTo(0,0);
 }
 
+/* ---- de que se trata ---- */
+function cuadIntro(){
+  cur=null;
+  app.innerHTML=`
+    <div class="topbar"><button class="backb" onclick="cuadHome()" aria-label="volver">← El cuaderno</button>
+      <div class="progtext">Antes de empezar</div></div>
+
+    <div class="card"><div class="concepto big">🧭 De qué se trata todo esto</div>
+      <h2 style="margin-top:0">Vamos a construir un registrador</h2>
+      <p style="margin:0;line-height:1.7">Un aparato que <b>mide algo del mundo real</b>, decide
+      qué hacer con ese número, y <b>deja un archivo</b> que después alguien puede abrir. Eso es
+      todo, y es más de lo que parece: un dato que nadie guardó es un dato que no existe.</p>
+      <p style="margin:12px 0 0;line-height:1.7">Los aparatos del curso son el mismo aparato a
+      dos velocidades. <b>La estación</b> mide cada diez minutos y se queda tres días sola en la
+      huerta. <b>El registrador de vuelo</b> mide veinte veces por segundo y todo su trabajo dura
+      seis segundos, adentro de un cohete de agua. Mismo circuito, mismo código, mismo archivo:
+      lo único que cambia es cada cuánto mide.</p>
+    </div>
+
+    <div class="card"><div class="concepto">La estructura que no cambia nunca</div>
+      <p style="margin:6px 0 0;line-height:1.7">Todo aparato, desde el más tonto hasta el más
+      caro, es siempre lo mismo:</p>
+      <pre><code>algo que ENTRA  →  una DECISIÓN  →  algo que SALE
+   (sensor)          (el si)         (LED, aviso)
+                                          ↓
+                                    y se GUARDA
+                                    (la tarjeta)</code></pre>
+      <p style="margin:0;line-height:1.7">Un botón que prende una luz ya tiene las tres partes.
+      Por eso la misión 1 empieza por ahí: <b>es el aparato entero en chiquito</b>.</p>
+    </div>
+
+    <div class="card"><div class="concepto">¿Qué es un sensor?</div>
+      <p style="margin:6px 0 0;line-height:1.7">Una pieza que convierte <b>algo del mundo</b>
+      —agua en la tierra, calor, luz, presión del aire, movimiento— <b>en un número</b> que la
+      placa puede leer.</p>
+      <p style="margin:12px 0 0;line-height:1.7"><b>Un sensor no sabe nada.</b> No sabe si la
+      tierra está seca: devuelve 640. Que 640 signifique «seca» lo decidimos nosotros, y eso es
+      exactamente el trabajo de la misión 2.</p>
+    </div>
+
+    <div class="card"><div class="concepto">Contestan de tres maneras distintas</div>
+      <table class="esqt">
+        <tr><th>Tipo</th><th>Qué devuelve</th><th>A qué pin va</th></tr>
+        <tr><td><b>Digital</b></td><td class="mono">0 o 1</td><td class="mono">2 a 13</td></tr>
+        <tr><td><b>Analógico</b></td><td class="mono">un número de 0 a 1023</td><td class="mono">A0 a A5</td></tr>
+        <tr><td><b>Los que hablan</b></td><td class="mono">varios valores, ya en unidades</td><td class="mono">A4 y A5 (SDA y SCL)</td></tr>
+      </table>
+      <p style="margin:10px 0 0;line-height:1.7">El <b>digital</b> sólo sabe decir sí o no: está
+      apretado o no lo está. El <b>analógico</b> da una escala, y por eso hay que traducirlo.
+      Los que <b>hablan</b> son chips con una computadora chiquita adentro: se les pregunta por
+      dos cables y contestan en grados y en hectopascales, ya traducidos.</p>
+    </div>
+
+    <div class="card"><div class="concepto">Los sensores que podríamos usar</div>
+      <table class="esqt">
+        <tr><th>Sensor</th><th>Qué mide</th><th>Cómo contesta</th></tr>
+        <tr><td><b>Humedad de suelo</b><br><span class="mono">capacitivo</span></td>
+            <td>Cuánta agua hay en la tierra</td><td class="mono">analógico<br>0 a 1023</td></tr>
+        <tr><td><b>TMP36</b></td><td>Temperatura del aire</td><td class="mono">analógico<br>0 a 1023</td></tr>
+        <tr><td><b>Fotorresistor</b><br><span class="mono">LDR</span></td>
+            <td>Cuánta luz hay</td><td class="mono">analógico<br>0 a 1023</td></tr>
+        <tr><td><b>BME280</b></td><td>Temperatura, humedad del aire <b>y presión</b>, los tres a la vez</td>
+            <td class="mono">habla (I2C)<br>ya en unidades</td></tr>
+        <tr><td><b>MPU6050</b><br><span class="mono">acelerómetro-giroscopio</span></td><td>Aceleración y giro: cuánto lo empujan y para dónde apunta</td>
+            <td class="mono">habla (I2C)</td></tr>
+        <tr><td><b>Pulsador</b></td><td>Si alguien lo apretó</td><td class="mono">digital<br>0 o 1</td></tr>
+      </table>
+      <div class="hint" style="margin-top:10px"><b>Por qué la presión y no la altura.</b> No
+      existe un sensor de altura. Existe uno de presión, y la presión <b>baja</b> a medida que
+      uno sube: más o menos <b>1 hPa cada 9 metros</b>. La altura no se mide: se calcula. Esa
+      cuenta es la misma máquina de traducir de la misión 2.</div>
+    </div>
+
+    <div class="card"><div class="concepto">Y del otro lado: los actuadores</div>
+      <p style="margin:6px 0 10px;line-height:1.7">Es lo que el aparato <b>hace</b> una vez que
+      decidió. El sensor se entera; el actuador actúa.</p>
+      <table class="esqt">
+        <tr><th>Pieza</th><th>Qué hace</th></tr>
+        <tr><td><b>LED</b></td><td>Avisa con luz. En el registrador se usa de <b>testigo</b>: prendido significa «estoy grabando»</td></tr>
+        <tr><td><b>Buzzer</b></td><td>Avisa con sonido, y sirve de noche cuando nadie está mirando</td></tr>
+        <tr><td><b>Pantalla LCD</b></td><td>Muestra el número a quien esté parado al lado</td></tr>
+        <tr><td><b>Tarjeta microSD</b></td><td>No actúa: <b>recuerda</b>. Es lo que convierte al aparato en un registrador</td></tr>
+      </table>
+    </div>
+
+    <div class="card"><div class="concepto">🚀 Qué lleva el cohete</div>
+      <table class="esqt">
+        <tr><th>Pieza</th><th>Para qué sirve en el vuelo</th></tr>
+        <tr><td><b>Arduino Nano</b></td><td>El cerebro. El Nano y no el Uno porque es chiquito y pesa poco</td></tr>
+        <tr><td><b>Acelerómetro-giroscopio</b><br><span class="mono">MPU6050</span></td>
+            <td>Cuánto lo empujan y para dónde apunta. Se ve el despegue (10 a 20 g), el vuelo sin motor (0 g) y el golpe</td></tr>
+        <tr><td><b>Sensor de presión y temperatura</b><br><span class="mono">BME280</span></td>
+            <td>La presión baja cuando el cohete sube: <b>de ahí sale la altura</b></td></tr>
+        <tr><td><b>Tarjeta microSD</b></td><td>Donde queda el archivo. Sin esto no hay nada para graficar</td></tr>
+        <tr><td><b>LED testigo</b></td><td>Prendido quiere decir «estoy grabando». Se mira antes de lanzar</td></tr>
+        <tr><td><b>Pilas</b></td><td>En el aire no hay cable USB</td></tr>
+      </table>
+      <p style="margin:10px 0 0;line-height:1.7"><b>Y lo que sale al final: el recorrido del cohete,
+      dibujado.</b> Con el archivo se grafica la presión contra el tiempo y aparece una V: el fondo
+      de la V es el punto más alto. La temperatura también se grafica, pero en seis segundos casi no
+      se mueve — y está bien. El sensor la necesita para corregir la presión.</p>
+      <div class="hint" style="margin-top:10px">En algunas notas aparece «sensor DMP». No es un
+      sensor de presión: el DMP es el procesador que viene <b>adentro</b> del acelerómetro. El de
+      presión y temperatura es el <b>BMP280</b> o el <b>BME280</b> — con E, que además mide humedad.</div>
+    </div>
+
+    <div class="card"><div class="concepto">El cohete y la estación: casi el mismo circuito</div>
+      <p style="margin:6px 0 0;line-height:1.7">Esto sorprende y conviene saberlo de entrada:
+      <b>no son dos circuitos distintos</b>. Los dos llevan la misma placa, el mismo sensor de
+      presión y temperatura, el mismo módulo de tarjeta y el mismo LED testigo. <b>El cohete suma
+      una sola pieza</b>, el acelerómetro-giroscopio, y va a los mismos dos cables que el sensor
+      de presión.</p>
+      <p style="margin:12px 0 0;line-height:1.7"><b>Lo único que cambia está en el código:</b> la
+      estación espera diez minutos entre medición y medición y cierra el archivo cada vez; el
+      cohete no espera casi nada y lo deja abierto, porque no le sobra tiempo. Y en el cohete
+      además hay que sujetar todo con espuma y alimentarlo con pilas, porque no va a haber un
+      cable USB en el aire.</p>
+      <div class="hint" style="margin-top:10px">El esquema pin por pin está en las fichas:
+      <b>El esquema de conexión</b>. Y el orden para armarlo sin volverse loco es el de la misión
+      1: primero el LED solo, después el botón, después el sensor. <b>Cada paso tiene que andar
+      antes de pasar al siguiente</b>, o no se sabe nunca cuál de los cinco cables está mal.</div>
+    </div>
+
+    <button class="btn" onclick="cuadHome()">Volver a las misiones →</button>
+    <button class="btn ghost" onclick="cuadFichas()">📖 Ver las fichas de consulta</button>`;
+  window.scrollTo(0,0);
+}
+
 /* ---- una etapa ---- */
 function cuadEtapa(n){
   cur=null;
   const et=ETAPAS3[n-1], d=cuadLee(), e=cuadE(d,n), p=cuadProg(n), coh=d.tipo==='coh';
   let h='<div class="topbar"><button class="backb" onclick="cuadHome()" aria-label="volver">← El cuaderno</button>'
-   +'<div class="progtext">Etapa '+n+' de '+ETAPAS3.length+'</div></div>'
-   +'<div class="card"><div class="concepto big">'+et.fecha+' · Etapa '+n+(et.ic||'')+'</div>'
-   +'<h2 style="margin-top:0">'+et.tit+'</h2>'
+   +'<div class="progtext">Misión '+n+' de '+ETAPAS3.length+'</div></div>'
+   +'<div class="card"><div class="concepto big">'+et.fecha+' · Misión '+n+(et.ic||'')+'</div>'
+   +'<h2 style="margin-top:0">«'+(et.cod||'')+'»</h2>'
+   +'<p class="mono" style="margin:0 0 10px">'+et.tit+'</p>'
    +'<p style="margin:0"><b>Al terminar la clase:</b> '+et.obj+'</p>'
    +'<div class="hint" style="margin-top:10px"><b>Traen de la etapa anterior:</b> '+et.antes+'</div>'
    +(et.nota?'<div class="hint" style="margin-top:8px">'+et.nota+'</div>':'')
@@ -6827,30 +6998,30 @@ function cuadEtapa(n){
     h+='<div class="card"><div class="concepto">'+(et.dec.length?'3':'2')+' · Qué queda escrito</div>'
      +'<p class="muted" style="margin:4px 0 0">Corto. Una o dos líneas cada una.</p></div>';
     et.campos.forEach(function(c){
-      h+='<div class="card"><h3 style="margin:0 0 8px;font-size:1rem">'+c.q+'</h3>'
-       +'<textarea class="f" rows="2" placeholder="'+escapeHtml(c.ph||'')+'"'
+      h+='<div class="card"><h3 style="margin:0 0 8px;font-size:1rem">'+((coh&&c.qcoh)?c.qcoh:c.q)+'</h3>'
+       +'<textarea class="f" rows="2" placeholder="'+escapeHtml(((coh&&c.phcoh!=null)?c.phcoh:c.ph)||'')+'"'
        +' oninput="cuadCampo('+n+',\''+c.id+'\',this.value)">'+escapeHtml(e.campos[c.id]||'')+'</textarea></div>';
     });
   }
 
-  h+='<div class="card"><div class="concepto">Antes de irse</div>'
+  h+='<div class="card"><div class="concepto">🎯 Objetivos de la misión</div>'
    +'<p class="muted" style="margin:4px 0 10px">Tóquenlo cuando esté hecho de verdad.'
    +' <b id="cprog">'+p.c+' de '+p.t+'</b></p><div class="ckl">'
    +et.listo.map(function(x,i){ const on=!!e.chk[i];
      return '<button class="opch sel'+(on?' on':'')+'" onclick="cuadChk('+n+','+i+',this)">'
       +'<span class="cbox">'+(on?'✓':'')+'</span>'+x+'</button>'; }).join('')+'</div></div>';
 
-  h+='<div class="card"><div class="concepto">La bitácora de hoy</div>'
+  h+='<div class="card"><div class="concepto">📓 Informe de la misión</div>'
    +'<p class="muted" style="margin:4px 0 8px">Cinco minutos. Qué hicimos, qué no salió y qué'
    +' queda para la próxima.</p>'
    +'<textarea class="f" rows="4" placeholder="Hoy... No salió... Para la próxima..."'
    +' oninput="cuadBit('+n+',this.value)">'+escapeHtml(e.bit||'')+'</textarea></div>';
 
-  h+='<div class="card"><button class="btn" onclick="cuadCopiar('+n+')">Copiar esta etapa para la profe</button>'
+  h+='<div class="card"><button class="btn" onclick="cuadCopiar('+n+')">Copiar esta misión para la profe</button>'
    +'<div id="ccopia"></div></div>'
    +'<div class="ardunav">'
-   +(n>1?'<button class="btn ghost" onclick="cuadEtapa('+(n-1)+')">← Etapa '+(n-1)+'</button>':'<span></span>')
-   +(n<ETAPAS3.length?'<button class="btn ghost" onclick="cuadEtapa('+(n+1)+')">Etapa '+(n+1)+' →</button>':'<span></span>')
+   +(n>1?'<button class="btn ghost" onclick="cuadEtapa('+(n-1)+')">← Misión '+(n-1)+'</button>':'<span></span>')
+   +(n<ETAPAS3.length?'<button class="btn ghost" onclick="cuadEtapa('+(n+1)+')">Misión '+(n+1)+' →</button>':'<span></span>')
    +'</div>';
   app.innerHTML=h; window.scrollTo(0,0);
 }
@@ -6876,10 +7047,10 @@ function cuadBit(n,v){ const d=cuadLee(), e=cuadE(d,n); e.bit=v; cuadSave(d); }
 
 /* ---- copiar para la profe ---- */
 function cuadTexto(n){
-  const et=ETAPAS3[n-1], e=cuadLee().e[n]||{chk:{},dec:{},campos:{},bit:''};
-  let t='ETAPA '+n+' — '+et.tit+' ('+et.fecha+')\n';
+  const et=ETAPAS3[n-1], dd_=cuadLee(), e=dd_.e[n]||{chk:{},dec:{},campos:{},bit:''}, coh=dd_.tipo==='coh';
+  let t='MISIÓN '+n+' · '+(et.cod||'')+' — '+et.tit+' ('+et.fecha+')\n';
   (et.campos||[]).forEach(function(c){
-    t+='  '+txtPlano(c.q)+'\n    '+((e.campos||{})[c.id]||'(sin contestar)')+'\n'; });
+    t+='  '+txtPlano((coh&&c.qcoh)?c.qcoh:c.q)+'\n    '+((e.campos||{})[c.id]||'(sin contestar)')+'\n'; });
   (et.dec||[]).forEach(function(dd,k){ const m=(e.dec||{})[k];
     t+='  '+txtPlano(dd.q)+'\n    Elegimos: '+(m&&m.op!=null?txtPlano(dd.op[m.op]):'(sin elegir)')
      +'\n    Porque: '+((m&&m.por)||'(sin justificar)')+'\n'; });
