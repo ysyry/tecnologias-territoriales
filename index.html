@@ -6363,19 +6363,19 @@ const ETAPAS3=[
  obj:'que el circuito esté armado y andando en Tinkercad, y que el sensor ya esté dando un número que se mueve.',
  antes:'Nada. Esta es la primera.',
  nota:'<b>Hoy es en la computadora, con Tinkercad.</b> A la placa de verdad van la clase que viene. En el simulador un cable al revés no quema nada y se puede probar veinte veces: por eso se empieza acá.',
- coh:'Tinkercad no tiene el sensor de presión ni la tarjeta de memoria. Hoy arman <b>el mismo circuito que la estación</b> y el potenciómetro hace de sensor. Lo que se aprende hoy es la estructura, y esa es idéntica en los dos aparatos.',
+ coh:'Tinkercad no tiene el sensor de presión, ni el acelerómetro, ni la tarjeta de memoria. Hoy arman <b>el mismo circuito que la estación</b>, con el sensor de temperatura. Lo que se aprende hoy es la estructura, y esa es idéntica en los dos aparatos.',
  hacer:[
   '<b>Primero el LED solo.</b> Que prenda, y nada más. Si no prende no sigan: falta el GND o falta la resistencia de 220 Ω',
   '<b>Ahora que lo prenda el botón.</b> Ahí ya tienen el aparato entero en chiquito: algo que <b>entra</b>, una <b>decisión</b>, algo que <b>sale</b>. Está paso a paso en la ficha «Primero: el botón y el LED»',
-  '<b>Cambien el botón por un potenciómetro.</b> Tinkercad no tiene el sensor de humedad de suelo, así que el potenciómetro lo reemplaza: da el mismo número de <b>0 a 1023</b>, sólo que lo mueven ustedes con la mano en vez de moverlo el agua de la tierra',
-  '<b>Abran el monitor serie</b> y hagan que ese número aparezca. Gírenlo despacio de un extremo al otro y miren cómo cambia',
+  '<b>Cambien el botón por el sensor de temperatura TMP36</b>, que está en Tinkercad. Con la cara plana mirándolos: la pata de la <b>izquierda a 5V</b>, la del <b>medio a A0</b>, la de la <b>derecha a GND</b>. <i>(Si ya pusieron un potenciómetro, sirve igual: da el mismo tipo de número.)</i>',
+  '<b>Abran el monitor serie</b> y hagan que el número aparezca. Con la simulación andando, <b>hagan clic sobre el sensor</b> y muevan la temperatura de un extremo al otro. Miren cómo cambia el número',
   '<b>Anoten el número más chico y el más grande.</b> Con esos dos extremos van a trabajar todo el proyecto',
-  '<b>Que el número decida.</b> Si es menor que un número que eligen ustedes, se prende el LED. Prueben girando hasta que prenda y se apague',
+  '<b>Que el número decida.</b> Si es menor que un número que eligen ustedes —o sea, si hace frío—, se prende el LED. Prueben bajando la temperatura hasta que prenda y subiéndola hasta que se apague',
   'Contesten las preguntas de abajo: <b>eso es el proyecto escrito</b>'],
  dec:[
-  {q:'¿A partir de qué número el aparato tiene que hacer algo?',
-   op:['Justo en la mitad entre el mínimo y el máximo','Más cerca del extremo seco','Lo dejamos provisorio y lo ajustamos midiendo'],
-   por:'Ese número se llama <b>umbral</b> y no está escrito en ningún lado: <b>lo eligen ustedes</b>. Si lo ponen muy al medio, el aparato avisa todo el tiempo y nadie le da bola. Si lo ponen muy al extremo, cuando avisa ya es tarde. Y hay algo más incómodo todavía: el número que eligieron <b>no significa nada</b> — 640 no es ni seco ni mojado hasta que lo traduzcan. Eso es exactamente lo que van a resolver el 30/09.',
+  {q:'¿A partir de qué número el aparato tiene que avisar?',
+   op:['Justo en la mitad entre el mínimo y el máximo','Más cerca del extremo frío','Lo dejamos provisorio y lo ajustamos midiendo'],
+   por:'Ese número se llama <b>umbral</b> y no está escrito en ningún lado: <b>lo eligen ustedes</b>. Si lo ponen muy al medio, el aparato avisa todo el tiempo y nadie le da bola. Si lo ponen muy al extremo, cuando avisa la helada ya pasó. Y hay algo más incómodo todavía: el número que eligieron <b>no significa nada</b> — 150 no es ni frío ni calor hasta que lo traduzcan a grados. Eso es exactamente lo que van a resolver el 30/09.',
    coh:'En el cohete no hay umbral: <b>graba todo desde que se enciende</b>. El motivo está en la ficha de seguridad — nadie puede estar al lado de un cohete presurizado para apretar un botón.'},
   {q:'¿Cada cuánto va a medir?',
    op:['Cada 1 minuto','Cada 10 minutos','Cada 30 minutos'],
@@ -6386,7 +6386,7 @@ const ETAPAS3=[
   {id:'quienes', q:'¿Quiénes son el grupo y quién hace qué?', ph:'programa · arma · anota · documenta'},
   {id:'que', q:'¿Qué construimos, en una oración?', ph:'Un aparato que mide ... y ...'},
   {id:'mide', q:'¿Qué mide exactamente, y en qué unidad?',
-   ph:'Humedad de la tierra. Hoy sale en número crudo; queremos que salga en porcentaje',
+   ph:'Temperatura (°C), humedad del aire (%) y presión (hPa). Hoy sale un número crudo',
    qcoh:'🚀 ¿Qué mide exactamente, y en qué unidad?',
    phcoh:'Presión (hPa), temperatura (°C) y aceleración (g). De la presión sale la altura'},
   {id:'cliente', q:'¿Quién usa el dato y para qué decisión?',
@@ -6395,63 +6395,63 @@ const ETAPAS3=[
    phcoh:'4to, el jueves siguiente: van a dibujar el vuelo con nuestro archivo'},
   {id:'donde', q:'¿Dónde va a estar instalado?', ph:'Lugar y a qué altura del suelo',
    qcoh:'🚀 ¿En qué parte del cohete va, y cómo lo sujetamos?', phcoh:''},
-  {id:'min', q:'El número más CHICO que conseguimos en el monitor', ph:'310 — con el potenciómetro todo para un lado'},
-  {id:'max', q:'El número más GRANDE', ph:'812 — todo para el otro lado'},
+  {id:'min', q:'El número más CHICO que conseguimos en el monitor', ph:'Ej: 20 — con la temperatura al mínimo'},
+  {id:'max', q:'El número más GRANDE', ph:'Ej: 358 — con la temperatura al máximo'},
   {id:'falta', q:'¿Qué piezas nos faltan para armarlo de verdad?', ph:'Mírenlo contra la ficha del esquema de conexión'}],
- mate:('<b>Una pregunta que hoy no se puede contestar.</b> El aparato dice <b>640</b>. ¿La tierra ' +
-  'está seca o mojada?<br><br>Miren el mínimo y el máximo que anotaron y discútanlo en el grupo: ' +
-  '¿cuánto sería «la mitad» entre esos dos números? ¿Y esa mitad es «medio húmeda»?<br><br>' +
+ mate:('<b>Una pregunta que hoy no se puede contestar.</b> El aparato dice <b>150</b>. ¿Hace frío ' +
+  'o calor? ¿Hay helada?<br><br>Miren el mínimo y el máximo que anotaron y discútanlo en el grupo: ' +
+  '¿cuánto sería «la mitad» entre esos dos números? ¿Y esa mitad es «templado»?<br><br>' +
   '<b>Escriban a qué llegaron, aunque no se pongan de acuerdo.</b> Un número crudo, solo, no ' +
-  'significa nada. El 30/09 lo van a convertir en algo que una persona entiende.'),
+  'significa nada. El 30/09 lo van a convertir en grados.'),
  listo:[
   'El LED prende solo, y después con el botón',
-  'El potenciómetro conectado y el número saliendo en el monitor serie',
-  'El LED se prende solo cuando el número pasa el umbral',
+  'El sensor de temperatura conectado y el número saliendo en el monitor serie',
+  'El LED se prende solo cuando el número baja del umbral',
   'El mínimo y el máximo anotados <b>en papel también</b>',
   'Las preguntas contestadas y el proyecto copiado al Classroom']
 },
 {
  n:2, cod:'Traducción', fecha:'30/09', tit:'La calibración', ic:' ⭐',
- obj:'que el aparato deje de decir números crudos y empiece a decir algo que una persona entiende.',
+ obj:'que el aparato deje de decir números crudos y empiece a decir grados.',
  antes:'El circuito andando en Tinkercad, y el mínimo y el máximo anotados.',
  nota:'El orden es: primero el problema, después el dibujo en papel, y la fórmula al final. <b>No empiecen por <code>y = mx + b</code></b> — así no se entiende de dónde sale.',
  hacer:[
   '<b>Si llegaron las piezas:</b> armen en la placa de verdad el mismo circuito que simularon. Es el mismo esquema, ahora con las manos',
-  '<b>Antes de tocar la compu:</b> el aparato dice 640. ¿Seca o mojada? Nadie puede contestar. <b>Hay que traducir</b>',
-  'Elijan sus <b>dos puntos de referencia</b> y midan. Anoten los dos pares',
-  '<b>En papel cuadriculado:</b> marquen los dos puntos, únanlos con una regla y <b>lean del dibujo</b> cuánto da un valor del medio',
+  '<b>Antes de tocar la compu:</b> el aparato dice 150. ¿Hace frío o calor? Nadie puede contestar. <b>Hay que traducir</b>',
+  'Elijan sus <b>dos temperaturas de referencia</b> y anoten qué número da el sensor en cada una. Esos son los dos pares',
+  '<b>En papel cuadriculado:</b> marquen los dos puntos, únanlos con una regla y <b>lean del dibujo</b> cuántos grados da un número del medio',
   'Recién ahora la cuenta. Escriban la fórmula en el programa',
-  '<b>Prueben mojando la tierra.</b> Si la fórmula está mal, se ve'],
+  '<b>Prueben con una temperatura que no usaron.</b> Si la fórmula está mal, se ve'],
  dec:[
-  {q:'¿Qué es "seco" y qué es "empapado"?',
-   op:['Al aire y en un vaso de agua','Tierra sin regar y tierra recién regada','Tierra del cantero a la mañana y después de regar'],
-   por:'<b>Los dos puntos de referencia los eligen ustedes, y de eso depende la traducción entera.</b> Si toman un vaso de agua como 100 %, ninguna maceta va a llegar nunca a 100 y el aparato va a decir siempre que está seca. Es la misma pregunta del umbral: <b>el número lo elige el que usa el dato</b>.'},
+  {q:'¿Qué dos temperaturas usan de referencia?',
+   op:['Agua con hielo (0 °C) y el aula, con termómetro','Dos temperaturas puestas en el simulador','La heladera y el aula'],
+   por:'<b>Los dos puntos de referencia los eligen ustedes, y de eso depende la traducción entera.</b> Tienen que ser temperaturas que <b>sepan de verdad</b>: si no saben cuánto hace, el par no sirve. El agua con hielo es un truco viejo: mientras quede hielo, está a 0 °C. Y conviene que estén lejos una de otra — con 20 y 21, cualquier error chiquito tuerce toda la recta.'},
   {q:'¿La pendiente les va a dar positiva o negativa?',
    op:['Positiva','Negativa','Depende del sensor'],
-   por:'En el sensor de humedad de suelo, <b>a más agua menos número</b>: cuando uno sube el otro baja. Eso es una <b>pendiente negativa</b>, y no está mal — está al revés a propósito. Si les da positiva, hay un error de signo. Contesten <u>antes</u> de hacer la cuenta y después comprueben.'}],
+   por:'Contesten <u>antes</u> de hacer la cuenta y después comprueben. Piénsenlo así: <b>cuando sube la temperatura, ¿el número sube o baja?</b> Si uno sube cuando sube el otro, la pendiente es positiva. <b>Y si el sensor se calienta al tocarlo, está conectado al revés:</b> desenchufen y den vuelta las patas.'}],
  campos:[
-  {id:'par1', q:'Par 1 — qué estado y qué marcó el sensor', ph:'seco → 812'},
-  {id:'par2', q:'Par 2 — el otro estado y qué marcó', ph:'empapado → 310'},
-  {id:'palabras', q:'La pendiente DICHA EN PALABRAS (esto es lo que se evalúa)', ph:'Por cada punto que baja el sensor, la humedad sube ...'},
-  {id:'recta', q:'La fórmula que sacaron', ph:'humedad = m · crudo + b'},
-  {id:'prueba', q:'Al probar mojando la tierra, ¿qué dio? ¿Tiene sentido?', ph:''}],
+  {id:'par1', q:'Par 1 — qué temperatura y qué número marcó el sensor', ph:'0 °C (hielo) → 102'},
+  {id:'par2', q:'Par 2 — la otra temperatura y qué número marcó', ph:'20 °C (aula) → 143'},
+  {id:'palabras', q:'La pendiente DICHA EN PALABRAS (esto es lo que se evalúa)', ph:'Por cada punto que sube el número, la temperatura sube ...'},
+  {id:'recta', q:'La fórmula que sacaron', ph:'temperatura = m · número + b'},
+  {id:'prueba', q:'Al probar con otra temperatura, ¿qué dio? ¿Tiene sentido?', ph:''}],
  mate:('⭐ <b>Hoy la clase es también de Matemática, con Caro Sanz.</b><br><br>' +
   '<b>Una función lineal es una máquina de traducir entre dos escalas.</b> Entra un número de ' +
   'una escala y sale el de la otra. Para construirla alcanza con <b>dos pares conocidos</b>.<br><br>' +
   'Es la misma máquina que ya usan sin darse cuenta: pesos a dólares, grados Celsius a ' +
-  'Fahrenheit, y ahora crudo del sensor a humedad. En el cohete va a ser hectopascales a metros. ' +
+  'Fahrenheit, y ahora número del sensor a grados. En el cohete va a ser hectopascales a metros. ' +
   '<b>Cuatro casos, una sola máquina.</b><br><br>Los dos pares que midieron les dan un sistema ' +
-  'de dos ecuaciones: <code>m·812 + n = 0</code> y <code>m·310 + n = 100</code>. Cada grupo mide ' +
+  'de dos ecuaciones: <code>m·102 + b = 0</code> y <code>m·143 + b = 20</code>. Cada grupo mide ' +
   'distinto, así que <b>cada grupo tiene su propio sistema</b>: los números del grupo de al lado ' +
   'no les sirven.<br><br><b>Dos cosas que tienen que poder decir al terminar:</b> qué es la ' +
   'pendiente —<i>cuánto se mueve uno cuando se mueve el otro</i>, dicho en una oración y no sólo ' +
-  'calculado— y por qué esta recta <b>es afín y no lineal</b>: tiene <i>b</i>, y por eso el sensor ' +
-  'en seco no marca cero.'),
+  'calculado— y por qué esta recta <b>es afín y no lineal</b>: tiene <i>b</i>, y por eso a 0 °C ' +
+  'el sensor no marca cero, marca 102.'),
  listo:[
   'Los dos pares medidos y anotados en papel',
   'El gráfico hecho <b>a mano</b>, con los dos puntos y la recta',
   'La pendiente escrita <b>en palabras</b>, no sólo el número',
-  'La fórmula adentro del programa y probada mojando la tierra']
+  'La fórmula adentro del programa y probada con otra temperatura']
 },
 {
  n:3, cod:'Lanzamiento', fecha:'07/10', tit:'El vuelo y la toma de datos',
@@ -6619,7 +6619,7 @@ void loop() {
    aparato para no titilar.</p>`},
  {t:'El sensor: BME280', h:`
    <p>Un cuadradito de menos de un centímetro que mide <b>temperatura, humedad y presión</b>
-   a la vez. No devuelve 0 a 1023 como el sensor de humedad de suelo: <b>habla</b>. Se le
+   a la vez. No devuelve 0 a 1023 como el TMP36: <b>habla</b>. Se le
    pregunta por dos cables (<code>SDA</code> y <code>SCL</code>) y contesta los tres valores
    ya en grados, en porcentaje y en pascales.</p>
    <p><b>Ojo al comprar:</b> el BMP280 es idéntico por fuera pero <b>no mide humedad</b>, y
@@ -6868,7 +6868,7 @@ function cuadIntro(){
       —agua en la tierra, calor, luz, presión del aire, movimiento— <b>en un número</b> que la
       placa puede leer.</p>
       <p style="margin:12px 0 0;line-height:1.7"><b>Un sensor no sabe nada.</b> No sabe si la
-      tierra está seca: devuelve 640. Que 640 signifique «seca» lo decidimos nosotros, y eso es
+      hace frío: devuelve 150. Que 150 signifique «frío» lo decidimos nosotros, y eso es
       exactamente el trabajo de la misión 2.</p>
     </div>
 
@@ -6888,9 +6888,7 @@ function cuadIntro(){
     <div class="card"><div class="concepto">Los sensores que podríamos usar</div>
       <table class="esqt">
         <tr><th>Sensor</th><th>Qué mide</th><th>Cómo contesta</th></tr>
-        <tr><td><b>Humedad de suelo</b><br><span class="mono">capacitivo</span></td>
-            <td>Cuánta agua hay en la tierra</td><td class="mono">analógico<br>0 a 1023</td></tr>
-        <tr><td><b>TMP36</b></td><td>Temperatura del aire</td><td class="mono">analógico<br>0 a 1023</td></tr>
+        <tr><td><b>TMP36</b></td><td>Temperatura del aire. <b>Es el que usamos en Tinkercad</b></td><td class="mono">analógico<br>0 a 1023</td></tr>
         <tr><td><b>Fotorresistor</b><br><span class="mono">LDR</span></td>
             <td>Cuánta luz hay</td><td class="mono">analógico<br>0 a 1023</td></tr>
         <tr><td><b>BME280</b></td><td>Temperatura, humedad del aire <b>y presión</b>, los tres a la vez</td>
