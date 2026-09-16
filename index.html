@@ -6923,7 +6923,7 @@ function cuadIntro(){
         <tr><td><b>Arduino Nano</b></td><td>El cerebro. El Nano y no el Uno porque es chiquito y pesa poco</td></tr>
         <tr><td><b>Acelerómetro-giroscopio</b><br><span class="mono">MPU6050</span></td>
             <td>Cuánto lo empujan y para dónde apunta. Se ve el despegue (10 a 20 g), el vuelo sin motor (0 g) y el golpe</td></tr>
-        <tr><td><b>Sensor de presión y temperatura</b><br><span class="mono">BME280</span></td>
+        <tr><td><b>Sensor de presión y temperatura</b><br><span class="mono">BMP280</span></td>
             <td>La presión baja cuando el cohete sube: <b>de ahí sale la altura</b></td></tr>
         <tr><td><b>Tarjeta microSD</b></td><td>Donde queda el archivo. Sin esto no hay nada para graficar</td></tr>
         <tr><td><b>LED testigo</b></td><td>Prendido quiere decir «estoy grabando». Se mira antes de lanzar</td></tr>
@@ -6933,9 +6933,11 @@ function cuadIntro(){
       dibujado.</b> Con el archivo se grafica la presión contra el tiempo y aparece una V: el fondo
       de la V es el punto más alto. La temperatura también se grafica, pero en seis segundos casi no
       se mueve — y está bien. El sensor la necesita para corregir la presión.</p>
-      <div class="hint" style="margin-top:10px">En algunas notas aparece «sensor DMP». No es un
-      sensor de presión: el DMP es el procesador que viene <b>adentro</b> del acelerómetro. El de
-      presión y temperatura es el <b>BMP280</b> o el <b>BME280</b> — con E, que además mide humedad.</div>
+      <div class="hint" style="margin-top:10px"><b>BMP280 o BME280.</b> Son hermanos y por fuera
+      no se distinguen. El <b>BMP280</b> mide presión y temperatura, que es todo lo que necesita el
+      cohete. El <b>BME280</b> además mide humedad, que le sirve a la estación. Los dos andan en el
+      cohete, pero en el código cambian dos líneas —la librería y el tipo de sensor—, así que hay
+      que saber cuál tienen en la mano.</div>
     </div>
 
     <div class="card"><div class="concepto">El cohete y la estación: casi el mismo circuito</div>
