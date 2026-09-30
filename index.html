@@ -3299,7 +3299,7 @@ const NIVELN=['','Inicial','Intermedio','Avanzado'];
 const ANIOS = {
  '1ro':{ nom:'1er año', sub:'Empezar a programar', mods:[
    {t:'Los juegos del cuatrimestre', d:'Lo principal de ahora. Practicás acá y después lo armás con bloques en Tinkercad.',
-    esp:['juegos'], ids:[{id:'jue',tag:'a1'},{id:'juem',tag:'a1'}]},
+    esp:['desafio1ro','juegos'], ids:[{id:'jue',tag:'a1'},{id:'juem',tag:'a1'}]},
    {t:'Para arrancar', d:'Si es tu primera vez con esto, empezá por acá.',
     esp:['intro']},
    /* Sección visual de 1ro: se juega con dibujos, sin nada para leer.
@@ -3338,7 +3338,7 @@ const ANIOS = {
  ]},
  '3ro':{ nom:'3er año', sub:'Del programa al aparato', mods:[
    {t:'El proyecto', d:'Acá se trabaja: una misión por clase, del 16/09 al 04/11.',
-    esp:['cuaderno']},
+    esp:['temperatura','cuaderno']},
    {t:'Programá la placa', d:'Lo principal del cuatrimestre: escribís el código y el aparato reacciona.',
     esp:['misiones']},
    {t:'1 · Poner a punto', d:'Repaso rápido de lo que hace falta tener firme antes de seguir.',
@@ -4048,7 +4048,9 @@ const ESPECIALES={
  mezcla:{n:'Modo mezcla', d:'Ocho ejercicios tomados al azar de las salas de tu año.', fn:"startSala('mezcla')", wide:true},
  arduino:{n:'Arduino de verdad', d:'Los mismos conceptos, en el lenguaje real de la placa. Doce proyectos con sensores básicos y el código listo para copiar al simulador o a un Arduino. Más un banco de código que compila pero está mal.', fn:"arduHome('proy')", wide:true, dest:true},
  cuaderno:{n:'El cuaderno del proyecto', d:'Seis misiones, del 16/09 al 04/11. En cada una: qué hacer, qué decidir, qué queda escrito, los objetivos y el informe. Empieza por «De qué se trata todo esto». Se copia todo con un botón.', fn:'cuadHome()', wide:true, dest:true},
+ desafio1ro:{n:'El desafío del día', d:'¿Un mismo circuito puede ser dos juegos? Una luz y un botón, los cables no se tocan, y lo único que cambia es el programa: Papa caliente, Cara o cruz, El interruptor y el que inventes vos.', fn:"location.href='desafio-1ro.html'", wide:true, dest:true},
  juegos:{n:'Los juegos', d:'Ocho juegos sobre la misma consola: 4 luces, 4 botones y un buzzer. Cada uno trae los elementos, los pasos con huecos y pistas que se abren de a una. El programa no está hecho: se arma con bloques en Tinkercad.', fn:'juegoHome()', wide:true, dest:true},
+ temperatura:{n:'¿Cómo es octubre en la huerta?', d:'Juntamos nuestros propios datos: el sensor de temperatura en Tinkercad, tres pasos, el código y tres retos que terminan en un CSV.', fn:"location.href='temperatura.html'", wide:true, dest:true},
  misiones:{n:'Misiones: programá la placa', d:'Escribís código de verdad y la placa reacciona: se prenden las luces, suena el buzzer, se mueve el servo y el sensor te da un número. Se abren de a una.', fn:'misHome()', wide:true, dest:true}
 };
 

@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>¿Cómo es octubre en la huerta?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Manrope:wght@500;700&family=DM+Mono:wght@400;500&display=swap">
+<style>
+[hidden]{display:none!important}
+/* Una sola columna para proyectar: desafío arriba, los tres pasos, y los retos que se destapan de a uno. Tokens de Areal. */
+:root{
+  --papel:#F3F1F7; --hoja:#FCFBFE; --raya:#DAD4E6;
+  --tinta:#161226; --texto:#3B3350; --tenue:#5F5779;
+  --violeta:#5B3FA8; --inf:#9A3A80; --inf-w:rgba(154,58,128,.10);
+  --rojo:#C8352E; --verde:#2E8B57; --negro:#161226; --codigo:#1E1934; --codigo-t:#EDE8FA;
+  --f-titulo:"Bricolage Grotesque",Georgia,serif;
+  --f-cuerpo:Manrope,system-ui,sans-serif;
+  --f-mono:"DM Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --papel:#0E0C18; --hoja:#1B1830; --raya:#332D50;
+  --tinta:#F6F3FF; --texto:#D6D0E8; --tenue:#ABA3C4;
+  --violeta:#B197EE; --inf:#E88BCB; --inf-w:rgba(232,139,203,.14);
+  --rojo:#F07068; --verde:#5CC98C; --negro:#D6D0E8; --codigo:#15121F; --codigo-t:#EDE8FA;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --papel:#0E0C18; --hoja:#1B1830; --raya:#332D50;
+  --tinta:#F6F3FF; --texto:#D6D0E8; --tenue:#ABA3C4;
+  --violeta:#B197EE; --inf:#E88BCB; --inf-w:rgba(232,139,203,.14);
+  --rojo:#F07068; --verde:#5CC98C; --negro:#D6D0E8; --codigo:#15121F; --codigo-t:#EDE8FA;
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--papel);color:var(--texto);font-family:var(--f-cuerpo);font-size:clamp(17px,1.6vw,22px);line-height:1.5;margin:0}
+main{max-width:1100px;margin:0 auto;padding:clamp(28px,5vw,64px) 20px 80px;display:flex;flex-direction:column;gap:clamp(40px,6vw,72px)}
+.rot{font-family:var(--f-mono);font-size:.7em;letter-spacing:.14em;text-transform:uppercase;color:var(--inf)}
+h1{font-family:var(--f-titulo);font-weight:800;color:var(--tinta);font-size:clamp(40px,6.4vw,84px);line-height:1;letter-spacing:-.02em;margin:.25em 0 0;text-wrap:balance}
+  .bajada{font-size:1.25em;color:var(--texto);max-width:34em;margin:.6em 0 0;text-wrap:balance}
+h2{font-family:var(--f-titulo);font-weight:600;color:var(--tinta);font-size:clamp(26px,3vw,38px);line-height:1.1;margin:0}
+.pasos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.paso{display:flex;flex-direction:column;gap:14px;min-width:0}
+.num{font-family:var(--f-titulo);font-weight:800;font-size:2.4em;line-height:1;color:var(--violeta)}
+.paso p{margin:0;color:var(--tinta);font-weight:700}
+.paso small{color:var(--tenue);font-weight:500;font-size:.85em}
+.cable{display:grid;grid-template-columns:auto 1fr;gap:8px 12px;align-items:center;font-family:var(--f-mono);font-size:.85em}
+.dot{width:26px;height:6px;border-radius:3px}
+svg{width:100%;height:auto;max-width:100%}
+.codigo{position:relative;background:var(--codigo);color:var(--codigo-t);border-radius:10px;padding:18px 18px 18px 20px;overflow-x:auto;font-family:var(--f-mono);font-size:.78em;line-height:1.55;min-width:0}
+.codigo pre{margin:0}
+.codigo .c{color:#9E93C4}
+.copiar{position:absolute;top:10px;right:10px;font:500 13px var(--f-mono);background:#ffffff1a;color:var(--codigo-t);border:1px solid #ffffff33;border-radius:6px;padding:6px 10px;cursor:pointer}
+.copiar:focus-visible,.destapar:focus-visible,.pista-b:focus-visible{outline:3px solid var(--violeta);outline-offset:2px}
+.retos{display:flex;flex-direction:column;gap:14px}
+.reto{border-top:2px solid var(--raya);padding-top:18px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 22px;align-items:start}
+.reto .nivel{font-family:var(--f-titulo);font-weight:800;font-size:1.6em;line-height:1.1;color:var(--inf)}
+.reto h3{font-family:var(--f-titulo);font-weight:600;font-size:1.35em;line-height:1.2;color:var(--tinta);margin:0;text-wrap:balance}
+.reto .cuerpo{display:flex;flex-direction:column;gap:10px;min-width:0}
+.tapado h3{color:transparent;background:var(--raya);border-radius:6px;user-select:none}
+.destapar,.pista-b{justify-self:start;font:700 .8em var(--f-cuerpo);border-radius:999px;padding:8px 16px;cursor:pointer}
+.destapar{background:var(--violeta);color:var(--hoja);border:0}
+.pista-b{background:transparent;color:var(--violeta);border:1.5px solid var(--violeta)}
+.pista{font-family:var(--f-mono);font-size:.78em;background:var(--inf-w);border-radius:8px;padding:12px 14px;color:var(--tinta);overflow-x:auto}
+.falla{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;font-size:.9em}
+.falla b{display:block;color:var(--tinta)}
+@media (max-width:760px){.pasos,.falla{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:no-preference){.reto:not(.tapado) h3{animation:ap .35s ease-out}@keyframes ap{from{opacity:0;transform:translateY(6px)}}}
+.lineas{display:flex;flex-direction:column;gap:8px}
+.linea{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 14px;align-items:center;border-bottom:1px solid var(--raya);padding:8px 0}
+.linea code{font-family:var(--f-mono);font-size:.8em;color:var(--tinta);overflow-x:auto;white-space:nowrap}
+.linea button{font:700 .72em var(--f-cuerpo);background:transparent;color:var(--violeta);border:1.5px solid var(--violeta);border-radius:999px;padding:5px 12px;cursor:pointer}
+.linea span{grid-column:1/-1;color:var(--texto);font-size:.9em}
+.meta{border-top-color:var(--inf)}
+.dice{font-family:var(--f-mono);font-weight:500;background:var(--inf-w);color:var(--inf);border-radius:6px;padding:0 .3em;white-space:nowrap}
+.pasitos{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:6px;color:var(--tinta)}
+.tapado .pasitos{visibility:hidden}
+.tapado h3 .dice{color:transparent;background:transparent}
+.formula{display:flex;flex-direction:column;gap:14px}
+.formula p{margin:0}
+.tabla-w{overflow-x:auto}
+.tabla{border-collapse:collapse;font-variant-numeric:tabular-nums}
+.tabla th,.tabla td{border:1px solid var(--raya2,var(--raya));padding:8px 16px;text-align:center}
+.tabla th{text-align:left;color:var(--tinta);font-weight:700}
+.tabla td{font-family:var(--f-mono);min-width:5em}
+.linea .que{grid-column:auto;color:var(--tinta);font-weight:600;min-width:0}
+.linea .que code{font-family:var(--f-mono);font-size:.85em;background:var(--inf-w);border-radius:5px;padding:0 .3em}
+.compara{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.salida{margin:6px 0 0;font-family:var(--f-mono);font-size:.78em;line-height:1.5;padding:12px 14px;border-radius:8px;overflow-x:auto}
+.salida.mal{background:var(--hoja);border:1.5px dashed var(--tenue);color:var(--texto)}
+.salida.bien{background:var(--inf-w);border:1.5px solid var(--inf);color:var(--tinta)}
+@media (max-width:760px){.compara{grid-template-columns:1fr}}
+/* aire */
+.retos{gap:clamp(40px,5vw,64px)}
+.retos h2{margin-bottom:8px}
+.reto{padding-top:32px;gap:10px 28px}
+.reto .cuerpo{gap:20px}
+.destapar,.pista-b{align-self:flex-start;padding:10px 22px}
+.pista{font-family:var(--f-cuerpo);font-size:.9em;line-height:1.7;padding:18px 20px}
+.formula{gap:24px}
+.pasitos{gap:12px}
+.lineas{gap:4px}
+.linea{padding:14px 0}
+.falla{margin-top:24px;gap:32px}
+.falla b{margin-bottom:6px}
+.nota{color:var(--tenue);font-size:.9em}
+.explica{background:var(--hoja);border:1px solid var(--raya);border-radius:12px;padding:22px 24px;display:flex;flex-direction:column;gap:14px}
+.explica p{margin:0}
+.tabla td.lee{font-family:var(--f-cuerpo);text-align:left;color:var(--tenue)}
+.compara>div{display:flex;flex-direction:column}
+.compara .salida{flex:1}
+#pegar{width:100%;font:500 .8em var(--f-mono);color:var(--tinta);background:var(--hoja);border:1.5px solid var(--raya);border-radius:10px;padding:14px;resize:vertical}
+#pegar:focus-visible{outline:3px solid var(--violeta);outline-offset:2px}
+.graf{background:var(--hoja);border:1px solid var(--raya);border-radius:12px;padding:16px}
+.graf svg text{font-family:var(--f-mono);font-size:12px;fill:var(--tenue)}
+.tabla input{width:4.5em;font:500 1em var(--f-mono);text-align:center;color:var(--tinta);background:transparent;border:0;border-bottom:1.5px dashed var(--tenue);padding:2px}
+.tabla input:focus-visible{outline:3px solid var(--violeta);outline-offset:2px}
+.ecuacion{font-family:var(--f-mono);font-size:1.15em;color:var(--tinta);background:var(--inf-w);border-radius:8px;padding:10px 14px;align-self:flex-start}
+</style>
+</head>
+<body>
+<a href="./" style="display:inline-block;margin:16px 20px 0;font:600 15px Manrope,system-ui,sans-serif;color:var(--violeta);text-decoration:none">← Volver a Tecnologías para el territorio</a>
+<main>
+  <header>
+    <div class="rot">3ro · estación meteorológica y cohete de agua</div>
+    <h1>¿Cómo es octubre en la huerta?</h1>
+    <p class="bajada">¿Cuánto frío hace a la madrugada? ¿Cuándo hiela? A principio de año trabajamos con datos que había juntado otro. Ahora los juntamos nosotros: un CSV con las temperaturas de octubre, medidas acá.</p>
+  </header>
+
+  <section class="pasos" aria-label="Los tres pasos">
+    <div class="paso">
+      <div class="num">1</div>
+      <p>Poné un Arduino y un sensor de temperatura</p>
+      <small>Tinkercad → Circuitos → Crear. Buscá <b>Arduino Uno</b> y <b>TMP36</b>.</small>
+    </div>
+    <div class="paso">
+      <div class="num">2</div>
+      <p>Conectá tres cables</p>
+      <svg viewBox="0 0 260 150" role="img" aria-label="El sensor tiene tres patas: la izquierda va a 5V, la del medio a A0 y la derecha a GND">
+        <path d="M95 18 h70 v34 a35 12 0 0 1 -70 0 z" fill="var(--tenue)"/>
+        <text x="130" y="40" text-anchor="middle" font-family="DM Mono,monospace" font-size="12" fill="var(--papel)">TMP36</text>
+        <line x1="110" y1="60" x2="110" y2="80" stroke="var(--tenue)" stroke-width="3"/>
+        <line x1="130" y1="62" x2="130" y2="80" stroke="var(--tenue)" stroke-width="3"/>
+        <line x1="150" y1="60" x2="150" y2="80" stroke="var(--tenue)" stroke-width="3"/>
+        <path d="M110 80 C110 105 40 100 40 128" fill="none" stroke="var(--rojo)" stroke-width="5" stroke-linecap="round"/>
+        <path d="M130 80 L130 128" fill="none" stroke="var(--verde)" stroke-width="5" stroke-linecap="round"/>
+        <path d="M150 80 C150 105 220 100 220 128" fill="none" stroke="var(--negro)" stroke-width="5" stroke-linecap="round"/>
+        <text x="40" y="146" text-anchor="middle" font-family="DM Mono,monospace" font-size="14" font-weight="500" fill="var(--tinta)">5V</text>
+        <text x="130" y="146" text-anchor="middle" font-family="DM Mono,monospace" font-size="14" font-weight="500" fill="var(--tinta)">A0</text>
+        <text x="220" y="146" text-anchor="middle" font-family="DM Mono,monospace" font-size="14" font-weight="500" fill="var(--tinta)">GND</text>
+      </svg>
+      <small>Pasá el mouse por cada pata: Tinkercad dice cuál es.</small>
+    </div>
+    <div class="paso">
+      <div class="num">3</div>
+      <p>Pegá el código y dale play</p>
+      <small>Código → <b>Texto</b>. Abrí el <b>Monitor en serie</b>. Tocá el sensor y mové la temperatura.</small>
+    </div>
+  </section>
+
+  <section aria-label="El código">
+    <div class="codigo">
+      <button class="copiar" id="copiar" type="button">Copiar</button>
+<pre id="cod">void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  int lectura = analogRead(A1);
+  float grados = (lectura * 5.0 / 1023 - 0.5) * 100;
+  Serial.println(lectura);
+  delay(10);
+}</pre>
+    </div>
+  </section>
+
+  <section class="retos" aria-label="Retos">
+    <h2>Retos</h2>
+
+    <div class="reto tapado" id="r1">
+      <div class="nivel">1</div>
+      <div class="cuerpo">
+        <h3>¡Descubrí el bug! El código tiene tres errores.</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <button class="pista-b" type="button" hidden>Pista</button>
+        <div class="pista" hidden>Cada error es una pregunta:<br>¿En qué pin está enchufado el sensor? ¿Y de qué pin lee el código?<br>¿Qué variable se muestra en el monitor? ¿Son grados?<br>¿Cada cuánto mide? ¿Cuánto es 1 segundo para la placa?</div>
+      </div>
+    </div>
+
+    <div class="reto tapado" id="r2">
+      <div class="nivel">2</div>
+      <div class="cuerpo">
+        <h3>¿Qué pasa si…? Primero charlá con tu equipo qué va a pasar. Después pruébenlo.</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <div class="lineas" hidden>
+          <div class="linea"><span class="que">Borrá la línea <code>Serial.begin(9600);</code></span><button type="button">¿Qué pasa?</button><span hidden>El monitor queda vacío. Esa línea abre la conversación con la compu: sin ella, la placa mide pero no le cuenta a nadie.</span></div>
+          <div class="linea"><span class="que">Cambiá <code>println</code> por <code>print</code></span><button type="button">¿Qué pasa?</button><span hidden>Los números salen todos pegados en un solo renglón. El <b>ln</b> es el que baja de línea.</span></div>
+          <div class="linea"><span class="que">Agregá <code>Serial.println("hola");</code> adentro de <code>setup</code></span><button type="button">¿Qué pasa?</button><span hidden>Aparece «hola» una sola vez, al principio. Lo de <b>setup</b> pasa una vez; lo de <b>loop</b> se repite para siempre.</span></div>
+          <div class="linea"><span class="que">Cambiá <code>delay(1000)</code> por <code>delay(5000)</code></span><button type="button">¿Qué pasa?</button><span hidden>Sale un número cada 5 segundos. El delay cuenta en milésimas: 5000 son 5 segundos.</span></div>
+          <div class="linea"><span class="que">Desenchufá el cable de A0</span><button type="button">¿Qué pasa?</button><span hidden>Los números saltan sin sentido. Un pin sin nada conectado da ruido: es lo mismo que pasaba con A1 en el reto 1.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reto tapado" id="r3">
+      <div class="nivel">3</div>
+      <div class="cuerpo">
+        <h3>Descubrí la fórmula: ¿qué número da el sensor en cada temperatura?</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <div class="formula" hidden>
+          <ol class="pasitos">
+            <li>En el código, que el monitor muestre <span class="dice">lectura</span> y no <span class="dice">grados</span>. Así ves el número que da el sensor, antes de la cuenta.</li>
+            <li>Dale play. Tocá el sensor y llevá el deslizador a 0 °C. Anotá el número que aparece.</li>
+            <li>Hacé lo mismo con 25, 50 y 75 °C. Completá la tabla acá y en la carpeta:</li>
+          </ol>
+          <div class="tabla-w"><table class="tabla">
+            <tr><th>Temperatura</th><td>0 °C</td><td>25 °C</td><td>50 °C</td><td>75 °C</td></tr>
+            <tr><th>Lectura</th><td><input class="lec" id="lec0" data-t="0" type="number" inputmode="numeric" aria-label="Lectura a 0 grados"></td><td><input class="lec" id="lec25" data-t="25" type="number" inputmode="numeric" aria-label="Lectura a 25 grados"></td><td><input class="lec" id="lec50" data-t="50" type="number" inputmode="numeric" aria-label="Lectura a 50 grados"></td><td><input class="lec" id="lec75" data-t="75" type="number" inputmode="numeric" aria-label="Lectura a 75 grados"></td></tr>
+          </table></div>
+          <div id="recta" class="graf" hidden></div>
+          <div id="recta-txt" class="explica" hidden></div>
+          <p><b>Ahora charlen en equipo:</b></p>
+          <ol class="pasitos"><li>Cuando la temperatura sube 25 grados, ¿cuánto sube la lectura?</li><li>A 0 grados, ¿la lectura da 0?</li><li>Si la lectura es 180, ¿cuántos grados hace?</li></ol>
+          <button class="pista-b" type="button">Pista</button>
+          <div class="pista" hidden>Mirá la tabla: el sensor no arranca en 0, arranca en <b>102</b>. Y por cada grado más, la lectura sube <b>2</b>.<br>Entonces, para lectura 180: le sacás lo del arranque (180 − 102 = 78) y lo repartís de a 2 (78 ÷ 2 = 39). Hace unos <b>39 grados</b>.<br>En Matemática esto se llama <b>función afín</b>: una recta que no empieza en cero.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reto tapado" id="r4">
+      <div class="nivel">4</div>
+      <div class="cuerpo">
+        <h3>Descubrí el monitor serie: hacé que diga <span class="dice">Hace 21.4 grados</span></h3>
+        <button class="destapar" type="button">Destapar</button>
+        <button class="pista-b" type="button" hidden>Pista</button>
+        <div class="pista" hidden>El monitor serie es la ventanita donde la placa te escribe. Está abajo del código.<br><b>Serial.print</b> escribe y sigue en el mismo renglón. <b>Serial.println</b> escribe y baja.<br>El texto va entre comillas: <b>Serial.print("Hace ");</b></div>
+      </div>
+    </div>
+
+    <div class="reto tapado meta" id="r5">
+      <div class="nivel">5</div>
+      <div class="cuerpo">
+        <div class="rot">La meta de hoy</div>
+        <h3>Armá la tabla de temperaturas: un CSV, como los de principio de año.</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <div class="formula" hidden>
+          <div class="explica">
+            <div class="rot">¿Qué es esta tabla?</div>
+            <p>Cada renglón es <b>una medición</b>: en qué segundo se midió y cuántos grados hacía.</p>
+            <div class="tabla-w"><table class="tabla">
+              <tr><th>segundos</th><th>grados</th><th>se lee</th></tr>
+              <tr><td>0</td><td>24.78</td><td class="lee">al arrancar, hacía 24.78 grados</td></tr>
+              <tr><td>1</td><td>24.78</td><td class="lee">un segundo después, seguía igual</td></tr>
+              <tr><td>2</td><td>19.90</td><td class="lee">bajó: alguien movió el sensor</td></tr>
+            </table></div>
+            <p>Los segundos son un <b>cronómetro</b>: arrancan en 0 cuando le das play y cuentan.</p>
+            <p>La estación de verdad hace lo mismo toda la noche. <b>Cada cuánto mide lo decide tu equipo</b>: es el número del <span class="dice">delay</span>. A la mañana, la tabla cuenta lo que pasó mientras nadie miraba: a qué hora hizo más frío y si heló.</p>
+          </div>
+          <p><b>Paso 1.</b> Copiá este código en Tinkercad, en lugar del que tenías.</p>
+          <div class="codigo">
+            <button class="copiar" type="button" data-cod="cod2">Copiar</button>
+<pre id="cod2">void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  int lectura = analogRead(A0);
+  float grados = (lectura * 5.0 / 1023 - 0.5) * 100;
+  Serial.println("segundos,grados");
+  Serial.print(millis() / 1000);
+  Serial.println(grados);
+  delay(1000);
+}</pre>
+          </div>
+          <p><b>Paso 2.</b> Dale play y compará. Tiene dos errores: arreglalos hasta que se vea igual.</p>
+          <div class="compara">
+            <div><div class="rot">Se ve así</div><pre class="salida mal">segundos,grados
+024.78
+segundos,grados
+124.78
+segundos,grados
+224.78</pre></div>
+            <div><div class="rot">Tiene que verse así</div><pre class="salida bien">segundos,grados
+0,24.78
+1,24.78
+2,24.78
+3,24.78
+4,24.78</pre></div>
+          </div>
+                    <p><b>Paso 3.</b> Dejalo midiendo y mové la temperatura del sensor para que cambie. Después:</p>
+          <ol class="pasitos">
+            <li>Pará la simulación. En el monitor, seleccioná desde <span class="dice">segundos,grados</span> hasta el final y copialo (Ctrl+C).</li>
+            <li>Pegalo acá abajo (Ctrl+V). El gráfico se arma solo.</li>
+          </ol>
+          <textarea id="pegar" rows="4" placeholder="Pegá acá lo que copiaste del monitor"></textarea>
+          <div id="graf" class="graf" hidden></div>
+          <p id="graf-msg" class="nota" hidden></p>
+          <button class="pista-b" type="button">Pista</button>
+          <div class="pista" hidden>Los títulos aparecen muchas veces: ¿en qué parte del código están, setup o loop? ¿Cuál se repite?<br>El tiempo y los grados salen pegados: ¿qué falta escribir entre los dos?</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reto tapado" id="r6">
+      <div class="nivel">+</div>
+      <div class="cuerpo">
+        <h3>Extra: que se prenda una luz si hace menos de 3 grados. Una alarma de helada.</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <button class="pista-b" type="button" hidden>Pista</button>
+        <div class="pista" hidden>LED al pin 8 (con resistencia de 220 Ω) · en setup: <b>pinMode(8, OUTPUT);</b><br>en loop: <b>if (grados &lt; 3) { … } else { … }</b></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="falla" aria-label="Si no anda">
+    <div><b>¿Marca cualquier cosa?</b>Revisá los cables contra el dibujo.</div>
+    <div><b>¿No encontrás el sensor?</b>En el buscador de componentes escribí <span style="font-family:var(--f-mono)">tmp36</span>.</div>
+    <div><b>¿No aparece nada?</b>Abrí el Monitor en serie, abajo del código.</div>
+  </section>
+</main>
+
+<script>
+document.querySelectorAll('.copiar').forEach(b=>b.addEventListener('click',()=>{
+  const el=document.getElementById(b.dataset.cod||'cod'), t=el.textContent;
+  const ok=()=>{b.textContent='Copiado';setTimeout(()=>b.textContent='Copiar',1500)};
+  const sel=()=>{const r=document.createRange();r.selectNodeContents(el);const g=getSelection();g.removeAllRanges();g.addRange(r);b.textContent='Ctrl+C'};
+  try{navigator.clipboard.writeText(t).then(ok,sel)}catch(_){sel()}
+}));
+document.querySelectorAll('.reto').forEach(r=>{
+  const d=r.querySelector('.destapar'), pb=r.querySelector('.pista-b'), p=r.querySelector('.pista'), ls=r.querySelector('.lineas, .formula');
+  d.addEventListener('click',()=>{r.classList.remove('tapado');d.hidden=true;if(pb&&!ls)pb.hidden=false;if(ls)ls.hidden=false});
+  if(pb)pb.addEventListener('click',()=>{p.hidden=!p.hidden;pb.textContent=p.hidden?'Pista':'Ocultar pista'});
+});
+document.querySelectorAll('.linea button').forEach(b=>b.addEventListener('click',()=>{
+  const s=b.nextElementSibling; s.hidden=!s.hidden; b.textContent=s.hidden?'¿Qué pasa?':'Ocultar';
+}));
+
+(function(){
+  const ta=document.getElementById('pegar'), box=document.getElementById('graf'), msg=document.getElementById('graf-msg');
+  function dibujar(){
+    const pts=[];
+    for(const tok of ta.value.split(/\s+/)){
+      const m=tok.match(/^(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)$/);
+      if(m) pts.push([+m[1],+m[2]]);
+    }
+    if(pts.length<2){box.hidden=true;msg.hidden=!ta.value.trim();msg.textContent='No encuentro renglones como 0,24.78. ¿Copiaste lo del monitor con la coma arreglada?';return}
+    msg.hidden=false;msg.textContent=pts.length+' mediciones. La más fría: '+Math.min(...pts.map(p=>p[1])).toFixed(1)+' °C · la más caliente: '+Math.max(...pts.map(p=>p[1])).toFixed(1)+' °C';
+    const W=640,H=260,L=48,R=16,T=16,B=36;
+    const xs=pts.map(p=>p[0]), ys=pts.map(p=>p[1]);
+    let x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.floor(Math.min(...ys,0)/10)*10,y1=Math.ceil(Math.max(...ys)/10)*10;
+    if(x1===x0)x1=x0+1; if(y1===y0)y1=y0+10;
+    const X=v=>L+(v-x0)/(x1-x0)*(W-L-R), Y=v=>T+(y1-v)/(y1-y0)*(H-T-B);
+    let g='';
+    const paso=(y1-y0)>60?20:10;
+    for(let v=y0;v<=y1;v+=paso){g+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--raya)"/><text x="${L-8}" y="${Y(v)+4}" text-anchor="end">${v}°</text>`}
+    if(y0<0&&y1>0)g+=`<line x1="${L}" x2="${W-R}" y1="${Y(0)}" y2="${Y(0)}" stroke="var(--inf)" stroke-dasharray="4 4"/>`;
+    g+=`<text x="${L}" y="${H-10}">${x0} s</text><text x="${W-R}" y="${H-10}" text-anchor="end">${x1} s</text>`;
+    const d=pts.map((p,i)=>(i?'L':'M')+X(p[0]).toFixed(1)+' '+Y(p[1]).toFixed(1)).join(' ');
+    g+=`<path d="${d}" fill="none" stroke="var(--violeta)" stroke-width="3" stroke-linejoin="round"/>`;
+    for(const p of pts)g+=`<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="3.5" fill="var(--violeta)"/>`;
+    box.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Gráfico de la temperatura a lo largo del tiempo">${g}</svg>`;
+    box.hidden=false;
+  }
+  ta.addEventListener('input',dibujar);
+})();
+
+(function(){
+  const ins=[...document.querySelectorAll('.lec')], box=document.getElementById('recta'), txt=document.getElementById('recta-txt');
+  function dibujar(){
+    const pts=ins.filter(i=>i.value!=='').map(i=>[+i.dataset.t,+i.value]);
+    if(pts.length<2){box.hidden=txt.hidden=true;return}
+    const n=pts.length, sx=pts.reduce((a,p)=>a+p[0],0), sy=pts.reduce((a,p)=>a+p[1],0);
+    const sxx=pts.reduce((a,p)=>a+p[0]*p[0],0), sxy=pts.reduce((a,p)=>a+p[0]*p[1],0);
+    const m=(n*sxy-sx*sy)/(n*sxx-sx*sx), b=(sy-m*sx)/n;
+    const W=640,H=280,L=52,R=16,T=16,B=40, x0=0,x1=75, y1=Math.max(300,Math.ceil(Math.max(...pts.map(p=>p[1]))/50)*50), y0=0;
+    const X=v=>L+(v-x0)/(x1-x0)*(W-L-R), Y=v=>T+(y1-v)/(y1-y0)*(H-T-B);
+    let g='';
+    for(let v=0;v<=y1;v+=50)g+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--raya)"/><text x="${L-8}" y="${Y(v)+4}" text-anchor="end">${v}</text>`;
+    for(const t of [0,25,50,75])g+=`<text x="${X(t)}" y="${H-14}" text-anchor="middle">${t}°</text>`;
+    g+=`<line x1="${X(0)}" y1="${Y(b)}" x2="${X(75)}" y2="${Y(b+m*75)}" stroke="var(--inf)" stroke-width="2.5" stroke-dasharray="6 5"/>`;
+    for(const p of pts)g+=`<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="6" fill="var(--violeta)"/>`;
+    g+=`<text x="${W-R}" y="${T+12}" text-anchor="end">lectura</text>`;
+    box.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Los puntos de la tabla y la recta que pasa por ellos">${g}</svg>`;
+    const mm=m.toFixed(1).replace('.',','), bb=Math.round(b);
+    txt.innerHTML=`<div class="rot">Matemática · función afín</div>
+      <p>Los puntos quedan sobre una <b>recta</b>.</p>
+      <p><b>Pendiente:</b> por cada grado, la lectura sube <b>${mm}</b>.<br><b>Ordenada al origen:</b> a 0 grados, la lectura ya es <b>${bb}</b>. No arranca en cero.</p>
+      <div class="ecuacion">lectura = ${bb} + ${mm} × temperatura</div>
+      <p>Con esta fórmula se puede ir para atrás: de la lectura a los grados. Eso es lo que hace la línea de <span class="dice">grados</span> en el código.</p>`;
+    box.hidden=txt.hidden=false;
+  }
+  ins.forEach(i=>i.addEventListener('input',dibujar));
+})();
+</script>
+</body>
+</html>
