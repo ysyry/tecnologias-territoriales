@@ -118,6 +118,8 @@ svg{width:100%;height:auto;max-width:100%}
 .quien b{color:var(--tinta)}
 .quien input{font:inherit;color:var(--tinta);background:var(--hoja);border:1.5px solid var(--raya);border-radius:8px;padding:8px 10px;min-width:0}
 .quien button{font:700 1em var(--f-cuerpo);background:var(--violeta);color:var(--hoja);border:0;border-radius:999px;padding:8px 16px;cursor:pointer}
+.cohete{margin-top:18px;max-width:40em;font-size:.95em;background:var(--hoja);border:1px solid var(--raya);border-radius:10px;padding:14px 18px}
+.cohete b{color:var(--tinta)}
 </style>
 </head>
 <body>
@@ -128,6 +130,9 @@ svg{width:100%;height:auto;max-width:100%}
     <div class="rot">3ro · estación meteorológica y cohete de agua</div>
     <h1>¿Cómo es octubre en la huerta?</h1>
     <p class="bajada">¿Cuánto frío hace a la madrugada? ¿Cuándo hiela? A principio de año trabajamos con datos que había juntado otro. Ahora los juntamos nosotros: un CSV con las temperaturas de octubre, medidas acá.</p>
+    <div class="cohete">
+      <b>🚀 ¿Sos del equipo del cohete?</b> Hoy hacen lo mismo que todos: el sensor, el código y la tabla son los mismos que van a volar. Al final tienen su propio reto.
+    </div>
   </header>
 
   <section class="pasos" aria-label="Los tres pasos">
@@ -313,6 +318,16 @@ segundos,grados
         <div class="pista" hidden>LED al pin 8 (con resistencia de 220 Ω) · en setup: <b>pinMode(8, OUTPUT);</b><br>en loop: <b>if (grados &lt; 3) { … } else { … }</b></div>
       </div>
     </div>
+
+    <div class="reto tapado" id="r7">
+      <div class="nivel">🚀</div>
+      <div class="cuerpo">
+        <h3>Reto del cohete: el vuelo dura 6 segundos. Hacé que mida 20 veces por segundo.</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <button class="pista-b" type="button" hidden>Pista</button>
+        <div class="pista" hidden>Si mide 20 veces en 1 segundo (1000 milésimas), ¿cuánto espera entre una y otra? Ese es el número del delay.<br>Mirá la columna de los segundos: ¿sirve que diga 0, 0, 0, 0…? Probá volver a <b>millis()</b> sin dividir.<br>¿Cuántos renglones va a tener la tabla de un vuelo de 6 segundos?</div>
+      </div>
+    </div>
   </section>
 
   <section class="falla" aria-label="Si no anda">
@@ -432,7 +447,7 @@ function pintarQuien(){
 }
 pintarQuien();
 document.querySelectorAll('.reto').forEach(r=>{
-  const n=r.querySelector('.nivel').textContent.trim(), nom=n==='+'?'el extra':'el reto '+n;
+  const n=r.querySelector('.nivel').textContent.trim(), nom=n==='+'?'el extra':(n==='🚀'?'el reto del cohete':'el reto '+n);
   r.querySelector('.destapar').addEventListener('click',()=>registrar('dest'+n,'Llegó a '+nom));
   r.querySelectorAll('.pista-b').forEach(b=>b.addEventListener('click',()=>registrar('pista'+n,'Pidió la pista de '+nom,'',1)));
 });
