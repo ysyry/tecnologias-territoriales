@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El desafío del día</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Manrope:wght@500;700&family=DM+Mono:wght@400;500&display=swap">
+<style>
+/* El desafío del día de 1ro: dos desafíos, uno para terminar y otro para seguir. Misma forma que temperatura.html (3ro): arriba el desafío,
+   tres pasos, el programa, y retos que se destapan de a uno. Los bloques se dibujan con
+   los colores de Tinkercad para que se busquen por color. */
+:root{
+  --papel:#F3F1F7; --hoja:#FCFBFE; --raya:#DAD4E6;
+  --tinta:#161226; --texto:#3B3350; --tenue:#5F5779;
+  --violeta:#5B3FA8; --inf:#9A3A80; --inf-w:rgba(154,58,128,.10);
+  --rojo:#C8352E; --verde:#2E8B57; --negro:#161226;
+  --b-salida:#3E7FD9; --b-control:#E8930C; --b-mate:#3B9E4C; --b-entrada:#8A5BE6; --b-var:#C94BB8;
+  --f-titulo:"Bricolage Grotesque",Georgia,serif;
+  --f-cuerpo:Manrope,system-ui,sans-serif;
+  --f-mono:"DM Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --papel:#0E0C18; --hoja:#1B1830; --raya:#332D50;
+  --tinta:#F6F3FF; --texto:#D6D0E8; --tenue:#ABA3C4;
+  --violeta:#B197EE; --inf:#E88BCB; --inf-w:rgba(232,139,203,.14);
+  --rojo:#F07068; --verde:#5CC98C; --negro:#D6D0E8;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --papel:#0E0C18; --hoja:#1B1830; --raya:#332D50;
+  --tinta:#F6F3FF; --texto:#D6D0E8; --tenue:#ABA3C4;
+  --violeta:#B197EE; --inf:#E88BCB; --inf-w:rgba(232,139,203,.14);
+  --rojo:#F07068; --verde:#5CC98C; --negro:#D6D0E8;
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--papel);color:var(--texto);font-family:var(--f-cuerpo);font-size:clamp(17px,1.6vw,22px);line-height:1.5;margin:0}
+main{max-width:1100px;margin:0 auto;padding:clamp(28px,5vw,64px) 16px 80px;display:flex;flex-direction:column;gap:clamp(40px,6vw,72px)}
+.rot{font-family:var(--f-mono);font-size:.7em;letter-spacing:.14em;text-transform:uppercase;color:var(--inf)}
+h1{font-family:var(--f-titulo);font-weight:800;color:var(--tinta);font-size:clamp(44px,7vw,92px);line-height:1;letter-spacing:-.02em;margin:.25em 0 0}
+.bajada{font-size:1.25em;color:var(--texto);max-width:32em;margin:.6em 0 0;text-wrap:balance}
+h2{font-family:var(--f-titulo);font-weight:600;color:var(--tinta);font-size:clamp(26px,3vw,38px);line-height:1.1;margin:0 0 8px}
+.pasos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.paso{display:flex;flex-direction:column;gap:14px;min-width:0}
+.num{font-family:var(--f-titulo);font-weight:800;font-size:2.4em;line-height:1;color:var(--violeta)}
+.paso p{margin:0;color:var(--tinta);font-weight:700}
+.paso small{color:var(--tenue);font-weight:500;font-size:.85em}
+svg{width:100%;height:auto;max-width:100%}
+
+/* bloques */
+.prog{display:flex;flex-direction:column;gap:4px;min-width:0}
+.blk{display:inline-flex;align-items:center;flex-wrap:wrap;gap:6px;align-self:flex-start;color:#fff;font:700 .8em var(--f-cuerpo);padding:8px 14px;border-radius:6px;max-width:100%}
+.blk .h{background:#ffffff;color:#1b1b1b;border-radius:999px;padding:1px 10px;font-weight:700}
+.blk .in{border-radius:999px;padding:3px 10px;display:inline-flex;gap:6px;align-items:center}
+.salida{background:var(--b-salida)} .control{background:var(--b-control)} .mate{background:var(--b-mate)}
+.entrada{background:var(--b-entrada)} .var{background:var(--b-var)}
+.dentro{margin-left:26px;display:flex;flex-direction:column;gap:4px;border-left:10px solid var(--b-control);padding:4px 0 4px 8px;border-radius:0 0 0 6px}
+.bug{outline:3px dashed var(--rojo);outline-offset:3px}
+.leyenda{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:.8em;color:var(--texto)}
+.leyenda span::before{content:"";display:inline-block;width:14px;height:14px;border-radius:4px;margin-right:6px;vertical-align:-2px;background:var(--c)}
+.dato{font-weight:700;color:var(--tinta);margin:0}
+.cond{display:inline-flex;align-items:center;gap:6px;background:#00000026;border-radius:999px;padding:3px 10px}
+.sino{align-self:flex-start;color:#fff;font:700 .8em var(--f-cuerpo);background:var(--b-control);padding:4px 14px;border-radius:0 6px 6px 0;margin-left:-8px}
+.dentro .dentro{margin-left:18px}
+.elegir{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.elegir a{display:flex;flex-direction:column;gap:6px;text-decoration:none;background:var(--hoja);border:2px solid var(--raya);border-radius:14px;padding:22px 24px;color:var(--texto)}
+.elegir a:hover,.elegir a:focus-visible{border-color:var(--violeta);outline:none}
+.elegir b{font-family:var(--f-titulo);font-weight:800;font-size:1.5em;color:var(--tinta);line-height:1.1}
+.elegir .para{font-family:var(--f-mono);font-size:.7em;letter-spacing:.12em;text-transform:uppercase;color:var(--inf)}
+.desafio{display:flex;flex-direction:column;gap:clamp(40px,6vw,72px);scroll-margin-top:16px}
+.desafio > header{border-top:6px solid var(--violeta);padding-top:24px}
+.desafio h2.grande{font-family:var(--f-titulo);font-weight:800;font-size:clamp(34px,5vw,64px);line-height:1;letter-spacing:-.02em}
+@media (max-width:760px){.elegir{grid-template-columns:1fr}}
+
+/* retos */
+.retos{display:flex;flex-direction:column;gap:clamp(40px,5vw,64px)}
+.reto{border-top:2px solid var(--raya);padding-top:32px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px 28px;align-items:start}
+.reto .nivel{font-family:var(--f-titulo);font-weight:800;font-size:1.6em;line-height:1.1;color:var(--inf)}
+.reto h3{font-family:var(--f-titulo);font-weight:600;font-size:1.35em;line-height:1.2;color:var(--tinta);margin:0;text-wrap:balance}
+.reto .cuerpo{display:flex;flex-direction:column;gap:20px;min-width:0}
+.meta{border-top-color:var(--inf)}
+.tapado h3{color:transparent;background:var(--raya);border-radius:6px;user-select:none}
+.destapar,.pista-b{align-self:flex-start;font:700 .8em var(--f-cuerpo);border-radius:999px;padding:10px 22px;cursor:pointer}
+.destapar{background:var(--violeta);color:var(--hoja);border:0}
+.pista-b{background:transparent;color:var(--violeta);border:1.5px solid var(--violeta)}
+.destapar:focus-visible,.pista-b:focus-visible,.linea button:focus-visible{outline:3px solid var(--violeta);outline-offset:2px}
+.pista{font-size:.9em;line-height:1.7;background:var(--inf-w);border-radius:8px;padding:18px 20px;color:var(--tinta)}
+.lineas{display:flex;flex-direction:column;gap:4px}
+.linea{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 14px;align-items:center;border-bottom:1px solid var(--raya);padding:14px 0}
+.linea .que{color:var(--tinta);font-weight:600;min-width:0}
+.linea button{font:700 .72em var(--f-cuerpo);background:transparent;color:var(--violeta);border:1.5px solid var(--violeta);border-radius:999px;padding:5px 12px;cursor:pointer}
+.linea .resp{grid-column:1/-1;color:var(--texto);font-size:.9em}
+.formula{display:flex;flex-direction:column;gap:24px}
+.formula p{margin:0}
+.falla{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px;font-size:.9em}
+.falla b{display:block;color:var(--tinta);margin-bottom:6px}
+@media (max-width:760px){.pasos,.falla{grid-template-columns:1fr}.dentro{margin-left:14px}}
+@media (prefers-reduced-motion:no-preference){.reto:not(.tapado) h3{animation:ap .35s ease-out}@keyframes ap{from{opacity:0;transform:translateY(6px)}}}
+</style>
+</head>
+<body>
+<a href="./" style="display:inline-block;margin:16px 16px 0;font:600 15px Manrope,system-ui,sans-serif;color:var(--violeta);text-decoration:none">← Volver a Tecnologías para el territorio</a>
+<main>
+  <header>
+    <div class="rot">1ro · el desafío del día · los juegos de la consola</div>
+    <h1>¿Un mismo circuito puede ser dos juegos?</h1>
+    <p class="bajada">Una luz y un botón. Los cables no se tocan en toda la clase. Lo único que vale cambiar es el programa. ¿Alcanza para jugar a otra cosa?</p>
+  </header>
+
+  <svg viewBox="0 0 640 170" role="img" aria-label="Un mismo circuito, con una luz y un botón, y cuatro programas distintos que dan cuatro juegos: Papa caliente, Cara o cruz, El interruptor y La tercera es la vencida">
+    <rect x="10" y="50" width="150" height="70" rx="12" fill="var(--hoja)" stroke="var(--violeta)" stroke-width="3"/>
+    <circle cx="55" cy="85" r="14" fill="var(--rojo)"/>
+    <rect x="95" y="72" width="26" height="26" rx="5" fill="var(--tenue)"/>
+    <text x="85" y="140" text-anchor="middle" font-family="Manrope,sans-serif" font-weight="700" font-size="15" fill="var(--tinta)">1 circuito</text>
+    <g font-family="Manrope,sans-serif" font-weight="700" font-size="15" fill="var(--tinta)">
+      <path d="M165 85 C230 85 230 22 290 22" fill="none" stroke="var(--tenue)" stroke-width="2"/>
+      <path d="M165 85 C230 85 230 64 290 64" fill="none" stroke="var(--tenue)" stroke-width="2"/>
+      <path d="M165 85 C230 85 230 106 290 106" fill="none" stroke="var(--tenue)" stroke-width="2"/>
+      <path d="M165 85 C230 85 230 148 290 148" fill="none" stroke="var(--tenue)" stroke-width="2"/>
+      <rect x="292" y="10" width="92" height="24" rx="5" fill="var(--b-control)"/><rect x="292" y="52" width="92" height="24" rx="5" fill="var(--b-control)"/>
+      <rect x="292" y="94" width="92" height="24" rx="5" fill="var(--b-control)"/><rect x="292" y="136" width="92" height="24" rx="5" fill="var(--b-control)"/>
+      <text x="338" y="27" text-anchor="middle" fill="#fff" font-size="13">programa 1</text><text x="338" y="69" text-anchor="middle" fill="#fff" font-size="13">programa 2</text>
+      <text x="338" y="111" text-anchor="middle" fill="#fff" font-size="13">programa 3</text><text x="338" y="153" text-anchor="middle" fill="#fff" font-size="13">programa 4</text>
+      <text x="400" y="27">→ Papa caliente</text><text x="400" y="69">→ Cara o cruz</text>
+      <text x="400" y="111">→ El interruptor</text><text x="400" y="153">→ La tercera es la vencida</text>
+    </g>
+  </svg>
+
+  <section class="pasos" aria-label="Los tres pasos">
+    <div class="paso">
+      <div class="num">1</div>
+      <p>Abrí tu circuito: una luz y un botón</p>
+      <small>El del 09/09. Acá usamos el <b>LED en el pin 3</b> y el <b>botón en el pin 8</b>. Si los tuyos están en otros, cambiá los números de los bloques, <b>no los cables</b>.</small>
+    </div>
+    <div class="paso">
+      <div class="num">2</div>
+      <p>Revisá los números</p>
+      <svg viewBox="0 0 260 150" role="img" aria-label="El cable del LED llega al pin 3, y el bloque también dice pin 3: tienen que coincidir">
+        <rect x="18" y="20" width="96" height="40" rx="6" fill="var(--tenue)"/>
+        <text x="66" y="46" text-anchor="middle" font-family="DM Mono,monospace" font-size="15" fill="var(--papel)">cable → 3</text>
+        <rect x="146" y="20" width="96" height="40" rx="6" fill="var(--b-salida)"/>
+        <text x="194" y="46" text-anchor="middle" font-family="Manrope,sans-serif" font-weight="700" font-size="14" fill="#fff">pin 3</text>
+        <text x="130" y="48" text-anchor="middle" font-family="Bricolage Grotesque,serif" font-weight="800" font-size="28" fill="var(--violeta)">=</text>
+        <text x="130" y="100" text-anchor="middle" font-family="Manrope,sans-serif" font-weight="700" font-size="15" fill="var(--tinta)">El número del cable</text>
+        <text x="130" y="122" text-anchor="middle" font-family="Manrope,sans-serif" font-weight="700" font-size="15" fill="var(--tinta)">y el del bloque, iguales</text>
+      </svg>
+      <small>Seguí el cable con el dedo hasta la placa. ¿Qué número dice ahí?</small>
+    </div>
+    <div class="paso">
+      <div class="num">3</div>
+      <p>Un juego nuevo es un programa nuevo</p>
+      <small>Cuando un juego anda, probalo varias veces. Después sacá esos bloques del medio y armá los del siguiente.</small>
+    </div>
+  </section>
+
+  <section class="retos" aria-label="Los juegos">
+    <h2>Los juegos, de a uno</h2>
+
+    <div class="reto tapado" id="j1">
+      <div class="nivel">1</div>
+      <div class="cuerpo">
+        <div class="rot">Juego 1 · Papa caliente</div>
+        <h3>Una luz que se prende cuando nadie lo espera. Descubrí el error: este programa tiene dos.</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <div class="formula" hidden>
+          <p>La luz espera un tiempo al azar y se prende. <b>Si ya te anda, pasá al 2.</b></p>
+          <p class="dato">El LED está en el pin 3. Este programa no anda.</p>
+          <div class="prog" aria-label="Programa: siempre, esperar número al azar entre 3 y 10 segundos, definir pin 5 en ALTA, definir pin 3 en BAJA">
+      <div class="blk control">siempre</div>
+      <div class="dentro">
+        <div class="blk control">esperar <span class="in mate">número al azar entre <span class="h">3</span> y <span class="h">10</span></span> segundos</div>
+        <div class="blk salida">definir pin <span class="h">5</span> en <span class="h">ALTA</span></div>
+        <div class="blk salida">definir pin <span class="h">3</span> en <span class="h">BAJA</span></div>
+      </div>
+    </div>
+    <div class="leyenda" aria-label="Dónde está cada bloque">
+      <span style="--c:var(--b-salida)">Salida</span>
+      <span style="--c:var(--b-control)">Control</span>
+      <span style="--c:var(--b-mate)">Matemáticas</span>
+      <span style="--c:var(--b-entrada)">Entrada</span>
+      <span style="--c:var(--b-var)">Variables</span>
+    </div>
+  
+          <button class="pista-b" type="button">Pista</button>
+          <div class="pista" hidden>Cada error es una pregunta:<br>
+            <b>1.</b> El LED está en el pin 3. ¿Qué pin prende el programa?<br>
+            <b>2.</b> La luz se prende y se apaga enseguida, en una milésima de segundo. ¿Llegás a verla? ¿Qué falta entre prender y apagar?</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reto tapado meta" id="j2">
+      <div class="nivel">2</div>
+      <div class="cuerpo">
+        <div class="rot">Juego 2 · Cara o cruz · la meta de hoy</div>
+        <h3>Sin tocar un cable: apretás el botón y la máquina tira una moneda. Luz prendida es cara; apagada, cruz.</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <button class="pista-b" type="button" hidden>Pista</button>
+        <div class="pista" hidden>Dentro del <b>si</b> del botón va otro <b>si… si no</b>.<br>
+          La pregunta: <b>número al azar entre 0 y 1</b> (Matemáticas) <b>= 1</b>. Si da 1, prendés; si no, apagás.<br>
+          Al final, <b>esperar 1 segundo</b>, para que no tire cien monedas mientras apretás.<br>
+          Tirala 20 veces y anotá: ¿cuántas caras salieron? ¿Tendrían que ser 10?</div>
+      </div>
+    </div>
+
+    <div class="reto tapado" id="j3">
+      <div class="nivel">?</div>
+      <div class="cuerpo">
+        <div class="rot">Con la Papa caliente</div>
+        <h3>¿Qué pasa si…? Primero decí qué creés que va a pasar. Después probalo.</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <div class="lineas" hidden>
+          <div class="linea"><span class="que">Sacás el bloque de esperar al azar</span><button type="button">¿Qué pasa?</button><span class="resp" hidden>La luz titila todo el tiempo. No hay suspenso, y el juego se arruina.</span></div>
+          <div class="linea"><span class="que">En vez del azar, ponés esperar 5</span><button type="button">¿Qué pasa?</button><span class="resp" hidden>Siempre tarda lo mismo. Contando hasta 5, cualquiera hace trampa. <b>El azar es lo que lo hace un juego.</b></span></div>
+          <div class="linea"><span class="que">Ponés el esperar al azar abajo del bloque que prende</span><button type="button">¿Qué pasa?</button><span class="resp" hidden>Se prende enseguida y después espera. Son los mismos bloques en otro orden, y es otro programa. <b>El orden importa.</b></span></div>
+          <div class="linea"><span class="que">Sacás el bloque que apaga</span><button type="button">¿Qué pasa?</button><span class="resp" hidden>Se prende y queda prendida para siempre. La placa hace sólo lo que le decís.</span></div>
+          <div class="linea"><span class="que">Cambiás «entre 3 y 10» por «entre 1 y 30»</span><button type="button">¿Qué pasa?</button><span class="resp" hidden>A veces explota al toque y a veces tarda muchísimo. ¿Es mejor juego o peor? No hay una sola respuesta: decidilo con tu pareja.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reto tapado" id="j4">
+      <div class="nivel">3</div>
+      <div class="cuerpo">
+        <div class="rot">Juego 3 · El interruptor</div>
+        <h3>Apretás y la luz queda prendida; apretás otra vez y se apaga. Descubrí el error: este programa anda loco.</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <div class="formula" hidden>
+          <p>Primero creá una variable: <b>Variables → Crear variable</b>, de nombre <b>prendida</b>. Es la memoria del aparato: se acuerda si la luz está prendida (1) o apagada (0).</p>
+          <p class="dato">Con este programa, a veces queda prendida y a veces no.</p>
+          <div class="prog" aria-label="Programa: siempre. Si leer pin digital 8 igual ALTA: si prendida igual 0, definir prendida en 1 y definir pin 3 en ALTA; si no, definir prendida en 0 y definir pin 3 en BAJA">
+            <div class="blk control">siempre</div>
+            <div class="dentro">
+              <div class="blk control">si <span class="cond"><span class="in entrada">leer pin digital <span class="h">8</span></span> <span class="in mate">=</span> <span class="h">ALTA</span></span> entonces</div>
+              <div class="dentro">
+                <div class="blk control">si <span class="cond"><span class="in var">prendida</span> <span class="in mate">=</span> <span class="h">0</span></span> entonces</div>
+                <div class="dentro">
+                  <div class="blk var">definir <span class="h">prendida</span> en <span class="h">1</span></div>
+                  <div class="blk salida">definir pin <span class="h">3</span> en <span class="h">ALTA</span></div>
+                </div>
+                <div class="sino">si no</div>
+                <div class="dentro">
+                  <div class="blk var">definir <span class="h">prendida</span> en <span class="h">0</span></div>
+                  <div class="blk salida">definir pin <span class="h">3</span> en <span class="h">BAJA</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button class="pista-b" type="button">Pista</button>
+          <div class="pista" hidden>El programa da <b>miles de vueltas por segundo</b>. Tu dedo tarda como medio segundo en soltar el botón.<br>
+            Mientras seguís apretando, ¿cuántas veces pasa el programa por el <b>si</b>? ¿Qué le hace a la luz cada vez?<br>
+            Hace falta que <b>espere a que sueltes</b>. En Control está <b>repetir mientras</b>: la pregunta es la del botón, y adentro… nada.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reto tapado" id="j5">
+      <div class="nivel">4</div>
+      <div class="cuerpo">
+        <div class="rot">Juego 4 · La tercera es la vencida</div>
+        <h3>La luz se prende recién a la tercera apretada.</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <button class="pista-b" type="button" hidden>Pista</button>
+        <div class="pista" hidden>Otra variable, <b>apretadas</b>, que <b>cuenta</b>: cada vez que aprietan, suma 1 (Variables → cambiar en 1).<br>
+          Cuando <b>apretadas = 3</b>, se prende.<br>
+          ¿Y para que vuelva a empezar? ¿En qué número tiene que volver <b>apretadas</b>?</div>
+      </div>
+    </div>
+
+    <div class="reto tapado" id="j6">
+      <div class="nivel">+</div>
+      <div class="cuerpo">
+        <div class="rot">Juego 5 · el tuyo</div>
+        <h3>Inventá tu propio juego con esta luz y este botón. Escribí las reglas antes de programar.</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <button class="pista-b" type="button" hidden>Pista</button>
+        <div class="pista" hidden>Primero, en la carpeta: ¿cómo se juega? ¿Cuándo se gana y cuándo se pierde?<br>
+          Después, cada regla es un bloque. Si una regla no se puede escribir con bloques, cambiala.<br>
+          Cuando ande, pasáselo a otra pareja: ¿entienden cómo se juega sin que se lo expliques?</div>
+      </div>
+    </div>
+
+    <div class="reto tapado meta" id="cierre">
+      <div class="nivel">!</div>
+      <div class="cuerpo">
+        <div class="rot">Para cerrar, todos juntos</div>
+        <h3>Entonces: ¿un mismo circuito puede ser dos juegos? ¿Qué cambió y qué no cambió?</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <button class="pista-b" type="button" hidden>La respuesta</button>
+        <div class="pista" hidden>El circuito no cambió en toda la clase: es el <b>hardware</b>, lo que se puede tocar.<br>
+          Lo que cambió fue el programa: es el <b>software</b>. Y cada programa hizo otro juego.<br>
+          Por eso una misma compu sirve para escribir, dibujar y jugar: <b>el aparato es uno, y lo que lo convierte en cada cosa es el programa.</b></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="falla" aria-label="Si no anda">
+    <div><b>¿No se prende nunca?</b>El número del cable y el del bloque, ¿son iguales? ¿La pata doblada del LED va para el lado del pin?</div>
+    <div><b>¿Se prende sola, o no para?</b>Si usás el botón: va en diagonal, y la resistencia del botón es de 10 kΩ, hacia GND.</div>
+    <div><b>¿No pasa nada?</b>¿Apretaste Iniciar simulación?</div>
+  </section>
+</main>
+
+<script>
+document.querySelectorAll('.reto').forEach(r=>{
+  const d=r.querySelector('.destapar'), pb=r.querySelector('.pista-b'), p=r.querySelector('.pista'), ls=r.querySelector('.lineas, .formula');
+  d.addEventListener('click',()=>{r.classList.remove('tapado');d.hidden=true;if(pb&&!ls)pb.hidden=false;if(ls)ls.hidden=false});
+  if(pb)pb.addEventListener('click',()=>{p.hidden=!p.hidden;pb.textContent=p.hidden?'Pista':'Ocultar pista'});
+});
+document.querySelectorAll('.linea button').forEach(b=>b.addEventListener('click',()=>{
+  const s=b.nextElementSibling; s.hidden=!s.hidden; b.textContent=s.hidden?'¿Qué pasa?':'Ocultar';
+}));
+</script>
+</body>
+</html>
