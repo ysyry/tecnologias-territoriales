@@ -114,10 +114,15 @@ svg{width:100%;height:auto;max-width:100%}
 .tabla input{width:4.5em;font:500 1em var(--f-mono);text-align:center;color:var(--tinta);background:transparent;border:0;border-bottom:1.5px dashed var(--tenue);padding:2px}
 .tabla input:focus-visible{outline:3px solid var(--violeta);outline-offset:2px}
 .ecuacion{font-family:var(--f-mono);font-size:1.15em;color:var(--tinta);background:var(--inf-w);border-radius:8px;padding:10px 14px;align-self:flex-start}
+.quien{max-width:1100px;margin:12px auto 0;padding:0 20px;font-size:.8em;color:var(--tenue);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.quien b{color:var(--tinta)}
+.quien input{font:inherit;color:var(--tinta);background:var(--hoja);border:1.5px solid var(--raya);border-radius:8px;padding:8px 10px;min-width:0}
+.quien button{font:700 1em var(--f-cuerpo);background:var(--violeta);color:var(--hoja);border:0;border-radius:999px;padding:8px 16px;cursor:pointer}
 </style>
 </head>
 <body>
 <a href="./" style="display:inline-block;margin:16px 20px 0;font:600 15px Manrope,system-ui,sans-serif;color:var(--violeta);text-decoration:none">← Volver a Tecnologías para el territorio</a>
+<div id="quien" class="quien"></div>
 <main>
   <header>
     <div class="rot">3ro · estación meteorológica y cohete de agua</div>
@@ -389,6 +394,56 @@ document.querySelectorAll('.linea button').forEach(b=>b.addEventListener('click'
   }
   ins.forEach(i=>i.addEventListener('input',dibujar));
 })();
+
+/* ---- registro: misma sesión y misma planilla que la app ---- */
+const URL_BUZON='https://script.google.com/macros/s/AKfycbzLxvvU5Nw5Zx1yKyeb9z7WB1b2AQD8x7FcPpFznLSr3K8kImnVx4dNrX1Z0WntVigUjg/exec';
+const K_SES='pps.sesion.v1', K_DAT='pps.datos.v1', K_HECHO='pps.temperatura.hecho.v1';
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}};
+const hoyISO=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+let SES=LS.get(K_SES,null);
+if(SES && SES.fecha!==hoyISO()) SES={...SES,fecha:hoyISO()};
+const T0=Date.now();
+function enviar(t){
+  return fetch(URL_BUZON,{method:'POST',mode:'no-cors',cache:'no-store',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(t)})
+    .then(()=>{const a=LS.get(K_DAT,[]);const x=a.find(y=>y.id===t.id);if(x){x.enviada=true;LS.set(K_DAT,a)}}).catch(()=>{});
+}
+function registrar(clave,concepto,detalle,pistas){
+  if(!SES) return;
+  const hechos=LS.get(K_HECHO,{}), k=SES.nombre+'|'+SES.fecha+'|'+clave;
+  if(hechos[k]) return; hechos[k]=1; LS.set(K_HECHO,hechos);
+  const seg=Math.max(1,Math.round((Date.now()-T0)/1000));
+  const t={id:'t'+Date.now().toString(36)+Math.random().toString(36).slice(2,7),
+    alumno:SES.nombre, anio:SES.anio||'3ro', fecha:SES.fecha, ts:new Date().toISOString(),
+    sala:'temperatura', salaNom:'Desafío · ¿Cómo es octubre en la huerta?', modo:'practica',
+    total:1, resueltos:1, sinAyuda:pistas?0:1, pistas:pistas||0, salteadas:0, seg,
+    ejs:[{c:concepto,t:'desafio',q:detalle||'',i:1,ok:true,ok1:!pistas,p:pistas||0,s:false,sg:seg}]};
+  const a=LS.get(K_DAT,[]); a.push(t); LS.set(K_DAT,a);
+  enviar(t);
+}
+function pintarQuien(){
+  const q=document.getElementById('quien');
+  if(SES){ q.innerHTML=`Estás como <b>${SES.nombre.replace(/</g,'&lt;')}</b> · lo que hagas queda registrado.`; registrar('entro','Entró al desafío'); return; }
+  q.innerHTML=`<label for="qnom">Para que quede registrado, escribí tu nombre y apellido:</label><input id="qnom" autocomplete="name"><button type="button" id="qok">Listo</button>`;
+  document.getElementById('qok').addEventListener('click',()=>{
+    const n=document.getElementById('qnom').value.trim().replace(/\s+/g,' ');
+    if(n.length<3) return;
+    SES={nombre:n,anio:'3ro',fecha:hoyISO()}; LS.set(K_SES,SES); pintarQuien();
+  });
+}
+pintarQuien();
+document.querySelectorAll('.reto').forEach(r=>{
+  const n=r.querySelector('.nivel').textContent.trim(), nom=n==='+'?'el extra':'el reto '+n;
+  r.querySelector('.destapar').addEventListener('click',()=>registrar('dest'+n,'Llegó a '+nom));
+  r.querySelectorAll('.pista-b').forEach(b=>b.addEventListener('click',()=>registrar('pista'+n,'Pidió la pista de '+nom,'',1)));
+});
+document.querySelectorAll('.lec').forEach(i=>i.addEventListener('change',()=>{
+  const v=[...document.querySelectorAll('.lec')].map(x=>x.value);
+  if(v.every(x=>x!=='')) registrar('tabla3','Reto 3 · completó la tabla de la fórmula','0°: '+v[0]+' · 25°: '+v[1]+' · 50°: '+v[2]+' · 75°: '+v[3]);
+}));
+document.getElementById('pegar').addEventListener('input',()=>{
+  const n=(document.getElementById('pegar').value.match(/-?\d+(?:\.\d+)?,-?\d+(?:\.\d+)?/g)||[]).length;
+  if(n>=5) setTimeout(()=>{const m=document.getElementById('graf-msg');registrar('graf5','Reto 5 · armó el gráfico',m?m.textContent:n+' mediciones')},50);
+});
 </script>
 </body>
 </html>
