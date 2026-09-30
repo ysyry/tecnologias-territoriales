@@ -118,8 +118,12 @@ svg{width:100%;height:auto;max-width:100%}
 .quien b{color:var(--tinta)}
 .quien input{font:inherit;color:var(--tinta);background:var(--hoja);border:1.5px solid var(--raya);border-radius:8px;padding:8px 10px;min-width:0}
 .quien button{font:700 1em var(--f-cuerpo);background:var(--violeta);color:var(--hoja);border:0;border-radius:999px;padding:8px 16px;cursor:pointer}
-.cohete{margin-top:18px;max-width:40em;font-size:.95em;background:var(--hoja);border:1px solid var(--raya);border-radius:10px;padding:14px 18px}
-.cohete b{color:var(--tinta)}
+body:not(.modo-coh) .coh{display:none!important}
+body.modo-coh .est{display:none!important}
+.modo{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px}
+.modo button{font:700 .85em var(--f-cuerpo);border-radius:999px;padding:10px 18px;cursor:pointer;border:1.5px solid var(--violeta);background:transparent;color:var(--violeta)}
+.modo button[aria-pressed="true"]{background:var(--violeta);color:var(--hoja)}
+.modo button:focus-visible{outline:3px solid var(--violeta);outline-offset:2px}
 </style>
 </head>
 <body>
@@ -127,11 +131,19 @@ svg{width:100%;height:auto;max-width:100%}
 <div id="quien" class="quien"></div>
 <main>
   <header>
-    <div class="rot">3ro · estación meteorológica y cohete de agua</div>
-    <h1>¿Cómo es octubre en la huerta?</h1>
-    <p class="bajada">¿Cuánto frío hace a la madrugada? ¿Cuándo hiela? A principio de año trabajamos con datos que había juntado otro. Ahora los juntamos nosotros: un CSV con las temperaturas de octubre, medidas acá.</p>
-    <div class="cohete">
-      <b>🚀 ¿Sos del equipo del cohete?</b> Hoy hacen lo mismo que todos: el sensor, el código y la tabla son los mismos que van a volar. Al final tienen su propio reto.
+    <div class="modo" role="group" aria-label="Elegí tu proyecto">
+      <button type="button" data-modo="est">🌤️ Estación meteorológica</button>
+      <button type="button" data-modo="coh">🚀 Cohete de agua</button>
+    </div>
+    <div class="est">
+      <div class="rot">3ro · estación meteorológica</div>
+      <h1>¿Cómo es octubre en la huerta?</h1>
+      <p class="bajada">¿Cuánto frío hace a la madrugada? ¿Cuándo hiela? A principio de año trabajamos con datos que había juntado otro. Ahora los juntamos nosotros: un CSV con las temperaturas de octubre, medidas acá.</p>
+    </div>
+    <div class="coh">
+      <div class="rot">3ro · cohete de agua</div>
+      <h1>¿Qué pasa adentro del cohete?</h1>
+      <p class="bajada">Sube y baja en 6 segundos, y nadie puede meterse a mirar. El aparato sí, si mide rápido. Hoy armamos su primera parte: el sensor y la tabla del vuelo, un CSV como los de principio de año.</p>
     </div>
   </header>
 
@@ -249,10 +261,10 @@ void loop() {
       <div class="nivel">5</div>
       <div class="cuerpo">
         <div class="rot">La meta de hoy</div>
-        <h3>Armá la tabla de temperaturas: un CSV, como los de principio de año.</h3>
+        <h3><span class="est">Armá la tabla de temperaturas de la noche.</span><span class="coh">Armá la tabla del vuelo.</span> Un CSV, como los de principio de año.</h3>
         <button class="destapar" type="button">Destapar</button>
         <div class="formula" hidden>
-          <div class="explica">
+          <div class="explica est">
             <div class="rot">¿Qué es esta tabla?</div>
             <p>Cada renglón es <b>una medición</b>: en qué segundo se midió y cuántos grados hacía.</p>
             <div class="tabla-w"><table class="tabla">
@@ -264,8 +276,20 @@ void loop() {
             <p>Los segundos son un <b>cronómetro</b>: arrancan en 0 cuando le das play y cuentan.</p>
             <p>La estación de verdad hace lo mismo toda la noche. <b>Cada cuánto mide lo decide tu equipo</b>: es el número del <span class="dice">delay</span>. A la mañana, la tabla cuenta lo que pasó mientras nadie miraba: a qué hora hizo más frío y si heló.</p>
           </div>
+          <div class="explica coh">
+            <div class="rot">¿Qué es esta tabla?</div>
+            <p>Cada renglón es <b>una medición</b>: en qué momento se midió y cuántos grados hacía.</p>
+            <div class="tabla-w"><table class="tabla">
+              <tr><th>ms</th><th>grados</th><th>se lee</th></tr>
+              <tr><td>0</td><td>24.78</td><td class="lee">al despegar, hacía 24.78 grados</td></tr>
+              <tr><td>50</td><td>24.78</td><td class="lee">un parpadeo después, seguía igual</td></tr>
+              <tr><td>100</td><td>24.78</td><td class="lee">y así 20 veces por segundo</td></tr>
+            </table></div>
+            <p><b>ms</b> son milésimas de segundo: un cronómetro muy rápido. <b>1000 ms es 1 segundo.</b></p>
+            <p>El vuelo dura unos 6 segundos, así que el aparato tiene que medir muy seguido. <b>Cada cuánto mide lo decide tu equipo</b>: es el número del <span class="dice">delay</span>. ¿Cuántos renglones junta un vuelo si mide cada 50 ms?</p>
+          </div>
           <p><b>Paso 1.</b> Copiá este código en Tinkercad, en lugar del que tenías.</p>
-          <div class="codigo">
+          <div class="codigo est">
             <button class="copiar" type="button" data-cod="cod2">Copiar</button>
 <pre id="cod2">void setup() {
   Serial.begin(9600);
@@ -280,8 +304,23 @@ void loop() {
   delay(1000);
 }</pre>
           </div>
+          <div class="codigo coh">
+            <button class="copiar" type="button" data-cod="cod2c">Copiar</button>
+<pre id="cod2c">void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  int lectura = analogRead(A0);
+  float grados = (lectura * 5.0 / 1023 - 0.5) * 100;
+  Serial.println("ms,grados");
+  Serial.print(millis());
+  Serial.println(grados);
+  delay(50);
+}</pre>
+          </div>
           <p><b>Paso 2.</b> Dale play y compará. Tiene dos errores: arreglalos hasta que se vea igual.</p>
-          <div class="compara">
+          <div class="compara est">
             <div><div class="rot">Se ve así</div><pre class="salida mal">segundos,grados
 024.78
 segundos,grados
@@ -295,9 +334,23 @@ segundos,grados
 3,24.78
 4,24.78</pre></div>
           </div>
+          <div class="compara coh">
+            <div><div class="rot">Se ve así</div><pre class="salida mal">ms,grados
+024.78
+ms,grados
+5024.78
+ms,grados
+10024.78</pre></div>
+            <div><div class="rot">Tiene que verse así</div><pre class="salida bien">ms,grados
+0,24.78
+50,24.78
+100,24.78
+150,24.78
+200,24.78</pre></div>
+          </div>
                     <p><b>Paso 3.</b> Dejalo midiendo y mové la temperatura del sensor para que cambie. Después:</p>
           <ol class="pasitos">
-            <li>Pará la simulación. En el monitor, seleccioná desde <span class="dice">segundos,grados</span> hasta el final y copialo (Ctrl+C).</li>
+            <li>Pará la simulación. En el monitor, seleccioná desde <span class="dice est">segundos,grados</span><span class="dice coh">ms,grados</span> hasta el final y copialo (Ctrl+C).</li>
             <li>Pegalo acá abajo (Ctrl+V). El gráfico se arma solo.</li>
           </ol>
           <textarea id="pegar" rows="4" placeholder="Pegá acá lo que copiaste del monitor"></textarea>
@@ -309,7 +362,7 @@ segundos,grados
       </div>
     </div>
 
-    <div class="reto tapado" id="r6">
+    <div class="reto tapado est" id="r6">
       <div class="nivel">+</div>
       <div class="cuerpo">
         <h3>Extra: que se prenda una luz si hace menos de 3 grados. Una alarma de helada.</h3>
@@ -319,13 +372,13 @@ segundos,grados
       </div>
     </div>
 
-    <div class="reto tapado" id="r7">
-      <div class="nivel">🚀</div>
+    <div class="reto tapado coh" id="r7">
+      <div class="nivel">+</div>
       <div class="cuerpo">
-        <h3>Reto del cohete: el vuelo dura 6 segundos. Hacé que mida 20 veces por segundo.</h3>
+        <h3>Extra: que una luz titile mientras graba. En el lanzador, si no titila, no se lanza.</h3>
         <button class="destapar" type="button">Destapar</button>
         <button class="pista-b" type="button" hidden>Pista</button>
-        <div class="pista" hidden>Si mide 20 veces en 1 segundo (1000 milésimas), ¿cuánto espera entre una y otra? Ese es el número del delay.<br>Mirá la columna de los segundos: ¿sirve que diga 0, 0, 0, 0…? Probá volver a <b>millis()</b> sin dividir.<br>¿Cuántos renglones va a tener la tabla de un vuelo de 6 segundos?</div>
+        <div class="pista" hidden>LED al pin 8 (con resistencia de 220 Ω) · en setup: <b>pinMode(8, OUTPUT);</b><br>En cada vuelta del loop, prendelo si estaba apagado y apagalo si estaba prendido. Necesitás una variable que se acuerde cómo estaba.</div>
       </div>
     </div>
   </section>
@@ -338,6 +391,18 @@ segundos,grados
 </main>
 
 <script>
+function esCoh(){return document.body.classList.contains('modo-coh')}
+function ponerModo(m){
+  document.body.classList.toggle('modo-coh',m==='coh');
+  document.querySelectorAll('.modo button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.modo===m));
+  document.title=m==='coh'?'¿Qué pasa adentro del cohete?':'¿Cómo es octubre en la huerta?';
+}
+ponerModo(location.hash==='#cohete'?'coh':'est');
+document.querySelectorAll('.modo button').forEach(b=>b.addEventListener('click',()=>{
+  ponerModo(b.dataset.modo); history.replaceState(null,'',b.dataset.modo==='coh'?'#cohete':location.pathname);
+  if(typeof registrar==='function') registrar('entro','Entró al desafío');
+}));
+
 document.querySelectorAll('.copiar').forEach(b=>b.addEventListener('click',()=>{
   const el=document.getElementById(b.dataset.cod||'cod'), t=el.textContent;
   const ok=()=>{b.textContent='Copiado';setTimeout(()=>b.textContent='Copiar',1500)};
@@ -372,7 +437,8 @@ document.querySelectorAll('.linea button').forEach(b=>b.addEventListener('click'
     const paso=(y1-y0)>60?20:10;
     for(let v=y0;v<=y1;v+=paso){g+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--raya)"/><text x="${L-8}" y="${Y(v)+4}" text-anchor="end">${v}°</text>`}
     if(y0<0&&y1>0)g+=`<line x1="${L}" x2="${W-R}" y1="${Y(0)}" y2="${Y(0)}" stroke="var(--inf)" stroke-dasharray="4 4"/>`;
-    g+=`<text x="${L}" y="${H-10}">${x0} s</text><text x="${W-R}" y="${H-10}" text-anchor="end">${x1} s</text>`;
+    const U=document.body.classList.contains('modo-coh')?'ms':'s';
+    g+=`<text x="${L}" y="${H-10}">${x0} ${U}</text><text x="${W-R}" y="${H-10}" text-anchor="end">${x1} ${U}</text>`;
     const d=pts.map((p,i)=>(i?'L':'M')+X(p[0]).toFixed(1)+' '+Y(p[1]).toFixed(1)).join(' ');
     g+=`<path d="${d}" fill="none" stroke="var(--violeta)" stroke-width="3" stroke-linejoin="round"/>`;
     for(const p of pts)g+=`<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="3.5" fill="var(--violeta)"/>`;
@@ -424,12 +490,12 @@ function enviar(t){
 }
 function registrar(clave,concepto,detalle,pistas){
   if(!SES) return;
-  const hechos=LS.get(K_HECHO,{}), k=SES.nombre+'|'+SES.fecha+'|'+clave;
+  const hechos=LS.get(K_HECHO,{}), k=SES.nombre+'|'+SES.fecha+'|'+(esCoh()?'coh:':'')+clave;
   if(hechos[k]) return; hechos[k]=1; LS.set(K_HECHO,hechos);
   const seg=Math.max(1,Math.round((Date.now()-T0)/1000));
   const t={id:'t'+Date.now().toString(36)+Math.random().toString(36).slice(2,7),
     alumno:SES.nombre, anio:SES.anio||'3ro', fecha:SES.fecha, ts:new Date().toISOString(),
-    sala:'temperatura', salaNom:'Desafío · ¿Cómo es octubre en la huerta?', modo:'practica',
+    sala:esCoh()?'temperatura-cohete':'temperatura', salaNom:esCoh()?'Desafío · ¿Qué pasa adentro del cohete?':'Desafío · ¿Cómo es octubre en la huerta?', modo:'practica',
     total:1, resueltos:1, sinAyuda:pistas?0:1, pistas:pistas||0, salteadas:0, seg,
     ejs:[{c:concepto,t:'desafio',q:detalle||'',i:1,ok:true,ok1:!pistas,p:pistas||0,s:false,sg:seg}]};
   const a=LS.get(K_DAT,[]); a.push(t); LS.set(K_DAT,a);
@@ -447,7 +513,7 @@ function pintarQuien(){
 }
 pintarQuien();
 document.querySelectorAll('.reto').forEach(r=>{
-  const n=r.querySelector('.nivel').textContent.trim(), nom=n==='+'?'el extra':(n==='🚀'?'el reto del cohete':'el reto '+n);
+  const n=r.querySelector('.nivel').textContent.trim(), nom=n==='+'?'el extra':'el reto '+n;
   r.querySelector('.destapar').addEventListener('click',()=>registrar('dest'+n,'Llegó a '+nom));
   r.querySelectorAll('.pista-b').forEach(b=>b.addEventListener('click',()=>registrar('pista'+n,'Pidió la pista de '+nom,'',1)));
 });
