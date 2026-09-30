@@ -104,6 +104,52 @@ svg{width:100%;height:auto;max-width:100%}
 .logre{align-self:flex-start;background:var(--verde)}
 .logre[disabled]{opacity:.9;cursor:default}
 main.sin-nombre .retos,main.sin-nombre .pasos,main.sin-nombre > svg{display:none}
+.al-estudio{margin:.8em 0 0;font-weight:600;color:var(--tinta)}
+.al-estudio a{color:var(--violeta)}
+.estudio{scroll-margin-top:16px}
+.estudio .bajada{margin:0}
+.pixel-w{display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start}
+.pixeles{display:grid;grid-template-columns:repeat(8,1fr);gap:3px;width:min(100%,320px);aspect-ratio:1;max-width:100%}
+.pixeles button{border:1px solid var(--raya);background:var(--hoja);border-radius:4px;cursor:pointer;padding:0;min-width:0}
+.pixeles button[aria-pressed="true"]{background:var(--violeta);border-color:var(--violeta)}
+.pixeles button:focus-visible{outline:3px solid var(--inf);outline-offset:1px}
+.bits{margin:0;font-family:var(--f-mono);font-size:1.05em;line-height:1.55;letter-spacing:.18em;color:var(--tinta)}
+.mazo{display:flex;flex-wrap:wrap;gap:8px}
+.carta{font:700 .8em var(--f-cuerpo);border-radius:10px;padding:10px 14px;cursor:pointer;border:2px solid var(--raya);background:var(--hoja);color:var(--tinta)}
+.carta.cond{border-color:var(--b-control)} .carta.acc{border-color:var(--b-salida)}
+.carta[aria-pressed="true"]{outline:3px solid var(--violeta);outline-offset:2px}
+.carta.usada{opacity:.35}
+.reglas{display:flex;flex-direction:column;gap:14px}
+.regla{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;background:var(--hoja);border:1px solid var(--raya);border-radius:12px;padding:14px 16px}
+.regla .jn{flex-basis:100%;font:700 .75em var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--inf)}
+.regla .kw{font:800 1em var(--f-titulo);color:#fff;border-radius:6px;padding:4px 10px;background:var(--b-control)}
+.hueco{min-width:9em;min-height:2.6em;font:700 .8em var(--f-cuerpo);border:2px dashed var(--tenue);border-radius:10px;background:transparent;color:var(--tinta);cursor:pointer;padding:8px 12px}
+.hueco.lleno{border-style:solid}
+.hueco.bien{border-color:var(--verde);background:color-mix(in srgb,var(--verde) 14%,transparent)}
+.hueco.mal{border-color:var(--rojo);background:color-mix(in srgb,var(--rojo) 12%,transparent)}
+.acciones{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.nota{color:var(--tenue);font-size:.9em}
+.reto.tapado .cuerpo > .juegos-lista{display:none}
+.juegos-lista{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px}
+.explica{background:var(--hoja);border:1px solid var(--raya);border-radius:12px;padding:22px 24px;display:flex;flex-direction:column;gap:14px}
+.explica p{margin:0}
+.explica svg{width:100%;height:auto;max-width:520px}
+.esquema{border:1.5px solid var(--raya);border-radius:12px;background:var(--hoja);padding:0}
+.esquema summary{cursor:pointer;padding:16px 20px;font-weight:700;color:var(--violeta)}
+.esquema summary:focus-visible{outline:3px solid var(--violeta);outline-offset:2px}
+.esq-cuerpo{padding:0 20px 20px;display:flex;flex-direction:column;gap:18px}
+.esq-cuerpo svg{width:100%;height:auto;max-width:620px}
+.esq-tabla{overflow-x:auto}
+.esq-tabla table{border-collapse:collapse;font-size:.9em}
+.esq-tabla th,.esq-tabla td{border-bottom:1px solid var(--raya);padding:8px 14px;text-align:left}
+.esq-tabla th{color:var(--tinta)}
+main.sin-nombre .esquema{display:none}
+.resis{display:flex;flex-direction:column;gap:12px}
+.resis p{margin:0}
+.resis-dos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.resis-dos>div{border:1.5px solid var(--b-control);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.resis-dos b{color:var(--tinta)}
+@media (max-width:640px){.resis-dos{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -113,6 +159,7 @@ main.sin-nombre .retos,main.sin-nombre .pasos,main.sin-nombre > svg{display:none
     <div class="rot">1ro · el desafío del día · los juegos de la consola</div>
     <h1>¿Un mismo circuito puede ser dos juegos?</h1>
     <p class="bajada">Una luz y un botón. Los cables no se tocan en toda la clase. Lo único que vale cambiar es el programa. ¿Alcanza para jugar a otra cosa?</p>
+    <p class="al-estudio">🎨 ¿Te gusta más dibujar? En todo equipo que hace juegos hay alguien que los diseña. <a href="#diseno">Andá al estudio de diseño</a>.</p>
   </header>
 
   <div class="quien" id="quien" aria-live="polite"></div>
@@ -163,6 +210,70 @@ main.sin-nombre .retos,main.sin-nombre .pasos,main.sin-nombre > svg{display:none
     </div>
   </section>
 
+  <details class="esquema">
+    <summary>¿No tenés el circuito, o no anda? Armalo así</summary>
+    <div class="esq-cuerpo">
+      <svg viewBox="0 0 620 300" role="img" aria-label="Esquema: el LED va del pin 3, con una resistencia de 220 ohms, a GND. El botón va de 5V al pin 8, y del pin 8 sale una resistencia de 10 kilo ohms a GND.">
+        <rect x="20" y="210" width="580" height="70" rx="12" fill="var(--b-salida)" opacity=".18" stroke="var(--b-salida)" stroke-width="2"/>
+        <text x="310" y="268" text-anchor="middle" font-family="Manrope,sans-serif" font-size="13" font-weight="700" fill="var(--tenue)">ARDUINO UNO</text>
+        <g>
+          <rect x="70" y="222" width="54" height="26" rx="5" fill="var(--hoja)" stroke="var(--tenue)"/><text x="97" y="240" text-anchor="middle" font-family="DM Mono,monospace" font-size="14" font-weight="500" fill="var(--tinta)">3</text>
+          <rect x="190" y="222" width="54" height="26" rx="5" fill="var(--hoja)" stroke="var(--tenue)"/><text x="217" y="240" text-anchor="middle" font-family="DM Mono,monospace" font-size="14" font-weight="500" fill="var(--tinta)">GND</text>
+          <rect x="360" y="222" width="54" height="26" rx="5" fill="var(--hoja)" stroke="var(--tenue)"/><text x="387" y="240" text-anchor="middle" font-family="DM Mono,monospace" font-size="14" font-weight="500" fill="var(--tinta)">5V</text>
+          <rect x="460" y="222" width="54" height="26" rx="5" fill="var(--hoja)" stroke="var(--tenue)"/><text x="487" y="240" text-anchor="middle" font-family="DM Mono,monospace" font-size="14" font-weight="500" fill="var(--tinta)">8</text>
+          <rect x="530" y="222" width="54" height="26" rx="5" fill="var(--hoja)" stroke="var(--tenue)"/><text x="557" y="240" text-anchor="middle" font-family="DM Mono,monospace" font-size="14" font-weight="500" fill="var(--tinta)">GND</text>
+        </g>
+        <!-- LED -->
+        <text x="130" y="22" text-anchor="middle" font-family="Manrope,sans-serif" font-size="13" font-weight="700" fill="var(--tenue)">LED</text>
+        <path d="M108 72 V52 a22 22 0 0 1 44 0 V72 z" fill="var(--rojo)"/>
+        <rect x="104" y="70" width="52" height="7" rx="2" fill="var(--rojo)"/>
+        <path d="M120 77 V95 l-10 10 V130" stroke="var(--tenue)" stroke-width="4" fill="none" stroke-linejoin="round"/>
+        <path d="M142 77 V100" stroke="var(--tenue)" stroke-width="4" fill="none"/>
+        <text x="100" y="98" text-anchor="end" font-family="Manrope,sans-serif" font-size="13" font-weight="700" fill="var(--tinta)">+ larga</text>
+        <text x="100" y="114" text-anchor="end" font-family="Manrope,sans-serif" font-size="12" fill="var(--tenue)">(la doblada)</text>
+        <text x="152" y="98" font-family="Manrope,sans-serif" font-size="13" font-weight="700" fill="var(--tinta)">− corta</text>
+        <rect x="93" y="130" width="34" height="45" rx="4" fill="var(--hoja)" stroke="var(--tenue)" stroke-width="2"/>
+        <path d="M97 140 h26 M97 152 h26 M97 164 h26" stroke="var(--b-control)" stroke-width="3"/>
+        <text x="86" y="158" text-anchor="end" font-family="Manrope,sans-serif" font-size="13" font-weight="700" fill="var(--tenue)">220 Ω</text>
+        <path d="M110 175 V200 Q110 210 100 212 H97 V222" stroke="var(--rojo)" stroke-width="4" fill="none"/>
+        <path d="M142 100 V110 Q142 118 160 118 H200 Q217 118 217 135 V222" stroke="var(--negro)" stroke-width="4" fill="none"/>
+        <!-- BOTON -->
+        <text x="430" y="22" text-anchor="middle" font-family="Manrope,sans-serif" font-size="13" font-weight="700" fill="var(--tenue)">BOTÓN</text>
+        <path d="M402 44 h-10 M458 44 h10 M402 96 h-10 M458 96 h10" stroke="var(--tenue)" stroke-width="4" stroke-linecap="round"/>
+        <rect x="402" y="36" width="56" height="68" rx="6" fill="var(--tenue)"/>
+        <circle cx="430" cy="70" r="16" fill="var(--hoja)" stroke="var(--tinta)" stroke-width="2"/>
+        <circle cx="390" cy="96" r="5" fill="var(--rojo)"/>
+        <circle cx="470" cy="44" r="5" fill="var(--verde)"/>
+        <path d="M390 96 Q387 100 387 115 V222" stroke="var(--rojo)" stroke-width="4" fill="none"/>
+        <path d="M470 44 Q487 44 487 62 V222" stroke="var(--verde)" stroke-width="4" fill="none"/>
+        <text x="378" y="56" text-anchor="end" font-family="Manrope,sans-serif" font-size="12" fill="var(--tenue)">patas en</text>
+        <text x="378" y="71" text-anchor="end" font-family="Manrope,sans-serif" font-size="12" fill="var(--tenue)">diagonal</text>
+        <path d="M470 44 H540 Q557 44 557 60 V178" stroke="var(--verde)" stroke-width="4" fill="none" stroke-dasharray="0"/>
+        <rect x="540" y="178" width="34" height="34" rx="4" fill="var(--hoja)" stroke="var(--tenue)" stroke-width="2"/>
+        <path d="M544 186 h26 M544 195 h26 M544 204 h26" stroke="var(--b-control)" stroke-width="3"/>
+        <path d="M557 212 V222" stroke="var(--negro)" stroke-width="4"/>
+        <text x="600" y="162" text-anchor="end" font-family="Manrope,sans-serif" font-size="13" font-weight="700" fill="var(--tenue)">10 kΩ</text>
+      </svg>
+      <div class="esq-tabla"><table>
+        <tr><th>Pieza</th><th>Pata</th><th>Va a</th></tr>
+        <tr><td>LED</td><td>pata larga (la doblada)</td><td>resistencia de <b>220 Ω</b> → <b>pin 3</b></td></tr>
+        <tr><td>LED</td><td>pata corta</td><td><b>GND</b></td></tr>
+        <tr><td>Botón</td><td>una pata</td><td><b>5V</b></td></tr>
+        <tr><td>Botón</td><td>la pata en diagonal</td><td><b>pin 8</b></td></tr>
+        <tr><td>Botón</td><td>esa misma pata</td><td>resistencia de <b>10 kΩ</b> → <b>GND</b></td></tr>
+      </table></div>
+      <div class="resis">
+        <div class="rot">Las dos resistencias</div>
+        <p>Hay dos, y cada una tiene su trabajo. <b>Tinkercad las trae en 1 kΩ: hay que cambiarlas.</b> Tocá la resistencia, se abre una ventanita arriba a la derecha, y ahí escribís el número y elegís Ω o kΩ.</p>
+        <div class="resis-dos">
+          <div><b>La del LED · 220 Ω</b><span>Frena la corriente para que el LED no se queme. Va pegada a la pata larga.</span></div>
+          <div><b>La del botón · 10 kΩ</b><span>Cuando no apretás, hace que el pin lea 0 y no cualquier cosa. Va desde el lado del botón que llega al pin 8, hasta GND.</span></div>
+        </div>
+      </div>
+      <p class="nota">En Tinkercad: <b>Circuitos → Crear</b>. Buscá <b>Arduino Uno</b>, <b>LED</b>, <b>Resistencia</b> y <b>Pulsador</b>. ¿No sabés a qué pin llega un cable? Pasale el mouse por la punta.</p>
+    </div>
+  </details>
+
   <section class="retos" aria-label="Los juegos">
     <h2>Los juegos, de a uno</h2>
 
@@ -204,7 +315,12 @@ main.sin-nombre .retos,main.sin-nombre .pasos,main.sin-nombre > svg{display:none
       <div class="nivel">2</div>
       <div class="cuerpo">
         <div class="rot">Juego 2 · Cara o cruz · la meta de hoy</div>
-        <h3>Sin tocar un cable: apretás el botón y la máquina tira una moneda. Luz prendida es cara; apagada, cruz.</h3>
+        <h3>Programá una moneda: cuando apretás el botón, la máquina elige cara o cruz al azar.</h3>
+        <ul class="juegos-lista">
+          <li>Si sale <b>cara</b>, la luz se <b>prende</b>.</li>
+          <li>Si sale <b>cruz</b>, la luz se <b>apaga</b>.</li>
+          <li>Los cables quedan como están: <b>sólo cambiás los bloques</b>.</li>
+        </ul>
         <button class="destapar" type="button">Destapar</button>
         <button class="pista-b" type="button" hidden>Pista</button>
         <div class="pista" hidden>Dentro del <b>si</b> del botón va otro <b>si… si no</b>.<br>
@@ -235,7 +351,7 @@ main.sin-nombre .retos,main.sin-nombre .pasos,main.sin-nombre > svg{display:none
       <div class="nivel">3</div>
       <div class="cuerpo">
         <div class="rot">Juego 3 · El interruptor</div>
-        <h3>Apretás y la luz queda prendida; apretás otra vez y se apaga. Descubrí el error: este programa anda loco.</h3>
+        <h3>Apretás y la luz queda prendida; apretás otra vez y se apaga. Este programa tiene un error: descubrilo.</h3>
         <button class="destapar" type="button">Destapar</button>
         <div class="formula" hidden>
           <p>Primero creá una variable: <b>Variables → Crear variable</b>, de nombre <b>prendida</b>. Es la memoria del aparato: se acuerda si la luz está prendida (1) o apagada (0).</p>
@@ -309,6 +425,124 @@ main.sin-nombre .retos,main.sin-nombre .pasos,main.sin-nombre > svg{display:none
     </div>
   </section>
 
+
+  <section class="retos estudio" id="diseno" aria-label="El estudio de diseño">
+    <h2>🎨 El estudio de diseño</h2>
+    <div class="explica">
+      <div class="rot">De qué se trata hoy</div>
+      <p><b>¿Qué es una consola?</b> Un aparato para jugar, como la Play, la Switch o el Family. Todas tienen dos partes: <b>botones</b> para darle órdenes y una <b>pantalla o luces</b> para mostrarte qué pasa.</p>
+      <p>La consola del grupo es la más simple del mundo: <b>un botón y una luz</b>, conectados a una placa. Con la misma consola, cambiando sólo el programa, se juegan juegos distintos:</p>
+      <ul class="juegos-lista">
+        <li><b>Papa caliente:</b> la luz se prende de golpe, cuando nadie lo espera.</li>
+        <li><b>Cara o cruz:</b> apretás el botón y la máquina tira una moneda. Luz prendida es cara; apagada, cruz.</li>
+        <li><b>El interruptor:</b> apretás y la luz queda prendida; apretás otra vez y se apaga.</li>
+        <li><b>La tercera es la vencida:</b> la luz se prende recién a la tercera apretada.</li>
+      </ul>
+      <p>Los que programan hacen que los juegos anden. <b>En el estudio de diseño se decide cómo se ven y cómo se juegan.</b> Se dibuja en papel o en la compu, y cada diseño se muestra al grupo.</p>
+    </div>
+
+    <div class="reto tapado" id="d1">
+      <div class="nivel">1</div>
+      <div class="cuerpo">
+        <div class="rot">Diseño 1 · La consola de verdad</div>
+        <h3>Si la consola se vendiera en un negocio, ¿cómo sería? Dibujala: la caja, la luz, el botón, el nombre.</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <button class="pista-b" type="button" hidden>Y después</button>
+        <div class="pista" hidden>Ahora marcá con una flecha <b style="color:var(--b-entrada)">violeta</b> lo que le <b>da información</b> a la máquina, y con una flecha <b style="color:var(--b-salida)">azul</b> lo que la máquina <b>te muestra</b>.<br>Mirá los colores de los bloques de Tinkercad: son los mismos. ¿Por qué será?</div>
+        <button class="logre" type="button" data-juego="d1" data-nom="Diseño · La consola de verdad" hidden>✔ ¡Lo terminé!</button>
+      </div>
+    </div>
+
+    <div class="reto tapado" id="d2">
+      <div class="nivel">2</div>
+      <div class="cuerpo">
+        <div class="rot">Diseño 2 · La historieta de la Papa caliente</div>
+        <h3>Dibujá el juego en 4 viñetas, en orden: qué pasa primero, qué pasa después.</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <button class="pista-b" type="button" hidden>Y después</button>
+        <div class="pista" hidden>Poné tus viñetas al lado de los bloques del juego 1. ¿Cada viñeta es un bloque?<br>Si cambiás el orden de las viñetas, ¿sigue siendo el mismo juego? Con los bloques pasa igual.</div>
+        <button class="logre" type="button" data-juego="d2" data-nom="Diseño · La historieta" hidden>✔ ¡Lo terminé!</button>
+      </div>
+    </div>
+
+    <div class="reto tapado" id="d3">
+      <div class="nivel">3</div>
+      <div class="cuerpo">
+        <div class="rot">Diseño 3 · Las dos caras de la moneda</div>
+        <h3>Diseñá la moneda del juego Cara o cruz: una cara y una cruz. Tienen que ser distintas a primera vista.</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <button class="pista-b" type="button" hidden>Y después</button>
+        <div class="pista" hidden>Dibujá el camino: <b>apretás</b> → la máquina <b>elige</b> → sale <b>cara</b> o sale <b>cruz</b>.<br>Ese camino que se abre en dos es el bloque <b>si… si no</b>. Buscalo en el juego 2.</div>
+        <button class="logre" type="button" data-juego="d3" data-nom="Diseño · Las dos caras" hidden>✔ ¡Lo terminé!</button>
+      </div>
+    </div>
+
+    <div class="reto tapado" id="d4">
+      <div class="nivel">4</div>
+      <div class="cuerpo">
+        <div class="rot">Diseño 4 · El ícono</div>
+        <h3>Diseñá el ícono de tu juego en una grilla de 8 × 8. Tocá los cuadraditos para pintarlos.</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <div class="formula" hidden>
+          <div class="pixel-w">
+            <div class="pixeles" id="pixeles" role="grid" aria-label="Grilla de 8 por 8 para dibujar el ícono"></div>
+            <pre class="bits" id="bits" aria-label="Cómo guarda la máquina el dibujo"></pre>
+          </div>
+          <p class="nota">Al lado de tu dibujo aparece <b>cómo lo guarda la máquina</b>: 1 es pintado, 0 es vacío. <span id="px-cuenta"></span></p>
+          <button class="pista-b" type="button">Y después</button>
+          <div class="pista" hidden>Leé los números en voz alta a tu compañero, sin mostrarle la pantalla. ¿Puede dibujar el mismo ícono en papel, sólo con los 0 y los 1?<br>Así viajan todas las imágenes: una foto del celular es lo mismo, con millones de cuadraditos.</div>
+          <button type="button" class="pista-b" id="px-borrar">Borrar todo</button>
+        </div>
+        <button class="logre" type="button" data-juego="d4" data-nom="Diseño · El ícono" hidden>✔ ¡Lo terminé!</button>
+      </div>
+    </div>
+
+    <div class="reto tapado" id="d6">
+      <div class="nivel">5</div>
+      <div class="cuerpo">
+        <div class="rot">Diseño 5 · El mapa del juego</div>
+        <h3>Todo juego es un mapa de «si pasa esto, entonces pasa esto otro». Armá las reglas.</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <div class="formula" hidden>
+          <p>Tocá una tarjeta y después tocá el lugar donde va.</p>
+          <div class="mazo" id="mazo"></div>
+          <div class="reglas" id="reglas"></div>
+          <div class="acciones"><button type="button" class="destapar" id="m-revisar">Revisar</button><span id="m-msg" class="nota" aria-live="polite"></span></div>
+          <div class="explica">
+            <div class="rot">Ahora en papel: el mapa de tu juego</div>
+            <p>Así se dibuja el mapa del interruptor: cada caja es cómo está el juego, y cada flecha dice <b>si pasa qué</b>.</p>
+            <svg viewBox="0 0 520 170" role="img" aria-label="Mapa del interruptor: de Luz apagada a Luz prendida con la flecha si apretás, y de vuelta con otra flecha si apretás">
+              <rect x="20" y="55" width="150" height="60" rx="12" fill="var(--hoja)" stroke="var(--tenue)" stroke-width="2.5"/>
+              <text x="95" y="91" text-anchor="middle" font-family="Manrope,sans-serif" font-weight="700" font-size="17" fill="var(--tinta)">Luz apagada</text>
+              <rect x="350" y="55" width="150" height="60" rx="12" fill="var(--violeta)"/>
+              <text x="425" y="91" text-anchor="middle" font-family="Manrope,sans-serif" font-weight="700" font-size="17" fill="var(--hoja)">Luz prendida</text>
+              <path d="M170 70 C250 20 270 20 344 66" fill="none" stroke="var(--b-control)" stroke-width="3"/>
+              <path d="M344 66 l-12 -2 l6 -10 z" fill="var(--b-control)"/>
+              <path d="M350 102 C270 150 250 150 176 106" fill="none" stroke="var(--b-control)" stroke-width="3"/>
+              <path d="M176 106 l12 1 l-6 10 z" fill="var(--b-control)"/>
+              <text x="260" y="26" text-anchor="middle" font-family="Manrope,sans-serif" font-weight="700" font-size="15" fill="var(--b-control)">si apretás</text>
+              <text x="260" y="160" text-anchor="middle" font-family="Manrope,sans-serif" font-weight="700" font-size="15" fill="var(--b-control)">si apretás</text>
+            </svg>
+            <p>Dibujá el de tu juego: ¿en qué cajas puede estar? ¿Qué tiene que pasar para ir de una a otra? ¿Dónde se gana y dónde se pierde?</p>
+          </div>
+        </div>
+        <button class="logre" type="button" data-juego="d6" data-nom="Diseño · El mapa del juego" hidden>✔ ¡Lo terminé!</button>
+      </div>
+    </div>
+
+    <div class="reto tapado meta" id="d5">
+      <div class="nivel">6</div>
+      <div class="cuerpo">
+        <div class="rot">Diseño 6 · El afiche</div>
+        <h3>El afiche del juego: el nombre, el ícono y el mapa de reglas, para que cualquiera entienda cómo se juega sin preguntar.</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <button class="pista-b" type="button" hidden>Y después</button>
+        <div class="pista" hidden>Las reglas, cortitas: ¿cómo se gana? ¿cómo se pierde?<br>Probalo: dáselo a una pareja que programe. ¿Pueden armar el juego sólo leyendo tu afiche? Si se traban, algo falta en las reglas.</div>
+        <button class="logre" type="button" data-juego="d5" data-nom="Diseño · El afiche" hidden>✔ ¡Lo terminé!</button>
+      </div>
+    </div>
+  </section>
+
   <section class="falla" aria-label="Si no anda">
     <div><b>¿No se prende nunca?</b>El número del cable y el del bloque, ¿son iguales? ¿La pata doblada del LED va para el lado del pin?</div>
     <div><b>¿Se prende sola, o no para?</b>Si usás el botón: va en diagonal, y la resistencia del botón es de 10 kΩ, hacia GND.</div>
@@ -322,6 +556,46 @@ document.querySelectorAll('.reto').forEach(r=>{
   d.addEventListener('click',()=>{r.classList.remove('tapado');d.hidden=true;if(pb&&!ls)pb.hidden=false;if(ls)ls.hidden=false});
   if(pb)pb.addEventListener('click',()=>{p.hidden=!p.hidden;pb.textContent=p.hidden?'Pista':'Ocultar pista'});
 });
+(function(){
+  const g=document.getElementById('pixeles'), bits=document.getElementById('bits'), cu=document.getElementById('px-cuenta');
+  const px=Array(64).fill(0);
+  const pintar=()=>{bits.textContent=[0,1,2,3,4,5,6,7].map(f=>px.slice(f*8,f*8+8).join('')).join('\n');
+    const n=px.filter(Boolean).length; cu.textContent=n?`Pintaste ${n} de 64.`:''};
+  for(let i=0;i<64;i++){const b=document.createElement('button');b.type='button';b.setAttribute('aria-pressed','false');
+    b.setAttribute('aria-label',`fila ${Math.floor(i/8)+1}, columna ${i%8+1}`);
+    b.addEventListener('click',()=>{px[i]=px[i]?0:1;b.setAttribute('aria-pressed',px[i]?'true':'false');pintar()});g.appendChild(b)}
+  document.getElementById('px-borrar').addEventListener('click',()=>{px.fill(0);g.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed','false'));pintar()});
+  pintar();
+})();
+
+(function(){
+  const CARTAS=[
+    {id:'t',txt:'pasó el tiempo al azar',k:'cond'},{id:'a',txt:'apretás el botón',k:'cond'},
+    {id:'u',txt:'sale 1',k:'cond'},{id:'ap',txt:'apretás y la luz estaba apagada',k:'cond'},
+    {id:'p',txt:'se prende la luz',k:'acc'},{id:'o',txt:'se apaga la luz',k:'acc'},
+    {id:'e',txt:'la máquina elige 0 o 1',k:'acc'},{id:'c',txt:'cara: luz prendida',k:'acc'},{id:'x',txt:'cruz: luz apagada',k:'acc'}];
+  const REGLAS=[
+    {n:'Papa caliente',h:[['si','t'],['entonces','p']]},
+    {n:'Cara o cruz · primero',h:[['si','a'],['entonces','e']]},
+    {n:'Cara o cruz · después',h:[['si','u'],['entonces','c'],['si no','x']]},
+    {n:'El interruptor',h:[['si','ap'],['entonces','p'],['si no','o']]}];
+  const mazo=document.getElementById('mazo'), reglas=document.getElementById('reglas'), msg=document.getElementById('m-msg');
+  let sel=null;
+  const txt=id=>CARTAS.find(c=>c.id===id).txt;
+  CARTAS.forEach(c=>{const b=document.createElement('button');b.type='button';b.className='carta '+c.k;b.textContent=c.txt;b.dataset.id=c.id;b.setAttribute('aria-pressed','false');
+    b.addEventListener('click',()=>{sel=sel===c.id?null:c.id;mazo.querySelectorAll('.carta').forEach(x=>x.setAttribute('aria-pressed',x.dataset.id===sel?'true':'false'))});mazo.appendChild(b)});
+  REGLAS.forEach(r=>{const d=document.createElement('div');d.className='regla';d.innerHTML=`<span class="jn">${r.n}</span>`;
+    r.h.forEach(([kw,ok])=>{const k=document.createElement('span');k.className='kw';k.textContent=kw;d.appendChild(k);
+      const h=document.createElement('button');h.type='button';h.className='hueco';h.dataset.ok=ok;h.textContent='…';h.setAttribute('aria-label','Lugar después de '+kw);
+      h.addEventListener('click',()=>{h.classList.remove('bien','mal');if(sel){h.dataset.v=sel;h.textContent=txt(sel);h.classList.add('lleno');sel=null;mazo.querySelectorAll('.carta').forEach(x=>x.setAttribute('aria-pressed','false'))}else if(h.dataset.v){delete h.dataset.v;h.textContent='…';h.classList.remove('lleno')}});
+      d.appendChild(h)});reglas.appendChild(d)});
+  document.getElementById('m-revisar').addEventListener('click',()=>{
+    const hs=[...reglas.querySelectorAll('.hueco')];let b=0;
+    hs.forEach(h=>{h.classList.remove('bien','mal');if(!h.dataset.v)return;const ok=h.dataset.v===h.dataset.ok;h.classList.add(ok?'bien':'mal');if(ok)b++});
+    msg.textContent=b===hs.length?'¡Todas bien! Ahora dibujá el mapa de tu juego.':`${b} de ${hs.length} bien. Las rojas, probá otra tarjeta. Una tarjeta se puede usar más de una vez.`;
+  });
+})();
+
 document.querySelectorAll('.linea button').forEach(b=>b.addEventListener('click',()=>{
   const s=b.nextElementSibling; s.hidden=!s.hidden; b.textContent=s.hidden?'¿Qué pasa?':'Ocultar';
 }));
