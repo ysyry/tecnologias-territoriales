@@ -231,7 +231,7 @@ void loop() {
           <ol class="pasitos">
             <li>En el código, que el monitor muestre <span class="dice">lectura</span> y no <span class="dice">grados</span>. Así ves el número que da el sensor, antes de la cuenta.</li>
             <li>Dale play. Tocá el sensor y llevá el deslizador a 0 °C. Anotá el número que aparece.</li>
-            <li>Hacé lo mismo con 25, 50 y 75 °C. Completá la tabla acá y en la carpeta:</li>
+            <li>Hacé lo mismo con 25, 50 y 75 °C. Completá la tabla:</li>
           </ol>
           <div class="tabla-w"><table class="tabla">
             <tr><th>Temperatura</th><td>0 °C</td><td>25 °C</td><td>50 °C</td><td>75 °C</td></tr>
@@ -356,6 +356,16 @@ ms,grados
           <textarea id="pegar" rows="4" placeholder="Pegá acá lo que copiaste del monitor"></textarea>
           <div id="graf" class="graf" hidden></div>
           <p id="graf-msg" class="nota" hidden></p>
+          <div id="a-planilla" class="explica" hidden>
+            <div class="rot">¿Lo querés en una planilla?</div>
+            <p><b>Google o Excel, pegando:</b></p>
+            <ol class="pasitos">
+              <li>Tocá <button type="button" id="copiar-plani" class="destapar">Copiar para la planilla</button></li>
+              <li>Abrí una planilla nueva, hacé clic en la primera celda y pegá (Ctrl+V). Queda en dos columnas.</li>
+              <li>Seleccioná las dos columnas y andá a <b>Insertar → Gráfico</b>.</li>
+            </ol>
+            <p><b>Excel, con el archivo:</b> <button type="button" id="bajar-csv" class="pista-b">Bajar el CSV</button> Se baja un archivo <span class="dice">.csv</span>: abrilo con doble clic y se abre en Excel.</p>
+          </div>
           <button class="pista-b" type="button">Pista</button>
           <div class="pista" hidden>Los títulos aparecen muchas veces: ¿en qué parte del código están, setup o loop? ¿Cuál se repite?<br>El tiempo y los grados salen pegados: ¿qué falta escribir entre los dos?</div>
         </div>
@@ -524,6 +534,34 @@ document.querySelectorAll('.lec').forEach(i=>i.addEventListener('change',()=>{
 document.getElementById('pegar').addEventListener('input',()=>{
   const n=(document.getElementById('pegar').value.match(/-?\d+(?:\.\d+)?,-?\d+(?:\.\d+)?/g)||[]).length;
   if(n>=5) setTimeout(()=>{const m=document.getElementById('graf-msg');registrar('graf5','Reto 5 · armó el gráfico',m?m.textContent:n+' mediciones')},50);
+});
+
+(function(){
+  const ta=document.getElementById('pegar'), box=document.getElementById('a-planilla'), b=document.getElementById('copiar-plani');
+  const filas=()=>{
+    const toks=ta.value.split(/\s+/).filter(Boolean), out=[];
+    for(const t of toks){const m=t.match(/^([^,]+),([^,]+)$/); if(m) out.push([m[1],m[2]]);}
+    return out;
+  };
+  ta.addEventListener('input',()=>{box.hidden=filas().filter(f=>/^-?\d/.test(f[0])).length<2});
+  b.addEventListener('click',()=>{
+    const coma=(navigator.language||'').toLowerCase().startsWith('es');
+    const txt=filas().map(f=>f.map(v=>coma&&/^-?\d+\.\d+$/.test(v)?v.replace('.',','):v).join('\t')).join('\n');
+    const ok=()=>{b.textContent='¡Copiado! Ahora pegalo en la planilla';setTimeout(()=>b.textContent='Copiar para la planilla',2500)};
+    const falla=()=>{ta.value=txt;ta.select();b.textContent='Ahora apretá Ctrl+C'};
+    try{navigator.clipboard.writeText(txt).then(ok,falla)}catch(_){falla()}
+    if(typeof registrar==='function') registrar('plani','Reto 5 · pasó la tabla a una planilla');
+  });
+})();
+
+document.getElementById('bajar-csv').addEventListener('click',()=>{
+  const es=(navigator.language||'').toLowerCase().startsWith('es'), sep=es?';':',';
+  const toks=document.getElementById('pegar').value.split(/\s+/).filter(t=>/^[^,]+,[^,]+$/.test(t));
+  const csv=toks.map(t=>t.split(',').map(v=>es&&/^-?\d+\.\d+$/.test(v)?v.replace('.',','):v).join(sep)).join('\r\n')+'\r\n';
+  const url=URL.createObjectURL(new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'}));
+  const a=document.createElement('a'); a.href=url; a.download=(esCoh()?'vuelo':'temperaturas')+'.csv';
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),1000);
+  if(typeof registrar==='function') registrar('csv','Reto 5 · bajó el CSV');
 });
 </script>
 </body>
