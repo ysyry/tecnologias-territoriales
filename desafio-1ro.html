@@ -95,6 +95,15 @@ svg{width:100%;height:auto;max-width:100%}
 .falla b{display:block;color:var(--tinta);margin-bottom:6px}
 @media (max-width:760px){.pasos,.falla{grid-template-columns:1fr}.dentro{margin-left:14px}}
 @media (prefers-reduced-motion:no-preference){.reto:not(.tapado) h3{animation:ap .35s ease-out}@keyframes ap{from{opacity:0;transform:translateY(6px)}}}
+.quien{background:var(--hoja);border:2px solid var(--violeta);border-radius:14px;padding:18px 22px;display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center}
+.quien label{font-weight:700;color:var(--tinta)}
+.quien input{font:inherit;padding:10px 14px;border:1.5px solid var(--raya);border-radius:10px;background:var(--papel);color:var(--tinta);min-width:0;flex:1 1 16em}
+.quien button,.logre{font:700 .8em var(--f-cuerpo);border-radius:999px;padding:10px 22px;cursor:pointer;border:0;background:var(--violeta);color:var(--hoja)}
+.quien .otro{background:transparent;color:var(--violeta);border:1.5px solid var(--violeta)}
+.quien .err{color:var(--rojo);font-size:.85em;flex-basis:100%}
+.logre{align-self:flex-start;background:var(--verde)}
+.logre[disabled]{opacity:.9;cursor:default}
+main.sin-nombre .retos,main.sin-nombre .pasos,main.sin-nombre > svg{display:none}
 </style>
 </head>
 <body>
@@ -105,6 +114,8 @@ svg{width:100%;height:auto;max-width:100%}
     <h1>¿Un mismo circuito puede ser dos juegos?</h1>
     <p class="bajada">Una luz y un botón. Los cables no se tocan en toda la clase. Lo único que vale cambiar es el programa. ¿Alcanza para jugar a otra cosa?</p>
   </header>
+
+  <div class="quien" id="quien" aria-live="polite"></div>
 
   <svg viewBox="0 0 640 170" role="img" aria-label="Un mismo circuito, con una luz y un botón, y cuatro programas distintos que dan cuatro juegos: Papa caliente, Cara o cruz, El interruptor y La tercera es la vencida">
     <rect x="10" y="50" width="150" height="70" rx="12" fill="var(--hoja)" stroke="var(--violeta)" stroke-width="3"/>
@@ -170,6 +181,7 @@ svg{width:100%;height:auto;max-width:100%}
         <div class="blk control">esperar <span class="in mate">número al azar entre <span class="h">3</span> y <span class="h">10</span></span> segundos</div>
         <div class="blk salida">definir pin <span class="h">5</span> en <span class="h">ALTA</span></div>
         <div class="blk salida">definir pin <span class="h">3</span> en <span class="h">BAJA</span></div>
+        <button class="logre" type="button" data-juego="j1" data-nom="Juego 1 · Papa caliente" hidden>✔ ¡Me anda!</button>
       </div>
     </div>
     <div class="leyenda" aria-label="Dónde está cada bloque">
@@ -199,6 +211,7 @@ svg{width:100%;height:auto;max-width:100%}
           La pregunta: <b>número al azar entre 0 y 1</b> (Matemáticas) <b>= 1</b>. Si da 1, prendés; si no, apagás.<br>
           Al final, <b>esperar 1 segundo</b>, para que no tire cien monedas mientras apretás.<br>
           Tirala 20 veces y anotá: ¿cuántas caras salieron? ¿Tendrían que ser 10?</div>
+        <button class="logre" type="button" data-juego="j2" data-nom="Juego 2 · Cara o cruz" hidden>✔ ¡Me anda!</button>
       </div>
     </div>
 
@@ -250,6 +263,7 @@ svg{width:100%;height:auto;max-width:100%}
             Mientras seguís apretando, ¿cuántas veces pasa el programa por el <b>si</b>? ¿Qué le hace a la luz cada vez?<br>
             Hace falta que <b>espere a que sueltes</b>. En Control está <b>repetir mientras</b>: la pregunta es la del botón, y adentro… nada.</div>
         </div>
+        <button class="logre" type="button" data-juego="j4" data-nom="Juego 3 · El interruptor" hidden>✔ ¡Me anda!</button>
       </div>
     </div>
 
@@ -263,6 +277,7 @@ svg{width:100%;height:auto;max-width:100%}
         <div class="pista" hidden>Otra variable, <b>apretadas</b>, que <b>cuenta</b>: cada vez que aprietan, suma 1 (Variables → cambiar en 1).<br>
           Cuando <b>apretadas = 3</b>, se prende.<br>
           ¿Y para que vuelva a empezar? ¿En qué número tiene que volver <b>apretadas</b>?</div>
+        <button class="logre" type="button" data-juego="j5" data-nom="Juego 4 · La tercera es la vencida" hidden>✔ ¡Me anda!</button>
       </div>
     </div>
 
@@ -276,6 +291,7 @@ svg{width:100%;height:auto;max-width:100%}
         <div class="pista" hidden>Primero, en la carpeta: ¿cómo se juega? ¿Cuándo se gana y cuándo se pierde?<br>
           Después, cada regla es un bloque. Si una regla no se puede escribir con bloques, cambiala.<br>
           Cuando ande, pasáselo a otra pareja: ¿entienden cómo se juega sin que se lo expliques?</div>
+        <button class="logre" type="button" data-juego="j6" data-nom="Juego 5 · El mío" hidden>✔ ¡Me anda!</button>
       </div>
     </div>
 
@@ -309,6 +325,73 @@ document.querySelectorAll('.reto').forEach(r=>{
 document.querySelectorAll('.linea button').forEach(b=>b.addEventListener('click',()=>{
   const s=b.nextElementSibling; s.hidden=!s.hidden; b.textContent=s.hidden?'¿Qué pasa?':'Ocultar';
 }));
+
+/* ---- Quién sos y el registro ----------------------------------------
+   Usa la misma sesión y el mismo registro que la app (mismo sitio, mismo
+   localStorage), así cada juego logrado cae en el Excel del panel docente
+   y en la planilla del buzón, como una sala más. */
+const K_SES='pps.sesion.v1', K_DAT='pps.datos.v1', K_HECHOS='pps.desafio1ro.v1';
+const URL_BUZON='https://script.google.com/macros/s/AKfycbzLxvvU5Nw5Zx1yKyeb9z7WB1b2AQD8x7FcPpFznLSr3K8kImnVx4dNrX1Z0WntVigUjg/exec';
+const lee=(k,d)=>{try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}};
+const guarda=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}};
+const hoy=()=>{const d=new Date(),z=n=>String(n).padStart(2,'0');return `${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())}`};
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let SES=lee(K_SES,null);
+const main=document.querySelector('main'), quien=document.getElementById('quien');
+
+function pedirNombre(msg){
+  main.classList.add('sin-nombre');
+  quien.innerHTML=`<label for="nom">Antes de empezar: nombre y apellido</label>
+    <input id="nom" autocomplete="off" placeholder="Si son dos, los dos: Sofía López y Juan Pérez">
+    <button type="button" id="entrar">Empezar</button>${msg?`<div class="err">${msg}</div>`:''}`;
+  const i=document.getElementById('nom'); i.focus();
+  const ok=()=>{const n=i.value.trim().replace(/\s+/g,' ');
+    if(n.length<3){pedirNombre('Escribí tu nombre y apellido.');return}
+    SES={nombre:n,anio:'1ro',fecha:hoy()}; guarda(K_SES,SES); mostrarQuien()};
+  document.getElementById('entrar').onclick=ok;
+  i.addEventListener('keydown',e=>{if(e.key==='Enter')ok()});
+}
+function mostrarQuien(){
+  main.classList.remove('sin-nombre');
+  quien.innerHTML=`<span>Estás como <b>${esc(SES.nombre)}</b> · 1ro · hoy</span>
+    <button type="button" class="otro" id="noSoy">No soy yo</button>`;
+  document.getElementById('noSoy').onclick=()=>{SES=null;pedirNombre()};
+  pintarHechos();
+}
+function hechos(){const h=lee(K_HECHOS,{});return (h[SES.nombre+'|'+SES.fecha])||[]}
+function pintarHechos(){
+  const h=hechos();
+  document.querySelectorAll('.logre').forEach(b=>{
+    const ya=h.includes(b.dataset.juego);
+    b.disabled=ya; b.textContent=ya?'✔ Anotado':'✔ ¡Me anda!';
+    if(ya) b.hidden=false;
+  });
+}
+const T0={}, PISTAS={};
+function registrar(b){
+  const id=b.dataset.juego, seg=T0[id]?Math.max(1,Math.round((Date.now()-T0[id])/1000)):0, p=PISTAS[id]||0;
+  const t={id:'d'+Date.now().toString(36)+Math.random().toString(36).slice(2,7),
+    alumno:SES.nombre, anio:'1ro', fecha:SES.fecha, ts:new Date().toISOString(),
+    sala:'desafio1ro', salaNom:'Desafío del día · un circuito, dos juegos', modo:'practica',
+    total:1, resueltos:1, sinAyuda:p?0:1, pistas:p, salteadas:0, seg:seg,
+    ejs:[{c:b.dataset.nom, t:'desafio', q:b.dataset.nom, i:1, ok:true, ok1:!p, p:p, s:false, sg:seg}]};
+  const a=lee(K_DAT,[]); (Array.isArray(a)?a:[]).push(t); guarda(K_DAT,a);
+  const h=lee(K_HECHOS,{}), k=SES.nombre+'|'+SES.fecha; h[k]=(h[k]||[]).concat(id); guarda(K_HECHOS,h);
+  pintarHechos(); enviar();
+}
+function enviar(){
+  const a=lee(K_DAT,[]); if(!Array.isArray(a)) return;
+  a.filter(t=>!t.enviada).forEach(t=>fetch(URL_BUZON,{method:'POST',mode:'no-cors',cache:'no-store',
+    headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(t)})
+    .then(()=>{const b=lee(K_DAT,[]);const x=b.find(y=>y.id===t.id);if(x){x.enviada=true;guarda(K_DAT,b)}}).catch(()=>{}));
+}
+document.querySelectorAll('.logre').forEach(b=>b.addEventListener('click',()=>{if(SES&&!b.disabled)registrar(b)}));
+document.querySelectorAll('.reto').forEach(r=>{
+  const d=r.querySelector('.destapar'), l=r.querySelector('.logre');
+  d.addEventListener('click',()=>{if(l){T0[l.dataset.juego]=Date.now();l.hidden=false}});
+  r.querySelectorAll('.pista-b').forEach(pb=>pb.addEventListener('click',()=>{if(l&&pb.textContent.startsWith('Ocultar'))PISTAS[l.dataset.juego]=(PISTAS[l.dataset.juego]||0)+1}));
+});
+if(SES && SES.anio==='1ro' && SES.fecha===hoy()) mostrarQuien(); else pedirNombre();
 </script>
 </body>
 </html>
