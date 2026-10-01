@@ -117,6 +117,7 @@ main.sin-nombre .esquema{display:none}
 .in.mate{background:var(--b-mate)}
 .dentro .dentro{margin-left:18px}
 .pasos-led{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:8px}
+.sino{align-self:flex-start;color:#fff;font:700 .8em var(--f-cuerpo);background:var(--b-control);padding:4px 14px;border-radius:0 6px 6px 0;margin-left:-8px}
 </style>
 </head>
 <body>
@@ -286,19 +287,24 @@ main.sin-nombre .esquema{display:none}
       <div class="campos">
         <label class="campo"><span>Tiene sed si llega a</span><input id="sed" type="number" inputmode="numeric" placeholder="?"></label>
       </div>
-      <p><b>Primero, una luz nueva.</b> Tu maceta tiene una luz. Para que pueda decir «tengo sed», sumale otra en Tinkercad:</p>
+      <p><b>Primero, las dos luces.</b> La maceta completa tiene dos: la <b>verde</b> dice «estoy bien» y la <b>azul</b> dice «tengo sed». Si tu circuito tiene una sola, sumá la que falta mirando el esquema de arriba:</p>
       <ol class="pasos-led">
-        <li>Arrastrá un <b>LED</b> y cambiale el color a <b>azul</b> (tocalo y elegí el color).</li>
-        <li>Pata larga → resistencia de <b>220 Ω</b> → <b>pin 10</b>.</li>
-        <li>Pata corta → <b>GND</b>.</li>
+        <li>LED <b>verde</b>: pata larga → resistencia de <b>220 Ω</b> → <b>pin 9</b>. Pata corta → <b>GND</b>.</li>
+        <li>LED <b>azul</b>: pata larga → resistencia de <b>220 Ω</b> → <b>pin 10</b>. Pata corta → <b>GND</b>.</li>
+        <li>Para cambiar el color de un LED en Tinkercad, tocalo y elegilo en la ventanita.</li>
       </ol>
-      <p><b>Ahora que la luz azul avise.</b> Este programa debería prender la luz azul («tengo sed») cuando la tierra pasa tu número. <b>Tiene dos errores.</b> Armalo, probalo moviendo la barra del sensor, y encontralos.</p>
-      <div class="prog" aria-label="Programa con errores: siempre, si leer pin analógico A0 menor que 500 entonces definir pin 9 en ALTA">
+      <p><b>Ahora que la maceta hable.</b> Este programa debería prender la azul cuando la tierra tiene sed, y la verde cuando está bien. <b>Tiene dos errores.</b> Armalo, probalo moviendo la barra del sensor, y encontralos.</p>
+      <div class="prog" aria-label="Programa con errores: siempre. Si leer pin analógico A0 menor que 500: definir pin 9 en ALTA, definir pin 10 en BAJA. Si no: definir pin 10 en BAJA.">
         <div class="blk control">siempre</div>
         <div class="dentro">
           <div class="blk control">si <span class="in mate"><span class="in entrada">leer pin analógico <span class="h">A0</span></span> &lt; <span class="h">500</span></span> entonces</div>
           <div class="dentro">
             <div class="blk salida">definir pin <span class="h">9</span> en <span class="h">ALTA</span></div>
+            <div class="blk salida">definir pin <span class="h">10</span> en <span class="h">BAJA</span></div>
+          </div>
+          <div class="sino">si no</div>
+          <div class="dentro">
+            <div class="blk salida">definir pin <span class="h">10</span> en <span class="h">BAJA</span></div>
           </div>
         </div>
       </div>
@@ -307,10 +313,10 @@ main.sin-nombre .esquema{display:none}
       <div class="pista" hidden>Para elegir el número: mirá tus dos números del reto 2. El umbral tiene que estar
       <b>entre los dos</b>. ¿Más cerca del seco o del mojado? Depende de si preferís regar de más o de menos.<br><br>
       Los errores, como preguntas:<br>
-      <b>1.</b> ¿En qué pin está la luz azul? ¿Y qué pin prende el programa?<br>
-      <b>2.</b> Cuando la tierra se moja de nuevo, ¿la luz se apaga? ¿Qué bloque le falta para apagarla? Buscá en Control el <b>si… si no</b>.<br>
+      <b>1.</b> Cuando la tierra tiene sed, ¿qué luz se prende? ¿Es la que tendría que avisar?<br>
+      <b>2.</b> Cuando la tierra está bien, ¿se prende alguna? ¿Qué le falta al <b>si no</b>?<br>
       <b>Y uno para pensar:</b> en tu sensor, ¿la tierra seca da número alto o bajo? Según eso, ¿va <b>&lt;</b> o <b>&gt;</b>?</div>
-      <button type="button" class="logre" data-juego="r4" data-nom="Eligió su umbral y arregló la luz azul" hidden>✔ ¡Me anda!</button>
+      <button type="button" class="logre" data-juego="r4" data-nom="Eligió su umbral y la maceta habla con las dos luces" hidden>✔ ¡Me anda!</button>
     </div>
   </div>
 
