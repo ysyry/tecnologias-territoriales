@@ -118,6 +118,7 @@ main.sin-nombre .esquema{display:none}
 .dentro .dentro{margin-left:18px}
 .pasos-led{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:8px}
 .sino{align-self:flex-start;color:#fff;font:700 .8em var(--f-cuerpo);background:var(--b-control);padding:4px 14px;border-radius:0 6px 6px 0;margin-left:-8px}
+.esq-leds{width:100%;max-width:440px;height:auto}
 </style>
 </head>
 <body>
@@ -287,12 +288,44 @@ main.sin-nombre .esquema{display:none}
       <div class="campos">
         <label class="campo"><span>Tiene sed si llega a</span><input id="sed" type="number" inputmode="numeric" placeholder="?"></label>
       </div>
-      <p><b>Primero, las dos luces.</b> La maceta completa tiene dos: la <b>verde</b> dice «estoy bien» y la <b>azul</b> dice «tengo sed». Si tu circuito tiene una sola, sumá la que falta mirando el esquema de arriba:</p>
+      <p><b>Charlen en equipo:</b></p>
       <ol class="pasos-led">
-        <li>LED <b>verde</b>: pata larga → resistencia de <b>220 Ω</b> → <b>pin 9</b>. Pata corta → <b>GND</b>.</li>
-        <li>LED <b>azul</b>: pata larga → resistencia de <b>220 Ω</b> → <b>pin 10</b>. Pata corta → <b>GND</b>.</li>
-        <li>Para cambiar el color de un LED en Tinkercad, tocalo y elegilo en la ventanita.</li>
+        <li>Tu maceta tiene una luz. Si está <b>apagada</b>, ¿qué quiere decir: que la tierra está bien, o que el aparato no anda?</li>
+        <li>¿Y si le sumamos <b>otra luz</b> para que diga lo contrario? Una para «estoy bien» y otra para «tengo sed». ¿De qué color pondrían cada una?</li>
+        <li>¿Se les ocurre una <b>tercera</b> cosa que podría avisar la maceta? ¿Qué luz le pondrían?</li>
       </ol>
+      <p><b>Sumá la segunda luz.</b> Así se conectan las dos:</p>
+      <svg class="esq-leds" viewBox="0 0 400 230" role="img" aria-label="Dos LED. El verde: pata larga con una resistencia de 220 ohms al pin 9, pata corta a GND. El azul: pata larga con su resistencia al pin 10, pata corta a otro GND.">
+      <rect x="20" y="182" width="370" height="44" rx="10" fill="var(--b-salida)" opacity=".16"/>
+      
+      <text x="100" y="14" text-anchor="middle" font-family="Manrope,sans-serif" font-size="13" font-weight="800" fill="var(--verde)">verde</text>
+      <text x="100" y="29" text-anchor="middle" font-family="Manrope,sans-serif" font-size="11" fill="var(--tenue)">«estoy bien»</text>
+      <path d="M82 70 V54 a18 18 0 0 1 36 0 V70 z" fill="var(--verde)"/>
+      <rect x="78" y="68" width="44" height="6" rx="2" fill="var(--verde)"/>
+      <path d="M92 74 V86 l-10 10 V104" stroke="var(--tenue)" stroke-width="3.5" fill="none" stroke-linejoin="round"/>
+      <rect x="69" y="104" width="26" height="40" rx="4" fill="var(--hoja)" stroke="var(--tenue)" stroke-width="2"/>
+      <path d="M72 114 h20 M72 124 h20 M72 134 h20" stroke="var(--b-control)" stroke-width="3"/>
+      <path d="M82 144 V188" stroke="var(--rojo)" stroke-width="3.5" fill="none"/>
+      <path d="M108 74 V160 Q108 166 114 166 H140 V188" stroke="var(--tinta)" stroke-width="3.5" fill="none"/>
+      <rect x="62" y="188" width="40" height="26" rx="5" fill="var(--hoja)" stroke="var(--tenue)"/><text x="82" y="206" text-anchor="middle" font-family="DM Mono,monospace" font-size="13" fill="var(--tinta)">9</text>
+      <rect x="116" y="188" width="48" height="26" rx="5" fill="var(--hoja)" stroke="var(--tenue)"/><text x="140" y="206" text-anchor="middle" font-family="DM Mono,monospace" font-size="13" fill="var(--tinta)">GND</text>
+      
+      <text x="270" y="14" text-anchor="middle" font-family="Manrope,sans-serif" font-size="13" font-weight="800" fill="var(--agua)">azul</text>
+      <text x="270" y="29" text-anchor="middle" font-family="Manrope,sans-serif" font-size="11" fill="var(--tenue)">«tengo sed»</text>
+      <path d="M252 70 V54 a18 18 0 0 1 36 0 V70 z" fill="var(--agua)"/>
+      <rect x="248" y="68" width="44" height="6" rx="2" fill="var(--agua)"/>
+      <path d="M262 74 V86 l-10 10 V104" stroke="var(--tenue)" stroke-width="3.5" fill="none" stroke-linejoin="round"/>
+      <rect x="239" y="104" width="26" height="40" rx="4" fill="var(--hoja)" stroke="var(--tenue)" stroke-width="2"/>
+      <path d="M242 114 h20 M242 124 h20 M242 134 h20" stroke="var(--b-control)" stroke-width="3"/>
+      <path d="M252 144 V188" stroke="var(--rojo)" stroke-width="3.5" fill="none"/>
+      <path d="M278 74 V160 Q278 166 284 166 H310 V188" stroke="var(--tinta)" stroke-width="3.5" fill="none"/>
+      <rect x="232" y="188" width="40" height="26" rx="5" fill="var(--hoja)" stroke="var(--tenue)"/><text x="252" y="206" text-anchor="middle" font-family="DM Mono,monospace" font-size="13" fill="var(--tinta)">10</text>
+      <rect x="286" y="188" width="48" height="26" rx="5" fill="var(--hoja)" stroke="var(--tenue)"/><text x="310" y="206" text-anchor="middle" font-family="DM Mono,monospace" font-size="13" fill="var(--tinta)">GND</text>
+      <text x="68" y="90" text-anchor="end" font-family="Manrope,sans-serif" font-size="11" font-weight="700" fill="var(--tinta)">+ larga</text>
+      <text x="68" y="128" text-anchor="end" font-family="Manrope,sans-serif" font-size="11" fill="var(--tenue)">220 Ω</text>
+      <text x="114" y="100" font-family="Manrope,sans-serif" font-size="11" font-weight="700" fill="var(--tinta)">− corta</text>
+    </svg>
+      <p class="nota">El Arduino tiene varios GND: cada LED puede ir a uno distinto. Para cambiar el color de un LED en Tinkercad, tocalo y elegilo en la ventanita.</p>
       <p><b>Ahora que la maceta hable.</b> Este programa debería prender la azul cuando la tierra tiene sed, y la verde cuando está bien. <b>Tiene dos errores.</b> Armalo, probalo moviendo la barra del sensor, y encontralos.</p>
       <div class="prog" aria-label="Programa con errores: siempre. Si leer pin analógico A0 menor que 500: definir pin 9 en ALTA, definir pin 10 en BAJA. Si no: definir pin 10 en BAJA.">
         <div class="blk control">siempre</div>
