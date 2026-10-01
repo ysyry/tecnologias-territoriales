@@ -96,6 +96,26 @@ svg{width:100%;height:auto;max-width:100%}
 .veredicto{font-weight:700;font-size:1.05em}
 .barra{height:16px;background:var(--papel);border:1px solid var(--raya);position:relative;flex:1 1 200px;min-width:160px}
 .barra i{position:absolute;inset:0 auto 0 0;background:var(--agua);display:block}
+:root{--b-salida:#3E7FD9;--b-control:#E8930C;--b-entrada:#8A5BE6}
+.prog{display:flex;flex-direction:column;gap:4px;min-width:0}
+.blk{display:inline-flex;align-items:center;flex-wrap:wrap;gap:6px;align-self:flex-start;color:#fff;font:700 .8em var(--f-cuerpo);padding:8px 14px;border-radius:6px;max-width:100%}
+.blk .h{background:#ffffff;color:#1b1b1b;border-radius:999px;padding:1px 10px;font-weight:700}
+.blk .in{border-radius:999px;padding:3px 10px;display:inline-flex;gap:6px;align-items:center}
+.blk.salida{background:var(--b-salida)} .blk.control{background:var(--b-control)} .in.entrada{background:var(--b-entrada)}
+.dentro{margin-left:26px;display:flex;flex-direction:column;gap:4px;border-left:10px solid var(--b-control);padding:4px 0 4px 8px;border-radius:0 0 0 6px}
+.leyenda{display:flex;gap:14px;flex-wrap:wrap;font-size:.75em;color:var(--tenue)}
+.leyenda span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--c);margin-right:6px;vertical-align:-1px}
+.esquema{border:1.5px solid var(--raya);border-radius:12px;background:var(--hoja)}
+.esquema summary{cursor:pointer;padding:16px 20px;font-weight:700;color:var(--violeta)}
+.esq-cuerpo{padding:0 20px 20px;display:flex;flex-direction:column;gap:16px}
+.esq-cuerpo svg{width:100%;max-width:320px;height:auto}
+.esq-tabla{overflow-x:auto}
+.esq-tabla table{border-collapse:collapse;font-size:.9em}
+.esq-tabla th,.esq-tabla td{border-bottom:1px solid var(--raya);padding:8px 14px;text-align:left}
+main.sin-nombre .esquema{display:none}
+:root{--b-mate:#3B9E4C}
+.in.mate{background:var(--b-mate)}
+.dentro .dentro{margin-left:18px}
 </style>
 </head>
 <body>
@@ -147,6 +167,31 @@ svg{width:100%;height:auto;max-width:100%}
   </div>
 </section>
 
+<details class="esquema">
+  <summary>¿No tenés el circuito, o no anda? Armalo así</summary>
+  <div class="esq-cuerpo">
+    <svg viewBox="0 0 260 150" role="img" aria-label="El sensor de humedad del suelo tiene tres patas: + va a 5V, − a GND y SIG a A0">
+      <rect x="85" y="6" width="90" height="34" rx="6" fill="var(--rojo)"/>
+      <text x="130" y="28" text-anchor="middle" font-family="DM Mono,monospace" font-size="11" fill="#fff">+   −   SIG</text>
+      <rect x="92" y="40" width="22" height="42" rx="4" fill="var(--tenue)"/><rect x="146" y="40" width="22" height="42" rx="4" fill="var(--tenue)"/>
+      <path d="M100 18 C60 40 40 90 40 128" fill="none" stroke="var(--rojo)" stroke-width="5" stroke-linecap="round"/>
+      <path d="M130 18 C200 20 215 70 220 128" fill="none" stroke="var(--tinta)" stroke-width="5" stroke-linecap="round"/>
+      <path d="M160 18 C185 30 130 90 130 128" fill="none" stroke="var(--verde)" stroke-width="5" stroke-linecap="round"/>
+      <text x="40" y="146" text-anchor="middle" font-family="DM Mono,monospace" font-size="14" font-weight="500" fill="var(--tinta)">5V</text>
+      <text x="130" y="146" text-anchor="middle" font-family="DM Mono,monospace" font-size="14" font-weight="500" fill="var(--tinta)">A0</text>
+      <text x="220" y="146" text-anchor="middle" font-family="DM Mono,monospace" font-size="14" font-weight="500" fill="var(--tinta)">GND</text>
+    </svg>
+    <div class="esq-tabla"><table>
+      <tr><th>Pieza</th><th>Pata</th><th>Va a</th></tr>
+      <tr><td>Sensor de humedad del suelo</td><td>+ · − · SIG</td><td><b>5V</b> · <b>GND</b> · <b>A0</b></td></tr>
+      <tr><td>LED verde («estoy bien»)</td><td>pata larga</td><td>resistencia de <b>220 Ω</b> → <b>pin 9</b></td></tr>
+      <tr><td>LED azul («tengo sed»)</td><td>pata larga</td><td>resistencia de <b>220 Ω</b> → <b>pin 10</b></td></tr>
+      <tr><td>Los dos LED</td><td>pata corta</td><td><b>GND</b></td></tr>
+    </table></div>
+    <p class="nota">En Tinkercad: <b>Circuitos → Crear</b>. Buscá <b>Arduino Uno</b>, <b>Sensor de humedad del suelo</b>, <b>LED</b> y <b>Resistencia</b>. Tinkercad trae las resistencias en 1 kΩ: tocalas y cambialas a 220 Ω. ¿No sabés a qué pin llega un cable? Pasale el mouse por la punta.</p>
+  </div>
+</details>
+
 <section class="retos" aria-label="Los retos">
   <h2>Los retos, de a uno</h2>
 
@@ -156,9 +201,17 @@ svg{width:100%;height:auto;max-width:100%}
       <div class="rot">Reto 1</div>
       <h3>Que diga algo</h3>
       <button type="button" class="destapar">Empezar</button>
-      <p>Conseguí que el sensor te muestre <b>un número</b>. Si no aparece ninguno, algo del
-      circuito no está cerrado.</p>
-      <button type="button" class="pista-b">Pista</button>
+      <p>Empezamos con un programa que <b>anda</b>. Armalo en Tinkercad, en <b>Código → Bloques</b>, igual a este:</p>
+<div class="prog" aria-label="Programa: siempre, imprimir en monitor en serie leer pin analógico A0, esperar 1 segundo">
+  <div class="blk control">siempre</div>
+  <div class="dentro">
+    <div class="blk salida">imprimir en monitor en serie <span class="in entrada">leer pin analógico <span class="h">A0</span></span></div>
+    <div class="blk control">esperar <span class="h">1</span> segundos</div>
+  </div>
+</div>
+<div class="leyenda"><span style="--c:var(--b-salida)">Salida</span><span style="--c:var(--b-entrada)">Entrada</span><span style="--c:var(--b-control)">Control</span></div>
+<p class="nota">Dale Simular. El número aparece en el <b>monitor serie</b>: abajo del código, el botón <b>Monitor en serie</b>. Si no aparece ninguno, algo del circuito no está cerrado.</p>
+<button type="button" class="pista-b">Pista</button>
       <div class="pista" hidden>Tres cosas que fallan siempre: el sensor no está en un pin con
       <b>A</b>; falta el cable a <b>GND</b>; o no le pusiste el bloque que lee el pin. Para ver
       el número hace falta el <b>monitor serie</b>.</div>
@@ -186,7 +239,7 @@ svg{width:100%;height:auto;max-width:100%}
   <div class="reto tapado" id="r3">
     <div class="nivel">3</div>
     <div class="cuerpo">
-      <div class="rot">Reto 3 · lo nuevo de hoy</div>
+      <div class="rot">Reto 3</div>
       <h3>Dos idiomas distintos</h3>
       <button type="button" class="destapar">Empezar</button>
       <p>El LED habla en <b>digital</b>: sólo sabe decir dos cosas. El sensor habla en
@@ -220,19 +273,33 @@ svg{width:100%;height:auto;max-width:100%}
   <div class="reto tapado" id="r4">
     <div class="nivel">4</div>
     <div class="cuerpo">
-      <div class="rot">Reto 4 · para la próxima</div>
+      <div class="rot">Reto 4</div>
       <h3>¿A partir de qué número dirías que tiene sed?</h3>
       <button type="button" class="destapar">Empezar</button>
       <p>Elegí un número y escribilo. <b>No hay uno correcto:</b> lo decide quien hace el
-      aparato. La próxima clase lo vas a tener que defender.</p>
+      aparato. Tenés que poder explicar por qué elegiste ese.</p>
       <div class="campos">
         <label class="campo"><span>Tiene sed si llega a</span><input id="sed" type="number" inputmode="numeric" placeholder="?"></label>
       </div>
+      <p><b>Ahora que la luz azul avise.</b> Este programa debería prender la luz azul («tengo sed») cuando la tierra pasa tu número. <b>Tiene dos errores.</b> Armalo, probalo moviendo la barra del sensor, y encontralos.</p>
+      <div class="prog" aria-label="Programa con errores: siempre, si leer pin analógico A0 menor que 500 entonces definir pin 9 en ALTA">
+        <div class="blk control">siempre</div>
+        <div class="dentro">
+          <div class="blk control">si <span class="in mate"><span class="in entrada">leer pin analógico <span class="h">A0</span></span> &lt; <span class="h">500</span></span> entonces</div>
+          <div class="dentro">
+            <div class="blk salida">definir pin <span class="h">9</span> en <span class="h">ALTA</span></div>
+          </div>
+        </div>
+      </div>
+      <p class="nota">Cambiá el 500 por <b>tu</b> número. El bloque verde de comparar está en <b>Matemáticas</b>.</p>
       <button type="button" class="pista-b">Pista</button>
-      <div class="pista" hidden>Mirá tus dos números del reto 2. El umbral tiene que estar
-      <b>entre los dos</b>. ¿Más cerca del seco o del mojado? Depende de si preferís regar de
-      más o de menos.</div>
-      <button type="button" class="logre" data-juego="r4" data-nom="Eligió su umbral" hidden>✔ ¡Listo!</button>
+      <div class="pista" hidden>Para elegir el número: mirá tus dos números del reto 2. El umbral tiene que estar
+      <b>entre los dos</b>. ¿Más cerca del seco o del mojado? Depende de si preferís regar de más o de menos.<br><br>
+      Los errores, como preguntas:<br>
+      <b>1.</b> ¿En qué pin está la luz azul? ¿Y qué pin prende el programa?<br>
+      <b>2.</b> Cuando la tierra se moja de nuevo, ¿la luz se apaga? ¿Qué bloque le falta para apagarla? Buscá en Control el <b>si… si no</b>.<br>
+      <b>Y uno para pensar:</b> en tu sensor, ¿la tierra seca da número alto o bajo? Según eso, ¿va <b>&lt;</b> o <b>&gt;</b>?</div>
+      <button type="button" class="logre" data-juego="r4" data-nom="Eligió su umbral y arregló la luz azul" hidden>✔ ¡Me anda!</button>
     </div>
   </div>
 
