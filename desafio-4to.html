@@ -1,0 +1,983 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>¿Esta noche hiela?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Manrope:wght@500;700&family=DM+Mono:wght@400;500&display=swap">
+<style>
+[hidden]{display:none!important}
+/* Una sola columna para proyectar: desafío arriba, los tres pasos, y los retos que se destapan de a uno. Tokens de Areal. */
+:root{
+  --papel:#F3F1F7; --hoja:#FCFBFE; --raya:#DAD4E6;
+  --tinta:#161226; --texto:#3B3350; --tenue:#5F5779;
+  --violeta:#5B3FA8; --inf:#9A3A80; --inf-w:rgba(154,58,128,.10);
+  --rojo:#C8352E; --verde:#2E8B57; --negro:#161226; --codigo:#1E1934; --codigo-t:#EDE8FA;
+  --f-titulo:"Bricolage Grotesque",Georgia,serif;
+  --f-cuerpo:Manrope,system-ui,sans-serif;
+  --f-mono:"DM Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --papel:#0E0C18; --hoja:#1B1830; --raya:#332D50;
+  --tinta:#F6F3FF; --texto:#D6D0E8; --tenue:#ABA3C4;
+  --violeta:#B197EE; --inf:#E88BCB; --inf-w:rgba(232,139,203,.14);
+  --rojo:#F07068; --verde:#5CC98C; --negro:#D6D0E8; --codigo:#15121F; --codigo-t:#EDE8FA;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --papel:#0E0C18; --hoja:#1B1830; --raya:#332D50;
+  --tinta:#F6F3FF; --texto:#D6D0E8; --tenue:#ABA3C4;
+  --violeta:#B197EE; --inf:#E88BCB; --inf-w:rgba(232,139,203,.14);
+  --rojo:#F07068; --verde:#5CC98C; --negro:#D6D0E8; --codigo:#15121F; --codigo-t:#EDE8FA;
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--papel);color:var(--texto);font-family:var(--f-cuerpo);font-size:clamp(17px,1.6vw,22px);line-height:1.5;margin:0}
+main{max-width:1100px;margin:0 auto;padding:clamp(28px,5vw,64px) 20px 80px;display:flex;flex-direction:column;gap:clamp(40px,6vw,72px)}
+.rot{font-family:var(--f-mono);font-size:.7em;letter-spacing:.14em;text-transform:uppercase;color:var(--inf)}
+h1{font-family:var(--f-titulo);font-weight:800;color:var(--tinta);font-size:clamp(40px,6.4vw,84px);line-height:1;letter-spacing:-.02em;margin:.25em 0 0;text-wrap:balance}
+  .bajada{font-size:1.25em;color:var(--texto);max-width:34em;margin:.6em 0 0;text-wrap:balance}
+h2{font-family:var(--f-titulo);font-weight:600;color:var(--tinta);font-size:clamp(26px,3vw,38px);line-height:1.1;margin:0}
+.pasos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.paso{display:flex;flex-direction:column;gap:14px;min-width:0}
+.num{font-family:var(--f-titulo);font-weight:800;font-size:2.4em;line-height:1;color:var(--violeta)}
+.paso p{margin:0;color:var(--tinta);font-weight:700}
+.paso small{color:var(--tenue);font-weight:500;font-size:.85em}
+.cable{display:grid;grid-template-columns:auto 1fr;gap:8px 12px;align-items:center;font-family:var(--f-mono);font-size:.85em}
+.dot{width:26px;height:6px;border-radius:3px}
+svg{width:100%;height:auto;max-width:100%}
+.codigo{position:relative;background:var(--codigo);color:var(--codigo-t);border-radius:10px;padding:18px 18px 18px 20px;overflow-x:auto;font-family:var(--f-mono);font-size:.78em;line-height:1.55;min-width:0}
+.codigo pre{margin:0}
+.codigo .c{color:#9E93C4}
+.copiar{position:absolute;top:10px;right:10px;font:500 13px var(--f-mono);background:#ffffff1a;color:var(--codigo-t);border:1px solid #ffffff33;border-radius:6px;padding:6px 10px;cursor:pointer}
+.copiar:focus-visible,.destapar:focus-visible,.pista-b:focus-visible{outline:3px solid var(--violeta);outline-offset:2px}
+.retos{display:flex;flex-direction:column;gap:14px}
+.reto{border-top:2px solid var(--raya);padding-top:18px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 22px;align-items:start}
+.reto .nivel{font-family:var(--f-titulo);font-weight:800;font-size:1.6em;line-height:1.1;color:var(--inf)}
+.reto h3{font-family:var(--f-titulo);font-weight:600;font-size:1.35em;line-height:1.2;color:var(--tinta);margin:0;text-wrap:balance}
+.reto .cuerpo{display:flex;flex-direction:column;gap:10px;min-width:0}
+.tapado h3{color:transparent;background:var(--raya);border-radius:6px;user-select:none}
+.destapar,.pista-b{justify-self:start;font:700 .8em var(--f-cuerpo);border-radius:999px;padding:8px 16px;cursor:pointer}
+.destapar{background:var(--violeta);color:var(--hoja);border:0}
+.pista-b{background:transparent;color:var(--violeta);border:1.5px solid var(--violeta)}
+.pista{font-family:var(--f-mono);font-size:.78em;background:var(--inf-w);border-radius:8px;padding:12px 14px;color:var(--tinta);overflow-x:auto}
+.falla{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;font-size:.9em}
+.falla b{display:block;color:var(--tinta)}
+@media (max-width:760px){.pasos,.falla{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:no-preference){.reto:not(.tapado) h3{animation:ap .35s ease-out}@keyframes ap{from{opacity:0;transform:translateY(6px)}}}
+.lineas{display:flex;flex-direction:column;gap:8px}
+.linea{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 14px;align-items:center;border-bottom:1px solid var(--raya);padding:8px 0}
+.linea code{font-family:var(--f-mono);font-size:.8em;color:var(--tinta);overflow-x:auto;white-space:nowrap}
+.linea button{font:700 .72em var(--f-cuerpo);background:transparent;color:var(--violeta);border:1.5px solid var(--violeta);border-radius:999px;padding:5px 12px;cursor:pointer}
+.linea span{grid-column:1/-1;color:var(--texto);font-size:.9em}
+.meta{border-top-color:var(--inf)}
+.dice{font-family:var(--f-mono);font-weight:500;background:var(--inf-w);color:var(--inf);border-radius:6px;padding:0 .3em;white-space:nowrap}
+.pasitos{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:6px;color:var(--tinta)}
+.tapado .pasitos{visibility:hidden}
+.tapado h3 .dice{color:transparent;background:transparent}
+.formula{display:flex;flex-direction:column;gap:14px}
+.formula p{margin:0}
+.tabla-w{overflow-x:auto}
+.tabla{border-collapse:collapse;font-variant-numeric:tabular-nums}
+.tabla th,.tabla td{border:1px solid var(--raya2,var(--raya));padding:8px 16px;text-align:center}
+.tabla th{text-align:left;color:var(--tinta);font-weight:700}
+.tabla td{font-family:var(--f-mono);min-width:5em}
+.linea .que{grid-column:auto;color:var(--tinta);font-weight:600;min-width:0}
+.linea .que code{font-family:var(--f-mono);font-size:.85em;background:var(--inf-w);border-radius:5px;padding:0 .3em}
+.compara{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.salida{margin:6px 0 0;font-family:var(--f-mono);font-size:.78em;line-height:1.5;padding:12px 14px;border-radius:8px;overflow-x:auto}
+.salida.mal{background:var(--hoja);border:1.5px dashed var(--tenue);color:var(--texto)}
+.salida.bien{background:var(--inf-w);border:1.5px solid var(--inf);color:var(--tinta)}
+@media (max-width:760px){.compara{grid-template-columns:1fr}}
+/* aire */
+.retos{gap:clamp(40px,5vw,64px)}
+.retos h2{margin-bottom:8px}
+.reto{padding-top:32px;gap:10px 28px}
+.reto .cuerpo{gap:20px}
+.destapar,.pista-b{align-self:flex-start;padding:10px 22px}
+.pista{font-family:var(--f-cuerpo);font-size:.9em;line-height:1.7;padding:18px 20px}
+.formula{gap:24px}
+.pasitos{gap:12px}
+.lineas{gap:4px}
+.linea{padding:14px 0}
+.falla{margin-top:24px;gap:32px}
+.falla b{margin-bottom:6px}
+.nota{color:var(--tenue);font-size:.9em}
+.explica{background:var(--hoja);border:1px solid var(--raya);border-radius:12px;padding:22px 24px;display:flex;flex-direction:column;gap:14px}
+.explica p{margin:0}
+.tabla td.lee{font-family:var(--f-cuerpo);text-align:left;color:var(--tenue)}
+.compara>div{display:flex;flex-direction:column}
+.compara .salida{flex:1}
+#pegar{width:100%;font:500 .8em var(--f-mono);color:var(--tinta);background:var(--hoja);border:1.5px solid var(--raya);border-radius:10px;padding:14px;resize:vertical}
+#pegar:focus-visible{outline:3px solid var(--violeta);outline-offset:2px}
+.graf{background:var(--hoja);border:1px solid var(--raya);border-radius:12px;padding:16px}
+.graf svg text{font-family:var(--f-mono);font-size:12px;fill:var(--tenue)}
+.tabla input{width:4.5em;font:500 1em var(--f-mono);text-align:center;color:var(--tinta);background:transparent;border:0;border-bottom:1.5px dashed var(--tenue);padding:2px}
+.tabla input:focus-visible{outline:3px solid var(--violeta);outline-offset:2px}
+.ecuacion{font-family:var(--f-mono);font-size:1.15em;color:var(--tinta);background:var(--inf-w);border-radius:8px;padding:10px 14px;align-self:flex-start}
+.quien{max-width:1100px;margin:12px auto 0;padding:0 20px;font-size:.8em;color:var(--tenue);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.quien b{color:var(--tinta)}
+.quien input{font:inherit;color:var(--tinta);background:var(--hoja);border:1.5px solid var(--raya);border-radius:8px;padding:8px 10px;min-width:0}
+.quien button{font:700 1em var(--f-cuerpo);background:var(--violeta);color:var(--hoja);border:0;border-radius:999px;padding:8px 16px;cursor:pointer}
+body:not(.modo-coh) .coh{display:none!important}
+body.modo-coh .est{display:none!important}
+.modo{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px}
+.modo button{font:700 .85em var(--f-cuerpo);border-radius:999px;padding:10px 18px;cursor:pointer;border:1.5px solid var(--violeta);background:transparent;color:var(--violeta)}
+.modo button[aria-pressed="true"]{background:var(--violeta);color:var(--hoja)}
+.modo button:focus-visible{outline:3px solid var(--violeta);outline-offset:2px}
+.lineas > div{display:flex;flex-direction:column;gap:4px}
+.pista a,.explica a{color:var(--violeta)}
+.agente{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:20px}
+.agente span{display:flex;flex-direction:column;background:var(--hoja);border:1px solid var(--raya);border-radius:10px;padding:10px 14px;font-size:.85em;color:var(--texto)}
+.agente span b{font-family:var(--f-mono);font-size:.75em;letter-spacing:.1em;text-transform:uppercase;color:var(--inf)}
+.agente i{font-style:normal;color:var(--tenue);font-weight:700}
+.mazo{display:flex;flex-wrap:wrap;gap:8px}
+.carta{font:700 .8em var(--f-cuerpo);border-radius:10px;padding:10px 14px;cursor:pointer;border:2px solid var(--raya);background:var(--hoja);color:var(--tinta)}
+.carta[aria-pressed="true"]{outline:3px solid var(--violeta);outline-offset:2px}
+.automata{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 0}
+.est-caja{width:7.5em;height:7.5em;border-radius:50%;display:flex;align-items:center;justify-content:center;font:800 1.05em var(--f-titulo);color:var(--tinta);border:3px solid var(--tenue);background:var(--hoja);text-align:center}
+.est-caja.b{background:var(--violeta);border-color:var(--violeta);color:var(--hoja)}
+.flechas{display:flex;flex-direction:column;align-items:stretch;gap:2px;min-width:0}
+.fl-svg{width:100%;height:70px;display:block}
+.fl-cond{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;font-size:.82em;color:var(--violeta)}
+.fl-cond.vuelta{color:var(--inf)}
+.fl-cond b{color:inherit}
+.hueco{min-width:12em;min-height:2.6em;font:700 .8em var(--f-cuerpo);border:2px dashed var(--tenue);border-radius:10px;background:transparent;color:var(--tinta);cursor:pointer;padding:8px 12px}
+.hueco.lleno{border-style:solid}
+.hueco.bien{border-color:var(--verde)}
+.hueco.mal{border-color:var(--rojo)}
+.acciones{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+@media (max-width:640px){.automata{grid-template-columns:1fr;justify-items:center}.fl-svg{display:none}.est-caja{width:6em;height:6em}}
+.ciclo-w{overflow-x:auto;margin-top:28px;padding-bottom:4px}
+.ciclo{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(9,minmax(92px,1fr));min-width:840px}
+.ciclo li{position:relative;display:flex;flex-direction:column;gap:2px;padding:28px 10px 0 0}
+.ciclo li::before{content:"";position:absolute;top:8px;left:0;right:0;height:3px;background:var(--raya)}
+.ciclo li.hoy::before{background:var(--violeta)}
+.ciclo li:last-child::before{right:auto;width:16px}
+.ciclo .pt{position:absolute;top:1px;left:0;width:17px;height:17px;border-radius:50%;background:var(--papel);border:3px solid var(--raya);box-sizing:border-box}
+.ciclo li.hoy .pt{background:var(--violeta);border-color:var(--violeta)}
+.ciclo li.ya .pt{border-color:var(--inf)}
+.ciclo b{font-size:.82em;line-height:1.25;color:var(--tenue)}
+.ciclo small{font-size:.72em;color:var(--tenue)}
+.ciclo li.hoy b{color:var(--tinta)}
+.ciclo li.ya b,.ciclo li.ya small{color:var(--inf)}
+.ciclo-ley{display:flex;gap:18px;flex-wrap:wrap;margin-top:12px;font-size:.72em;color:var(--tenue)}
+.ciclo-ley span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;border:2px solid var(--raya);margin-right:6px;vertical-align:-1px}
+.ciclo-ley .hoy::before{background:var(--violeta);border-color:var(--violeta)}
+.ciclo-ley .ya::before{border-color:var(--inf)}
+.ciclo-n{margin:10px 0 0}
+p.est,p.coh{margin:0}
+.pasitos > li{line-height:1.6}
+.pasitos .sub{margin:10px 0 10px;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;list-style:disc}
+.pasitos .ojo{display:block;margin-top:6px;font-size:.9em;color:var(--tenue)}
+.pasitos{gap:16px}
+.esq-web{margin:6px 0 0}
+.esq-web svg{width:100%;height:auto;max-width:100%}
+.esq-web{width:100%}
+.lenguaje{border:1.5px solid var(--raya);border-radius:12px;background:var(--hoja);margin-top:-24px}
+.lenguaje summary{cursor:pointer;padding:16px 20px;font-weight:700;color:var(--violeta)}
+.lenguaje summary:focus-visible{outline:3px solid var(--violeta);outline-offset:2px}
+.len-cuerpo{padding:0 20px 22px;display:flex;flex-direction:column;gap:14px}
+.pals{display:flex;flex-direction:column}
+.pal{display:grid;grid-template-columns:minmax(0,15em) minmax(0,1fr);gap:6px 18px;padding:10px 0;border-bottom:1px solid var(--raya);font-size:.88em}
+.pal code{font-family:var(--f-mono);color:var(--tinta);font-weight:500}
+@media (max-width:640px){.pal{grid-template-columns:1fr}}
+.pasos-pista{display:flex;flex-direction:column;gap:16px;line-height:1.6}
+.pasos-pista p{margin:0}
+.pre-x{}
+.mini{margin:8px 0 2px;font-family:var(--f-mono);font-size:.95em;background:var(--codigo);color:var(--codigo-t);border-radius:8px;padding:10px 14px;overflow-x:auto;white-space:pre}
+.pasos-pista .codigo{font-size:.95em}
+.llenar{display:flex;flex-direction:column;gap:12px}
+.llenar p{margin:0}
+.llenar-cod{margin:0;background:var(--codigo);color:var(--codigo-t);border-radius:10px;padding:16px 18px;font-family:var(--f-mono);font-size:.78em;line-height:1.9;overflow-x:auto;white-space:pre}
+.hueco-c{font:500 1em var(--f-mono);color:#fff;background:rgba(255,255,255,.08);border:0;border-bottom:2px dashed #B197EE;border-radius:4px 4px 0 0;padding:1px 4px;text-align:center}
+.hueco-c:focus-visible{outline:2px solid #B197EE;outline-offset:2px}
+.hueco-c.bien{border-bottom:2px solid #5CC98C;background:rgba(92,201,140,.18)}
+.hueco-c.mal{border-bottom:2px solid #F07068;background:rgba(240,112,104,.18)}
+.lenguaje.en-reto{margin-top:0}
+</style>
+</head>
+<body>
+<a href="./" style="display:inline-block;margin:16px 20px 0;font:600 15px Manrope,system-ui,sans-serif;color:var(--violeta);text-decoration:none">← Volver a Tecnologías para el territorio</a>
+<div id="quien" class="quien"></div>
+<main>
+  <header>
+    <div class="modo" role="group" aria-label="Elegí tu proyecto">
+      <button type="button" data-modo="est">🌤️ Estación meteorológica</button>
+      <button type="button" data-modo="coh">💧 Riego de la huerta</button>
+    </div>
+    <div class="est">
+      <div class="rot">4to · estación meteorológica · agentes y autómatas</div>
+      <h1>¿Quién cuida la huerta mientras dormimos?</h1>
+      <p class="bajada">Una helada puede quemar los brotes en una sola noche, y a las 4 de la mañana no hay nadie en la huerta. ¿Puede un aparato darse cuenta solo y avisar? A un aparato que mide, decide y actúa por su cuenta se lo llama <b>agente</b>.</p>
+      <div class="ciclo-w"><ol class="ciclo" aria-label="El ciclo completo de un dato"><li class="hoy"><span class="pt"></span><b>La huerta</b><small>el ambiente</small></li><li class="hoy"><span class="pt"></span><b>Sensor</b><small>TMP36</small></li><li class="hoy"><span class="pt"></span><b>Decide</b><small>¿helada?</small></li><li class="hoy"><span class="pt"></span><b>Avisa</b><small>LED de alerta</small></li><li class="hoy"><span class="pt"></span><b>La tabla</b><small>CSV</small></li><li class="ya"><span class="pt"></span><b>Análisis</b><small>ya lo saben</small></li><li class="hoy"><span class="pt"></span><b>Página web</b><small>tu sitio</small></li><li class="hoy"><span class="pt"></span><b>Internet</b><small>que la vea cualquiera</small></li><li class="hoy"><span class="pt"></span><b>Alguien lo mira</b><small>la usa para decidir</small></li></ol></div>
+      <div class="ciclo-ley"><span class="hoy">lo que vamos a construir</span><span class="ya">ya lo saben del primer cuatrimestre</span></div>
+      <p class="nota ciclo-n">El ciclo completo de un dato, de la tierra a la pantalla de alguien. En el primer cuatrimestre trabajaron <b>el análisis</b>: datos que había juntado otro, en Pandalyze. Ahora el ciclo arranca antes, porque <b>los datos los produce su aparato</b>.</p>
+    </div>
+    <div class="coh">
+      <div class="rot">4to · riego de la huerta · agentes y autómatas</div>
+      <h1>¿Quién decide cuándo se riega?</h1>
+      <p class="bajada">El timer de la huerta riega todos los días a la misma hora, aunque haya llovido toda la noche. ¿Y si decidiera un aparato que mira la tierra? A un aparato que mide, decide y actúa por su cuenta se lo llama <b>agente</b>.</p>
+      <div class="ciclo-w"><ol class="ciclo" aria-label="El ciclo completo de un dato"><li class="hoy"><span class="pt"></span><b>La huerta</b><small>el ambiente</small></li><li class="hoy"><span class="pt"></span><b>Sensor</b><small>humedad</small></li><li class="hoy"><span class="pt"></span><b>Decide</b><small>¿tiene sed?</small></li><li class="hoy"><span class="pt"></span><b>Avisa</b><small>LED de aviso</small></li><li class="hoy"><span class="pt"></span><b>La tabla</b><small>CSV</small></li><li class="ya"><span class="pt"></span><b>Análisis</b><small>ya lo saben</small></li><li class="hoy"><span class="pt"></span><b>Página web</b><small>tu sitio</small></li><li class="hoy"><span class="pt"></span><b>Internet</b><small>que la vea cualquiera</small></li><li class="hoy"><span class="pt"></span><b>Alguien lo mira</b><small>la usa para decidir</small></li></ol></div>
+      <div class="ciclo-ley"><span class="hoy">lo que vamos a construir</span><span class="ya">ya lo saben del primer cuatrimestre</span></div>
+      <p class="nota ciclo-n">El ciclo completo de un dato, de la tierra a la pantalla de alguien. En el primer cuatrimestre trabajaron <b>el análisis</b>: datos que había juntado otro, en Pandalyze. Ahora el ciclo arranca antes, porque <b>los datos los produce su aparato</b>.</p>
+    </div>
+  </header>
+
+  <section class="pasos" aria-label="Los tres pasos">
+    <div class="paso">
+      <div class="num">1</div>
+      <p>El circuito: un Arduino, el sensor y un LED</p>
+      <small>Sensor: <b class="est">TMP36</b><b class="coh">Sensor de humedad del suelo</b>. LED de aviso: pata larga → resistencia de <b>220 Ω</b> → <b>pin 13</b>; pata corta → <b>GND</b>.</small>
+    </div>
+    <div class="paso">
+      <div class="num">2</div>
+      <p>Tres cables para el sensor</p>
+      <div class="est"><svg viewBox="0 0 260 150" role="img" aria-label="El sensor tiene tres patas: la izquierda va a 5V, la del medio a A0 y la derecha a GND">
+        <path d="M95 18 h70 v34 a35 12 0 0 1 -70 0 z" fill="var(--tenue)"/>
+        <text x="130" y="40" text-anchor="middle" font-family="DM Mono,monospace" font-size="12" fill="var(--papel)">TMP36</text>
+        <line x1="110" y1="60" x2="110" y2="80" stroke="var(--tenue)" stroke-width="3"/>
+        <line x1="130" y1="62" x2="130" y2="80" stroke="var(--tenue)" stroke-width="3"/>
+        <line x1="150" y1="60" x2="150" y2="80" stroke="var(--tenue)" stroke-width="3"/>
+        <path d="M110 80 C110 105 40 100 40 128" fill="none" stroke="var(--rojo)" stroke-width="5" stroke-linecap="round"/>
+        <path d="M130 80 L130 128" fill="none" stroke="var(--verde)" stroke-width="5" stroke-linecap="round"/>
+        <path d="M150 80 C150 105 220 100 220 128" fill="none" stroke="var(--negro)" stroke-width="5" stroke-linecap="round"/>
+        <text x="40" y="146" text-anchor="middle" font-family="DM Mono,monospace" font-size="14" font-weight="500" fill="var(--tinta)">5V</text>
+        <text x="130" y="146" text-anchor="middle" font-family="DM Mono,monospace" font-size="14" font-weight="500" fill="var(--tinta)">A0</text>
+        <text x="220" y="146" text-anchor="middle" font-family="DM Mono,monospace" font-size="14" font-weight="500" fill="var(--tinta)">GND</text>
+      </svg></div>
+      <div class="coh"><svg viewBox="0 0 260 150" role="img" aria-label="El sensor de humedad del suelo tiene tres patas arriba: VCC va a 5V, GND a GND y SIG a A0">
+        <rect x="85" y="6" width="90" height="30" rx="6" fill="var(--rojo)"/>
+        <text x="100" y="26" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#fff">VCC</text>
+        <text x="130" y="26" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#fff">GND</text>
+        <text x="160" y="26" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#fff">SIG</text>
+        <line x1="100" y1="36" x2="100" y2="56" stroke="var(--tenue)" stroke-width="3"/>
+        <line x1="130" y1="36" x2="130" y2="56" stroke="var(--tenue)" stroke-width="3"/>
+        <line x1="160" y1="36" x2="160" y2="56" stroke="var(--tenue)" stroke-width="3"/>
+        <path d="M100 56 C100 90 40 96 40 128" fill="none" stroke="var(--rojo)" stroke-width="5" stroke-linecap="round"/>
+        <path d="M160 56 C160 84 130 92 130 128" fill="none" stroke="var(--verde)" stroke-width="5" stroke-linecap="round"/>
+        <path d="M130 56 C130 96 220 92 220 128" fill="none" stroke="var(--negro)" stroke-width="5" stroke-linecap="round"/>
+        <text x="40" y="146" text-anchor="middle" font-family="DM Mono,monospace" font-size="14" font-weight="500" fill="var(--tinta)">5V</text>
+        <text x="130" y="146" text-anchor="middle" font-family="DM Mono,monospace" font-size="14" font-weight="500" fill="var(--tinta)">A0</text>
+        <text x="220" y="146" text-anchor="middle" font-family="DM Mono,monospace" font-size="14" font-weight="500" fill="var(--tinta)">GND</text>
+      </svg></div>
+      <small>Pasá el mouse por cada pata: Tinkercad dice cuál es. Si ya tenían otros sensores enchufados, sacalos: hoy va uno solo.</small>
+    </div>
+    <div class="paso">
+      <div class="num">3</div>
+      <p>Pegá el código y dale play</p>
+      <small>Código → <b>Texto</b>. Abrí el <b>Monitor en serie</b>. Tocá el sensor y mové el deslizador.</small>
+    </div>
+  </section>
+
+  <section aria-label="El código">
+    <div class="codigo est">
+      <button class="copiar" type="button" data-cod="cod">Copiar</button>
+<pre id="cod">// Aviso de helada · versión 1 (tiene dos errores)
+
+void setup() {                 // pasa UNA vez, al prender la placa
+  Serial.begin(9600);          // abre la conversación con la compu (el monitor)
+  pinMode(13, OUTPUT);         // el pin 13 MANDA corriente: ahí está el LED
+}
+
+void loop() {                  // se repite para siempre
+  int lectura = analogRead(A0);                        // lee el sensor: un número de 0 a 1023
+  float grados = (lectura * 5.0 / 1023 - 0.5) * 100;   // pasa ese número a grados
+  Serial.println(grados);                              // muestra los grados en el monitor
+
+  if (lectura &lt; 3) {           // la decisión: ¿hay que avisar?
+    digitalWrite(13, HIGH);    // prende el LED de alerta
+  }
+
+  delay(1000);                 // espera 1 segundo (1000 milésimas) y vuelve a empezar
+}</pre>
+    </div>
+    <div class="codigo coh">
+      <button class="copiar" type="button" data-cod="codr">Copiar</button>
+<pre id="codr">// Aviso de riego · versión 1 (tiene dos errores)
+
+void setup() {                 // pasa UNA vez, al prender la placa
+  Serial.begin(9600);          // abre la conversación con la compu (el monitor)
+  pinMode(13, OUTPUT);         // el pin 13 MANDA corriente: ahí está el LED
+}
+
+void loop() {                  // se repite para siempre
+  int humedad = analogRead(A1);  // lee el sensor de humedad del suelo: un número de 0 a 1023
+  Serial.println(humedad);       // muestra el número en el monitor
+
+  if (humedad &lt; 200) {         // la decisión: ¿la tierra tiene sed?
+    digitalWrite(13, HIGH);    // prende el LED de aviso
+  }
+
+  delay(1000);                 // espera 1 segundo (1000 milésimas) y vuelve a empezar
+}</pre>
+    </div>
+  </section>
+
+  <details class="lenguaje">
+    <summary>¿Qué quiere decir cada palabra del código de la placa?</summary>
+    <div class="len-cuerpo">
+            <div class="pals">
+          <div class="pal"><code>void setup() { … }</code><span>Lo que está entre las llaves pasa <b>una sola vez</b>, cuando se prende la placa. <b>void</b> quiere decir que esa parte hace cosas pero no devuelve ningún resultado.</span></div>
+          <div class="pal"><code>void loop() { … }</code><span>Lo que está entre las llaves se <b>repite para siempre</b>, de arriba hacia abajo, mientras la placa tenga energía.</span></div>
+          <div class="pal"><code>{ }</code><span>Las <b>llaves</b> marcan dónde empieza y dónde termina un bloque: lo que va adentro de setup, de loop o de un if.</span></div>
+          <div class="pal"><code>;</code><span>El <b>punto y coma</b> termina cada orden, como el punto al final de una oración.</span></div>
+          <div class="pal"><code>// …</code><span>Un <b>comentario</b>: la placa lo ignora. Es una nota para las personas que leen el código.</span></div>
+          <div class="pal"><code>int</code><span>Una variable que guarda un número <b>entero</b>: 0, 153, 1023.</span></div>
+          <div class="pal"><code>float</code><span>Una variable que guarda un número <b>con coma</b>: 24.78. En el código la coma se escribe con punto.</span></div>
+          <div class="pal"><code>int lectura = …</code><span>Crea una variable llamada <b>lectura</b> y le guarda un valor. El nombre lo elige quien programa.</span></div>
+          <div class="pal"><code>=  y  ==</code><span>Un igual <b>guarda</b>: <code>alerta = 1</code>. Dos iguales <b>preguntan</b>: <code>alerta == 1</code> es «¿alerta vale 1?».</span></div>
+          <div class="pal"><code>&lt;  &gt;  &lt;=  &gt;=</code><span>Menor, mayor, menor o igual, mayor o igual.</span></div>
+          <div class="pal"><code>&amp;&amp;</code><span>Quiere decir <b>y</b>: las dos condiciones se tienen que cumplir.</span></div>
+          <div class="pal"><code>if (…) { … } else { … }</code><span><b>Si</b> se cumple la condición, hace lo primero. <b>Si no</b>, hace lo del else.</span></div>
+          <div class="pal"><code>pinMode(13, OUTPUT)</code><span>Le dice a la placa que por el pin 13 va a <b>mandar</b> corriente, porque ahí hay un LED.</span></div>
+          <div class="pal"><code>digitalWrite(13, HIGH)</code><span><b>Prende</b> el pin 13. Con LOW lo apaga. También se puede usar 1 y 0.</span></div>
+          <div class="pal"><code>analogRead(A0)</code><span><b>Lee</b> el sensor que está en el pin A0 y devuelve un número de 0 a 1023.</span></div>
+          <div class="pal"><code>Serial.begin(9600)</code><span>Abre la conversación con la compu, para poder escribir en el monitor serie.</span></div>
+          <div class="pal"><code>Serial.print  /  println</code><span>Escriben en el monitor. <b>print</b> sigue en el mismo renglón. <b>println</b> escribe y baja.</span></div>
+          <div class="pal"><code>delay(1000)</code><span><b>Espera</b>. Cuenta en milésimas de segundo: 1000 es un segundo.</span></div>
+          <div class="pal"><code>millis()</code><span>Cuántas milésimas pasaron desde que arrancó la placa. Es un cronómetro.</span></div>
+      </div>
+      </div>
+    </div>
+  </details>
+
+  <section class="retos" aria-label="Retos">
+    <h2>Retos</h2>
+    <div class="reto tapado " id="r1">
+      <div class="nivel">1</div>
+      <div class="cuerpo">
+        <h3>¡Descubrí el bug! El código tiene dos errores.</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <button class="pista-b" type="button" hidden>Pista</button>
+        <div class="pista" hidden><span class="est">Bajá el deslizador bajo cero: ¿se prende el LED? ¿Con qué número compara el <b>if</b>: con los grados o con otra cosa?<br>Después subilo de nuevo: ¿se apaga? ¿Qué le falta al <b>if</b> para apagar?</span><span class="coh">¿En qué pin está enchufado el SIG del sensor? ¿Y de qué pin lee el código?<br>Cuando se prende el LED, ¿se apaga alguna vez? ¿Qué le falta al <b>if</b> para apagar?</span></div>
+      </div>
+    </div>
+
+    <div class="reto tapado est" id="r3">
+      <div class="nivel">2</div>
+      <div class="cuerpo">
+        <h3>¿Alcanza con que haga frío para avisar? Miren esta noche en la huerta y decidan.</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <div class="formula" hidden>
+          <p>Una noche en la huerta, medida cada hora. Charlen en equipo antes de destapar:</p>
+          <div class="tabla-w"><table class="tabla">
+            <tr><th>Hora</th><td>22 h</td><td>23 h</td><td>0 h</td><td>1 h</td><td>2 h</td><td>3 h</td></tr>
+            <tr><th>Grados</th><td>6.0</td><td>4.5</td><td>2.8</td><td>2.5</td><td>2.9</td><td>3.5</td></tr>
+          </table></div>
+          <ol class="pasitos"><li>Con la regla <b>«si hace menos de 3»</b>, ¿a qué horas avisa?</li><li>Con la regla <b>«si hace menos de 3 y viene bajando»</b>, ¿a qué horas avisa?</li><li>¿Dónde no coinciden? ¿Cuál de las dos reglas tiene razón a esa hora?</li></ol>
+          <div class="llenar" data-id="est">
+            <p><b>Completá lo que falta en el código.</b> Después tocá Revisar.</p>
+            <pre class="llenar-cod">float <input class="hueco-c" data-ok="anterior" size="8" aria-label="Completá" autocomplete="off" spellcheck="false"> = 100;     // la variable que se acuerda de la medición anterior
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(13, OUTPUT);
+}
+
+void loop() {
+  int lectura = analogRead(A0);
+  float grados = (lectura * 5.0 / 1023 - 0.5) * 100;
+  Serial.println(grados);
+
+  if (grados &lt; 3 <input class="hueco-c" data-ok="&amp;&amp;" size="3" aria-label="Completá" autocomplete="off" spellcheck="false"> grados &lt; <input class="hueco-c" data-ok="anterior" size="8" aria-label="Completá" autocomplete="off" spellcheck="false">) {   // frío Y bajando
+    digitalWrite(13, <input class="hueco-c" data-ok="HIGH" size="4" aria-label="Completá" autocomplete="off" spellcheck="false">);                    // prende la alerta
+  } else {
+    digitalWrite(13, <input class="hueco-c" data-ok="LOW" size="3" aria-label="Completá" autocomplete="off" spellcheck="false">);                     // apaga la alerta
+  }
+
+  <input class="hueco-c" data-ok="anterior" size="8" aria-label="Completá" autocomplete="off" spellcheck="false"> = grados;       // me acuerdo de esta para la próxima vuelta
+  delay(1000);
+}</pre>
+            <div class="acciones"><button type="button" class="destapar ll-revisar">Revisar</button><button type="button" class="pista-b ll-copiar" hidden>Copiar el código completo</button><span class="nota ll-msg" aria-live="polite"></span></div>
+          </div>
+          <button class="pista-b" type="button">Respuesta y pistas</button>
+          <div class="pista pasos-pista" hidden>
+            <p><b>La respuesta.</b> «Menos de 3»: avisa a las 0, 1 y 2 h. «Menos de 3 y bajando»: avisa a las 0 y 1 h. A las 2 h hace frío, pero está subiendo: lo peor ya pasó.</p>
+            <p><b>Cómo se programa, en tres pasos.</b> Partí del código del reto 1, ya arreglado.</p>
+            <ol class="pasitos">
+              <li>El aparato tiene que <b>acordarse</b> de la medición anterior. Para eso, una variable <b>arriba de todo</b>, afuera de setup y de loop:
+                <pre class="mini">float anterior = 100;</pre>
+                <span class="ojo">Empieza en 100 para que la primera vez no avise.</span></li>
+              <li>En el <b>if</b>, sumá la segunda condición. <code>&amp;&amp;</code> quiere decir «y»:
+                <pre class="mini">if (grados &lt; 3 &amp;&amp; grados &lt; anterior) {</pre></li>
+              <li><b>Al final del loop</b>, justo antes del delay, guardá la medición de ahora:
+                <pre class="mini">anterior = grados;</pre>
+                <span class="ojo">Así, en la próxima vuelta, se compara con esta.</span></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reto tapado coh" id="r3r">
+      <div class="nivel">2</div>
+      <div class="cuerpo">
+        <h3>Cuando la tierra está justo en el límite, el aviso se prende y se apaga sin parar. ¿Cómo lo evitamos?</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <div class="formula" hidden>
+          <p>Cinco mediciones seguidas, con el umbral en 200. Charlen en equipo antes de destapar:</p>
+          <div class="tabla-w"><table class="tabla">
+            <tr><th>Medición</th><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr>
+            <tr><th>Humedad</th><td>205</td><td>198</td><td>203</td><td>199</td><td>201</td></tr>
+          </table></div>
+          <ol class="pasitos"><li>Con la regla <b>«si es menos de 200, avisa»</b>, ¿cuántas veces se prende y se apaga el LED?</li><li>¿Cambió algo en la tierra entre una medición y otra, o es el sensor que tiembla?</li><li>¿Y si se prende con menos de 200, pero se apaga <b>recién</b> con más de 250?</li></ol>
+          <div class="llenar" data-id="rie">
+            <p><b>Completá lo que falta en el código.</b> Después tocá Revisar.</p>
+            <pre class="llenar-cod">int avisando = <input class="hueco-c" data-ok="0" size="3" aria-label="Completá" autocomplete="off" spellcheck="false">;          // 0 = tranquilo, 1 = avisando
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(13, OUTPUT);
+}
+
+void loop() {
+  int humedad = analogRead(A0);
+  Serial.println(humedad);
+
+  if (avisando == 0 &amp;&amp; humedad &lt; <input class="hueco-c" data-ok="200" size="3" aria-label="Completá" autocomplete="off" spellcheck="false">) {   // estaba tranquilo y la tierra se secó
+    avisando = <input class="hueco-c" data-ok="1" size="3" aria-label="Completá" autocomplete="off" spellcheck="false">;
+  }
+  if (avisando == 1 &amp;&amp; humedad &gt; <input class="hueco-c" data-ok="250" size="3" aria-label="Completá" autocomplete="off" spellcheck="false">) {   // estaba avisando y la tierra ya se mojó
+    avisando = <input class="hueco-c" data-ok="0" size="3" aria-label="Completá" autocomplete="off" spellcheck="false">;
+  }
+
+  digitalWrite(13, <input class="hueco-c" data-ok="avisando" size="8" aria-label="Completá" autocomplete="off" spellcheck="false">);              // el LED muestra el estado
+  delay(1000);
+}</pre>
+            <div class="acciones"><button type="button" class="destapar ll-revisar">Revisar</button><button type="button" class="pista-b ll-copiar" hidden>Copiar el código completo</button><span class="nota ll-msg" aria-live="polite"></span></div>
+          </div>
+          <button class="pista-b" type="button">Respuesta y pistas</button>
+          <div class="pista pasos-pista" hidden>
+            <p><b>La respuesta.</b> Con un solo umbral se prende en la 2, se apaga en la 3, se prende en la 4 y se apaga en la 5: titila, y la tierra no cambió. Con dos umbrales (prende con menos de 200, apaga recién con más de 250) se prende en la 2 y queda prendido. Eso se llama <b>histéresis</b>: la heladera hace lo mismo.</p>
+            <p><b>Cómo se programa, en tres pasos.</b> Partí del código del reto 1, ya arreglado.</p>
+            <ol class="pasitos">
+              <li>El aparato tiene que <b>acordarse</b> si ya estaba avisando. Una variable <b>arriba de todo</b>, afuera de setup y de loop:
+                <pre class="mini">int avisando = 0;</pre>
+                <span class="ojo">0 es tranquilo, 1 es avisando.</span></li>
+              <li>Dos <b>if</b>, uno para empezar a avisar y otro para dejar de avisar:
+                <pre class="mini">if (avisando == 0 &amp;&amp; humedad &lt; 200) { avisando = 1; }</pre>
+                <pre class="mini">if (avisando == 1 &amp;&amp; humedad &gt; 250) { avisando = 0; }</pre></li>
+              <li>El LED muestra el estado:
+                <pre class="mini">digitalWrite(13, avisando);</pre></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reto tapado" id="r4e">
+      <div class="nivel">3</div>
+      <div class="cuerpo">
+        <h3>Tu aparato siempre está en una de dos situaciones. ¿Qué tiene que pasar para que cambie de una a la otra? Dibujémoslo.</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <div class="formula" hidden>
+          <p>Arriba están las condiciones. Tocá una y después tocá el hueco de la flecha donde va. Ojo: sobran dos.</p>
+          <div class="mazo est" data-aut="est"></div>
+          <div class="mazo coh" data-aut="coh"></div>
+          <div class="automata est" data-aut="est"></div>
+          <div class="automata coh" data-aut="coh"></div>
+          <div class="acciones"><button type="button" class="destapar aut-revisar">Revisar</button><span class="nota aut-msg" aria-live="polite"></span></div>
+          <p>Un dibujo así se llama <b>diagrama de estados</b>, y la máquina que describe, <b>autómata</b>.</p>
+          <button class="pista-b" type="button">Y después</button>
+          <div class="pista" hidden>Buscá en el código del reto 4 <b>la variable que guarda en qué caja está</b>: <span class="est"><code>alerta</code></span><span class="coh"><code>avisando</code></span>. Vale 0 en una caja y 1 en la otra.<br>¿Cada flecha del diagrama es un <b>if</b> del código? Señalalos.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reto tapado meta" id="r5">
+      <div class="nivel">4</div>
+      <div class="cuerpo">
+        <div class="rot">La meta de hoy</div>
+        <h3>¿Cómo sabemos después si el aparato decidió bien? Que anote en una tabla cada medición y cada decisión.</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <div class="formula" hidden>
+          <div class="explica">
+            <div class="rot">¿Qué es esta tabla?</div>
+            <p>Cada renglón es <b>una medición y una decisión</b>: en qué segundo, cuánto midió y si avisó (1) o no (0).</p>
+            <p>Con esa tabla se puede revisar después <b>si el aparato decidió bien</b>: ¿avisó cuando tenía que avisar? ¿Avisó de más?</p>
+          </div>
+          <p><b>Paso 1.</b> Copiá este código en Tinkercad, en lugar del que tenías.</p>
+    <div class="codigo est">
+      <button class="copiar" type="button" data-cod="cod2">Copiar</button>
+<pre id="cod2">// Aviso de helada · versión con tabla (tiene dos errores)
+
+float anterior = 100;          // va AFUERA del loop: así se acuerda de la medición anterior
+                               // (empieza en 100 para que la primera vez no avise)
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(13, OUTPUT);
+}
+
+void loop() {
+  int lectura = analogRead(A0);
+  float grados = (lectura * 5.0 / 1023 - 0.5) * 100;
+
+  int alerta = 0;                              // el estado: 0 = normal, 1 = alerta
+  if (grados &lt; 3 &amp;&amp; grados &lt; anterior) {       // hace frío Y viene bajando
+    alerta = 1;
+  }
+  digitalWrite(13, alerta);                    // el LED muestra el estado: 1 prende, 0 apaga
+  anterior = grados;                           // guarda esta medición para la próxima vuelta
+
+  // la tabla: una fila por medición
+  Serial.println("segundos,grados,alerta");    // los títulos
+  Serial.print(millis() / 1000);               // los segundos desde que arrancó
+  Serial.print(",");
+  Serial.print(grados);
+  Serial.println(alerta);                      // println: escribe y baja de renglón
+  delay(1000);
+}</pre>
+    </div>
+    <div class="codigo coh">
+      <button class="copiar" type="button" data-cod="cod2c">Copiar</button>
+<pre id="cod2c">// Aviso de riego · versión con tabla (tiene dos errores)
+
+int avisando = 0;              // va AFUERA del loop: así se acuerda si ya estaba avisando
+                               // el estado: 0 = tranquilo, 1 = avisando
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(13, OUTPUT);
+}
+
+void loop() {
+  int humedad = analogRead(A0);
+
+  if (avisando == 0 &amp;&amp; humedad &lt; 200) {   // estaba tranquilo y la tierra se secó: empieza a avisar
+    avisando = 1;
+  }
+  if (avisando == 1 &amp;&amp; humedad &gt; 250) {   // estaba avisando y la tierra ya se mojó: deja de avisar
+    avisando = 0;
+  }
+  digitalWrite(13, avisando);             // el LED muestra el estado: 1 prende, 0 apaga
+
+  // la tabla: una fila por medición
+  Serial.println("segundos,humedad,avisando");   // los títulos
+  Serial.print(millis() / 1000);                 // los segundos desde que arrancó
+  Serial.print(",");
+  Serial.print(humedad);
+  Serial.println(avisando);                      // println: escribe y baja de renglón
+  delay(1000);
+}</pre>
+    </div>
+          <p><b>Paso 2.</b> Dale play y compará. Tiene dos errores: arreglalos hasta que se vea igual.</p>
+          <div class="compara est">
+            <div><div class="rot">Se ve así</div><pre class="salida mal">segundos,grados,alerta
+0,24.780
+segundos,grados,alerta
+1,24.780
+segundos,grados,alerta
+2,24.780</pre></div>
+            <div><div class="rot">Tiene que verse así</div><pre class="salida bien">segundos,grados,alerta
+0,24.78,0
+1,24.78,0
+2,2.83,1
+3,2.34,1
+4,2.83,0</pre></div>
+          </div>
+          <div class="compara coh">
+            <div><div class="rot">Se ve así</div><pre class="salida mal">segundos,humedad,avisando
+0,4390
+segundos,humedad,avisando
+1,4390
+segundos,humedad,avisando
+2,1541</pre></div>
+            <div><div class="rot">Tiene que verse así</div><pre class="salida bien">segundos,humedad,avisando
+0,439,0
+1,439,0
+2,154,1
+3,210,1
+4,280,0</pre></div>
+          </div>
+          <p><b>Paso 3.</b> Dejalo midiendo y mové el deslizador para que pase por el umbral varias veces. Después:</p>
+          <ol class="pasitos">
+            <li>Pará la simulación. En el monitor, seleccioná desde los títulos hasta el final y copialo (Ctrl+C).</li>
+            <li>Pegalo acá abajo (Ctrl+V). El gráfico se arma solo.</li>
+          </ol>
+          <textarea id="pegar" rows="4" placeholder="Pegá acá lo que copiaste del monitor"></textarea>
+          <div id="graf" class="graf" hidden></div>
+          <p id="graf-msg" class="nota" hidden></p>
+          <div id="a-planilla" class="explica" hidden>
+            <div class="rot">¿Lo querés en una planilla?</div>
+            <p><b>Google o Excel, pegando:</b></p>
+            <ol class="pasitos">
+              <li>Tocá <button type="button" id="copiar-plani" class="destapar">Copiar para la planilla</button></li>
+              <li>Abrí una planilla nueva, hacé clic en la primera celda y pegá (Ctrl+V).</li>
+              <li>Seleccioná las columnas y andá a <b>Insertar → Gráfico</b>.</li>
+            </ol>
+            <p><b>Los archivos:</b> <button type="button" id="bajar-graf" class="pista-b">Bajar el gráfico</button> <button type="button" id="bajar-csv" class="pista-b">Bajar el CSV</button> Se abre en Excel, o se sube a <a href="https://ysyry.github.io/explorando-datos-edu/" target="_blank" rel="noopener">Explorando datos</a>.</p>
+          </div>
+          <button class="pista-b" type="button">Pista</button>
+          <div class="pista" hidden>Los títulos aparecen muchas veces: ¿en qué parte del código están, setup o loop?<br>Los dos últimos números salen pegados: ¿qué falta escribir entre los dos?</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reto tapado" id="r7">
+      <div class="nivel">5</div>
+      <div class="cuerpo">
+        <h3>Ya midieron y tienen su gráfico. ¿Cómo compartimos lo que descubrimos midiendo, para que lo pueda ver cualquiera?</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <div class="formula" hidden>
+          <p>Charlen primero: ¿una captura por WhatsApp? ¿El CSV por mail? ¿Qué se pierde en cada caso? ¿Quién lo puede abrir y quién no?</p>
+          <p>Vamos a probar con una página web. Se arma con una carpeta y tres archivos, y se abre con cualquier navegador.</p>
+          <ol class="pasitos">
+            <li><b>Creá una carpeta</b> en el escritorio: clic derecho → <b>Nuevo</b> → <b>Carpeta</b>. Ponele de nombre <span class="dice">mi-estacion</span>.</li>
+            <li>En el reto 4, tocá <b>Bajar el gráfico</b> y <b>Bajar el CSV</b>. Los dos archivos quedan en <b>Descargas</b>: arrastralos a tu carpeta <span class="dice">mi-estacion</span>.</li>
+            <li>Abrí el <b>Bloc de notas</b> (buscalo en el menú Inicio) y pegá esto:</li>
+          </ol>
+          <div class="codigo est"><button class="copiar" type="button" data-cod="web-est">Copiar</button><pre id="web-est">&lt;!doctype html&gt;                         &lt;!-- avisa que esto es una página web --&gt;
+&lt;meta charset="utf-8"&gt;                  &lt;!-- para que se vean bien las tildes y la ñ --&gt;
+&lt;title&gt;La estación de la huerta&lt;/title&gt;                   &lt;!-- el nombre que aparece en la pestaña --&gt;
+
+&lt;h1&gt;La estación de la huerta&lt;/h1&gt;                         &lt;!-- h1: el título grande de la página --&gt;
+&lt;p&gt;Somos ... de 4to. Nuestro aparato mide la temperatura
+y avisa si viene una helada.&lt;/p&gt;                              &lt;!-- p: un párrafo de texto --&gt;
+
+&lt;img src="grafico.png" width="600"&gt;     &lt;!-- img: muestra la imagen que está en la misma carpeta --&gt;
+
+&lt;p&gt;Lo que encontramos: ...&lt;/p&gt;
+&lt;p&gt;&lt;a href="datos.csv"&gt;Bajá nuestros datos&lt;/a&gt;&lt;/p&gt;   &lt;!-- a: un enlace a otro archivo --&gt;</pre></div>
+          <div class="codigo coh"><button class="copiar" type="button" data-cod="web-rie">Copiar</button><pre id="web-rie">&lt;!doctype html&gt;                         &lt;!-- avisa que esto es una página web --&gt;
+&lt;meta charset="utf-8"&gt;                  &lt;!-- para que se vean bien las tildes y la ñ --&gt;
+&lt;title&gt;El riego de la huerta&lt;/title&gt;                   &lt;!-- el nombre que aparece en la pestaña --&gt;
+
+&lt;h1&gt;El riego de la huerta&lt;/h1&gt;                         &lt;!-- h1: el título grande de la página --&gt;
+&lt;p&gt;Somos ... de 4to. Nuestro aparato mide la humedad de la tierra
+y avisa cuando tiene sed.&lt;/p&gt;                              &lt;!-- p: un párrafo de texto --&gt;
+
+&lt;img src="grafico.png" width="600"&gt;     &lt;!-- img: muestra la imagen que está en la misma carpeta --&gt;
+
+&lt;p&gt;Lo que encontramos: ...&lt;/p&gt;
+&lt;p&gt;&lt;a href="datos.csv"&gt;Bajá nuestros datos&lt;/a&gt;&lt;/p&gt;   &lt;!-- a: un enlace a otro archivo --&gt;</pre></div>
+          <details class="lenguaje en-reto">
+            <summary>¿Qué quiere decir cada etiqueta del HTML?</summary>
+            <div class="len-cuerpo">
+              <div class="pals">
+          <div class="pal"><code>&lt;h1&gt; … &lt;/h1&gt;</code><span>Un <b>título</b>. Casi todo en HTML va así: una etiqueta que abre y otra que cierra, con / adelante.</span></div>
+          <div class="pal"><code>&lt;p&gt; … &lt;/p&gt;</code><span>Un <b>párrafo</b> de texto.</span></div>
+          <div class="pal"><code>&lt;img src="…"&gt;</code><span>Muestra una <b>imagen</b>. En src va el nombre del archivo. Esta etiqueta no se cierra.</span></div>
+          <div class="pal"><code>&lt;a href="…"&gt; … &lt;/a&gt;</code><span>Un <b>enlace</b>: al tocarlo, el navegador abre el archivo o la página que dice href.</span></div>
+          <div class="pal"><code>&lt;title&gt;</code><span>El nombre que aparece en la <b>pestaña</b> del navegador.</span></div>
+          <div class="pal"><code>&lt;!-- … --&gt;</code><span>Un comentario en HTML: no se ve en la página.</span></div>
+            </div>
+          </details>
+          <ol class="pasitos" start="4">
+            <li><b>Guardalo</b> con <b>Archivo → Guardar como</b>. En la ventana que se abre:
+              <ul class="sub">
+                <li>Elegí tu carpeta <span class="dice">mi-estacion</span>.</li>
+                <li>En <b>Tipo</b>, elegí <b>Todos los archivos</b>.</li>
+                <li>En <b>Nombre de archivo</b>, escribí <span class="dice">index.html</span>.</li>
+                <li>Apretá <b>Guardar</b>.</li>
+              </ul>
+              <span class="ojo">Si te olvidás del Tipo, Windows lo guarda como <span class="dice">index.html.txt</span> y se abre como texto, no como página.</span>
+            </li>
+            <li>Hacé doble clic en <b>index.html</b>. Se abre en el navegador.</li>
+            <li>Completá los <b>...</b> con quiénes son y qué encontraron. Guardá en el Bloc de notas y recargá el navegador para ver el cambio.</li>
+          </ol>
+          <div class="explica">
+            <div class="rot">Para pensar en equipo</div>
+            <ol class="pasitos">
+              <li>Mirá la barra de direcciones del navegador. ¿Qué dice? Si le pasás esa dirección a alguien, ¿la puede abrir desde su casa?</li>
+              <li>En el código aparece <span class="dice">grafico.png</span>. Cambiale el nombre a la imagen en la carpeta y recargá. ¿Qué pasó? ¿Por qué?</li>
+              <li>¿Qué tendría que pasar para que cualquiera la abra desde su celular?</li>
+            </ol>
+            <figure class="esq-web">
+            <svg viewBox="0 0 680 330" role="img" aria-label="Dos casos. En tu compu: la carpeta y el navegador están en la misma compu, la dirección empieza con file, y el celular de afuera no llega. En internet: la carpeta se copia a un servidor, que es una compu siempre prendida en otro lugar; el celular le pide la página por internet con una dirección https y el servidor le manda los archivos.">
+              <text x="160" y="24" text-anchor="middle" font-family="Manrope,sans-serif" font-weight="800" font-size="16" fill="var(--tinta)">En tu compu</text>
+              <rect x="40" y="50" width="240" height="150" rx="12" fill="var(--hoja)" stroke="var(--tenue)" stroke-width="2"/>
+              <rect x="130" y="200" width="60" height="14" fill="var(--tenue)"/>
+              <path d="M62 80 h34 l8 8 h40 v44 h-82 z" fill="var(--epa,#A8760F)" opacity=".85"/>
+              <text x="103" y="150" text-anchor="middle" font-family="DM Mono,monospace" font-size="11" fill="var(--tinta)">mi-estacion/</text>
+              <text x="103" y="166" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="var(--tenue)">index.html</text>
+              <text x="103" y="180" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="var(--tenue)">grafico.png</text>
+              <path d="M150 110 h30" stroke="var(--violeta)" stroke-width="3"/><path d="M180 110 l-8 -6 v12 z" fill="var(--violeta)"/>
+              <rect x="186" y="78" width="80" height="64" rx="6" fill="var(--papel)" stroke="var(--violeta)" stroke-width="2"/>
+              <text x="226" y="100" text-anchor="middle" font-family="Manrope,sans-serif" font-weight="700" font-size="11" fill="var(--tinta)">navegador</text>
+              <text x="226" y="122" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="var(--violeta)">file://…</text>
+              <rect x="120" y="250" width="44" height="72" rx="8" fill="var(--hoja)" stroke="var(--tenue)" stroke-width="2"/>
+              <path d="M170 280 C210 280 240 250 240 214" fill="none" stroke="var(--rojo)" stroke-width="2.5" stroke-dasharray="5 5"/>
+              <text x="250" y="262" font-family="Manrope,sans-serif" font-weight="800" font-size="22" fill="var(--rojo)">✕</text>
+              <text x="178" y="306" font-family="Manrope,sans-serif" font-size="12" fill="var(--tenue)">alguien, desde su casa:</text>
+              <text x="178" y="321" font-family="Manrope,sans-serif" font-size="12" font-weight="700" fill="var(--rojo)">no llega</text>
+
+              <line x1="330" y1="40" x2="330" y2="320" stroke="var(--raya)" stroke-width="2"/>
+
+              <text x="510" y="24" text-anchor="middle" font-family="Manrope,sans-serif" font-weight="800" font-size="16" fill="var(--tinta)">En internet</text>
+              <rect x="368" y="62" width="104" height="128" rx="8" fill="var(--hoja)" stroke="var(--tenue)" stroke-width="2"/>
+              <rect x="380" y="76" width="80" height="18" rx="3" fill="var(--raya)"/><rect x="380" y="102" width="80" height="18" rx="3" fill="var(--raya)"/><rect x="380" y="128" width="80" height="18" rx="3" fill="var(--raya)"/>
+              <circle cx="450" cy="85" r="3" fill="var(--verde)"/><circle cx="450" cy="111" r="3" fill="var(--verde)"/><circle cx="450" cy="137" r="3" fill="var(--verde)"/>
+              <text x="420" y="168" text-anchor="middle" font-family="Manrope,sans-serif" font-weight="800" font-size="13" fill="var(--tinta)">servidor</text>
+              <text x="420" y="210" text-anchor="middle" font-family="Manrope,sans-serif" font-size="11" fill="var(--tenue)">una compu siempre</text>
+              <text x="420" y="224" text-anchor="middle" font-family="Manrope,sans-serif" font-size="11" fill="var(--tenue)">prendida, en otro lugar,</text>
+              <text x="420" y="238" text-anchor="middle" font-family="Manrope,sans-serif" font-size="11" fill="var(--tenue)">con tu carpeta adentro</text>
+              <ellipse cx="560" cy="126" rx="44" ry="26" fill="var(--papel)" stroke="var(--tenue)" stroke-width="2"/>
+              <text x="560" y="131" text-anchor="middle" font-family="Manrope,sans-serif" font-weight="700" font-size="12" fill="var(--tinta)">internet</text>
+              <rect x="618" y="92" width="44" height="72" rx="8" fill="var(--hoja)" stroke="var(--violeta)" stroke-width="2"/>
+              <path d="M612 108 C590 90 520 84 480 96" fill="none" stroke="var(--violeta)" stroke-width="2.5"/><path d="M480 96 l10 -6 l1 10 z" fill="var(--violeta)"/>
+              <text x="548" y="76" text-anchor="middle" font-family="Manrope,sans-serif" font-weight="700" font-size="11" fill="var(--violeta)">1 · pide https://…</text>
+              <path d="M480 156 C520 170 590 166 612 148" fill="none" stroke="var(--verde)" stroke-width="2.5"/><path d="M612 148 l-11 1 l5 9 z" fill="var(--verde)"/>
+              <text x="548" y="186" text-anchor="middle" font-family="Manrope,sans-serif" font-weight="700" font-size="11" fill="var(--verde)">2 · le manda los archivos</text>
+              <text x="640" y="182" text-anchor="middle" font-family="Manrope,sans-serif" font-size="11" fill="var(--tenue)">cualquiera</text>
+              <text x="510" y="290" text-anchor="middle" font-family="Manrope,sans-serif" font-size="12" fill="var(--tinta)">Es la misma carpeta. Lo que cambia es <tspan font-weight="800">dónde vive</tspan>.</text>
+            </svg>
+          </figure>
+          </div>
+          <button class="pista-b" type="button">Pista</button>
+          <div class="pista" hidden>¿No se ve la imagen? Fijate que el archivo se llame exactamente <b>grafico.png</b>, sin tilde, y que esté en la misma carpeta que index.html.<br><br>¿Se ve el código en vez de la página? Se guardó como .txt. Para verlo: en la carpeta, menú <b>Vista → Mostrar → Extensiones de nombre de archivo</b> (en Windows 10: <b>Vista</b> → tildá <b>Extensiones de nombre de archivo</b>). Si dice <b>index.html.txt</b>, cambiale el nombre a <b>index.html</b>.<br><br>¿Se ven raras las tildes? Al guardar, en <b>Codificación</b> elegí <b>UTF-8</b>.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="falla" aria-label="Si no anda">
+    <div><b>¿El LED no prende nunca?</b>La pata larga va al pin 13 con la resistencia. La corta, a GND.</div>
+    <div><b>¿Marca cualquier cosa?</b>Revisá los cables del sensor contra el dibujo.</div>
+    <div><b>¿No aparece nada?</b>Abrí el Monitor en serie, abajo del código.</div>
+  </section>
+</main>
+
+<script>
+function esCoh(){return document.body.classList.contains('modo-coh')}
+function ponerModo(m){
+  document.body.classList.toggle('modo-coh',m==='coh');
+  document.querySelectorAll('.modo button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.modo===m));
+  document.title=m==='coh'?'¿La huerta tiene sed?':'¿Esta noche hiela?';
+}
+ponerModo(location.hash==='#riego'?'coh':'est');
+document.querySelectorAll('.modo button').forEach(b=>b.addEventListener('click',()=>{
+  ponerModo(b.dataset.modo); history.replaceState(null,'',b.dataset.modo==='coh'?'#riego':location.pathname);
+  if(typeof registrar==='function') registrar('entro','Entró al desafío');
+}));
+
+document.querySelectorAll('.copiar').forEach(b=>b.addEventListener('click',()=>{
+  const el=document.getElementById(b.dataset.cod||'cod'), t=el.textContent;
+  const ok=()=>{b.textContent='Copiado';setTimeout(()=>b.textContent='Copiar',1500)};
+  const sel=()=>{const r=document.createRange();r.selectNodeContents(el);const g=getSelection();g.removeAllRanges();g.addRange(r);b.textContent='Ctrl+C'};
+  try{navigator.clipboard.writeText(t).then(ok,sel)}catch(_){sel()}
+}));
+document.querySelectorAll('.reto').forEach(r=>{
+  /* Se excluyen por clase, no por posición: adentro de .formula hay otros botones
+     (Revisar, Copiar el código) con su propio manejador, y el de «Respuesta y pistas»
+     a veces está anidado ahí mismo, así que acotar a hijos directos lo dejaba afuera. */
+  const d=r.querySelector('.destapar:not(.ll-revisar):not(.aut-revisar)'),
+        pb=r.querySelector('.pista-b:not(.ll-copiar)'),
+        p=r.querySelector('.pista'), ls=r.querySelector('.lineas, .formula');
+  if(!d) return;
+  d.addEventListener('click',()=>{r.classList.remove('tapado');d.hidden=true;if(pb&&!ls)pb.hidden=false;if(ls)ls.hidden=false});
+  if(pb)pb.addEventListener('click',()=>{p.hidden=!p.hidden;pb.textContent=p.hidden?'Pista':'Ocultar pista'});
+});
+document.querySelectorAll('.linea button').forEach(b=>{b.dataset.l=b.textContent;});
+document.querySelectorAll('.linea button').forEach(b=>b.addEventListener('click',()=>{
+  const s=b.nextElementSibling; s.hidden=!s.hidden; b.textContent=s.hidden?(b.dataset.l||(b.dataset.l=b.textContent)):'Ocultar';
+}));
+
+(function(){
+  const ta=document.getElementById('pegar'), box=document.getElementById('graf'), msg=document.getElementById('graf-msg');
+  function dibujar(){
+    const pts=[];
+    for(const tok of ta.value.split(/\s+/)){
+      const m=tok.match(/^(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)(?:,-?\d+(?:\.\d+)?)*$/);
+      if(m) pts.push([+m[1],+m[2]]);
+    }
+    if(pts.length<2){box.hidden=true;msg.hidden=!ta.value.trim();msg.textContent='No encuentro renglones como 0,24.78. ¿Copiaste lo del monitor con la coma arreglada?';return}
+    msg.hidden=false;msg.textContent=pts.length+' mediciones. La más baja: '+Math.min(...pts.map(p=>p[1])).toFixed(1)+' · la más alta: '+Math.max(...pts.map(p=>p[1])).toFixed(1);
+    const W=640,H=260,L=48,R=16,T=16,B=36;
+    const xs=pts.map(p=>p[0]), ys=pts.map(p=>p[1]);
+    let x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.floor(Math.min(...ys,0)/10)*10,y1=Math.ceil(Math.max(...ys)/10)*10;
+    if(x1===x0)x1=x0+1; if(y1===y0)y1=y0+10;
+    const X=v=>L+(v-x0)/(x1-x0)*(W-L-R), Y=v=>T+(y1-v)/(y1-y0)*(H-T-B);
+    let g='';
+    const paso=(y1-y0)>60?20:10;
+    for(let v=y0;v<=y1;v+=paso){g+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--raya)"/><text x="${L-8}" y="${Y(v)+4}" text-anchor="end">${v}</text>`}
+    if(y0<0&&y1>0)g+=`<line x1="${L}" x2="${W-R}" y1="${Y(0)}" y2="${Y(0)}" stroke="var(--inf)" stroke-dasharray="4 4"/>`;
+    const U='s';
+    g+=`<text x="${L}" y="${H-10}">${x0} ${U}</text><text x="${W-R}" y="${H-10}" text-anchor="end">${x1} ${U}</text>`;
+    const d=pts.map((p,i)=>(i?'L':'M')+X(p[0]).toFixed(1)+' '+Y(p[1]).toFixed(1)).join(' ');
+    g+=`<path d="${d}" fill="none" stroke="var(--violeta)" stroke-width="3" stroke-linejoin="round"/>`;
+    for(const p of pts)g+=`<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="3.5" fill="var(--violeta)"/>`;
+    box.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Gráfico de la temperatura a lo largo del tiempo">${g}</svg>`;
+    box.hidden=false;
+  }
+  ta.addEventListener('input',dibujar);
+})();
+
+(function(){
+  const ins=[...document.querySelectorAll('.lec')], box=document.getElementById('recta'), txt=document.getElementById('recta-txt');
+  function dibujar(){
+    const pts=ins.filter(i=>i.value!=='').map(i=>[+i.dataset.t,+i.value]);
+    if(pts.length<2){box.hidden=txt.hidden=true;return}
+    const n=pts.length, sx=pts.reduce((a,p)=>a+p[0],0), sy=pts.reduce((a,p)=>a+p[1],0);
+    const sxx=pts.reduce((a,p)=>a+p[0]*p[0],0), sxy=pts.reduce((a,p)=>a+p[0]*p[1],0);
+    const m=(n*sxy-sx*sy)/(n*sxx-sx*sx), b=(sy-m*sx)/n;
+    const W=640,H=280,L=52,R=16,T=16,B=40, x0=0,x1=75, y1=Math.max(300,Math.ceil(Math.max(...pts.map(p=>p[1]))/50)*50), y0=0;
+    const X=v=>L+(v-x0)/(x1-x0)*(W-L-R), Y=v=>T+(y1-v)/(y1-y0)*(H-T-B);
+    let g='';
+    for(let v=0;v<=y1;v+=50)g+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--raya)"/><text x="${L-8}" y="${Y(v)+4}" text-anchor="end">${v}</text>`;
+    for(const t of [0,25,50,75])g+=`<text x="${X(t)}" y="${H-14}" text-anchor="middle">${t}°</text>`;
+    g+=`<line x1="${X(0)}" y1="${Y(b)}" x2="${X(75)}" y2="${Y(b+m*75)}" stroke="var(--inf)" stroke-width="2.5" stroke-dasharray="6 5"/>`;
+    for(const p of pts)g+=`<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="6" fill="var(--violeta)"/>`;
+    g+=`<text x="${W-R}" y="${T+12}" text-anchor="end">lectura</text>`;
+    box.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Los puntos de la tabla y la recta que pasa por ellos">${g}</svg>`;
+    const mm=m.toFixed(1).replace('.',','), bb=Math.round(b);
+    txt.innerHTML=`<div class="rot">Matemática · función afín</div>
+      <p>Los puntos quedan sobre una <b>recta</b>.</p>
+      <p><b>Pendiente:</b> por cada grado, la lectura sube <b>${mm}</b>.<br><b>Ordenada al origen:</b> a 0 grados, la lectura ya es <b>${bb}</b>. No arranca en cero.</p>
+      <div class="ecuacion">lectura = ${bb} + ${mm} × temperatura</div>
+      <p>Con esta fórmula se puede ir para atrás: de la lectura a los grados. Eso es lo que hace la línea de <span class="dice">grados</span> en el código.</p>`;
+    box.hidden=txt.hidden=false;
+  }
+  ins.forEach(i=>i.addEventListener('input',dibujar));
+})();
+
+/* ---- registro: misma sesión y misma planilla que la app ---- */
+const URL_BUZON='https://script.google.com/macros/s/AKfycbzLxvvU5Nw5Zx1yKyeb9z7WB1b2AQD8x7FcPpFznLSr3K8kImnVx4dNrX1Z0WntVigUjg/exec';
+const K_SES='pps.sesion.v1', K_DAT='pps.datos.v1', K_HECHO='pps.desafio4to.hecho.v1';
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}};
+const hoyISO=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+let SES=LS.get(K_SES,null);
+if(SES && SES.fecha!==hoyISO()) SES={...SES,fecha:hoyISO()};
+const T0=Date.now();
+function enviar(t){
+  return fetch(URL_BUZON,{method:'POST',mode:'no-cors',cache:'no-store',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(t)})
+    .then(()=>{const a=LS.get(K_DAT,[]);const x=a.find(y=>y.id===t.id);if(x){x.enviada=true;LS.set(K_DAT,a)}}).catch(()=>{});
+}
+function registrar(clave,concepto,detalle,pistas){
+  if(!SES) return;
+  const hechos=LS.get(K_HECHO,{}), k=SES.nombre+'|'+SES.fecha+'|'+(esCoh()?'coh:':'')+clave;
+  if(hechos[k]) return; hechos[k]=1; LS.set(K_HECHO,hechos);
+  const seg=Math.max(1,Math.round((Date.now()-T0)/1000));
+  const t={id:'t'+Date.now().toString(36)+Math.random().toString(36).slice(2,7),
+    alumno:SES.nombre, anio:SES.anio||'4to', fecha:SES.fecha, ts:new Date().toISOString(),
+    sala:esCoh()?'desafio4to-riego':'desafio4to-estacion', salaNom:esCoh()?'Desafío 4to · ¿La huerta tiene sed?':'Desafío 4to · ¿Esta noche hiela?', modo:'practica',
+    total:1, resueltos:1, sinAyuda:pistas?0:1, pistas:pistas||0, salteadas:0, seg,
+    ejs:[{c:concepto,t:'desafio',q:detalle||'',i:1,ok:true,ok1:!pistas,p:pistas||0,s:false,sg:seg}]};
+  const a=LS.get(K_DAT,[]); a.push(t); LS.set(K_DAT,a);
+  enviar(t);
+}
+function pintarQuien(){
+  const q=document.getElementById('quien');
+  if(SES){ q.innerHTML=`Estás como <b>${SES.nombre.replace(/</g,'&lt;')}</b> · lo que hagas queda registrado.`; registrar('entro','Entró al desafío'); return; }
+  q.innerHTML=`<label for="qnom">Para que quede registrado, escribí tu nombre y apellido:</label><input id="qnom" autocomplete="name"><button type="button" id="qok">Listo</button>`;
+  document.getElementById('qok').addEventListener('click',()=>{
+    const n=document.getElementById('qnom').value.trim().replace(/\s+/g,' ');
+    if(n.length<3) return;
+    SES={nombre:n,anio:'4to',fecha:hoyISO()}; LS.set(K_SES,SES); pintarQuien();
+  });
+}
+pintarQuien();
+document.querySelectorAll('.reto').forEach(r=>{
+  const n=r.querySelector('.nivel').textContent.trim(), nom=n==='+'?'el extra':'el reto '+n;
+  r.querySelector('.destapar').addEventListener('click',()=>registrar('dest'+n,'Llegó a '+nom));
+  r.querySelectorAll('.pista-b').forEach(b=>b.addEventListener('click',()=>registrar('pista'+n,'Pidió la pista de '+nom,'',1)));
+});
+document.querySelectorAll('.lec').forEach(i=>i.addEventListener('change',()=>{
+  const v=[...document.querySelectorAll('.lec')].map(x=>x.value);
+  if(v.every(x=>x!=='')) registrar('tabla3','Reto 3 · completó la tabla de la fórmula','0°: '+v[0]+' · 25°: '+v[1]+' · 50°: '+v[2]+' · 75°: '+v[3]);
+}));
+document.getElementById('pegar').addEventListener('input',()=>{
+  const n=(document.getElementById('pegar').value.match(/-?\d+(?:\.\d+)?,-?\d+(?:\.\d+)?/g)||[]).length;
+  if(n>=5) setTimeout(()=>{const m=document.getElementById('graf-msg');registrar('graf5','Reto 5 · armó el gráfico',m?m.textContent:n+' mediciones')},50);
+});
+
+(function(){
+  const ta=document.getElementById('pegar'), box=document.getElementById('a-planilla'), b=document.getElementById('copiar-plani');
+  const filas=()=>{
+    const toks=ta.value.split(/\s+/).filter(Boolean), out=[];
+    for(const t of toks){if(/^[^,]+(,[^,]+)+$/.test(t)) out.push(t.split(','));}
+    return out;
+  };
+  ta.addEventListener('input',()=>{box.hidden=filas().filter(f=>/^-?\d/.test(f[0])).length<2});
+  b.addEventListener('click',()=>{
+    const coma=(navigator.language||'').toLowerCase().startsWith('es');
+    const txt=filas().map(f=>f.map(v=>coma&&/^-?\d+\.\d+$/.test(v)?v.replace('.',','):v).join('\t')).join('\n');
+    const ok=()=>{b.textContent='¡Copiado! Ahora pegalo en la planilla';setTimeout(()=>b.textContent='Copiar para la planilla',2500)};
+    const falla=()=>{ta.value=txt;ta.select();b.textContent='Ahora apretá Ctrl+C'};
+    try{navigator.clipboard.writeText(txt).then(ok,falla)}catch(_){falla()}
+    if(typeof registrar==='function') registrar('plani','Reto 5 · pasó la tabla a una planilla');
+  });
+})();
+
+document.getElementById('bajar-csv').addEventListener('click',()=>{
+  const es=(navigator.language||'').toLowerCase().startsWith('es'), sep=es?';':',';
+  const toks=document.getElementById('pegar').value.split(/\s+/).filter(t=>/^[^,]+(,[^,]+)+$/.test(t));
+  const csv=toks.map(t=>t.split(',').map(v=>es&&/^-?\d+\.\d+$/.test(v)?v.replace('.',','):v).join(sep)).join('\r\n')+'\r\n';
+  const url=URL.createObjectURL(new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'}));
+  const a=document.createElement('a'); a.href=url; a.download='datos.csv';
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),1000);
+  if(typeof registrar==='function') registrar('csv','Reto 5 · bajó el CSV');
+});
+
+(function(){
+  const DEF={
+    est:{a:'Normal',b:'Alerta',ida:'hace menos de 3 y viene bajando',vuelta:'pasa de 3, o deja de bajar',
+         sobran:['hace menos de 3','pasaron 10 minutos']},
+    coh:{a:'Tranquilo',b:'Avisando',ida:'la humedad baja de 200',vuelta:'la humedad pasa de 250',
+         sobran:['la humedad pasa de 200','la humedad baja de 250']}};
+  for(const k of ['est','coh']){
+    const d=DEF[k], mazo=document.querySelector(`.mazo[data-aut="${k}"]`), aut=document.querySelector(`.automata[data-aut="${k}"]`);
+    let sel=null;
+    const cartas=[d.ida,d.vuelta,...d.sobran].sort(()=>Math.random()-.5);
+    cartas.forEach(t=>{const b=document.createElement('button');b.type='button';b.className='carta';b.textContent=t;b.setAttribute('aria-pressed','false');
+      b.addEventListener('click',()=>{sel=sel===t?null:t;mazo.querySelectorAll('.carta').forEach(x=>x.setAttribute('aria-pressed',x.textContent===sel?'true':'false'))});mazo.appendChild(b)});
+    aut.innerHTML=`<div class="est-caja">${d.a}</div>
+      <div class="flechas">
+        <div class="fl-cond"><span>Para pasar a <b>${d.b}</b>, si…</span><button type="button" class="hueco" data-ok="${d.ida}">tocá acá</button></div>
+        <svg class="fl-svg" viewBox="0 0 400 70" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M4 30 C120 4 280 4 384 30" fill="none" stroke="var(--violeta)" stroke-width="3" vector-effect="non-scaling-stroke"/>
+          <path d="M384 30 l-14 -9 l2 15 z" fill="var(--violeta)"/>
+          <path d="M396 44 C280 70 120 70 16 44" fill="none" stroke="var(--inf)" stroke-width="3" vector-effect="non-scaling-stroke"/>
+          <path d="M16 44 l14 -3 l-6 14 z" fill="var(--inf)"/>
+        </svg>
+        <div class="fl-cond vuelta"><span>Para volver a <b>${d.a}</b>, si…</span><button type="button" class="hueco" data-ok="${d.vuelta}">tocá acá</button></div>
+      </div>
+      <div class="est-caja b">${d.b}</div>`;
+    aut.querySelectorAll('.hueco').forEach(h=>h.addEventListener('click',()=>{h.classList.remove('bien','mal');
+      if(sel){h.dataset.v=sel;h.textContent=sel;h.classList.add('lleno');sel=null;mazo.querySelectorAll('.carta').forEach(x=>x.setAttribute('aria-pressed','false'))}
+      else if(h.dataset.v){delete h.dataset.v;h.textContent='tocá acá';h.classList.remove('lleno')}}));
+  }
+  document.querySelectorAll('.aut-revisar').forEach(b=>b.addEventListener('click',()=>{
+    const k=esCoh()?'coh':'est', aut=document.querySelector(`.automata[data-aut="${k}"]`), msg=b.parentElement.querySelector('.aut-msg');
+    const hs=[...aut.querySelectorAll('.hueco')]; let ok=0;
+    hs.forEach(h=>{h.classList.remove('bien','mal'); if(!h.dataset.v) return; const v=h.dataset.v===h.dataset.ok; h.classList.add(v?'bien':'mal'); if(v) ok++;});
+    msg.textContent= ok===2 ? '¡Las dos bien! Ese es el autómata de tu aparato.' : `${ok} de 2 bien.` + (k==='coh'?' Pista: si prende y apaga en el mismo número, vuelve a titilar.':' Pista: ¿alcanza con que haga frío?');
+    if(ok===2 && typeof registrar==='function') registrar('automata','Reto 3 · armó el diagrama de estados');
+  }));
+})();
+
+document.getElementById('bajar-graf').addEventListener('click',()=>{
+  const svg=document.querySelector('#graf svg'); if(!svg) return;
+  const cs=getComputedStyle(document.documentElement), clon=svg.cloneNode(true);
+  const res=v=>v&&v.includes('var(')?v.replace(/var\((--[\w-]+)\)/g,(m,k)=>cs.getPropertyValue(k).trim()||'#000'):v;
+  clon.querySelectorAll('*').forEach(e=>{for(const at of ['fill','stroke']) if(e.getAttribute(at)) e.setAttribute(at,res(e.getAttribute(at)));
+    if(e.tagName==='text'){e.setAttribute('font-family','DM Mono, monospace');e.setAttribute('font-size','12');if(!e.getAttribute('fill'))e.setAttribute('fill',cs.getPropertyValue('--tenue').trim())}});
+  clon.setAttribute('xmlns','http://www.w3.org/2000/svg');
+  const vb=svg.viewBox.baseVal, W=vb.width*2, H=vb.height*2;
+  const img=new Image(), url=URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(clon)],{type:'image/svg+xml'}));
+  img.onload=()=>{const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+    x.fillStyle=cs.getPropertyValue('--hoja').trim()||'#fff';x.fillRect(0,0,W,H);x.drawImage(img,0,0,W,H);URL.revokeObjectURL(url);
+    c.toBlob(b=>{const u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='grafico.png';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000)});
+    if(typeof registrar==='function') registrar('png','Bajó el gráfico');};
+  img.src=url;
+});
+
+document.querySelectorAll('.llenar').forEach(L=>{
+  const ins=[...L.querySelectorAll('.hueco-c')], msg=L.querySelector('.ll-msg'), cp=L.querySelector('.ll-copiar');
+  const norm=v=>v.replace(/\s+/g,'').toLowerCase();
+  ins.forEach(i=>i.addEventListener('input',()=>i.classList.remove('bien','mal')));
+  L.querySelector('.ll-revisar').addEventListener('click',()=>{
+    let ok=0; ins.forEach(i=>{const b=norm(i.value)===norm(i.dataset.ok); i.classList.toggle('bien',b); i.classList.toggle('mal',!b&&i.value!==''); if(b) ok++;});
+    if(ok===ins.length){msg.textContent='¡Completo! Copialo a Tinkercad y probalo con el deslizador.'; cp.hidden=false; if(typeof registrar==='function') registrar('llenar-'+L.dataset.id,'Reto 2 · completó el código');}
+    else msg.textContent=`${ok} de ${ins.length} bien. Los rojos, revisalos; los vacíos, completalos.`;
+  });
+  cp.addEventListener('click',()=>{
+    const pre=L.querySelector('.llenar-cod'); let t='';
+    pre.childNodes.forEach(n=>{t+= n.nodeType===3 ? n.textContent : (n.value||'')});
+    const ok=()=>{cp.textContent='Copiado';setTimeout(()=>cp.textContent='Copiar el código completo',1500)};
+    try{navigator.clipboard.writeText(t).then(ok,()=>{})}catch(_){}
+  });
+});
+</script>
+</body>
+</html>

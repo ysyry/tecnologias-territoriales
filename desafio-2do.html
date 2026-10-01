@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El desafío del día · 2do</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Manrope:wght@500;700&family=DM+Mono:wght@400;500&display=swap">
+<style>
+/* El desafío del día de 2do: verificar que el sensor de la maceta diga algo, y de ahí
+   sacar lo que el programa oficial pide y está en deuda — señal digital y analógica,
+   el valor entre 0 y 1023. Misma forma que desafio-1ro.html y temperatura.html. */
+:root{
+  --papel:#F3F1F7; --hoja:#FCFBFE; --raya:#DAD4E6;
+  --tinta:#161226; --texto:#3B3350; --tenue:#5F5779;
+  --violeta:#5B3FA8; --inf:#9A3A80; --inf-w:rgba(154,58,128,.10);
+  --rojo:#C8352E; --verde:#2E8B57; --agua:#2F7BC4; --tierra:#8A6A3E;
+  --f-titulo:"Bricolage Grotesque",Georgia,serif;
+  --f-cuerpo:Manrope,system-ui,sans-serif;
+  --f-mono:"DM Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --papel:#0E0C18; --hoja:#1B1830; --raya:#332D50;
+  --tinta:#F6F3FF; --texto:#D6D0E8; --tenue:#ABA3C4;
+  --violeta:#B197EE; --inf:#E88BCB; --inf-w:rgba(232,139,203,.14);
+  --rojo:#F07068; --verde:#5CC98C; --agua:#6FB2E8; --tierra:#C3A071;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --papel:#0E0C18; --hoja:#1B1830; --raya:#332D50;
+  --tinta:#F6F3FF; --texto:#D6D0E8; --tenue:#ABA3C4;
+  --violeta:#B197EE; --inf:#E88BCB; --inf-w:rgba(232,139,203,.14);
+  --rojo:#F07068; --verde:#5CC98C; --agua:#6FB2E8; --tierra:#C3A071;
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--papel);color:var(--texto);font-family:var(--f-cuerpo);font-size:clamp(17px,1.6vw,22px);line-height:1.5;margin:0}
+main{max-width:1100px;margin:0 auto;padding:clamp(28px,5vw,64px) 16px 80px;display:flex;flex-direction:column;gap:clamp(40px,6vw,72px)}
+main.sin-nombre > *:not(.quien):not(header){display:none}
+.rot{font-family:var(--f-mono);font-size:.7em;letter-spacing:.14em;text-transform:uppercase;color:var(--inf)}
+h1{font-family:var(--f-titulo);font-weight:800;color:var(--tinta);font-size:clamp(40px,6.4vw,84px);line-height:1;letter-spacing:-.02em;margin:.25em 0 0;text-wrap:balance}
+.bajada{font-size:1.25em;color:var(--texto);max-width:32em;margin:.6em 0 0;text-wrap:balance}
+h2{font-family:var(--f-titulo);font-weight:600;color:var(--tinta);font-size:clamp(26px,3vw,38px);line-height:1.1;margin:0 0 8px}
+.pasos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+@media(max-width:760px){.pasos{grid-template-columns:1fr}}
+.paso{display:flex;flex-direction:column;gap:12px;min-width:0}
+.num{font-family:var(--f-titulo);font-weight:800;font-size:2.4em;line-height:1;color:var(--violeta)}
+.paso p{margin:0;color:var(--tinta);font-weight:700}
+.paso small{color:var(--tenue);font-weight:500;font-size:.85em}
+svg{width:100%;height:auto;max-width:100%}
+
+.quien{display:flex;flex-wrap:wrap;gap:10px;align-items:center;background:var(--hoja);
+  border:1px solid var(--raya);padding:14px 16px;font-size:.9em}
+.quien label{font-weight:700;color:var(--tinta);width:100%}
+.quien input{flex:1 1 280px;font:inherit;padding:10px 12px;background:var(--papel);
+  color:var(--texto);border:1px solid var(--raya)}
+.quien button{font:700 .95em var(--f-cuerpo);background:var(--violeta);color:#fff;border:0;
+  padding:10px 18px;cursor:pointer}
+.quien .otro{background:none;color:var(--tenue);border:1px solid var(--raya)}
+.quien .err{color:var(--rojo);width:100%;font-weight:700}
+
+.retos{display:flex;flex-direction:column;gap:clamp(34px,4.5vw,56px)}
+.reto{border-top:2px solid var(--raya);padding-top:24px;display:grid;
+  grid-template-columns:auto minmax(0,1fr);gap:8px 22px;align-items:start}
+@media(max-width:620px){.reto{grid-template-columns:1fr}}
+.reto .nivel{font-family:var(--f-titulo);font-weight:800;font-size:1.7em;line-height:1.1;color:var(--inf)}
+.reto h3{font-family:var(--f-titulo);font-weight:600;font-size:1.35em;line-height:1.2;color:var(--tinta);margin:0;text-wrap:balance}
+.reto .cuerpo{display:flex;flex-direction:column;gap:14px;min-width:0}
+.reto.tapado .cuerpo > *:not(.destapar){display:none}
+.reto.tapado h3{color:var(--tenue)}
+.destapar,.pista-b,.logre{justify-self:start;align-self:flex-start;font:700 .8em var(--f-cuerpo);
+  border-radius:999px;padding:9px 18px;cursor:pointer}
+.destapar{background:var(--violeta);color:var(--hoja);border:0}
+.pista-b{background:none;color:var(--violeta);border:1px solid var(--violeta)}
+.logre{background:var(--verde);color:#fff;border:0}
+.logre:disabled{opacity:.65;cursor:default}
+.pista{background:var(--inf-w);border-left:3px solid var(--inf);padding:12px 14px;font-size:.92em}
+.nota{color:var(--tenue);font-size:.9em;margin:0}
+
+.campos{display:flex;gap:14px;flex-wrap:wrap}
+.campo{display:flex;flex-direction:column;gap:6px}
+.campo span{font-size:.8em;color:var(--tenue);font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+.campo input{font:700 1.4em var(--f-mono);width:150px;padding:10px 12px;text-align:center;
+  background:var(--hoja);color:var(--tinta);border:2px solid var(--raya)}
+.campo input:focus{outline:0;border-color:var(--violeta)}
+
+/* El probador: mover la humedad y ver el número. */
+.probador{background:var(--hoja);border:1px solid var(--raya);padding:18px}
+.probador .fila{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:14px}
+.probador label{font-weight:700;color:var(--tinta);font-size:.9em;min-width:150px}
+.probador input[type=range]{flex:1 1 220px;accent-color:var(--agua)}
+.lectura{display:flex;align-items:center;gap:20px;flex-wrap:wrap;
+  border-top:1px solid var(--raya);padding-top:16px}
+.valor{font-family:var(--f-mono);font-weight:500;font-size:clamp(40px,7vw,68px);
+  line-height:1;color:var(--violeta)}
+.valor small{display:block;font-family:var(--f-cuerpo);font-size:14px;color:var(--tenue);
+  letter-spacing:.1em;text-transform:uppercase;font-weight:700}
+.veredicto{font-weight:700;font-size:1.05em}
+.barra{height:16px;background:var(--papel);border:1px solid var(--raya);position:relative;flex:1 1 200px;min-width:160px}
+.barra i{position:absolute;inset:0 auto 0 0;background:var(--agua);display:block}
+</style>
+</head>
+<body>
+<main>
+
+<header>
+  <div class="rot">2do · el desafío del día · la maceta</div>
+  <h1>¿Cuántas cosas sabe decir tu sensor?</h1>
+  <p class="bajada">Tu LED sabe decir dos: prendido o apagado. El sensor sabe decir muchas más.
+  Hoy averiguamos cuántas, y qué significan.</p>
+</header>
+
+<div class="quien" id="quien" aria-live="polite"></div>
+
+<svg viewBox="0 0 660 200" role="img" aria-label="El LED sólo puede estar prendido o apagado, dos estados. El sensor devuelve un número entre 0 y 1023.">
+  <text x="10" y="24" font-family="Manrope,sans-serif" font-weight="700" font-size="16" fill="var(--tinta)">El LED</text>
+  <circle cx="48" cy="72" r="20" fill="var(--raya)"/><text x="48" y="112" text-anchor="middle" font-family="Manrope,sans-serif" font-size="14" fill="var(--tenue)">apagado</text>
+  <circle cx="130" cy="72" r="20" fill="var(--rojo)"/><text x="130" y="112" text-anchor="middle" font-family="Manrope,sans-serif" font-size="14" fill="var(--tenue)">prendido</text>
+  <text x="10" y="150" font-family="DM Mono,monospace" font-size="15" fill="var(--violeta)">2 estados</text>
+
+  <line x1="215" y1="20" x2="215" y2="180" stroke="var(--raya)" stroke-width="2"/>
+
+  <text x="250" y="24" font-family="Manrope,sans-serif" font-weight="700" font-size="16" fill="var(--tinta)">El sensor</text>
+  <rect x="250" y="56" width="390" height="30" fill="none" stroke="var(--raya)" stroke-width="2"/>
+  <rect x="250" y="56" width="390" height="30" fill="url(#g)"/>
+  <defs><linearGradient id="g"><stop offset="0" stop-color="var(--tierra)"/><stop offset="1" stop-color="var(--agua)"/></linearGradient></defs>
+  <text x="250" y="108" font-family="DM Mono,monospace" font-size="15" fill="var(--tenue)">0</text>
+  <text x="640" y="108" text-anchor="end" font-family="DM Mono,monospace" font-size="15" fill="var(--tenue)">1023</text>
+  <text x="250" y="150" font-family="DM Mono,monospace" font-size="15" fill="var(--violeta)">1024 valores distintos</text>
+  <text x="250" y="176" font-family="Manrope,sans-serif" font-size="14" fill="var(--tenue)">de tierra seca a tierra mojada</text>
+</svg>
+
+<section class="pasos" aria-label="Para arrancar">
+  <div class="paso">
+    <div class="num">1</div>
+    <p>Abrí tu circuito del 10/09</p>
+    <small>El del <b>sensor de humedad y el LED</b>. Está en tu cuenta de Tinkercad.</small>
+  </div>
+  <div class="paso">
+    <div class="num">2</div>
+    <p>Mirá a qué pin va el sensor</p>
+    <small>Tiene que ir a un pin que empiece con <b>A</b> — A0, A1… Los pines con A entienden
+    números; los otros sólo entienden prendido o apagado.</small>
+  </div>
+  <div class="paso">
+    <div class="num">3</div>
+    <p>Dale Simular</p>
+    <small>Y hacé clic en el sensor: aparece una barra para mover cuánta agua tiene la tierra.</small>
+  </div>
+</section>
+
+<section class="retos" aria-label="Los retos">
+  <h2>Los retos, de a uno</h2>
+
+  <div class="reto tapado" id="r1">
+    <div class="nivel">1</div>
+    <div class="cuerpo">
+      <div class="rot">Reto 1</div>
+      <h3>Que diga algo</h3>
+      <button type="button" class="destapar">Empezar</button>
+      <p>Conseguí que el sensor te muestre <b>un número</b>. Si no aparece ninguno, algo del
+      circuito no está cerrado.</p>
+      <button type="button" class="pista-b">Pista</button>
+      <div class="pista" hidden>Tres cosas que fallan siempre: el sensor no está en un pin con
+      <b>A</b>; falta el cable a <b>GND</b>; o no le pusiste el bloque que lee el pin. Para ver
+      el número hace falta el <b>monitor serie</b>.</div>
+      <button type="button" class="logre" data-juego="r1" data-nom="El sensor da un número" hidden>✔ ¡Me anda!</button>
+    </div>
+  </div>
+
+  <div class="reto tapado" id="r2">
+    <div class="nivel">2</div>
+    <div class="cuerpo">
+      <div class="rot">Reto 2</div>
+      <h3>Seco y mojado</h3>
+      <button type="button" class="destapar">Empezar</button>
+      <p>Mové la barra del sensor hasta <b>tierra seca</b> y anotá el número. Después hasta
+      <b>tierra bien mojada</b> y anotá ese. <b>Son tuyos:</b> cada sensor da los suyos.</p>
+      <div class="campos">
+        <label class="campo"><span>Tierra seca</span><input id="seco" type="number" inputmode="numeric" placeholder="?"></label>
+        <label class="campo"><span>Tierra mojada</span><input id="mojado" type="number" inputmode="numeric" placeholder="?"></label>
+      </div>
+      <p class="nota">Quedan guardados acá. No hace falta anotarlos en ningún otro lado.</p>
+      <button type="button" class="logre" data-juego="r2" data-nom="Midió seco y mojado" hidden>✔ ¡Me anda!</button>
+    </div>
+  </div>
+
+  <div class="reto tapado" id="r3">
+    <div class="nivel">3</div>
+    <div class="cuerpo">
+      <div class="rot">Reto 3 · lo nuevo de hoy</div>
+      <h3>Dos idiomas distintos</h3>
+      <button type="button" class="destapar">Empezar</button>
+      <p>El LED habla en <b>digital</b>: sólo sabe decir dos cosas. El sensor habla en
+      <b>analógico</b>: puede decir cualquier número entre <b>0 y 1023</b>. Por eso va en un
+      pin con A — de <i>analógico</i>.</p>
+      <div class="probador">
+        <div class="fila">
+          <label for="hum">Agua en la tierra</label>
+          <input id="hum" type="range" min="0" max="100" value="50">
+          <span class="barra"><i id="barra" style="width:50%"></i></span>
+        </div>
+        <div class="fila">
+          <label for="umbral">Tu umbral</label>
+          <input id="umbral" type="range" min="0" max="1023" value="500">
+          <output id="u-val" style="font-family:var(--f-mono);font-weight:500;color:var(--tinta)">500</output>
+        </div>
+        <div class="lectura">
+          <div class="valor" id="lect">512<small>dice el sensor</small></div>
+          <div>
+            <div class="veredicto" id="ver">—</div>
+            <p class="nota" id="ver-n">Movés el agua y el número cambia. Movés tu umbral y
+            cambia cuándo se prende la luz.</p>
+          </div>
+        </div>
+      </div>
+      <p class="nota">Si completaste el reto 2, el probador usa <b>tus</b> números.</p>
+      <button type="button" class="logre" data-juego="r3" data-nom="Digital y analógica" hidden>✔ ¡Entendido!</button>
+    </div>
+  </div>
+
+  <div class="reto tapado" id="r4">
+    <div class="nivel">4</div>
+    <div class="cuerpo">
+      <div class="rot">Reto 4 · para la próxima</div>
+      <h3>¿A partir de qué número dirías que tiene sed?</h3>
+      <button type="button" class="destapar">Empezar</button>
+      <p>Elegí un número y escribilo. <b>No hay uno correcto:</b> lo decide quien hace el
+      aparato. La próxima clase lo vas a tener que defender.</p>
+      <div class="campos">
+        <label class="campo"><span>Tiene sed si llega a</span><input id="sed" type="number" inputmode="numeric" placeholder="?"></label>
+      </div>
+      <button type="button" class="pista-b">Pista</button>
+      <div class="pista" hidden>Mirá tus dos números del reto 2. El umbral tiene que estar
+      <b>entre los dos</b>. ¿Más cerca del seco o del mojado? Depende de si preferís regar de
+      más o de menos.</div>
+      <button type="button" class="logre" data-juego="r4" data-nom="Eligió su umbral" hidden>✔ ¡Listo!</button>
+    </div>
+  </div>
+
+  <div class="reto tapado" id="r5">
+    <div class="nivel">5</div>
+    <div class="cuerpo">
+      <div class="rot">Si llegaste antes</div>
+      <h3>¿Por qué 1023 y no 1000?</h3>
+      <button type="button" class="destapar">Empezar</button>
+      <p>Contando el 0, son <b>1024</b> números. Y 1024 no es un número cualquiera:
+      2 × 2 × 2 × 2 × 2 × 2 × 2 × 2 × 2 × 2. <b>Diez veces el 2.</b></p>
+      <p>Adentro, el Arduino no tiene un número: tiene <b>diez cablecitos</b> que sólo saben
+      decir sí o no. Con diez cables de sí/no se arman exactamente 1024 combinaciones.</p>
+      <p class="nota">Probá: con 2 cables, ¿cuántas combinaciones salen? ¿Y con 3?</p>
+      <button type="button" class="logre" data-juego="r5" data-nom="De dónde sale el 1023" hidden>✔ ¡Entendido!</button>
+    </div>
+  </div>
+
+</section>
+</main>
+<script>
+/* ---- El probador: mover el agua y ver el número ---------------------
+   Usa los números que la pareja midió en el reto 2. Si todavía no los
+   midió, usa 300 y 700, que es un rango plausible y no condiciona.
+   La dirección la decide la medición, no nosotros: en algunos sensores
+   el número sube con el agua y en otros baja. */
+(function(){
+  const hum=document.getElementById('hum'), umb=document.getElementById('umbral'),
+        lect=document.getElementById('lect'), barra=document.getElementById('barra'),
+        uval=document.getElementById('u-val'), ver=document.getElementById('ver'),
+        seco=document.getElementById('seco'), moj=document.getElementById('mojado');
+  const num=(el,d)=>{const v=parseInt(el.value,10);return Number.isFinite(v)?Math.min(1023,Math.max(0,v)):d};
+  function pintar(){
+    const s=num(seco,300), m=num(moj,700), p=hum.value/100;
+    const valor=Math.round(s+(m-s)*p), u=parseInt(umb.value,10);
+    lect.innerHTML=valor+'<small>dice el sensor</small>';
+    barra.style.width=hum.value+'%';
+    uval.textContent=u;
+    /* «Más seco que el umbral» depende de hacia dónde crece el número. */
+    const sube=m>=s, tieneSed=sube?valor<u:valor>u;
+    ver.textContent=tieneSed?'💡 La luz se prende: tiene sed':'La luz queda apagada';
+    ver.style.color=tieneSed?'var(--rojo)':'var(--tenue)';
+  }
+  [hum,umb,seco,moj].forEach(e=>e.addEventListener('input',pintar));
+  pintar();
+})();
+
+/* ---- Quién sos y el registro ----------------------------------------
+   Misma sesión y mismo registro que el resto de la app, así lo de hoy
+   cae en el Excel del panel y en la planilla del buzón. */
+const K_SES='pps.sesion.v1', K_DAT='pps.datos.v1', K_HECHOS='pps.desafio2do.v1';
+const URL_BUZON='https://script.google.com/macros/s/AKfycbzLxvvU5Nw5Zx1yKyeb9z7WB1b2AQD8x7FcPpFznLSr3K8kImnVx4dNrX1Z0WntVigUjg/exec';
+const lee=(k,d)=>{try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}};
+const guarda=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}};
+const hoy=()=>{const d=new Date(),z=n=>String(n).padStart(2,'0');return `${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())}`};
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let SES=lee(K_SES,null);
+const main=document.querySelector('main'), quien=document.getElementById('quien');
+
+function pedirNombre(msg){
+  main.classList.add('sin-nombre');
+  quien.innerHTML=`<label for="nom">Antes de empezar: el nombre del equipo, o los dos nombres</label>
+    <input id="nom" autocomplete="off" placeholder="titanas · o · Lauti y Mabe">
+    <button type="button" id="entrar">Empezar</button>${msg?`<div class="err">${msg}</div>`:''}`;
+  const i=document.getElementById('nom'); i.focus();
+  const ok=()=>{const n=i.value.trim().replace(/\s+/g,' ');
+    if(n.length<3){pedirNombre('Escribí el nombre del equipo o los dos nombres.');return}
+    SES={nombre:n,anio:'2do',fecha:hoy()}; guarda(K_SES,SES); mostrarQuien()};
+  document.getElementById('entrar').onclick=ok;
+  i.addEventListener('keydown',e=>{if(e.key==='Enter')ok()});
+}
+function mostrarQuien(){
+  main.classList.remove('sin-nombre');
+  quien.innerHTML=`<span>Están como <b>${esc(SES.nombre)}</b> · 2do · hoy</span>
+    <button type="button" class="otro" id="noSoy">No somos</button>`;
+  document.getElementById('noSoy').onclick=()=>{SES=null;pedirNombre()};
+  pintarHechos();
+}
+function hechos(){const h=lee(K_HECHOS,{});return (h[SES.nombre+'|'+SES.fecha])||[]}
+function pintarHechos(){
+  const h=hechos();
+  document.querySelectorAll('.logre').forEach(b=>{
+    const ya=h.includes(b.dataset.juego);
+    b.disabled=ya; if(ya){b.textContent='✔ Anotado'; b.hidden=false}
+  });
+}
+const T0={}, PISTAS={};
+function registrar(b){
+  const id=b.dataset.juego, seg=T0[id]?Math.max(1,Math.round((Date.now()-T0[id])/1000)):0, p=PISTAS[id]||0;
+  const extra=[];
+  const s=document.getElementById('seco').value, m=document.getElementById('mojado').value,
+        u=document.getElementById('sed').value;
+  if(s)extra.push('seco='+s); if(m)extra.push('mojado='+m); if(u)extra.push('umbral='+u);
+  const t={id:'d'+Date.now().toString(36)+Math.random().toString(36).slice(2,7),
+    alumno:SES.nombre, anio:'2do', fecha:SES.fecha, ts:new Date().toISOString(),
+    sala:'desafio2do', salaNom:'Desafío del día · cuántas cosas dice el sensor', modo:'practica',
+    total:1, resueltos:1, sinAyuda:p?0:1, pistas:p, salteadas:0, seg:seg,
+    ejs:[{c:b.dataset.nom, t:'desafio', q:extra.join(' '), i:1, ok:true, ok1:!p, p:p, s:false, sg:seg}]};
+  const a=lee(K_DAT,[]); (Array.isArray(a)?a:[]).push(t); guarda(K_DAT,a);
+  const h=lee(K_HECHOS,{}), k=SES.nombre+'|'+SES.fecha; h[k]=(h[k]||[]).concat(id); guarda(K_HECHOS,h);
+  pintarHechos(); enviar();
+}
+function enviar(){
+  const a=lee(K_DAT,[]); if(!Array.isArray(a)) return;
+  a.filter(t=>!t.enviada).forEach(t=>fetch(URL_BUZON,{method:'POST',mode:'no-cors',cache:'no-store',
+    headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(t)})
+    .then(()=>{const b=lee(K_DAT,[]);const x=b.find(y=>y.id===t.id);if(x){x.enviada=true;guarda(K_DAT,b)}}).catch(()=>{}));
+}
+document.querySelectorAll('.logre').forEach(b=>b.addEventListener('click',()=>{if(SES&&!b.disabled)registrar(b)}));
+document.querySelectorAll('.reto').forEach(r=>{
+  const d=r.querySelector('.destapar'), pb=r.querySelector('.pista-b'),
+        pi=r.querySelector('.pista'), l=r.querySelector('.logre');
+  d.addEventListener('click',()=>{r.classList.remove('tapado');d.hidden=true;
+    if(l){T0[l.dataset.juego]=Date.now();l.hidden=false}});
+  if(pb)pb.addEventListener('click',()=>{pi.hidden=!pi.hidden;
+    pb.textContent=pi.hidden?'Pista':'Ocultar pista';
+    if(!pi.hidden&&l)PISTAS[l.dataset.juego]=(PISTAS[l.dataset.juego]||0)+1});
+});
+if(SES && SES.anio==='2do' && SES.fecha===hoy()) mostrarQuien(); else pedirNombre();
+</script>
+</body>
+</html>

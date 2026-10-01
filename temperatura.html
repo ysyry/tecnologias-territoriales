@@ -420,7 +420,13 @@ document.querySelectorAll('.copiar').forEach(b=>b.addEventListener('click',()=>{
   try{navigator.clipboard.writeText(t).then(ok,sel)}catch(_){sel()}
 }));
 document.querySelectorAll('.reto').forEach(r=>{
-  const d=r.querySelector('.destapar'), pb=r.querySelector('.pista-b'), p=r.querySelector('.pista'), ls=r.querySelector('.lineas, .formula');
+  /* Se excluyen por clase, no por posición: adentro de .formula hay otros botones
+     (Revisar, Copiar el código) con su propio manejador, y el de «Respuesta y pistas»
+     a veces está anidado ahí mismo, así que acotar a hijos directos lo dejaba afuera. */
+  const d=r.querySelector('.destapar:not(.ll-revisar):not(.aut-revisar)'),
+        pb=r.querySelector('.pista-b:not(.ll-copiar)'),
+        p=r.querySelector('.pista'), ls=r.querySelector('.lineas, .formula');
+  if(!d) return;
   d.addEventListener('click',()=>{r.classList.remove('tapado');d.hidden=true;if(pb&&!ls)pb.hidden=false;if(ls)ls.hidden=false});
   if(pb)pb.addEventListener('click',()=>{p.hidden=!p.hidden;pb.textContent=p.hidden?'Pista':'Ocultar pista'});
 });
