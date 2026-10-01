@@ -116,6 +116,7 @@ main.sin-nombre .esquema{display:none}
 :root{--b-mate:#3B9E4C}
 .in.mate{background:var(--b-mate)}
 .dentro .dentro{margin-left:18px}
+.pasos-led{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:8px}
 </style>
 </head>
 <body>
@@ -285,6 +286,12 @@ main.sin-nombre .esquema{display:none}
       <div class="campos">
         <label class="campo"><span>Tiene sed si llega a</span><input id="sed" type="number" inputmode="numeric" placeholder="?"></label>
       </div>
+      <p><b>Primero, una luz nueva.</b> Tu maceta tiene una luz. Para que pueda decir «tengo sed», sumale otra en Tinkercad:</p>
+      <ol class="pasos-led">
+        <li>Arrastrá un <b>LED</b> y cambiale el color a <b>azul</b> (tocalo y elegí el color).</li>
+        <li>Pata larga → resistencia de <b>220 Ω</b> → <b>pin 10</b>.</li>
+        <li>Pata corta → <b>GND</b>.</li>
+      </ol>
       <p><b>Ahora que la luz azul avise.</b> Este programa debería prender la luz azul («tengo sed») cuando la tierra pasa tu número. <b>Tiene dos errores.</b> Armalo, probalo moviendo la barra del sensor, y encontralos.</p>
       <div class="prog" aria-label="Programa con errores: siempre, si leer pin analógico A0 menor que 500 entonces definir pin 9 en ALTA">
         <div class="blk control">siempre</div>
