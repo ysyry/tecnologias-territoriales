@@ -410,11 +410,14 @@ main.sin-nombre .esquema{display:none}
       <div class="rot">Reto 5</div>
       <h3>Una caja para el número</h3>
       <button type="button" class="destapar">Empezar</button>
-      <p>Hasta ahora el programa le preguntaba al sensor y usaba la respuesta en el momento.
-      Si queremos mostrar el número <b>y además</b> decidir con él, conviene guardarlo: eso es
-      una <b>variable</b>. En Tinkercad: <b>Variables → Crear variable</b>, y llamala <b>humedad</b>.</p>
-      <p>Este programa guarda el número y lo muestra. <b>Tiene un error:</b> armalo, mové la
-      barra del sensor y mirá qué pasa con el número.</p>
+      <p>Una <b>variable</b> es una caja con nombre donde el programa guarda un número para
+      usarlo después. Vamos a guardar lo que dice el sensor en una caja que se llame <b>humedad</b>.</p>
+      <ol class="pasos-led">
+        <li>En Tinkercad, andá a <b>Variables → Crear variable</b> y escribí <b>humedad</b>.</li>
+        <li>Armá el programa de acá abajo, <b>tal cual está</b>.</li>
+        <li>Dale Simular, abrí el monitor serie y <b>mové la barra del sensor</b>. ¿Qué pasa con el número?</li>
+        <li>Algo anda mal: <b>tiene un error</b>. Encontralo y arreglalo.</li>
+      </ol>
       <div class="prog" aria-label="Programa con un error. Al iniciar: definir humedad en leer pin analógico A0. Siempre: imprimir en monitor en serie humedad, esperar 1 segundo.">
         <div class="blk control sombrero">al iniciar</div>
         <div class="dentro">
@@ -427,11 +430,12 @@ main.sin-nombre .esquema{display:none}
         </div>
       </div>
       <div class="leyenda"><span style="--c:var(--b-var)">Variables</span><span style="--c:var(--b-salida)">Salida</span><span style="--c:var(--b-entrada)">Entrada</span><span style="--c:var(--b-control)">Control</span></div>
-      <p><b>Cuando lo arregles,</b> cambiá tu programa de las dos luces para que decida con
-      <b>humedad</b> en vez de volver a leer el pin.</p>
+      <p><b>5. Cuando ande</b> (el número cambia al mover la barra), sumale abajo tu <b>si</b> de
+      las dos luces. Donde decía <b>leer pin analógico A0</b>, ahora poné la cajita <b>humedad</b>.</p>
       <button type="button" class="pista-b">Pista</button>
-      <div class="pista" hidden>La caja guarda <b>lo último que le pusiste</b>, no se entera sola de que el
-      sensor cambió. ¿Cuántas veces se ejecuta lo que está en <b>al iniciar</b>? ¿Y lo que está en <b>siempre</b>?</div>
+      <div class="pista" hidden>El número no cambia nunca, aunque muevas la barra. La caja guarda
+      <b>lo último que le pusiste</b>: no se entera sola de que el sensor cambió.<br><br>
+      ¿Cuántas veces se ejecuta lo que está en <b>al iniciar</b>? ¿Y lo que está en <b>siempre</b>? ¿Dónde tendría que estar el bloque rosa?</div>
       <button type="button" class="logre" data-juego="rvar" data-nom="Usa una variable y la actualiza en cada vuelta" hidden>✔ ¡Me anda!</button>
     </div>
   </div>
