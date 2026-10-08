@@ -119,6 +119,50 @@ main.sin-nombre .esquema{display:none}
 .pasos-led{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:8px}
 .sino{align-self:flex-start;color:#fff;font:700 .8em var(--f-cuerpo);background:var(--b-control);padding:4px 14px;border-radius:0 6px 6px 0;margin-left:-8px}
 .esq-leds{width:100%;max-width:440px;height:auto}
+/* Segunda parte: variable, tres estados, el sensor que se prende para medir, porcentaje,
+   pantalla y sensar/decidir/actuar. */
+:root{--b-var:#C2478F}
+.blk.var{background:var(--b-var)} .in.var{background:var(--b-var)}
+.blk.sombrero{border-radius:14px 14px 6px 6px}
+.blk .q{background:#ffffff;color:var(--b-control);border-radius:999px;padding:1px 10px;font-weight:800}
+.parte{border-top:4px solid var(--violeta);padding-top:24px}
+.parte p{margin:.4em 0 0;max-width:38em}
+.sueltos{display:flex;flex-direction:column;gap:8px;align-items:flex-start;background:var(--hoja);border:1px dashed var(--raya);padding:14px}
+.porc{display:flex;flex-direction:column;gap:10px;background:var(--hoja);border:1px solid var(--raya);padding:16px}
+.porc .f{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.porc .f b{font-family:var(--f-mono);font-weight:500;font-size:1.3em;color:var(--violeta);min-width:3.2em}
+.porc input{font:700 1.1em var(--f-mono);width:92px;padding:8px;text-align:center;background:var(--papel);color:var(--tinta);border:2px solid var(--raya)}
+.porc .f.ok input{border-color:var(--verde)} .porc .f.mal input{border-color:var(--rojo)}
+.porc .m{font-weight:700;font-size:.85em}
+.porc .f.ok .m{color:var(--verde)} .porc .f.mal .m{color:var(--rojo)}
+.clasif{display:flex;flex-direction:column;gap:12px}
+.clasif .f{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.clasif .f > .blk{flex:0 1 auto}
+.clasif button{font:700 .8em var(--f-cuerpo);background:none;color:var(--tinta);border:1.5px solid var(--raya);border-radius:999px;padding:7px 14px;cursor:pointer}
+.clasif button.si{background:var(--verde);border-color:var(--verde);color:#fff}
+.clasif button.no{border-color:var(--rojo);color:var(--rojo);text-decoration:line-through}
+.clasif .f.ok button:not(.si){display:none}
+.clasif .f > .t{font-weight:700;color:var(--tinta);flex:1 1 15em;max-width:24em}
+.ej{font-family:var(--f-titulo);font-weight:600;color:var(--tinta);font-size:1.1em;margin:10px 0 0}
+.vs{overflow-x:auto}
+.vs table{border-collapse:collapse;font-size:.9em;width:100%;max-width:560px}
+.vs th,.vs td{border-bottom:1px solid var(--raya);padding:8px 12px;text-align:left}
+.vs td:nth-child(n+2){font-family:var(--f-mono)}
+.semanas{max-width:700px}
+.cesar{background:var(--hoja);border:1px solid var(--raya);padding:16px;display:flex;flex-direction:column;gap:12px}
+.cesar .fila{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.cesar label{font-weight:700;color:var(--tinta);font-size:.9em}
+.cesar input[type=range]{flex:1 1 200px;max-width:340px;accent-color:var(--violeta)}
+.cesar output{font:500 1.3em var(--f-mono);color:var(--violeta);min-width:2ch}
+.cesar .nota{margin:0}
+.tira{overflow-x:auto}
+.tira table{border-collapse:collapse;font-family:var(--f-mono);font-size:.85em}
+.tira td{border:1px solid var(--raya);padding:5px 0;width:1.9em;min-width:1.9em;text-align:center;color:var(--tinta)}
+.tira tr+tr td{background:var(--inf-w);color:var(--inf);font-weight:500}
+.cifrado{font:500 clamp(22px,3.4vw,34px) var(--f-mono);letter-spacing:.12em;color:var(--inf);margin:0;overflow-wrap:anywhere}
+.cifrado.claro{color:var(--tinta)}
+.campo input.texto{width:min(78vw,340px);font-size:1.1em;text-align:left;text-transform:uppercase;letter-spacing:.06em}
+.campo input.ok{border-color:var(--verde)} .campo input.mal{border-color:var(--rojo)}
 </style>
 </head>
 <body>
@@ -353,8 +397,388 @@ main.sin-nombre .esquema{display:none}
     </div>
   </div>
 
-  <div class="reto tapado" id="r5">
+  <div class="parte">
+    <div class="rot">Segunda parte</div>
+    <h2>Que la maceta decida mejor</h2>
+    <p>La maceta de verdad no va a tener luces: va a tener una <b>pantalla que hace caras</b>.
+    Todo lo que resuelvas acá es lo que esa maceta va a necesitar para saber qué cara poner.</p>
+  </div>
+
+  <div class="reto tapado" id="rvar">
     <div class="nivel">5</div>
+    <div class="cuerpo">
+      <div class="rot">Reto 5</div>
+      <h3>Una caja para el número</h3>
+      <button type="button" class="destapar">Empezar</button>
+      <p>Hasta ahora el programa le preguntaba al sensor y usaba la respuesta en el momento.
+      Si queremos mostrar el número <b>y además</b> decidir con él, conviene guardarlo: eso es
+      una <b>variable</b>. En Tinkercad: <b>Variables → Crear variable</b>, y llamala <b>humedad</b>.</p>
+      <p>Este programa guarda el número y lo muestra. <b>Tiene un error:</b> armalo, mové la
+      barra del sensor y mirá qué pasa con el número.</p>
+      <div class="prog" aria-label="Programa con un error. Al iniciar: definir humedad en leer pin analógico A0. Siempre: imprimir en monitor en serie humedad, esperar 1 segundo.">
+        <div class="blk control sombrero">al iniciar</div>
+        <div class="dentro">
+          <div class="blk var">definir <span class="h">humedad</span> en <span class="in entrada">leer pin analógico <span class="h">A0</span></span></div>
+        </div>
+        <div class="blk control sombrero">siempre</div>
+        <div class="dentro">
+          <div class="blk salida">imprimir en monitor en serie <span class="in var">humedad</span></div>
+          <div class="blk control">esperar <span class="h">1</span> segundos</div>
+        </div>
+      </div>
+      <div class="leyenda"><span style="--c:var(--b-var)">Variables</span><span style="--c:var(--b-salida)">Salida</span><span style="--c:var(--b-entrada)">Entrada</span><span style="--c:var(--b-control)">Control</span></div>
+      <p><b>Cuando lo arregles,</b> cambiá tu programa de las dos luces para que decida con
+      <b>humedad</b> en vez de volver a leer el pin.</p>
+      <button type="button" class="pista-b">Pista</button>
+      <div class="pista" hidden>La caja guarda <b>lo último que le pusiste</b>, no se entera sola de que el
+      sensor cambió. ¿Cuántas veces se ejecuta lo que está en <b>al iniciar</b>? ¿Y lo que está en <b>siempre</b>?</div>
+      <button type="button" class="logre" data-juego="rvar" data-nom="Usa una variable y la actualiza en cada vuelta" hidden>✔ ¡Me anda!</button>
+    </div>
+  </div>
+
+  <div class="reto tapado" id="rtres">
+    <div class="nivel">6</div>
+    <div class="cuerpo">
+      <div class="rot">Reto 6</div>
+      <h3>Tres respuestas, no dos</h3>
+      <button type="button" class="destapar">Empezar</button>
+      <p>Una planta también se muere por <b>exceso</b> de agua. La maceta tiene que saber decir
+      tres cosas: <b>tengo sed</b>, <b>estoy bien</b> y <b>me ahogo</b>. Para eso hacen falta
+      <b>dos</b> números: el de la sed, que ya elegiste, y uno nuevo.</p>
+      <div class="campos">
+        <label class="campo"><span>Se ahoga si pasa de</span><input id="ahoga" type="number" inputmode="numeric" placeholder="?"></label>
+      </div>
+      <p>Con dos luces se pueden decir tres cosas: <b>azul</b> = tengo sed · <b>verde</b> = estoy
+      bien · <b>las dos juntas</b> = me ahogo. El truco es meter un <b>si</b> adentro del <b>si no</b>.
+      Completá lo que falta:</p>
+      <div class="prog" aria-label="Programa para completar. Siempre: definir humedad en leer pin analógico A0. Si humedad menor que tu número de sed: pin 10 en ALTA, pin 9 en BAJA. Si no: si humedad mayor que tu número de ahogo, faltan los dos bloques; si no, faltan los dos bloques.">
+        <div class="blk control sombrero">siempre</div>
+        <div class="dentro">
+          <div class="blk var">definir <span class="h">humedad</span> en <span class="in entrada">leer pin analógico <span class="h">A0</span></span></div>
+          <div class="blk control">si <span class="in mate"><span class="in var">humedad</span> &lt; <span class="h">tu sed</span></span> entonces</div>
+          <div class="dentro">
+            <div class="blk salida">definir pin <span class="h">10</span> en <span class="h">ALTA</span></div>
+            <div class="blk salida">definir pin <span class="h">9</span> en <span class="h">BAJA</span></div>
+          </div>
+          <div class="sino">si no</div>
+          <div class="dentro">
+            <div class="blk control">si <span class="in mate"><span class="in var">humedad</span> &gt; <span class="h">tu ahogo</span></span> entonces</div>
+            <div class="dentro">
+              <div class="blk salida">definir pin <span class="h">10</span> en <span class="q">?</span></div>
+              <div class="blk salida">definir pin <span class="h">9</span> en <span class="q">?</span></div>
+            </div>
+            <div class="sino">si no</div>
+            <div class="dentro">
+              <div class="blk salida">definir pin <span class="h">10</span> en <span class="q">?</span></div>
+              <div class="blk salida">definir pin <span class="h">9</span> en <span class="q">?</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="nota">Probalo con la barra del sensor en tres lugares: bien seca, por la mitad y
+      empapada. Tienen que salir las tres respuestas.</p>
+      <button type="button" class="pista-b">Pista</button>
+      <div class="pista" hidden>«Estoy bien» es lo que queda <b>entre</b> tus dos números: más que la sed y
+      menos que el ahogo. Al último <b>si no</b> se llega sólo cuando no pasó ninguna de las otras dos cosas.<br><br>
+      Si en tu sensor la tierra seca da el número <b>alto</b>, los dos signos van al revés.</div>
+      <button type="button" class="logre" data-juego="rtres" data-nom="Tres estados con dos umbrales" hidden>✔ ¡Me anda!</button>
+    </div>
+  </div>
+
+  <div class="reto tapado" id="rmide">
+    <div class="nivel">7</div>
+    <div class="cuerpo">
+      <div class="rot">Reto 7</div>
+      <h3>Un sensor que no se oxide</h3>
+      <button type="button" class="destapar">Empezar</button>
+      <p>El sensor de verdad son dos patas de metal clavadas en tierra mojada. Si tiene corriente
+      todo el día, <b>se oxida en pocas semanas</b>. La solución: prenderlo, medir y apagarlo.</p>
+      <p><b>Cambiá un cable:</b> el <b>+</b> del sensor ya no va a 5V, va al <b>pin 7</b>. Ahora
+      el programa decide cuándo el sensor tiene corriente.</p>
+      <p>Estos son los bloques que van adentro del <b>siempre</b>, <b>desordenados</b>. Armalos en
+      el orden que funciona; después sigue tu <b>si</b> de las luces.</p>
+      <div class="sueltos" aria-label="Bloques desordenados: esperar 2 segundos; definir humedad en leer pin analógico A0; definir pin 7 en BAJA; esperar 100 milisegundos; definir pin 7 en ALTA.">
+        <div class="blk control">esperar <span class="h">2</span> segundos</div>
+        <div class="blk var">definir <span class="h">humedad</span> en <span class="in entrada">leer pin analógico <span class="h">A0</span></span></div>
+        <div class="blk salida">definir pin <span class="h">7</span> en <span class="h">BAJA</span></div>
+        <div class="blk control">esperar <span class="h">100</span> milisegundos</div>
+        <div class="blk salida">definir pin <span class="h">7</span> en <span class="h">ALTA</span></div>
+      </div>
+      <p class="nota"><b>¿Qué pasa si…</b> leés el sensor después de apagarlo? Probalo antes de
+      arreglarlo y mirá el número.</p>
+      <button type="button" class="pista-b">Pista</button>
+      <div class="pista" hidden>Pensalo como una linterna: la prendés, <b>esperás un instante</b> a que
+      alumbre, mirás, la apagás. Y después descansás un rato largo antes de volver a mirar.</div>
+      <button type="button" class="logre" data-juego="rmide" data-nom="Prende el sensor sólo para medir" hidden>✔ ¡Me anda!</button>
+    </div>
+  </div>
+
+  <div class="reto tapado" id="rporc">
+    <div class="nivel">8</div>
+    <div class="cuerpo">
+      <div class="rot">Reto 8</div>
+      <h3>¿Cuánto es «por la mitad»?</h3>
+      <button type="button" class="destapar">Empezar</button>
+      <p>A quien mira la maceta, un 437 no le dice nada. <b>«Tiene 50 % de agua»</b> sí.
+      Tu número de tierra seca es el <b>0 %</b> y el de tierra mojada es el <b>100 %</b>.
+      ¿Qué porcentaje es cada una de estas lecturas de <b>tu</b> sensor?</p>
+      <div class="porc" id="porc"></div>
+      <p><b>En Tinkercad:</b> en <b>Matemáticas</b> hay un bloque que pasa un número <b>al rango
+      0 a 100</b>. Usalo con <b>humedad</b> y mostrá el resultado en el monitor serie. Después
+      empapá la tierra del todo.</p>
+      <p class="nota"><b>Para pensar:</b> ¿llega a 100? Ese bloque supone que todos los sensores
+      llegan a 1023. ¿Hasta cuánto llega el tuyo?</p>
+      <button type="button" class="pista-b">Pista</button>
+      <div class="pista" hidden>Dos preguntas: ¿cuánto hay <b>entre</b> tu seco y tu mojado? ¿Y cuánto
+      avanzó esta lectura <b>desde</b> el seco? Lo que avanzó, sobre el total, es la fracción.
+      Por 100, el porcentaje.</div>
+      <button type="button" class="logre" data-juego="rporc" data-nom="Pasa la lectura a porcentaje con su calibración" data-espera="1" hidden>✔ ¡Me anda!</button>
+    </div>
+  </div>
+
+  <div class="reto tapado" id="rpant">
+    <div class="nivel">9</div>
+    <div class="cuerpo">
+      <div class="rot">Reto 9</div>
+      <h3>Que lo diga con palabras</h3>
+      <button type="button" class="destapar">Empezar</button>
+      <p>Sumá una pantalla. En Tinkercad buscá <b>LCD 16 x 2 (I2C)</b>: tiene sólo cuatro
+      patas, las mismas cuatro que la pantalla de la maceta de verdad.</p>
+      <div class="esq-tabla"><table>
+        <tr><th>Pata de la pantalla</th><th>Va a</th></tr>
+        <tr><td>GND</td><td><b>GND</b></td></tr>
+        <tr><td>VCC</td><td><b>5V</b></td></tr>
+        <tr><td>SDA</td><td><b>A4</b></td></tr>
+        <tr><td>SCL</td><td><b>A5</b></td></tr>
+      </table></div>
+      <p>Los bloques de la pantalla están en <b>Salida</b>, abajo de todo: uno la configura, uno
+      escribe, uno elige en qué fila y columna, y uno la borra. Hacé que diga <b>Tengo sed</b>,
+      <b>Estoy bien</b> o <b>Me ahogo</b>, y en la fila de abajo el número.</p>
+      <p class="nota"><b>Para pensar:</b> por dos cables pasan letras, números y la orden de borrar.
+      ¿Cómo sabe la pantalla qué es cada cosa? Las dos partes siguen las mismas reglas: eso se
+      llama <b>protocolo</b>. Y la pantalla tiene una <b>dirección</b>, como una casa.</p>
+      <button type="button" class="pista-b">Pista</button>
+      <div class="pista" hidden><b>No aparece nada:</b> tocá la pantalla y mirá qué <b>tipo</b> y qué
+      <b>dirección</b> dice. En el bloque que la configura tienen que estar los mismos dos datos.<br><br>
+      <b>Quedan letras viejas pegadas</b> («Estoy biend»): antes de escribir, borrá.</div>
+      <button type="button" class="logre" data-juego="rpant" data-nom="La maceta escribe su estado en la pantalla" hidden>✔ ¡Me anda!</button>
+    </div>
+  </div>
+
+  <div class="reto tapado" id="rrobot">
+    <div class="nivel">10</div>
+    <div class="cuerpo">
+      <div class="rot">Reto 10</div>
+      <h3>¿Tu maceta es un robot?</h3>
+      <button type="button" class="destapar">Empezar</button>
+      <p>En agosto dijimos que un robot <b>sensa, decide y actúa</b>. Ahora tenés uno armado.
+      ¿Qué hace cada bloque de tu programa?</p>
+      <div class="clasif" id="clasif" data-ops="sensa:Sensa,decide:Decide,actua:Actúa">
+        <div class="f" data-ok="sensa"><div class="blk var">definir <span class="h">humedad</span> en <span class="in entrada">leer pin analógico <span class="h">A0</span></span></div></div>
+        <div class="f" data-ok="decide"><div class="blk control">si <span class="in mate"><span class="in var">humedad</span> &lt; <span class="h">tu sed</span></span> entonces</div></div>
+        <div class="f" data-ok="actua"><div class="blk salida">definir pin <span class="h">10</span> en <span class="h">ALTA</span></div></div>
+        <div class="f" data-ok="actua"><div class="blk salida">escribir <span class="h">Tengo sed</span> en la pantalla</div></div>
+      </div>
+      <p>Algo que percibe lo que lo rodea, decide y actúa <b>sin que nadie lo maneje</b> tiene
+      nombre: es un <b>agente</b>. Tu maceta es uno, chiquito.</p>
+      <p><b>Charlen en equipo:</b></p>
+      <ol class="pasos-led">
+        <li>La maceta dice «estoy bien» y la planta se seca igual. ¿De quién es el error: del sensor, del programa o de quien eligió el número?</li>
+        <li>Hoy la maceta sólo <b>avisa</b>. Si además abriera una canilla sola, ¿qué podría salir mal?</li>
+      </ol>
+      <button type="button" class="logre" data-juego="rrobot" data-nom="Sensar, decidir, actuar en su propio programa" data-espera="1" hidden>✔ ¡Entendido!</button>
+    </div>
+  </div>
+
+  <div class="reto tapado" id="rpc">
+    <div class="nivel">11</div>
+    <div class="cuerpo">
+      <div class="rot">Reto 11</div>
+      <h3>¿Tu Arduino es una computadora?</h3>
+      <button type="button" class="destapar">Empezar</button>
+      <p>Lo programaste, le conectaste cosas y decide solo. Pero no tiene pantalla, ni teclado,
+      ni mouse. El chip negro y largo de la placa se llama <b>microcontrolador</b>: una
+      computadora entera, chiquita, hecha para <b>una sola tarea</b>.</p>
+
+      <p class="ej">1 · ¿A qué se parece?</p>
+      <p class="nota">Cada parte de la maceta hace el mismo trabajo que una parte de la compu. ¿Cuál?</p>
+      <div class="clasif" data-ops="teclado:Teclado y mouse,pantalla:Pantalla,procesador:Procesador,disco:Disco">
+        <div class="f" data-ok="teclado"><span class="t">El sensor de humedad</span></div>
+        <div class="f" data-ok="pantalla"><span class="t">Las luces y la pantallita</span></div>
+        <div class="f" data-ok="procesador"><span class="t">El chip negro, que ejecuta tu programa</span></div>
+        <div class="f" data-ok="disco"><span class="t">El lugar donde tu programa queda guardado aunque la desenchufes</span></div>
+      </div>
+
+      <p class="ej">2 · ¿De quién se puede decir?</p>
+      <div class="clasif" data-ops="pc:La compu,ard:El Arduino,dos:Las dos">
+        <div class="f" data-ok="dos"><span class="t">Tiene procesador y memoria</span></div>
+        <div class="f" data-ok="dos"><span class="t">Tiene entradas y salidas</span></div>
+        <div class="f" data-ok="ard"><span class="t">Corre un solo programa, siempre el mismo, apenas la enchufás</span></div>
+        <div class="f" data-ok="pc"><span class="t">Tiene sistema operativo y abre muchos programas a la vez</span></div>
+        <div class="f" data-ok="ard"><span class="t">Puede andar semanas con unas pilas</span></div>
+        <div class="f" data-ok="ard"><span class="t">Le podés enchufar un sensor directo a las patas</span></div>
+      </div>
+
+      <p class="ej">3 · ¿Cuál pondrías?</p>
+      <div class="vs"><table>
+        <tr><th></th><th>Arduino Uno</th><th>Una compu del aula</th></tr>
+        <tr><td>Memoria para trabajar</td><td>2 KB</td><td>4.000.000 KB o más</td></tr>
+        <tr><td>Lugar para programas</td><td>32 KB</td><td>cientos de millones de KB</td></tr>
+        <tr><td>Cuentas por segundo</td><td>16 millones</td><td>miles de millones</td></tr>
+        <tr><td>Programas a la vez</td><td>1</td><td>muchos</td></tr>
+      </table></div>
+      <p class="nota">La compu gana en todo. Igual, para algunas cosas conviene el Arduino. ¿Para cuáles?</p>
+      <div class="clasif" data-ops="pc:Una compu,ard:Un Arduino">
+        <div class="f" data-ok="ard"><span class="t">Avisar si hiela en la huerta, todas las noches del invierno</span></div>
+        <div class="f" data-ok="pc"><span class="t">Editar el video del viaje a El Bolsón</span></div>
+        <div class="f" data-ok="ard"><span class="t">Abrir la puerta del gallinero cuando sale el sol</span></div>
+        <div class="f" data-ok="pc"><span class="t">Armar la planilla con las mediciones de todo el curso</span></div>
+      </div>
+      <p><b>Charlen en equipo:</b> una foto del celu pesa unos 3.000 KB. ¿Entra en un Arduino?
+      ¿Y entonces cómo puede alcanzarle para cuidar una planta?</p>
+      <button type="button" class="pista-b">Pista</button>
+      <div class="pista" hidden>Pensá qué <b>trabajo</b> hace cada cosa: ¿por dónde <b>entra</b> la información,
+      por dónde <b>sale</b>, quién hace las cuentas, dónde queda guardado?<br><br>
+      Para elegir: ¿hace falta una persona sentada adelante, o tiene que andar solo, mucho tiempo,
+      haciendo siempre lo mismo?</div>
+      <button type="button" class="logre" data-juego="rpc" data-nom="Compara la computadora con el microcontrolador" data-espera="1" hidden>✔ ¡Entendido!</button>
+    </div>
+  </div>
+
+  <div class="parte">
+    <div class="rot">Tercera parte</div>
+    <h2>¿Y si alguien más mira?</h2>
+    <p>Tu maceta produce <b>datos</b>. Mientras se quedan en tu mesa no pasa nada. Pero un
+    aparato que mide todos los días y avisa a distancia tiene los mismos problemas que tu
+    celular: quién ve lo que guarda, quién lo puede cambiar y qué pasa si se pierde.</p>
+  </div>
+
+  <div class="reto tapado" id="rdatos">
+    <div class="nivel">12</div>
+    <div class="cuerpo">
+      <div class="rot">Reto 12</div>
+      <h3>¿Qué cuenta de vos una maceta?</h3>
+      <button type="button" class="destapar">Empezar</button>
+      <p>Una familia tiene una maceta como la tuya en el living. Cada noche guarda <b>un solo
+      número</b>: el porcentaje de agua de la tierra. No sabe nombres, ni direcciones, ni tiene
+      cámara. Estas son dos semanas:</p>
+      <svg class="semanas" viewBox="0 0 700 246" role="img" aria-label="Porcentaje de agua en la tierra, un número por día durante dos semanas. día 1: 62, día 2: 88, día 3: 77, día 4: 66, día 5: 90, día 6: 79, día 7: 68, día 8: 57, día 9: 46, día 10: 35, día 11: 24, día 12: 86, día 13: 75, día 14: 64.">
+        <line x1="14" y1="200" x2="690" y2="200" stroke="var(--raya)" stroke-width="2"/><rect x="24" y="88" width="34" height="112" fill="var(--agua)"/><text x="41" y="82" text-anchor="middle" font-family="DM Mono,monospace" font-size="13" fill="var(--tinta)">62</text><text x="41" y="220" text-anchor="middle" font-family="Manrope,sans-serif" font-size="13" font-weight="700" fill="var(--tenue)">L</text><text x="41" y="238" text-anchor="middle" font-family="DM Mono,monospace" font-size="12" fill="var(--tenue)">1</text><rect x="72" y="42" width="34" height="158" fill="var(--agua)"/><text x="89" y="36" text-anchor="middle" font-family="DM Mono,monospace" font-size="13" fill="var(--tinta)">88</text><text x="89" y="220" text-anchor="middle" font-family="Manrope,sans-serif" font-size="13" font-weight="700" fill="var(--tenue)">M</text><text x="89" y="238" text-anchor="middle" font-family="DM Mono,monospace" font-size="12" fill="var(--tenue)">2</text><rect x="120" y="61" width="34" height="139" fill="var(--agua)"/><text x="137" y="55" text-anchor="middle" font-family="DM Mono,monospace" font-size="13" fill="var(--tinta)">77</text><text x="137" y="220" text-anchor="middle" font-family="Manrope,sans-serif" font-size="13" font-weight="700" fill="var(--tenue)">M</text><text x="137" y="238" text-anchor="middle" font-family="DM Mono,monospace" font-size="12" fill="var(--tenue)">3</text><rect x="168" y="81" width="34" height="119" fill="var(--agua)"/><text x="185" y="75" text-anchor="middle" font-family="DM Mono,monospace" font-size="13" fill="var(--tinta)">66</text><text x="185" y="220" text-anchor="middle" font-family="Manrope,sans-serif" font-size="13" font-weight="700" fill="var(--tenue)">J</text><text x="185" y="238" text-anchor="middle" font-family="DM Mono,monospace" font-size="12" fill="var(--tenue)">4</text><rect x="216" y="38" width="34" height="162" fill="var(--agua)"/><text x="233" y="32" text-anchor="middle" font-family="DM Mono,monospace" font-size="13" fill="var(--tinta)">90</text><text x="233" y="220" text-anchor="middle" font-family="Manrope,sans-serif" font-size="13" font-weight="700" fill="var(--tenue)">V</text><text x="233" y="238" text-anchor="middle" font-family="DM Mono,monospace" font-size="12" fill="var(--tenue)">5</text><rect x="264" y="58" width="34" height="142" fill="var(--agua)"/><text x="281" y="52" text-anchor="middle" font-family="DM Mono,monospace" font-size="13" fill="var(--tinta)">79</text><text x="281" y="220" text-anchor="middle" font-family="Manrope,sans-serif" font-size="13" font-weight="700" fill="var(--tenue)">S</text><text x="281" y="238" text-anchor="middle" font-family="DM Mono,monospace" font-size="12" fill="var(--tenue)">6</text><rect x="312" y="78" width="34" height="122" fill="var(--agua)"/><text x="329" y="72" text-anchor="middle" font-family="DM Mono,monospace" font-size="13" fill="var(--tinta)">68</text><text x="329" y="220" text-anchor="middle" font-family="Manrope,sans-serif" font-size="13" font-weight="700" fill="var(--tenue)">D</text><text x="329" y="238" text-anchor="middle" font-family="DM Mono,monospace" font-size="12" fill="var(--tenue)">7</text><rect x="360" y="97" width="34" height="103" fill="var(--agua)"/><text x="377" y="91" text-anchor="middle" font-family="DM Mono,monospace" font-size="13" fill="var(--tinta)">57</text><text x="377" y="220" text-anchor="middle" font-family="Manrope,sans-serif" font-size="13" font-weight="700" fill="var(--tenue)">L</text><text x="377" y="238" text-anchor="middle" font-family="DM Mono,monospace" font-size="12" fill="var(--tenue)">8</text><rect x="408" y="117" width="34" height="83" fill="var(--agua)"/><text x="425" y="111" text-anchor="middle" font-family="DM Mono,monospace" font-size="13" fill="var(--tinta)">46</text><text x="425" y="220" text-anchor="middle" font-family="Manrope,sans-serif" font-size="13" font-weight="700" fill="var(--tenue)">M</text><text x="425" y="238" text-anchor="middle" font-family="DM Mono,monospace" font-size="12" fill="var(--tenue)">9</text><rect x="456" y="137" width="34" height="63" fill="var(--agua)"/><text x="473" y="131" text-anchor="middle" font-family="DM Mono,monospace" font-size="13" fill="var(--tinta)">35</text><text x="473" y="220" text-anchor="middle" font-family="Manrope,sans-serif" font-size="13" font-weight="700" fill="var(--tenue)">M</text><text x="473" y="238" text-anchor="middle" font-family="DM Mono,monospace" font-size="12" fill="var(--tenue)">10</text><rect x="504" y="157" width="34" height="43" fill="var(--agua)"/><text x="521" y="151" text-anchor="middle" font-family="DM Mono,monospace" font-size="13" fill="var(--tinta)">24</text><text x="521" y="220" text-anchor="middle" font-family="Manrope,sans-serif" font-size="13" font-weight="700" fill="var(--tenue)">J</text><text x="521" y="238" text-anchor="middle" font-family="DM Mono,monospace" font-size="12" fill="var(--tenue)">11</text><rect x="552" y="45" width="34" height="155" fill="var(--agua)"/><text x="569" y="39" text-anchor="middle" font-family="DM Mono,monospace" font-size="13" fill="var(--tinta)">86</text><text x="569" y="220" text-anchor="middle" font-family="Manrope,sans-serif" font-size="13" font-weight="700" fill="var(--tenue)">V</text><text x="569" y="238" text-anchor="middle" font-family="DM Mono,monospace" font-size="12" fill="var(--tenue)">12</text><rect x="600" y="65" width="34" height="135" fill="var(--agua)"/><text x="617" y="59" text-anchor="middle" font-family="DM Mono,monospace" font-size="13" fill="var(--tinta)">75</text><text x="617" y="220" text-anchor="middle" font-family="Manrope,sans-serif" font-size="13" font-weight="700" fill="var(--tenue)">S</text><text x="617" y="238" text-anchor="middle" font-family="DM Mono,monospace" font-size="12" fill="var(--tenue)">13</text><rect x="648" y="85" width="34" height="115" fill="var(--agua)"/><text x="665" y="79" text-anchor="middle" font-family="DM Mono,monospace" font-size="13" fill="var(--tinta)">64</text><text x="665" y="220" text-anchor="middle" font-family="Manrope,sans-serif" font-size="13" font-weight="700" fill="var(--tenue)">D</text><text x="665" y="238" text-anchor="middle" font-family="DM Mono,monospace" font-size="12" fill="var(--tenue)">14</text>
+      </svg>
+      <p class="nota">La tierra se va secando sola, un poco cada día. Cuando alguien riega, el número pega un salto.</p>
+      <div class="clasif" data-ops="2:2,3:3,4:4,5:5">
+        <div class="f" data-ok="3"><span class="t">¿Cuántas veces regaron en estas dos semanas?</span></div>
+      </div>
+      <div class="clasif" data-ops="a:Del martes 2 al viernes 5,b:Del lunes 8 al jueves 11,c:El sábado 13 y el domingo 14">
+        <div class="f" data-ok="b"><span class="t">Esta familia riega cada tres días. ¿Qué días es casi seguro que <b>no hubo nadie</b> en la casa?</span></div>
+      </div>
+      <p>Nadie le dijo a la maceta que se iban de viaje, y lo contó igual. Que un dato lo vea
+      <b>sólo quien lo tiene que ver</b> se llama <b>confidencialidad</b>.</p>
+      <div class="clasif" data-ops="a:La lectura de ahora,b:Sus dos números: seco y mojado,c:La lista de todos los días anteriores">
+        <div class="f" data-ok="c"><span class="t">Para saber qué cara poner hoy, ¿cuál de estas tres cosas la maceta <b>no necesita</b> guardar?</span></div>
+      </div>
+      <p><b>Charlen en equipo:</b></p>
+      <ol class="pasos-led">
+        <li>¿A quién le serviría saber cuándo esa casa está vacía?</li>
+        <li>Si la maceta además guardara <b>la hora</b> de cada riego, ¿qué más contaría de esa familia?</li>
+        <li>¿Qué otros aparatos de tu casa guardan una lista así? ¿Dónde queda esa lista?</li>
+      </ol>
+      <button type="button" class="pista-b">Pista</button>
+      <div class="pista" hidden>Buscá los <b>saltos para arriba</b>: cada uno es un riego. Después mirá cuántos días pasan
+      entre un riego y el siguiente. ¿En qué tramo pasaron muchos más que tres?<br><br>
+      Y para la última: el dato que no guardás, nadie te lo puede sacar.</div>
+      <button type="button" class="logre" data-juego="rdatos" data-nom="Lee qué revelan los datos de un sensor (confidencialidad)" data-espera="1" hidden>✔ ¡Entendido!</button>
+    </div>
+  </div>
+
+  <div class="reto tapado" id="rclave">
+    <div class="nivel">13</div>
+    <div class="cuerpo">
+      <div class="rot">Reto 13</div>
+      <h3>Mensaje en clave</h3>
+      <button type="button" class="destapar">Empezar</button>
+      <p>Si la maceta avisa por el aire, cualquiera que esté cerca puede escuchar el mensaje.
+      La solución tiene dos mil años: mandarlo <b>cifrado</b>. Cada letra se cambia por la que
+      está unos lugares más adelante en el abecedario. Cuántos lugares es <b>la clave</b>, y
+      sólo la saben quien manda y quien recibe.</p>
+      <div class="cesar">
+        <div class="fila"><label for="regla-k">Clave</label>
+          <input id="regla-k" type="range" min="1" max="25" value="3"><output id="regla-v">3</output></div>
+        <div class="tira"><table id="regla" aria-label="Arriba la letra de verdad, abajo la letra cifrada con la clave elegida"></table></div>
+        <p class="nota">Arriba, la letra de verdad. Abajo, cómo viaja. Con clave 3, la A viaja como D. Usamos el abecedario sin la Ñ.</p>
+      </div>
+
+      <p class="ej">1 · Te llegó esto, y la clave es 3</p>
+      <p class="cifrado">WHQJR VHG</p>
+      <div class="campos"><label class="campo"><span>¿Qué dice la maceta?</span><input id="c1" class="texto" autocomplete="off" spellcheck="false" placeholder="?"></label></div>
+
+      <p class="ej">2 · Ahora sos quien espía: no tenés la clave</p>
+      <p class="cifrado" id="c2-cif">JXYTD GNJS</p>
+      <div class="cesar">
+        <div class="fila"><label for="prueba-k">Probar con clave</label>
+          <input id="prueba-k" type="range" min="1" max="25" value="1"><output id="prueba-v">1</output></div>
+        <p class="cifrado claro" id="prueba-out"></p>
+      </div>
+      <div class="campos"><label class="campo"><span>La clave era</span><input id="c2" type="number" inputmode="numeric" placeholder="?"></label></div>
+      <p class="nota"><b>Para pensar:</b> ¿cuántas claves tuviste que probar, como mucho? ¿Cuánto tardaría una compu?
+      Este cifrado se rompe probando. Los que usa tu celular cuando aparece el candadito hacen
+      lo mismo con tantas claves posibles que probarlas todas llevaría más que la vida de una persona.</p>
+
+      <p class="ej">3 · Mandale un mensaje a otro equipo</p>
+      <div class="campos">
+        <label class="campo"><span>Tu mensaje</span><input id="c3" class="texto" autocomplete="off" spellcheck="false" maxlength="40" placeholder="?"></label>
+        <label class="campo"><span>Tu clave</span><input id="c3k" type="number" inputmode="numeric" min="1" max="25" placeholder="?"></label>
+      </div>
+      <p class="cifrado" id="c3-out">—</p>
+      <p class="nota">Dictales lo que quedó cifrado. La clave, pasásela <b>sin que la escuche nadie más</b>: ésa es la parte difícil de verdad.</p>
+      <button type="button" class="pista-b">Pista</button>
+      <div class="pista" hidden><b>Para descifrar</b> se usa la regla al revés: buscá la letra que te llegó en la fila de
+      <b>abajo</b> y leé la que tiene arriba.<br><br>
+      <b>Sin la clave:</b> mové «probar con clave» de a uno. Con todas sale un trabalenguas, menos con una.</div>
+      <button type="button" class="logre" data-juego="rclave" data-nom="Descifra con clave y rompe un cifrado sin clave (encriptación)" data-espera="1" hidden>✔ ¡Me anda!</button>
+    </div>
+  </div>
+
+  <div class="reto tapado" id="rcid">
+    <div class="nivel">14</div>
+    <div class="cuerpo">
+      <div class="rot">Reto 14</div>
+      <h3>¿Qué se rompió?</h3>
+      <button type="button" class="destapar">Empezar</button>
+      <p>Cuando algo sale mal con los datos, siempre se rompe una de estas tres cosas:</p>
+      <ol class="pasos-led">
+        <li><b>Confidencialidad:</b> lo vio alguien que no lo tenía que ver.</li>
+        <li><b>Integridad:</b> el dato ya no es verdad, porque alguien lo cambió.</li>
+        <li><b>Disponibilidad:</b> no está cuando lo necesitás.</li>
+      </ol>
+
+      <p class="ej">1 · ¿Cuál de las tres?</p>
+      <div class="clasif" data-ops="c:Confidencialidad,i:Integridad,d:Disponibilidad">
+        <div class="f" data-ok="c"><span class="t">Un vecino mira los datos de la maceta y sabe cuándo te vas de vacaciones</span></div>
+        <div class="f" data-ok="i"><span class="t">Alguien cambió tu número de sed por 0 y ahora la maceta nunca avisa</span></div>
+        <div class="f" data-ok="d"><span class="t">Se borró el circuito del equipo y no había otra copia</span></div>
+        <div class="f" data-ok="i"><span class="t">Alguien moja el sensor con el dedo para que la maceta diga «estoy bien»</span></div>
+        <div class="f" data-ok="c"><span class="t">Otro equipo entró a tu cuenta de Tinkercad y leyó tu programa</span></div>
+        <div class="f" data-ok="d"><span class="t">Se quedó sin pilas un viernes y nadie se enteró de que la planta tenía sed</span></div>
+      </div>
+
+      <p class="ej">2 · ¿Qué lo hubiera evitado?</p>
+      <div class="clasif" data-ops="copia:Una copia de seguridad,clave:Una contraseña que no comparto,cifrar:Cifrar el mensaje">
+        <div class="f" data-ok="copia"><span class="t">Se borró el circuito del equipo</span></div>
+        <div class="f" data-ok="clave"><span class="t">Otro equipo entró a tu cuenta de Tinkercad</span></div>
+        <div class="f" data-ok="cifrar"><span class="t">Alguien escucha lo que la maceta avisa por el aire</span></div>
+      </div>
+
+      <p><b>Hacelo ahora:</b> entrá a tus diseños de Tinkercad y <b>duplicá</b> el circuito de la
+      maceta. Ya tenés una copia de seguridad.</p>
+      <p><b>Charlen en equipo:</b> la maceta va a quedar en un lugar por donde pasa gente. ¿Cuál de
+      las tres cosas es más fácil que le rompan? ¿Qué harían para cuidarla?</p>
+      <button type="button" class="logre" data-juego="rcid" data-nom="Confidencialidad, integridad y disponibilidad en su aparato" data-espera="1" hidden>✔ ¡Entendido!</button>
+    </div>
+  </div>
+
+  <div class="reto tapado" id="r5">
+    <div class="nivel">+</div>
     <div class="cuerpo">
       <div class="rot">Si llegaste antes</div>
       <h3>¿Por qué 1023 y no 1000?</h3>
@@ -426,23 +850,107 @@ function mostrarQuien(){
   quien.innerHTML=`<span>Están como <b>${esc(SES.nombre)}</b> · 2do · hoy</span>
     <button type="button" class="otro" id="noSoy">No somos</button>`;
   document.getElementById('noSoy').onclick=()=>{SES=null;pedirNombre()};
+  traerNumeros();
   pintarHechos();
 }
-function hechos(){const h=lee(K_HECHOS,{});return (h[SES.nombre+'|'+SES.fecha])||[]}
-function pintarHechos(){
-  const h=hechos();
-  document.querySelectorAll('.logre').forEach(b=>{
-    const ya=h.includes(b.dataset.juego);
-    b.disabled=ya; if(ya){b.textContent='✔ Anotado'; b.hidden=false}
-  });
+/* Los números del equipo (seco, mojado, sed, ahogo) quedan guardados por nombre, así la
+   segunda parte los encuentra aunque sea otro día. */
+const K_NUMS='pps.desafio2do.nums.v1', CAMPOS=['seco','mojado','sed','ahoga'];
+function traerNumeros(){
+  const n=(lee(K_NUMS,{})[SES.nombre])||{};
+  CAMPOS.forEach(c=>{const el=document.getElementById(c);
+    el.value=n[c]==null?'':n[c]});
+  document.getElementById('seco').dispatchEvent(new Event('input'));
+  armarPorc();
 }
+CAMPOS.forEach(c=>document.getElementById(c).addEventListener('input',()=>{
+  if(!SES) return;
+  const t=lee(K_NUMS,{}), n=t[SES.nombre]||{};
+  CAMPOS.forEach(x=>n[x]=document.getElementById(x).value); t[SES.nombre]=n; guarda(K_NUMS,t);
+}));
+
+/* ---- Reto 8: de la lectura al porcentaje, con los números del equipo ---- */
+const PORC=[50,25,80];
+function armarPorc(){
+  const caja=document.getElementById('porc'),
+        s=parseInt(document.getElementById('seco').value,10),
+        m=parseInt(document.getElementById('mojado').value,10);
+  if(!Number.isFinite(s)||!Number.isFinite(m)||s===m){
+    caja.innerHTML='<p class="nota">Para este reto hacen falta tus dos números del <b>reto 2</b>: tierra seca y tierra mojada. Completalos allá arriba y volvé.</p>';
+    return;
+  }
+  caja.innerHTML=`<p class="nota">Tu seco es <b>${s}</b> (0 %) y tu mojado es <b>${m}</b> (100 %).</p>`+
+    PORC.map((p,i)=>`<div class="f" data-p="${p}"><span>El sensor dice</span><b>${Math.round(s+(m-s)*p/100)}</b>
+      <span>→</span><input type="number" inputmode="numeric" aria-label="Porcentaje de la lectura ${i+1}" placeholder="?"><span>%</span><span class="m"></span></div>`).join('');
+  caja.querySelectorAll('.f input').forEach(i=>i.addEventListener('input',()=>{
+    const f=i.closest('.f'), v=parseFloat(i.value), ok=Number.isFinite(v)&&Math.abs(v-f.dataset.p)<=2;
+    f.classList.toggle('ok',ok); f.classList.toggle('mal',!ok&&i.value!=='');
+    f.querySelector('.m').textContent=ok?'✔':(i.value===''?'':'Todavía no');
+    const l=document.querySelector('.logre[data-juego="rporc"]');
+    if(caja.querySelectorAll('.f.ok').length===PORC.length&&!l.disabled) l.hidden=false;
+  }));
+}
+['seco','mojado'].forEach(c=>document.getElementById(c).addEventListener('change',armarPorc));
+
+/* ---- Clasificar tocando: retos 10 y 11. Las opciones salen de data-ops de cada .clasif,
+   y el «✔» del reto aparece cuando todas sus filas están bien. ---- */
+document.querySelectorAll('.clasif').forEach(c=>{
+  const ops=c.dataset.ops.split(',').map(o=>o.split(':')), reto=c.closest('.reto'), l=reto.querySelector('.logre');
+  c.querySelectorAll('.f').forEach(f=>{
+    ops.forEach(([v,t])=>{
+      const b=document.createElement('button'); b.type='button'; b.textContent=t;
+      b.addEventListener('click',()=>{
+        if(v===f.dataset.ok){b.className='si'; f.classList.add('ok')}
+        else{b.className='no'; PISTAS[l.dataset.juego]=(PISTAS[l.dataset.juego]||0)+1}
+        if(!reto.querySelector('.clasif .f:not(.ok)')&&!l.disabled) l.hidden=false;
+      });
+      f.appendChild(b);
+    });
+  });
+});
+/* ---- Reto 13: cifrado César. La regla, el mensaje con clave, el mensaje sin clave
+   y el cifrador para mandarle uno a otro equipo. ---- */
+(function(){
+  const ABC='ABCDEFGHIJKLMNOPQRSTUVWXYZ', $=id=>document.getElementById(id);
+  const limpia=t=>String(t).toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+  const cesar=(t,k)=>limpia(t).replace(/[A-Z]/g,c=>ABC[(ABC.indexOf(c)+k+26)%26]);
+  const junto=t=>limpia(t).replace(/[^A-Z]/g,'');
+  function regla(){
+    const k=+$('regla-k').value; $('regla-v').textContent=k;
+    $('regla').innerHTML='<tr>'+[...ABC].map(c=>'<td>'+c+'</td>').join('')+'</tr><tr>'+
+      [...ABC].map(c=>'<td>'+cesar(c,k)+'</td>').join('')+'</tr>';
+  }
+  function prueba(){
+    const k=+$('prueba-k').value; $('prueba-v').textContent=k;
+    $('prueba-out').textContent=cesar($('c2-cif').textContent,-k);
+  }
+  function cifrador(){
+    const k=parseInt($('c3k').value,10), t=$('c3').value.trim();
+    $('c3-out').textContent=(t&&k>=1&&k<=25)?cesar(t,k):'—';
+  }
+  const bien={c1:false,c2:false};
+  function marcar(id,ok){
+    const el=$(id); bien[id]=ok;
+    el.classList.toggle('ok',ok); el.classList.toggle('mal',!ok&&el.value!=='');
+    const l=document.querySelector('.logre[data-juego="rclave"]');
+    if(bien.c1&&bien.c2&&!l.disabled) l.hidden=false;
+  }
+  $('regla-k').addEventListener('input',regla);
+  $('prueba-k').addEventListener('input',prueba);
+  $('c3').addEventListener('input',cifrador); $('c3k').addEventListener('input',cifrador);
+  $('c1').addEventListener('input',()=>marcar('c1',junto($('c1').value)==='TENGOSED'));
+  $('c2').addEventListener('input',()=>marcar('c2',parseInt($('c2').value,10)===5));
+  regla(); prueba();
+})();
+
 const T0={}, PISTAS={};
 function registrar(b){
   const id=b.dataset.juego, seg=T0[id]?Math.max(1,Math.round((Date.now()-T0[id])/1000)):0, p=PISTAS[id]||0;
   const extra=[];
   const s=document.getElementById('seco').value, m=document.getElementById('mojado').value,
         u=document.getElementById('sed').value;
-  if(s)extra.push('seco='+s); if(m)extra.push('mojado='+m); if(u)extra.push('umbral='+u);
+  const ah=document.getElementById('ahoga').value;
+  if(s)extra.push('seco='+s); if(m)extra.push('mojado='+m); if(u)extra.push('umbral='+u); if(ah)extra.push('ahogo='+ah);
   const t={id:'d'+Date.now().toString(36)+Math.random().toString(36).slice(2,7),
     alumno:SES.nombre, anio:'2do', fecha:SES.fecha, ts:new Date().toISOString(),
     sala:'desafio2do', salaNom:'Desafío del día · cuántas cosas dice el sensor', modo:'practica',
@@ -463,7 +971,7 @@ document.querySelectorAll('.reto').forEach(r=>{
   const d=r.querySelector('.destapar'), pb=r.querySelector('.pista-b'),
         pi=r.querySelector('.pista'), l=r.querySelector('.logre');
   d.addEventListener('click',()=>{r.classList.remove('tapado');d.hidden=true;
-    if(l){T0[l.dataset.juego]=Date.now();l.hidden=false}});
+    if(l){T0[l.dataset.juego]=Date.now();if(!l.dataset.espera)l.hidden=false}});
   if(pb)pb.addEventListener('click',()=>{pi.hidden=!pi.hidden;
     pb.textContent=pi.hidden?'Pista':'Ocultar pista';
     if(!pi.hidden&&l)PISTAS[l.dataset.juego]=(PISTAS[l.dataset.juego]||0)+1});
