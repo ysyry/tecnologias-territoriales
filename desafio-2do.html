@@ -451,18 +451,18 @@ main.sin-nombre .esquema{display:none}
       <p>Con dos luces se pueden decir tres cosas: <b>azul</b> = tengo sed · <b>verde</b> = estoy
       bien · <b>las dos juntas</b> = me ahogo. El truco es meter un <b>si</b> adentro del <b>si no</b>.
       Completá lo que falta:</p>
-      <div class="prog" aria-label="Programa para completar. Siempre: definir humedad en leer pin analógico A0. Si humedad menor que tu número de sed: pin 10 en ALTA, pin 9 en BAJA. Si no: si humedad mayor que tu número de ahogo, faltan los dos bloques; si no, faltan los dos bloques.">
+      <div class="prog" aria-label="Programa para completar. Siempre: definir humedad en leer pin analógico A0. Si humedad menor que tu número de sed: pin 10 en ALTA, pin 9 en BAJA. Si no: si humedad mayor que tu tope de agua, faltan los dos bloques; si no, faltan los dos bloques.">
         <div class="blk control sombrero">siempre</div>
         <div class="dentro">
           <div class="blk var">definir <span class="h">humedad</span> en <span class="in entrada">leer pin analógico <span class="h">A0</span></span></div>
-          <div class="blk control">si <span class="in mate"><span class="in var">humedad</span> &lt; <span class="h">tu sed</span></span> entonces</div>
+          <div class="blk control">si <span class="in mate"><span class="in var">humedad</span> &lt; <span class="h n-sed">tu número de sed</span></span> entonces</div>
           <div class="dentro">
             <div class="blk salida">definir pin <span class="h">10</span> en <span class="h">ALTA</span></div>
             <div class="blk salida">definir pin <span class="h">9</span> en <span class="h">BAJA</span></div>
           </div>
           <div class="sino">si no</div>
           <div class="dentro">
-            <div class="blk control">si <span class="in mate"><span class="in var">humedad</span> &gt; <span class="h">tu ahogo</span></span> entonces</div>
+            <div class="blk control">si <span class="in mate"><span class="in var">humedad</span> &gt; <span class="h n-ahoga">tu tope de agua</span></span> entonces</div>
             <div class="dentro">
               <div class="blk salida">definir pin <span class="h">10</span> en <span class="q">?</span></div>
               <div class="blk salida">definir pin <span class="h">9</span> en <span class="q">?</span></div>
@@ -478,8 +478,8 @@ main.sin-nombre .esquema{display:none}
       <p class="nota">Probalo con la barra del sensor en tres lugares: bien seca, por la mitad y
       empapada. Tienen que salir las tres respuestas.</p>
       <button type="button" class="pista-b">Pista</button>
-      <div class="pista" hidden>«Estoy bien» es lo que queda <b>entre</b> tus dos números: más que la sed y
-      menos que el ahogo. Al último <b>si no</b> se llega sólo cuando no pasó ninguna de las otras dos cosas.<br><br>
+      <div class="pista" hidden>«Estoy bien» es lo que queda <b>entre</b> tus dos números: más que el de la sed y
+      menos que el tope de agua. Al último <b>si no</b> se llega sólo cuando no pasó ninguna de las otras dos cosas.<br><br>
       Si en tu sensor la tierra seca da el número <b>alto</b>, los dos signos van al revés.</div>
       <button type="button" class="logre" data-juego="rtres" data-nom="Tres estados con dos umbrales" hidden>✔ ¡Me anda!</button>
     </div>
@@ -575,7 +575,7 @@ main.sin-nombre .esquema{display:none}
       ¿Qué hace cada bloque de tu programa?</p>
       <div class="clasif" id="clasif" data-ops="sensa:Sensa,decide:Decide,actua:Actúa">
         <div class="f" data-ok="sensa"><div class="blk var">definir <span class="h">humedad</span> en <span class="in entrada">leer pin analógico <span class="h">A0</span></span></div></div>
-        <div class="f" data-ok="decide"><div class="blk control">si <span class="in mate"><span class="in var">humedad</span> &lt; <span class="h">tu sed</span></span> entonces</div></div>
+        <div class="f" data-ok="decide"><div class="blk control">si <span class="in mate"><span class="in var">humedad</span> &lt; <span class="h n-sed">tu número de sed</span></span> entonces</div></div>
         <div class="f" data-ok="actua"><div class="blk salida">definir pin <span class="h">10</span> en <span class="h">ALTA</span></div></div>
         <div class="f" data-ok="actua"><div class="blk salida">escribir <span class="h">Tengo sed</span> en la pantalla</div></div>
       </div>
@@ -861,6 +861,7 @@ function traerNumeros(){
   CAMPOS.forEach(c=>{const el=document.getElementById(c);
     el.value=n[c]==null?'':n[c]});
   document.getElementById('seco').dispatchEvent(new Event('input'));
+  pintarNumeros();
   armarPorc();
 }
 CAMPOS.forEach(c=>document.getElementById(c).addEventListener('input',()=>{
@@ -868,6 +869,15 @@ CAMPOS.forEach(c=>document.getElementById(c).addEventListener('input',()=>{
   const t=lee(K_NUMS,{}), n=t[SES.nombre]||{};
   CAMPOS.forEach(x=>n[x]=document.getElementById(x).value); t[SES.nombre]=n; guarda(K_NUMS,t);
 }));
+
+/* Los programas de la segunda parte muestran los números del equipo en vez del cartel. */
+function pintarNumeros(){
+  [['sed','n-sed','tu número de sed'],['ahoga','n-ahoga','tu tope de agua']].forEach(([id,cl,txt])=>{
+    const v=document.getElementById(id).value.trim();
+    document.querySelectorAll('.'+cl).forEach(e=>e.textContent=v||txt);
+  });
+}
+['sed','ahoga'].forEach(c=>document.getElementById(c).addEventListener('input',pintarNumeros));
 
 /* ---- Reto 8: de la lectura al porcentaje, con los números del equipo ---- */
 const PORC=[50,25,80];
