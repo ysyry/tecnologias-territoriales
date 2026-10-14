@@ -18,6 +18,11 @@ con Villa La Angostura adentro). Todo se resuelve arrastrando o tocando, y todo 
 hacer también con el teclado. La voz dice el nombre de lo que se toca, pero es refuerzo:
 apagada, la actividad funciona igual. Con el botón 🖼️ una máquina queda abriendo directo
 ahí, sin pasar por el menú de texto.
+Tres actividades más de pensamiento computacional, dibujadas en SVG para que se vean en
+cualquier máquina: **¿Qué sigue?** (patrones: lo que se repite es un bucle), **Cada cosa
+a su caja** (clasificar con una regla dibujada: es un «si») y **Arreglá el camino**
+(depurar: el programa tiene una flecha mal). Si se equivoca, primero se le vuelve a mostrar
+el modelo y a la segunda se ilumina la respuesta.
 
 **Practicar código, a tu ritmo** (1ro) — para quienes no llegan a los circuitos pero sí
 pueden con el código. Seis salas, unos 70 ejercicios, cada sala de lo más fácil a lo más

@@ -3,6 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Letra de emojis: en algunas PC de la escuela los emojis salían como cuadrados
+     vacíos porque el sistema no trae la letra que los dibuja. Con internet se baja
+     ésta y se ven igual en todas. Sin internet, las actividades nuevas del Modo Jr
+     no dependen de esto: están dibujadas en SVG. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap">
 <title>Tecnología para el territorio</title>
 <style>
   :root{
@@ -15,7 +22,10 @@
   }
   *{box-sizing:border-box}
   html{-webkit-text-size-adjust:100%;background:var(--bg)}
-  body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  /* los botones no heredan la letra solos: sin esto, los emojis de los botones del Modo Jr
+     seguían saliendo como cuadrados aunque estuviera la letra de emojis */
+  button{font-family:inherit}
+  body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif,"Noto Color Emoji";
     background:transparent;color:var(--txt);min-height:100vh;line-height:1.6;position:relative;
     -webkit-font-smoothing:antialiased;font-feature-settings:"cv02","cv03"}
 
@@ -388,6 +398,62 @@
   @media(prefers-reduced-motion:reduce){
     .casab:hover{transform:none}
   }
+
+  /* ---- pensar como computadora, sin leer (todo en SVG, sin emojis) ---- */
+  .ctwrap{text-align:center}
+  .ctwrap svg{display:block}
+  .ctwrap .jrmsg{display:flex;gap:8px;justify-content:center;align-items:center;min-height:62px}
+  .ctops{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-top:6px}
+  .ctop{width:118px;height:118px;border-radius:24px;border:3px solid var(--line2);background:var(--surface2);
+    display:grid;place-items:center;cursor:pointer;transition:.12s}
+  .ctop:hover:not(:disabled){border-color:var(--good)}
+  .ctop:active{transform:scale(.94)}
+  .ctop:disabled{opacity:.45;cursor:default}
+  .ctmal{animation:ctmal .45s;border-color:#e5484d!important}
+  @keyframes ctmal{20%,60%{transform:translateX(-9px)}40%,80%{transform:translateX(9px)}}
+  .ctlate{animation:ctlate 1s ease-in-out infinite;border-color:var(--good)!important;box-shadow:0 0 0 5px rgba(84,207,148,.25)}
+  @keyframes ctlate{50%{transform:scale(1.07)}}
+  .ptfila{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin:18px 0 6px}
+  .ptgrp{display:flex;gap:6px;padding:6px 6px 10px;border-radius:16px;border-bottom:6px solid transparent;transition:.3s}
+  .ptver .ptgrp:nth-child(odd){border-bottom-color:#63b3f2;background:rgba(99,179,242,.08)}
+  .ptver .ptgrp:nth-child(even){border-bottom-color:#e8b654;background:rgba(232,182,84,.08)}
+  .pttile{width:78px;height:78px;border-radius:16px;background:#0b0e15;border:2px solid var(--line);
+    display:grid;place-items:center;transition:.15s}
+  .pttile.hueco{border:3px dashed var(--warn);background:rgba(232,182,84,.08)}
+  .pttile.puesto{border-style:solid;border-color:var(--good);animation:ctlate .5s 2}
+  .pttile.lit{transform:translateY(-8px) scale(1.12);border-color:var(--b1,#63b3f2);box-shadow:0 6px 0 rgba(99,179,242,.35)}
+  .ptq{font-size:2.8rem;font-weight:800;color:var(--warn);line-height:1}
+  .clmesa{min-height:150px;display:flex;gap:8px;justify-content:center;align-items:center;margin:10px 0}
+  .clitem{cursor:grab;padding:10px;border-radius:24px;background:#0b0e15;border:2px solid var(--line);animation:clentra .3s}
+  @keyframes clentra{from{transform:scale(.6);opacity:0}}
+  .clcajas{display:grid;grid-template-columns:repeat(var(--n),minmax(0,190px));gap:16px;justify-content:center}
+  .clcaja{min-height:190px;border-radius:24px;border:3px solid var(--line2);background:var(--surface2);cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px 8px;transition:.12s}
+  .clcaja:hover:not(:disabled){border-color:var(--good)}
+  .clcaja:active{transform:scale(.96)}
+  .clcaja:disabled{cursor:default}
+  .clrot{display:grid;place-items:center;width:78px;height:78px;border-radius:18px;background:#0b0e15}
+  .clmancha{width:58px;height:58px;border-radius:14px;display:block}
+  .cldentro{display:flex;flex-wrap:wrap;gap:4px;justify-content:center}
+  .dptira{gap:8px}
+  .dpflecha{width:74px;height:74px;border-radius:16px;border:3px solid var(--line2);background:var(--surface2);
+    display:grid;place-items:center;cursor:pointer;transition:.12s}
+  .dpflecha.sel{border-color:var(--accent);background:var(--accent-dim);transform:translateY(-6px)}
+  .dpflecha.ahora{border-color:var(--warn);transform:scale(1.12)}
+  .dpflecha.culpa{border-color:#e5484d;animation:ctlate 1s ease-in-out infinite;box-shadow:0 0 0 5px rgba(229,72,77,.25)}
+  .dpflecha:disabled{cursor:default}
+  .dpdirs{display:grid;grid-template-columns:repeat(3,auto);grid-template-areas:". u ." "l . r" ". d .";gap:8px;justify-content:center;margin-top:8px;transition:.2s}
+  .dpdirs .dpdir{display:grid;place-items:center}
+  .dpdirs .dpdir:nth-child(1){grid-area:u}.dpdirs .dpdir:nth-child(2){grid-area:l}
+  .dpdirs .dpdir:nth-child(3){grid-area:r}.dpdirs .dpdir:nth-child(4){grid-area:d}
+  .dpdirs.apagado{opacity:.3}
+  .dpladr{display:block;width:70%;height:70%;border-radius:6px;background:repeating-linear-gradient(0deg,#7a5a3c 0 12px,#4a3c2e 12px 15px)}
+  .jrgo svg{display:block;margin:auto}
+  .casab svg{display:block;margin:auto}
+  .ctop:focus-visible,.clcaja:focus-visible,.dpflecha:focus-visible{outline:4px solid var(--good);outline-offset:3px}
+  @media(max-width:520px){.ctop{width:96px;height:96px}.pttile{width:62px;height:62px}.pttile svg{width:50px;height:50px}
+    .clcaja{min-height:150px}.dpflecha{width:60px;height:60px}}
+  @media(prefers-reduced-motion:reduce){.ctlate,.ctmal,.pttile.puesto,.dpflecha.culpa{animation:none}}
   /* los dos interruptores son para la docente: chicos y fuera del camino */
   .baopts{display:flex;gap:8px;margin-left:12px}
   .baopt{font-size:1.3rem;width:46px;height:40px;border-radius:12px;border:1px solid var(--line2);
@@ -3771,7 +3837,7 @@ const ANIOS = {
       Con el botón 🖼️ de la pantalla de identidad, una máquina puede
       quedar abriendo directo acá. Ver "CASA DE IMÁGENES". */
    {t:'Modo Jr', d:'Actividades con dibujos: no hay nada escrito para leer. Se puede usar solo.',
-    esp:['jr','baile','poner','mapas']},
+    esp:['jr','baile','poner','mapas','patrones','cajas','arreglar']},
    {t:'1 · Primeros pasos', d:'Qué es un algoritmo, qué es un programa y en qué orden pasan las cosas.',
     ids:[{id:'sec',tag:'a1'},{id:'alg',tag:'a1'}]},
    {t:'2 · Repetir y dibujar', d:'Repetir sin escribir todo de nuevo, y hacer arte con eso.',
@@ -4514,6 +4580,9 @@ const ESPECIALES={
  proy4:{n:'Los proyectos', d:'Los tres proyectos del cuatrimestre, cada uno en cinco etapas: los componentes, el esquema de conexión, las elecciones del equipo, la tabla de elecciones y la simulación en Tinkercad con pistas.', fn:'proyHome()', wide:true, dest:true},
  poner:{n:'Poner en su lugar', d:'Emparejar, armar y ubicar en el mapa. Se puede arrastrar la pieza o tocarla y después tocar el lugar. Sin texto para leer.', fn:'poInicio(0)', lvl:0},
  mapas:{n:'El mapa', d:'Dónde queda cada cosa: los países vecinos, las provincias, y Neuquén con Villa La Angostura adentro. La pieza tiene la forma del lugar, así que se resuelve mirando. Se arrastra o se toca la pieza y después el lugar. Sin texto para leer.', fn:'geInicio(0)', lvl:0},
+ patrones:{n:'¿Qué sigue?', d:'Patrones: una fila de figuras que se repite y un lugar vacío. Se toca la figura que va. Primero cambia sólo el color, después la forma y el tamaño. Sin texto para leer.', fn:'ptInicio(0)', lvl:0},
+ cajas:{n:'Cada cosa a su caja', d:'Clasificar: la regla está dibujada en la caja (un color, una forma o un tamaño) y cada figura va donde corresponde. Es un «si»: si es roja, va acá. Sin texto para leer.', fn:'clInicio(0)', lvl:0},
+ arreglar:{n:'Arreglá el camino', d:'Depurar: el programa de flechas ya está hecho y tiene un error. Se mira qué hace la tortuga, se toca la flecha que está mal y se cambia. Sin texto para leer.', fn:'dpInicio(0)', lvl:0},
  baile:{n:'El baile', d:'Armá una coreografía con pasos y la bailarina la hace en orden. Cada paso tiene su nota, así que la secuencia se ve, se escucha y se baila. Sin texto para leer.', fn:'baInicio(0)', lvl:0},
  estudio:{n:'Estudio de dibujo', d:'Modo libre: movés las perillas y la tortuga dibuja en vivo.', fn:'estudio()'},
  mezcla:{n:'Modo mezcla', d:'Ocho ejercicios tomados al azar de las salas de tu año.', fn:"startSala('mezcla')", wide:true},
@@ -5084,6 +5153,340 @@ function jrFinish(){
   }
 }
 
+/* ==================== PENSAR COMO COMPUTADORA, SIN LEER ====================
+   Tres actividades de pensamiento computacional pensadas para una estudiante
+   de 1ro con síndrome de Down que no lee: ¿Qué sigue? (patrones), Cada cosa a
+   su caja (clasificar con una regla) y Arreglá el camino (encontrar el error).
+
+   NO HAY UN SOLO EMOJI ACÁ. Todo está dibujado en SVG: en algunas compus de la
+   escuela los emojis salen como cuadrados vacíos (falta la letra que los
+   dibuja), y una actividad sin texto cuyo dibujo es un cuadrado no se puede
+   hacer. Los dibujos de acá se ven en cualquier máquina, con o sin internet.
+
+   Cómo está pensado, para el tipo de conocimiento al que accede:
+   - Aprendizaje sin error: si se equivoca, primero se le MUESTRA de nuevo el
+     modelo (sin castigo); si se vuelve a equivocar, se ilumina la respuesta.
+     Nunca queda trabada, y el registro igual anota cuántos intentos le llevó.
+   - Un rasgo por vez: primero cambia sólo el color (lo más visible), después
+     la forma, después el tamaño. Recién al final se mezclan y hay que mirar
+     uno solo e ignorar el otro (eso es abstraer).
+   - Pocas opciones: dos al empezar, tres como máximo.
+   - La misma forma de jugar en todos los niveles; sin reloj ni puntos en contra.
+   - Cada actividad nombra un concepto del año sin decirlo: el patrón es el
+     bucle (lo que se repite), la caja es el si (si es rojo, acá), y arreglar
+     el camino es depurar un programa.
+   ========================================================================= */
+const CT_COL={r:'#e5484d',b:'#3b82f6',y:'#f5c518',g:'#22a45d',n:'#8b96a8'};
+const CT_NOMC={r:'rojo',b:'azul',y:'amarillo',g:'verde'};
+const CT_NOMF={c:'círculo',s:'cuadrado',t:'triángulo',e:'estrella'};
+/* una figura: color + forma + tamaño opcional. 'rc' = círculo rojo, 'bs3' = cuadrado azul grande */
+function ctFig(code, px, hueca){
+  const c=CT_COL[code[0]]||'#999', s=code[1], k={1:.48,2:.72,3:1}[code[2]]||.86, r=40*k;
+  let d;
+  if(s==='c') d=`<circle cx="50" cy="50" r="${r}"/>`;
+  else if(s==='s') d=`<rect x="${50-r*.88}" y="${50-r*.88}" width="${r*1.76}" height="${r*1.76}" rx="${r*.16}"/>`;
+  else if(s==='t') d=`<polygon points="50,${50-r} ${50+r*1.08},${50+r*.82} ${50-r*1.08},${50+r*.82}"/>`;
+  else { const p=[]; for(let i=0;i<10;i++){ const a=-Math.PI/2+i*Math.PI/5, rr=i%2?r*.45:r*1.06;
+           p.push((50+rr*Math.cos(a)).toFixed(1)+','+(52+rr*Math.sin(a)).toFixed(1)); }
+         d=`<polygon points="${p.join(' ')}"/>`; }
+  const pint = hueca ? `fill="none" stroke="${c}" stroke-width="7" stroke-dasharray="10 7"`
+                     : `fill="${c}" stroke="rgba(0,0,0,.35)" stroke-width="3"`;
+  return `<svg class="ctfig" viewBox="0 0 100 100" width="${px||64}" height="${px||64}" aria-hidden="true"><g ${pint} stroke-linejoin="round">${d}</g></svg>`;
+}
+const CT_ANG={R:0,D:90,L:180,U:270};
+function ctFlecha(dir, px, col){
+  return `<svg viewBox="0 0 100 100" width="${px||56}" height="${px||56}" aria-hidden="true"><g transform="rotate(${CT_ANG[dir]} 50 50)">
+    <path d="M14 40h44V20l32 30-32 30V60H14z" fill="${col||'#63b3f2'}" stroke="rgba(0,0,0,.3)" stroke-width="3" stroke-linejoin="round"/></g></svg>`;
+}
+function ctTortuga(px, dir){
+  return `<svg viewBox="0 0 100 100" width="${px}" height="${px}" aria-hidden="true"><g transform="rotate(${CT_ANG[dir||'R']} 50 50)">
+    <ellipse cx="33" cy="25" rx="9" ry="7" fill="#7bc96f"/><ellipse cx="67" cy="25" rx="9" ry="7" fill="#7bc96f"/>
+    <ellipse cx="33" cy="75" rx="9" ry="7" fill="#7bc96f"/><ellipse cx="67" cy="75" rx="9" ry="7" fill="#7bc96f"/>
+    <circle cx="84" cy="50" r="12" fill="#7bc96f"/><circle cx="89" cy="45" r="3" fill="#0a0c11"/>
+    <ellipse cx="50" cy="50" rx="31" ry="25" fill="#2f9e5b" stroke="#1d6b3c" stroke-width="3"/>
+    <ellipse cx="50" cy="50" rx="17" ry="13" fill="#49b36f"/></g></svg>`;
+}
+const CT_PLAY=`<svg viewBox="0 0 100 100" width="52" height="52" aria-hidden="true"><polygon points="30,18 84,50 30,82" fill="#0a0c11"/></svg>`;
+const CT_SEGUIR=`<svg viewBox="0 0 100 100" width="58" height="58" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="#54cf94"/><path d="M24 44h30V28l26 22-26 22V56H24z" fill="#0a0c11"/></svg>`;
+const CT_OTRA=`<svg viewBox="0 0 100 100" width="62" height="62" aria-hidden="true"><path d="M78 50a28 28 0 1 1-9-20.5" fill="none" stroke="#e8b654" stroke-width="10" stroke-linecap="round"/><polygon points="58,14 84,22 72,44" fill="#e8b654"/></svg>`;
+function ctEstrellas(n){ return Array.from({length:n||3},()=>ctFig('ye',54)).join(''); }
+const CT_COPA=`<svg viewBox="0 0 100 100" width="64" height="64" aria-hidden="true"><path d="M28 14h44v20a22 22 0 0 1-44 0z" fill="#f5c518"/><path d="M28 20H14a14 14 0 0 0 16 18M72 20h14a14 14 0 0 1-16 18" fill="none" stroke="#f5c518" stroke-width="6"/><rect x="44" y="56" width="12" height="16" fill="#f5c518"/><rect x="30" y="72" width="40" height="12" rx="3" fill="#e8b654"/></svg>`;
+/* botón de seguir o, en el último nivel, la copa que vuelve al inicio */
+function ctFinBoton(ultimo, sig){
+  return ultimo ? `<button class="jrgo" onclick="menu()" aria-label="terminar">${CT_COPA}</button>`
+                : `<button class="jrgo ctsig" onclick="${sig}" aria-label="seguir">${CT_SEGUIR}</button>`;
+}
+function ctTop(dots){
+  return `<div class="topbar"><button class="backb" onclick="menu()" aria-label="volver">←</button>
+      <div class="progtext" style="letter-spacing:3px;color:var(--b1)">${dots}</div>
+      <div class="baopts">${btnsAyuda(false)}</div></div>`;
+}
+function ctRender(){
+  if(document.querySelector('.ptwrap')) ptRender();
+  else if(document.querySelector('.clwrap')) clRender();
+  else if(document.querySelector('.dpwrap')) dpRender();
+}
+
+/* -------------------- 1 · ¿QUÉ SIGUE? (patrones) --------------------
+   Una fila de figuras que se repite y un lugar vacío. Se toca la figura que va.
+   Cuando acierta, aparece subrayado el pedazo que se repite: eso es un bucle.
+   Si se equivoca, la fila se "lee" sola de nuevo, figura por figura, marcando
+   cada pedazo que se repite. A la segunda, la opción correcta late. */
+const PATRONES=[
+  {s:'rc bc rc bc rc ?',            o:'bc rc',       u:2},   // sólo cambia el color, 2 opciones
+  {s:'yc gc yc gc yc gc ?',         o:'yc gc',       u:2},
+  {s:'bs bt bs bt bs ?',            o:'bt bs',       u:2},   // sólo cambia la forma
+  {s:'rc bs rc bs rc ?',            o:'bs rc yt',    u:2},   // las dos cambian juntas, 3 opciones
+  {s:'rc bs rc ? rc bs',            o:'rc bs gt',    u:2},   // el hueco en el medio
+  {s:'ye ye bs ye ye bs ye ?',      o:'bs ye rc',    u:3},   // AAB
+  {s:'gc1 gc2 gc3 gc1 gc2 gc3 gc1 ?', o:'gc1 gc2 gc3', u:3}, // sólo cambia el tamaño
+  {s:'rc bs yt rc bs yt rc ?',      o:'yt rc bs',    u:3}    // ABC
+].map(p=>{ const s=p.s.split(' '), q=s.indexOf('?'), u=p.u;
+  return {s, q, a:s[q-u]||s[q+u], o:p.o.split(' '), u}; });
+let ptState;
+function ptInicio(idx){
+  cur=null;
+  const p=PATRONES[idx];
+  ptState={idx, p, ops:shuffle(p.o), err:0, intentos:0, t0:Date.now(), listo:false, mal:null, leyendo:false};
+  ptRender();
+  setTimeout(()=>ptLeer(), 500);   // primero se muestra el modelo, siempre
+}
+function ptRender(){
+  const {p,idx,listo}=ptState;
+  const tiles=p.s.map((t,i)=>{
+    const g=Math.floor(i/p.u);
+    const dentro = t==='?' ? (listo ? ctFig(p.a,62) : '<span class="ptq">?</span>') : ctFig(t,62);
+    return `<span class="pttile g${g%2}${t==='?'?' hueco':''}${listo&&t==='?'?' puesto':''}" id="pt${i}">${dentro}</span>`;
+  });
+  /* las figuras se agrupan por pedazo que se repite, para poder subrayarlos */
+  let fila=''; for(let i=0;i<tiles.length;i+=p.u) fila+=`<span class="ptgrp">${tiles.slice(i,i+p.u).join('')}</span>`;
+  const ops=ptState.ops.map((o,k)=>`<button class="ctop${ptState.mal===o?' ctmal':''}${(!listo&&ptState.err>=2&&o===p.a)?' ctlate':''}"
+     onclick="ptElegir('${o}')" aria-label="opción ${k+1}" ${listo?'disabled':''}>${ctFig(o,78)}</button>`).join('');
+  app.innerHTML=`${ctTop(puntosNivel(PATRONES.length, idx, 'ptInicio'))}
+    <div class="card ctwrap ptwrap">
+      <div class="ptfila${listo?' ptver':''}" aria-label="la fila">${fila}</div>
+      <div class="jrmsg" role="status" aria-live="polite">${listo?ctEstrellas(3):(ptState.err?CT_OTRA:'')}</div>
+      <div class="ctops">${ops}</div>
+      ${listo?`<div class="jrbtns" style="margin-top:16px">${ctFinBoton(idx>=PATRONES.length-1, `ptInicio(${idx+1})`)}</div>`:''}
+    </div>`;
+}
+/* la fila se "lee" sola: cada figura se prende en orden y cada pedazo suena igual */
+function ptLeer(){
+  if(!ptState || ptState.leyendo) return;
+  const st=ptState; st.leyendo=true;
+  const notas=[523.25,659.25,783.99,880];
+  st.p.s.forEach((t,i)=>setTimeout(()=>{
+    if(ptState!==st) return;
+    const el=document.getElementById('pt'+i); if(!el) return;
+    el.classList.add('lit'); if(t!=='?') tono(notas[i%st.p.u],.22);
+    setTimeout(()=>el.classList.remove('lit'),380);
+    if(i===st.p.s.length-1) setTimeout(()=>{ st.leyendo=false; },400);
+  }, i*430));
+}
+function ptElegir(o){
+  const st=ptState; if(st.listo) return;
+  st.intentos++;
+  if(o===st.p.a){
+    st.listo=true; st.mal=null; sonarOk(); ptRender();
+    guardarVisual('patrones','¿Qué sigue?','Patrones (lo que se repite)','Patrón '+(st.idx+1),
+                  st.intentos, Math.round((Date.now()-st.t0)/1000));
+  } else {
+    st.err++; st.mal=o; sonarNo(); ptRender();
+    setTimeout(()=>{ if(ptState===st){ st.mal=null; ptLeer(); } }, 700);
+  }
+}
+
+/* -------------------- 2 · CADA COSA A SU CAJA (clasificar) --------------------
+   Aparece una figura grande. Se toca la caja donde va (o se la arrastra).
+   La regla está DIBUJADA en la caja: un manchón de color, una forma en gris
+   o un tamaño. Es un si: si es roja, va acá. Al final se mezclan formas y
+   colores y hay que mirar uno solo: eso es abstraer. */
+const CAJAS=[
+  {por:'c', cajas:['r','b'],     items:'rc bc rc bc'},
+  {por:'c', cajas:['y','g'],     items:'ys gs ys gs gs ys'},
+  {por:'f', cajas:['c','s'],     items:'bc bs bc bs bs bc'},
+  {por:'c', cajas:['r','b','y'], items:'rc bc yc bc rc yc'},
+  {por:'f', cajas:['c','s','t'], items:'gc gt gs gt gc gs'},
+  {por:'t', cajas:['1','3'],     items:'rc1 rc3 rc3 rc1 rc1 rc3'},
+  {por:'c', cajas:['r','b'],     items:'rc bs rt be rs bc rs bt'},   // varias formas: mirar sólo el color
+  {por:'f', cajas:['c','e'],     items:'rc ye bc re yc ge gc be'}    // varios colores: mirar sólo la forma
+];
+function clRasgo(item, por){ return por==='c' ? item[0] : por==='f' ? item[1] : (item[2]||'2'); }
+function clRotulo(por, k){
+  if(por==='c') return `<span class="clmancha" style="background:${CT_COL[k]}"></span>`;
+  if(por==='f') return ctFig('n'+k, 62, true);
+  return ctFig('nc'+k, 62, true);
+}
+let clState;
+function clInicio(idx){
+  cur=null;
+  const n=CAJAS[idx];
+  clState={idx, n, cola:shuffle(n.items.split(' ')), dentro:n.cajas.map(()=>[]),
+           err:0, intentos:0, t0:Date.now(), mal:-1};
+  clRender();
+}
+function clRender(){
+  const {n,idx,cola,dentro}=clState, item=cola[0], listo=!item;
+  const bien = item ? n.cajas.indexOf(clRasgo(item,n.por)) : -1;
+  const cajas=n.cajas.map((k,i)=>`<button class="clcaja${clState.mal===i?' ctmal':''}${(clState.err>=2&&i===bien)?' ctlate':''}"
+      onclick="clPoner(${i})" ondragover="event.preventDefault()" ondrop="event.preventDefault();clPoner(${i})"
+      aria-label="caja ${i+1}" ${listo?'disabled':''}>
+      <span class="clrot">${clRotulo(n.por,k)}</span>
+      <span class="cldentro">${dentro[i].map(t=>ctFig(t,34)).join('')}</span></button>`).join('');
+  app.innerHTML=`${ctTop(puntosNivel(CAJAS.length, idx, 'clInicio'))}
+    <div class="card ctwrap clwrap">
+      <div class="clmesa">${item?`<span class="clitem" draggable="true" aria-label="la figura">${ctFig(item,120)}</span>`:ctEstrellas(3)}</div>
+      <div class="jrmsg" role="status" aria-live="polite">${!listo&&clState.err?CT_OTRA:''}</div>
+      <div class="clcajas" style="--n:${n.cajas.length}">${cajas}</div>
+      ${listo?`<div class="jrbtns" style="margin-top:16px">${ctFinBoton(idx>=CAJAS.length-1, `clInicio(${idx+1})`)}</div>`:''}
+    </div>`;
+}
+function clPoner(i){
+  const st=clState, item=st.cola[0]; if(!item) return;
+  st.intentos++;
+  if(st.n.cajas[i]===clRasgo(item,st.n.por)){
+    st.cola.shift(); st.dentro[i].push(item); st.err=0; st.mal=-1;
+    tono(659.25,.18);
+    if(!st.cola.length){
+      sonarOk();
+      guardarVisual('cajas','Cada cosa a su caja','Clasificar con una regla','Cajas '+(st.idx+1),
+                    st.intentos - st.n.items.split(' ').length + 1, Math.round((Date.now()-st.t0)/1000));
+    }
+    clRender();
+  } else {
+    /* la figura no se pierde: vuelve a la mesa, la caja tiembla, y a la
+       segunda vez la caja que va se ilumina */
+    st.err++; st.mal=i; sonarNo(); clRender();
+    setTimeout(()=>{ if(clState===st){ st.mal=-1; clRender(); } }, 650);
+  }
+}
+
+/* -------------------- 3 · ARREGLÁ EL CAMINO (depurar) --------------------
+   El programa YA ESTÁ HECHO y tiene una flecha equivocada. Primero se aprieta
+   ▶ y se mira qué hace la tortuga: ahí se ve el error. Después se toca la
+   flecha que está mal y se elige la que va. Eso es depurar.
+   Ayuda que se va retirando: en los primeros niveles, la flecha culpable se
+   marca apenas falla la tortuga; en los últimos, recién al segundo intento. */
+const ARREGLAR=[
+  {cols:4,rows:1,ini:[0,0],meta:[3,0],prog:'RRL',    marca:1},
+  {cols:1,rows:4,ini:[0,3],meta:[0,0],prog:'UDU',    marca:1},
+  {cols:5,rows:1,ini:[0,0],meta:[4,0],prog:'RRRU',   marca:1},
+  {cols:2,rows:2,ini:[0,0],meta:[1,1],prog:'RU',     marca:1},
+  {cols:3,rows:3,ini:[0,2],meta:[2,0],prog:'RRUD',   marca:2},
+  {cols:4,rows:3,ini:[0,0],meta:[3,2],prog:'RRLDD',  marca:2},
+  {cols:4,rows:3,ini:[0,1],meta:[3,1],prog:'RURRU',  marca:2, muros:[[2,1]]}
+];
+let dpState;
+function dpInicio(idx){
+  cur=null;
+  const n=ARREGLAR[idx];
+  dpState={idx, n, prog:n.prog.split(''), pos:n.ini.slice(), dir:'R', sel:-1, culpa:-1, corre:false,
+           paso:-1, corridas:0, intentos:0, t0:Date.now(), listo:false, vioFallar:false};
+  dpRender();
+}
+function dpMuro(n,c,r){ return (n.muros||[]).some(m=>m[0]===c&&m[1]===r); }
+/* simula el programa: devuelve las posiciones y el primer paso que no sirve */
+function dpSimular(n, prog){
+  let c=n.ini[0], r=n.ini[1]; const camino=[];
+  prog.forEach(a=>{ let nc=c,nr=r; if(a==='R')nc++; else if(a==='L')nc--; else if(a==='U')nr--; else nr++;
+    const ok = nc>=0&&nc<n.cols&&nr>=0&&nr<n.rows&&!dpMuro(n,nc,nr);
+    if(ok){ c=nc; r=nr; } camino.push({c,r,a,ok}); });
+  return {camino, llega: c===n.meta[0]&&r===n.meta[1]};
+}
+/* la flecha culpable: la primera desde la cual ya no se puede llegar con lo que queda.
+   Se calcula probando arreglos de a una flecha. */
+function dpCulpable(n, prog){
+  for(let k=0;k<prog.length;k++) for(const a of 'RLUD'){
+    if(a===prog[k]) continue;
+    const p=prog.slice(); p[k]=a; if(dpSimular(n,p).llega) return k;
+  }
+  return -1;
+}
+function dpRender(){
+  const st=dpState, n=st.n, cel=n.cols<=3?100:n.cols===4?88:76;
+  let celdas='';
+  for(let r=0;r<n.rows;r++) for(let c=0;c<n.cols;c++){
+    const tort = st.pos[0]===c&&st.pos[1]===r, meta=n.meta[0]===c&&n.meta[1]===r, muro=dpMuro(n,c,r);
+    celdas+=`<div class="jrcell${meta?' goal':''}${muro?' wall':''}">${tort?ctTortuga(cel*.8,st.dir):(meta?ctFig('ye',cel*.62):(muro?'<span class="dpladr"></span>':''))}</div>`;
+  }
+  const tira=st.prog.map((a,k)=>`<button class="dpflecha${k===st.sel?' sel':''}${k===st.paso?' ahora':''}${k===st.culpa?' culpa':''}"
+      onclick="dpElegir(${k})" aria-label="flecha ${k+1}" ${st.corre||st.listo?'disabled':''}>${ctFlecha(a,54)}</button>`).join('');
+  const dirs=['U','L','R','D'].map(a=>`<button class="jrbtn dpdir" onclick="dpCambiar('${a}')" aria-label="${JR_NOM[a]}"
+      ${st.sel<0||st.corre||st.listo?'disabled':''}>${ctFlecha(a,58)}</button>`).join('');
+  app.innerHTML=`${ctTop(puntosNivel(ARREGLAR.length, st.idx, 'dpInicio'))}
+    <div class="card ctwrap dpwrap jrwrap">
+     <div class="jrcols">
+      <div><div class="jrgrid" style="--jrc:${cel}px;grid-template-columns:repeat(${n.cols},${cel}px)">${celdas}</div></div>
+      <div>
+        <div class="jrmsg" role="status" aria-live="polite">${st.listo?ctEstrellas(3):(st.vioFallar&&!st.corre?CT_OTRA:'')}</div>
+        <div class="jrstrip dptira" aria-label="el programa">${tira}</div>
+        <div class="dpdirs${st.sel<0?' apagado':''}">${dirs}</div>
+        <div class="jrbtns" style="margin-top:14px">
+          ${st.listo ? ctFinBoton(st.idx>=ARREGLAR.length-1, `dpInicio(${st.idx+1})`)
+                     : `<button class="jrgo${!st.vioFallar&&!st.corre?' ctlate':''}" onclick="dpCorrer()" aria-label="que camine" ${st.corre?'disabled':''}>${CT_PLAY}</button>`}
+        </div>
+      </div>
+     </div>
+    </div>`;
+}
+function dpElegir(k){
+  const st=dpState; if(st.corre||st.listo) return;
+  st.sel = st.sel===k ? -1 : k; tono(587.33,.12); dpRender();
+}
+function dpCambiar(a){
+  const st=dpState; if(st.sel<0||st.corre||st.listo) return;
+  st.prog[st.sel]=a; tono(JR_F[a],.2); decir(JR_NOM[a]);
+  if(st.sel===st.culpa) st.culpa=-1;
+  st.sel=-1; st.pos=st.n.ini.slice(); st.dir='R'; dpRender();
+}
+function dpCorrer(){
+  const st=dpState; if(st.corre||st.listo) return;
+  st.corre=true; st.sel=-1; st.corridas++;
+  if(st.vioFallar) st.intentos++;   // la primera corrida es para mirar el error, no cuenta
+  st.pos=st.n.ini.slice(); st.dir='R';
+  const sim=dpSimular(st.n, st.prog); let i=0;
+  const tick=()=>{
+    if(dpState!==st) return;
+    if(i>=sim.camino.length){ st.corre=false; st.paso=-1; dpFin(sim.llega); return; }
+    const s=sim.camino[i]; st.paso=i; st.dir=s.a;
+    if(s.ok){ st.pos=[s.c,s.r]; tono(JR_F[s.a],.22); } else tono(160,.14);
+    i++; dpRender(); setTimeout(tick,560);
+  };
+  dpRender(); setTimeout(tick,350);
+}
+function dpFin(llega){
+  const st=dpState;
+  if(llega){
+    st.listo=true; sonarOk(); dpRender();
+    guardarVisual('arreglar','Arreglá el camino','Depurar (encontrar el error)','Camino '+(st.idx+1),
+                  Math.max(1,st.intentos), Math.round((Date.now()-st.t0)/1000));
+    return;
+  }
+  sonarNo();
+  st.vioFallar=true; st.fallas=(st.fallas||0)+1;
+  /* marca = después de cuántas caídas se ilumina la flecha culpable */
+  if(st.fallas>=st.n.marca) st.culpa=dpCulpable(st.n, st.prog);
+  dpRender();
+  setTimeout(()=>{ if(dpState===st&&!st.corre){ st.pos=st.n.ini.slice(); st.dir='R'; dpRender(); } }, 1200);
+}
+
+/* teclado, igual que en las otras del Modo Jr:
+   ¿Qué sigue? → 1 2 3 · Cajas → 1 2 3 · Arreglar → 1…6 elige flecha, flechas la cambian, Enter camina */
+document.addEventListener('keydown', e=>{
+  if(e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
+  if(!document.querySelector('.ctwrap')) return;
+  const k=e.key, n='123456'.indexOf(k);
+  if(k==='Escape'){ e.preventDefault(); menu(); return; }
+  if(document.querySelector('.ptwrap') && ptState && n>=0 && n<ptState.ops.length){ e.preventDefault(); ptElegir(ptState.ops[n]); return; }
+  if(document.querySelector('.clwrap') && clState && n>=0 && n<clState.n.cajas.length){ e.preventDefault(); clPoner(n); return; }
+  if(document.querySelector('.dpwrap') && dpState){
+    if(n>=0 && n<dpState.prog.length){ e.preventDefault(); dpElegir(n); return; }
+    const a={ArrowUp:'U',ArrowDown:'D',ArrowLeft:'L',ArrowRight:'R'}[k];
+    if(a && dpState.sel>=0){ e.preventDefault(); dpCambiar(a); return; }
+    if(k==='Enter' && !(e.target && e.target.tagName==='BUTTON')){ e.preventDefault(); dpCorrer(); }
+  }
+});
+
 /* Guarda una actividad visual (Jr, baile) con la MISMA forma que una tanda
    normal, para que aparezca en el panel docente y en la planilla sin tocar
    nada más. Una fila por camino o coreografía terminada. */
@@ -5158,6 +5561,7 @@ function toggleSonido(){
   else if(document.querySelector('.jrwrap')) jrRender();
   else if(document.querySelector('.gewrap')) geRender();
   else if(document.querySelector('.powrap')) poRender();
+  else if(document.querySelector('.ctwrap')) ctRender();
 }
 function togglePalabras(){
   PALAB=!PALAB;
@@ -5230,6 +5634,9 @@ function casaImagenes(){
         <button class="casab" onclick="baInicio(0)" aria-label="el baile">💃</button>
         <button class="casab" onclick="poInicio(0)" aria-label="poner en su lugar">🧩</button>
         <button class="casab" onclick="geInicio(0)" aria-label="el mapa">🗺️</button>
+        <button class="casab" onclick="ptInicio(0)" aria-label="qué sigue"><span style="display:flex;gap:4px;justify-content:center">${ctFig('rc',58)}${ctFig('bs',58)}${ctFig('rc',58)}</span></button>
+        <button class="casab" onclick="clInicio(0)" aria-label="cada cosa a su caja"><svg viewBox="0 0 120 100" width="150" height="125" aria-hidden="true"><circle cx="40" cy="30" r="15" fill="#e5484d"/><rect x="66" y="16" width="28" height="28" rx="4" fill="#3b82f6"/><path d="M14 52h92l-8 40H22z" fill="#a8763e" stroke="#6b4a26" stroke-width="4" stroke-linejoin="round"/></svg></button>
+        <button class="casab" onclick="dpInicio(0)" aria-label="arreglá el camino"><span style="display:flex;gap:6px;align-items:center;justify-content:center">${ctTortuga(90)}${ctFlecha('R',60,'#e5484d')}</span></button>
       </div>
       <div class="casapie"><button class="casacfg" onclick="salirImagenes()"
         aria-label="volver al menú normal" title="volver al menú normal">⚙️</button></div>
