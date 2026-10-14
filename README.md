@@ -19,6 +19,13 @@ hacer también con el teclado. La voz dice el nombre de lo que se toca, pero es 
 apagada, la actividad funciona igual. Con el botón 🖼️ una máquina queda abriendo directo
 ahí, sin pasar por el menú de texto.
 
+**Practicar código, a tu ritmo** (1ro) — para quienes no llegan a los circuitos pero sí
+pueden con el código. Seis salas, unos 70 ejercicios, cada sala de lo más fácil a lo más
+difícil: paso a paso, la caja que guarda, repetir, decidir, uní las partes y programas de
+juego. Casi no hay opción múltiple: se **escribe** la respuesta (qué aparece, cuánto vale
+la caja después de cada línea, qué va en el hueco), se **unen** parejas o se **ordena** el
+programa. Si algo está mal, se marca en rojo sólo lo que hay que revisar.
+
 **2do** — taller de robótica por unidades, más las salas de variables, operadores,
 condicionales y programas enteros.
 

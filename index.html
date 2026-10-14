@@ -149,6 +149,42 @@
   .pline.noline{border-color:var(--bad);background:rgba(240,138,138,.09)}
   .emptyhint{color:var(--faint);font-size:.8rem;text-align:center;padding:13px 6px}
 
+  /* ---- escribir la respuesta ---- */
+  .campos{display:grid;gap:10px;margin:6px 0 4px}
+  .campo{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,13em);gap:6px 14px;align-items:center;
+    background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+  .campo span{font-size:.95rem;color:var(--txt);line-height:1.4}
+  .campos.una .campo{grid-template-columns:auto minmax(0,1fr)}
+  .cin{width:100%;font:600 1.05rem inherit;font-family:inherit;color:#fff;background:#0b0e15;border:1.5px solid var(--line2);
+    border-radius:8px;padding:10px 12px;min-width:0}
+  .cin.mono{font-family:ui-monospace,Menlo,monospace;font-size:.95rem}
+  .cin:focus-visible{outline:3px solid var(--accent);outline-offset:1px}
+  .cin.okin{border-color:var(--good);background:rgba(84,207,148,.1)}
+  .cin.noin{border-color:var(--bad);background:rgba(240,138,138,.09)}
+  .cin:disabled{opacity:1}
+  @media(max-width:560px){.campo,.campos.una .campo{grid-template-columns:1fr}}
+
+  /* ---- unir ---- */
+  .unirhint{font-size:.85rem;margin:0 0 10px}
+  .unir{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .ucol{display:flex;flex-direction:column;gap:8px}
+  .uit{display:flex;width:100%;margin:0;justify-content:flex-start;gap:10px;align-items:flex-start;text-align:left;background:var(--surface2);color:var(--txt);
+    border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;font:inherit;font-size:.93rem;line-height:1.45;cursor:pointer;transition:.13s;min-width:0}
+  .uit:hover:not(:disabled){border-color:var(--line2);background:var(--raise)}
+  .uit:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+  .uit.sel{border-color:var(--accent);background:var(--accent-dim);box-shadow:0 0 0 2px var(--accent-dim)}
+  .uit:disabled{cursor:default}
+  .ucode{font-family:ui-monospace,Menlo,monospace;font-size:.84rem;white-space:pre;overflow-x:auto;min-width:0}
+  .unum{flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:.78rem;color:#0a0c11}
+  .unum.vac{background:transparent;border:1.5px dashed var(--line2);color:var(--faint)}
+  .unum.u0{background:#63b3f2}.unum.u1{background:#e8b654}.unum.u2{background:#c792ea}
+  .unum.u3{background:#f78c6c}.unum.u4{background:#7fdbca}.unum.u5{background:#f07178}
+  .uit.hecho.u0{border-color:#63b3f2}.uit.hecho.u1{border-color:#e8b654}.uit.hecho.u2{border-color:#c792ea}
+  .uit.hecho.u3{border-color:#f78c6c}.uit.hecho.u4{border-color:#7fdbca}.uit.hecho.u5{border-color:#f07178}
+  .uit.uok{border-color:var(--good)!important;background:rgba(84,207,148,.09)}
+  .uit.uno{border-color:var(--bad)!important;background:rgba(240,138,138,.09)}
+  @media(max-width:560px){.unir{gap:8px}.uit{padding:9px;font-size:.86rem}.ucode{font-size:.76rem}}
+
   /* ---- escenario ---- */
   .stage{background:#0b0e15;border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:6px}
   .sttitle{font-size:.72rem;font-weight:700;color:var(--faint);margin:2px 0 9px;
@@ -681,7 +717,8 @@ const FLOW_PARIMPAR = (function(){
 
 /* ============================================================
    BANCO DE EJERCICIOS
-   type: 'order' | 'mc' | 'fill' | 'bug'  (+ svg opcional: diagrama)
+   type: 'order' | 'mc' | 'fill' | 'bug' | 'escribir' | 'unir'  (+ svg opcional: diagrama)
+   escribir → campos:[{et, ok:[...] o (v)=>bool, exacto?}]  ·  unir → pares:[[izq,der]], codigo?
    ============================================================ */
 /* ============================================================
    CIRCUITOS — dibujados acá como SVG.
@@ -1969,6 +2006,426 @@ const SALAS = [
         explica:'Cada luz vale el doble que la anterior: 1, 2, 4 y 8. Todas prendidas suman 15, y con todas apagadas es el 0.' }
     ]
   },
+
+  /* ============================================================
+     1ro · PRACTICAR CÓDIGO, A TU RITMO
+     Para los que no llegan a los circuitos pero sí pueden con el código.
+     Casi sin opción múltiple: se ESCRIBE la respuesta, se UNEN parejas
+     o se ORDENA el programa. Así no se resuelve tocando hasta que sale.
+     Cada sala va en orden (enOrden): de lo más fácil a lo más difícil.
+     ============================================================ */
+  {
+    id:'p1sec', nom:'Paso a paso', desc:'La máquina hace una línea, después la otra. ¿Qué aparece en la pantalla?',
+    concepto:'Una línea después de otra', enOrden:true,
+    ejs:[
+      { type:'escribir', a1:true,
+        consigna:'¿Qué aparece en la pantalla?',
+        code:'mostrar "Hola"',
+        campos:[{et:'Aparece', ok:['hola']}],
+        pista:'mostrar escribe en la pantalla lo que está entre comillas.',
+        explica:'mostrar escribe en la pantalla. Lo que va entre comillas sale tal cual.' },
+      { type:'escribir', a1:true,
+        consigna:'Aparecen dos cosas. ¿Cuál sale primero y cuál después?',
+        code:'mostrar "Buen día"\nmostrar "Chau"',
+        campos:[{et:'Primero aparece', ok:['buen dia']},{et:'Después aparece', ok:['chau']}],
+        pista:'La máquina lee de arriba para abajo, igual que vos.',
+        explica:'La máquina hace las líneas en orden, de arriba para abajo. Nunca se saltea ni cambia el orden.' },
+      { type:'escribir', a1:true,
+        consigna:'Acá no hay comillas. ¿Qué aparece?',
+        code:'mostrar 3 + 4',
+        campos:[{et:'Aparece', ok:['7']}],
+        pista:'Sin comillas, la máquina hace la cuenta.',
+        explica:'Sin comillas, la máquina hace la cuenta y muestra el resultado: 7.' },
+      { type:'escribir', a1:true,
+        consigna:'Ahora la cuenta está entre comillas. ¿Qué aparece?',
+        code:'mostrar "3 + 4"',
+        campos:[{et:'Aparece', ok:['3 + 4','3+4']}],
+        pista:'Entre comillas, la máquina no calcula: copia.',
+        explica:'Entre comillas no se calcula nada: aparece 3 + 4, igual que como está escrito. Las comillas dicen «esto es texto».' },
+      { type:'unir', a1:true, codigo:'izq',
+        consigna:'Uní cada línea con lo que aparece en la pantalla.',
+        pares:[['mostrar 2 + 2','4'],['mostrar "2 + 2"','2 + 2'],['mostrar 10 - 3','7'],['mostrar "Hola"','Hola']],
+        explica:'Con comillas sale tal cual. Sin comillas, la máquina hace la cuenta.' },
+      { type:'escribir', a1:true,
+        consigna:'Escribí las tres cosas que aparecen, en orden.',
+        code:'mostrar 5 + 5\nmostrar "fin"\nmostrar 9 - 1',
+        campos:[{et:'1º', ok:['10']},{et:'2º', ok:['fin']},{et:'3º', ok:['8']}],
+        pista:'Una línea por vez. Las que no tienen comillas son cuentas.',
+        explica:'Una línea por vez: primero la cuenta 5 + 5 = 10, después el texto «fin», y por último la cuenta 9 − 1 = 8.' },
+      { type:'order', a1:true,
+        consigna:'Armá el programa para que en la pantalla aparezca: Villa · La · Angostura',
+        correcto:['mostrar "Villa"','mostrar "La"','mostrar "Angostura"'],
+        explica:'El orden de las líneas es el orden en que aparecen las cosas. Si cambiás el orden, cambia lo que se ve.' },
+      { type:'order', a1:true,
+        consigna:'La cuenta regresiva. Tiene que aparecer: 3 · 2 · 1 · ¡Ya!',
+        correcto:['mostrar 3','mostrar 2','mostrar 1','mostrar "¡Ya!"'],
+        explica:'Los números van sin comillas y el ¡Ya! con comillas, porque es texto.' },
+      { type:'escribir', a1:true,
+        consigna:'Completá el hueco con un número para que aparezca 12.',
+        code:'mostrar 5 + ___',
+        campos:[{et:'En el hueco va', ok:['7']}],
+        pista:'¿Cuánto le falta a 5 para llegar a 12?',
+        explica:'5 + 7 = 12. Fijate abajo cómo corre el programa con tu número.' },
+      { type:'escribir', a1:true,
+        consigna:'Completá el hueco para que aparezca 20.',
+        code:'mostrar 30 - ___',
+        campos:[{et:'En el hueco va', ok:['10']}],
+        pista:'¿Cuánto hay que sacarle a 30 para que quede 20?',
+        explica:'30 − 10 = 20.' },
+      { type:'escribir', a1:true,
+        consigna:'Escribí vos la línea entera: tiene que hacer aparecer la palabra Lago en la pantalla.',
+        campos:[{et:'Tu línea', ok:['mostrar "Lago"','decir "Lago"'], exacto:true, ph:'mostrar ...'}],
+        pista:'Empieza con mostrar, y la palabra va entre comillas.',
+        explica:'mostrar "Lago". Sin las comillas la máquina buscaría una caja que se llame Lago, y no la encuentra.' },
+      { type:'escribir', a1:true,
+        consigna:'Uno difícil. ¿Qué aparece en cada línea?',
+        code:'mostrar 2 + 3\nmostrar "2" + "3"\nmostrar 10 - 2 - 2',
+        campos:[{et:'1º', ok:['5']},{et:'2º', ok:['23']},{et:'3º', ok:['6']}],
+        pista:'En la del medio los dos números están entre comillas: son texto. ¿Qué pasa cuando juntás dos textos?',
+        explica:'La primera es una cuenta: 5. En la segunda «2» y «3» son textos, y sumar textos los pega uno al lado del otro: 23. La tercera se hace de a una resta: 10 − 2 = 8, y 8 − 2 = 6.' }
+    ]
+  },
+  {
+    id:'p1var', nom:'La caja que guarda', desc:'Una variable es una caja con nombre. Seguí qué número tiene adentro.',
+    concepto:'Variables: la caja que guarda', enOrden:true,
+    ejs:[
+      { type:'escribir', a1:true,
+        consigna:'¿Qué aparece?',
+        code:'puntos = 4\nmostrar puntos',
+        campos:[{et:'Aparece', ok:['4']}],
+        pista:'La primera línea mete el 4 en la caja puntos.',
+        explica:'La caja puntos guarda el 4. Al mostrarla aparece lo que tiene adentro.' },
+      { type:'escribir', a1:true,
+        consigna:'¿Qué aparece?',
+        code:'vidas = 3\nvidas = 5\nmostrar vidas',
+        campos:[{et:'Aparece', ok:['5']}],
+        pista:'En la caja entra un solo número. Cuando ponés otro, el anterior se va.',
+        explica:'La caja guarda uno solo. El 5 pisa al 3, así que aparece 5.' },
+      { type:'escribir', a1:true,
+        consigna:'Seguí la caja. ¿Cuánto vale puntos después de cada línea?',
+        code:'puntos = 0\npuntos = puntos + 2\npuntos = puntos + 2\npuntos = puntos + 2',
+        campos:[{et:'Después de la línea 1', ok:['0']},{et:'Después de la línea 2', ok:['2']},{et:'Después de la línea 3', ok:['4']},{et:'Después de la línea 4', ok:['6']}],
+        pista:'puntos = puntos + 2 quiere decir: lo que había, más 2.',
+        explica:'Arranca en 0 y cada línea le suma 2 a lo que ya había: 0, 2, 4, 6. Así cuenta un juego los puntos.' },
+      { type:'escribir', a1:true,
+        consigna:'¿Qué aparece?',
+        code:'goles = 1\ngoles = goles + 1\nmostrar goles',
+        campos:[{et:'Aparece', ok:['2']}],
+        explica:'Había 1 gol y se suma 1: quedan 2.' },
+      { type:'unir', a1:true, codigo:'izq',
+        consigna:'Uní cada línea con lo que hace.',
+        pares:[['puntos = 0','La caja puntos empieza en cero'],['puntos = puntos + 1','Le suma 1 a lo que ya tenía'],['puntos = puntos - 1','Le saca 1 a lo que tenía'],['puntos = 10','Borra lo que había y pone 10'],['mostrar puntos','Muestra lo que hay en la caja']],
+        explica:'El nombre de la caja va a la izquierda del =, y a la derecha lo que se guarda. Si la caja aparece también a la derecha, se usa lo que ya tenía.' },
+      { type:'escribir', a1:true,
+        consigna:'Ojo con las comillas. ¿Qué aparece primero y qué después?',
+        code:'puntos = 7\nmostrar "puntos"\nmostrar puntos',
+        campos:[{et:'Primero aparece', ok:['puntos']},{et:'Después aparece', ok:['7']}],
+        pista:'Una tiene comillas y la otra no. ¿Cuál es texto y cuál es la caja?',
+        explica:'Con comillas aparece la palabra puntos, tal cual. Sin comillas la máquina abre la caja y muestra lo que tiene: 7.' },
+      { type:'escribir', a1:true,
+        consigna:'Los centímetros de nieve en el cerro. Seguí la caja.',
+        code:'nieve = 10\nnieve = nieve + 5\nnieve = nieve - 3\nmostrar nieve',
+        campos:[{et:'Después de la línea 1', ok:['10']},{et:'Después de la línea 2', ok:['15']},{et:'Después de la línea 3', ok:['12']},{et:'Aparece', ok:['12']}],
+        pista:'Nevó 5 y después se derritieron 3.',
+        explica:'10, más 5 que nevó, son 15. Se derriten 3 y quedan 12.' },
+      { type:'escribir', a1:true,
+        consigna:'Perdió una vida y tiene que aparecer 2. ¿Qué signo va en el hueco?',
+        code:'vidas = 3\nvidas = vidas ___ 1\nmostrar vidas',
+        campos:[{et:'En el hueco va', ok:['-']}],
+        pista:'Perder es sacar.',
+        explica:'vidas − 1: de 3 pasa a 2.' },
+      { type:'escribir', a1:true,
+        consigna:'Tiene que aparecer 15. ¿Qué número va en el hueco?',
+        code:'puntos = 8\npuntos = puntos + ___\nmostrar puntos',
+        campos:[{et:'En el hueco va', ok:['7']}],
+        pista:'¿Cuánto le falta a 8 para llegar a 15?',
+        explica:'8 + 7 = 15.' },
+      { type:'order', a1:true,
+        consigna:'Armá el programa para que aparezca 6. Empezá poniendo la caja en cero.',
+        correcto:['monedas = 0','monedas = monedas + 3','monedas = monedas + 3','mostrar monedas'],
+        explica:'Primero se crea la caja, después se suma, y recién al final se muestra. Si el mostrar va antes, aparece un número que todavía no terminó de sumarse.' },
+      { type:'escribir', a1:true,
+        consigna:'Escribí vos una línea que guarde el 20 en una caja llamada tiempo.',
+        campos:[{et:'Tu línea', ok:['tiempo = 20'], exacto:true, ph:'nombre = valor'}],
+        pista:'Primero el nombre de la caja, después el =, y al final lo que se guarda.',
+        explica:'tiempo = 20. Siempre en ese orden: la caja a la izquierda, lo que se guarda a la derecha.' },
+      { type:'escribir', a1:true,
+        consigna:'Dos cajas. ¿Qué aparece?',
+        code:'a = 4\nb = a + 1\nmostrar a + b',
+        campos:[{et:'b vale', ok:['5']},{et:'Aparece', ok:['9']}],
+        pista:'Primero averiguá cuánto vale b. Después sumá las dos cajas.',
+        explica:'b es a + 1, o sea 5. Y a + b es 4 + 5 = 9.' },
+      { type:'escribir', a1:true,
+        consigna:'Más difícil. Seguí las dos cajas.',
+        code:'x = 2\ny = x + 3\nx = y + x\nmostrar x',
+        campos:[{et:'y vale', ok:['5']},{et:'Al final x vale', ok:['7']}],
+        pista:'En la línea 3, x todavía vale 2 cuando se hace la cuenta. Recién después cambia.',
+        explica:'y = 2 + 3 = 5. Después x = 5 + 2 = 7. A la derecha del = se usa lo que la caja tenía antes de cambiar.' },
+      { type:'escribir', a1:true,
+        consigna:'El más difícil de la sala. ¿Qué aparece?',
+        code:'a = 5\nb = a\na = 1\nmostrar b',
+        campos:[{et:'Aparece', ok:['5']}],
+        pista:'Cuando se hizo b = a, ¿cuánto valía a? Lo que pasa después con a, ¿le cambia algo a b?',
+        explica:'b copió el 5 en ese momento. Después a cambia a 1, pero b ya tenía su 5 guardado: son dos cajas distintas.' }
+    ]
+  },
+  {
+    id:'p1rep', nom:'Repetir', desc:'Lo que está adentro del repetir se hace varias veces. ¿Cuántas, y qué queda?',
+    concepto:'Repetir', enOrden:true,
+    ejs:[
+      { type:'escribir', a1:true,
+        consigna:'¿Cuántas veces aparece hola?',
+        code:'repetir 3 veces:\n    mostrar "hola"',
+        campos:[{et:'Veces', ok:['3']}],
+        explica:'Lo que está adentro del repetir se hace 3 veces.' },
+      { type:'escribir', a1:true,
+        consigna:'Mirá bien la sangría (el espacio a la izquierda). ¿Cuántas veces aparece cada palabra?',
+        code:'repetir 4 veces:\n    mostrar "gol"\nmostrar "fin"',
+        campos:[{et:'gol aparece', ok:['4']},{et:'fin aparece', ok:['1']}],
+        pista:'¿Cuál línea está corrida a la derecha, adentro del repetir? ¿Cuál quedó afuera?',
+        explica:'Sólo lo que está corrido a la derecha queda adentro del repetir. gol se repite 4 veces; fin está afuera y aparece una sola vez, al final.' },
+      { type:'escribir', a1:true,
+        consigna:'Escribí todo lo que aparece, en orden, separado con espacios.',
+        code:'repetir 2 veces:\n    mostrar "a"\n    mostrar "b"',
+        campos:[{et:'Aparece', ok:['a b a b'], ph:'a b ...'}],
+        pista:'En cada vuelta se hacen las dos líneas de adentro, una después de la otra.',
+        explica:'Cada vuelta hace las dos líneas: a, b. Dos vueltas: a b a b.' },
+      { type:'escribir', a1:true,
+        consigna:'Tiene que dibujar un cuadrado. ¿Cuántas veces hay que repetir?',
+        code:'repetir ___ veces:\n    avanzar 50\n    girar 90',
+        campos:[{et:'En el hueco va', ok:['4']}],
+        pista:'¿Cuántos lados tiene un cuadrado?',
+        explica:'Un cuadrado tiene 4 lados: avanzar y girar, 4 veces. Mirá abajo cómo lo dibuja.' },
+      { type:'escribir', a1:true,
+        consigna:'Ahora un triángulo. ¿Cuánto tiene que girar en cada esquina?',
+        code:'repetir 3 veces:\n    avanzar 60\n    girar ___',
+        campos:[{et:'En el hueco va', ok:['120']}],
+        pista:'Para cerrar la figura hay que dar una vuelta entera: 360. Repartila en 3 esquinas.',
+        explica:'Una vuelta entera son 360 grados. Repartida en 3 esquinas: 360 ÷ 3 = 120.' },
+      { type:'escribir', a1:true,
+        consigna:'¿Qué aparece?',
+        code:'puntos = 0\nrepetir 5 veces:\n    puntos = puntos + 2\nmostrar puntos',
+        campos:[{et:'Aparece', ok:['10']}],
+        pista:'Cada vuelta suma 2. ¿Cuántas vueltas son?',
+        explica:'5 vueltas de 2 son 10: 2, 4, 6, 8, 10.' },
+      { type:'escribir', a1:true,
+        consigna:'Seguí la caja n en cada vuelta.',
+        code:'n = 1\nrepetir 3 veces:\n    n = n + n',
+        campos:[{et:'Después de la 1ª vuelta', ok:['2']},{et:'Después de la 2ª vuelta', ok:['4']},{et:'Después de la 3ª vuelta', ok:['8']}],
+        pista:'n + n es el doble de n.',
+        explica:'Cada vuelta suma n consigo misma, o sea que lo duplica: 1 → 2 → 4 → 8.' },
+      { type:'unir', a1:true, codigo:'izq',
+        consigna:'Uní cada programa con lo que dibuja.',
+        pares:[['repetir 4 veces:\n    avanzar 50\n    girar 90','Un cuadrado'],['repetir 3 veces:\n    avanzar 50\n    girar 120','Un triángulo'],['repetir 6 veces:\n    avanzar 30\n    girar 60','Un hexágono (6 lados)'],['repetir 2 veces:\n    avanzar 80\n    girar 180','Una línea: va y vuelve']],
+        explica:'Las veces dicen cuántos lados tiene. El giro de cada esquina es 360 dividido los lados. Con 180 da media vuelta y vuelve por donde vino.' },
+      { type:'order', a1:true,
+        consigna:'Armá el programa que dibuja un cuadrado. Ojo con la sangría.',
+        correcto:['repetir 4 veces:','    avanzar 50','    girar 90'],
+        explica:'El repetir va primero, y las dos líneas que se repiten van adentro, corridas a la derecha.' },
+      { type:'escribir', a1:true,
+        consigna:'Tenía que dibujar un cuadrado pero dibuja una línea recta. ¿En qué línea está el problema? Escribí el número de la línea.',
+        code:'repetir 4 veces:\n    avanzar 50\ngirar 90',
+        campos:[{et:'Línea número', ok:['3']}],
+        pista:'Fijate cuáles líneas están adentro del repetir y cuáles no.',
+        explica:'El girar quedó afuera del repetir (no tiene sangría). Avanza 4 veces derecho y recién al final gira una vez. Hay que correrlo a la derecha.' },
+      { type:'escribir', a1:true,
+        consigna:'El reloj del juego. Tiene que aparecer 0. ¿Cuántas veces hay que repetir?',
+        code:'tiempo = 30\nrepetir ___ veces:\n    tiempo = tiempo - 5\nmostrar tiempo',
+        campos:[{et:'En el hueco va', ok:['6']}],
+        pista:'¿Cuántas veces hay que sacarle 5 a 30 para llegar a 0?',
+        explica:'30 ÷ 5 = 6. Seis vueltas sacando 5: 25, 20, 15, 10, 5, 0.' },
+      { type:'escribir', a1:true,
+        consigna:'Un repetir adentro de otro. ¿Cuántas estrellas aparecen en total?',
+        code:'repetir 3 veces:\n    repetir 2 veces:\n        mostrar "*"',
+        campos:[{et:'Estrellas', ok:['6']}],
+        pista:'El de adentro hace 2 estrellas. ¿Cuántas veces se hace el de adentro?',
+        explica:'El de afuera da 3 vueltas, y en cada una el de adentro muestra 2 estrellas: 3 × 2 = 6.' },
+      { type:'escribir', a1:true,
+        consigna:'El más difícil. ¿Qué aparece al final?',
+        code:'puntos = 0\nvidas = 3\nrepetir 3 veces:\n    puntos = puntos + 10\n    vidas = vidas - 1\nmostrar puntos + vidas',
+        campos:[{et:'puntos al final', ok:['30']},{et:'vidas al final', ok:['0']},{et:'Aparece', ok:['30']}],
+        pista:'En cada vuelta pasan dos cosas: suben los puntos y baja una vida.',
+        explica:'Tres vueltas: puntos llega a 30 y vidas baja de 3 a 0. 30 + 0 = 30.' }
+    ]
+  },
+  {
+    id:'p1si', nom:'Decidir', desc:'El si hace una pregunta. Según la respuesta, pasa una cosa o la otra.',
+    concepto:'Decidir: si y sino', enOrden:true,
+    ejs:[
+      { type:'escribir', a1:true,
+        consigna:'¿Qué aparece?',
+        code:'vidas = 0\nsi vidas = 0 entonces:\n    mostrar "Perdiste"',
+        campos:[{et:'Aparece', ok:['perdiste']}],
+        explica:'vidas vale 0, así que la pregunta «¿vidas es 0?» da que sí, y se hace lo de adentro.' },
+      { type:'escribir', a1:true,
+        consigna:'¿Qué aparece? Escribí sólo lo que se ve.',
+        code:'vidas = 2\nsi vidas = 0 entonces:\n    mostrar "Perdiste"\nmostrar "Fin"',
+        campos:[{et:'Aparece', ok:['fin']}],
+        pista:'¿vidas vale 0? Si la respuesta es no, lo de adentro del si no se hace.',
+        explica:'vidas vale 2, así que la respuesta es no y Perdiste no aparece. Fin está afuera del si: aparece siempre.' },
+      { type:'escribir', a1:true,
+        consigna:'¿Qué aparece?',
+        code:'puntos = 12\nsi puntos > 10 entonces:\n    mostrar "Ganaste"\nsino:\n    mostrar "Seguí"',
+        campos:[{et:'Aparece', ok:['ganaste']}],
+        pista:'> quiere decir «mayor que». ¿12 es mayor que 10?',
+        explica:'12 es mayor que 10: la respuesta es sí y aparece Ganaste.' },
+      { type:'escribir', a1:true,
+        consigna:'El mismo programa con 7 puntos. ¿Qué aparece?',
+        code:'puntos = 7\nsi puntos > 10 entonces:\n    mostrar "Ganaste"\nsino:\n    mostrar "Seguí"',
+        campos:[{et:'Aparece', ok:['segui']}],
+        explica:'7 no es mayor que 10. Cuando la respuesta es no, se hace lo del sino.' },
+      { type:'escribir', a1:true,
+        consigna:'Y con 10 puntos justos, ¿qué aparece?',
+        code:'puntos = 10\nsi puntos > 10 entonces:\n    mostrar "Ganaste"\nsino:\n    mostrar "Seguí"',
+        campos:[{et:'Aparece', ok:['segui']}],
+        pista:'¿10 es MAYOR que 10?',
+        explica:'10 no es mayor que 10: es igual. Así que va por el sino. Para ganar con 10 justos habría que preguntar otra cosa.' },
+      { type:'unir', a1:true, codigo:'der',
+        consigna:'Uní cada regla del juego con su pregunta.',
+        pares:[['Ganás si tenés más de 10 puntos','si puntos > 10'],['Perdés si te quedaste sin vidas','si vidas = 0'],['Avisa helada si hay menos de 3 grados','si grados < 3'],['La puerta abre si la clave es 1234','si clave = 1234']],
+        explica:'> es «mayor que», < es «menor que» y = es «igual a». La pregunta del si es la regla dicha en código.' },
+      { type:'escribir', a1:true,
+        consigna:'Tiene que avisar cuando hace MENOS de 3 grados. ¿Qué signo va?',
+        code:'grados = 2\nsi grados ___ 3 entonces:\n    mostrar "Helada"',
+        campos:[{et:'En el hueco va', ok:['<']}],
+        pista:'Uno de estos: >  <  =',
+        explica:'< es «menor que». 2 es menor que 3, así que avisa.' },
+      { type:'escribir', a1:true,
+        consigna:'Esta vez no hay una sola respuesta. Escribí una cantidad de puntos con la que aparezca Ganaste.',
+        code:'puntos = ___\nsi puntos > 10 entonces:\n    mostrar "Ganaste"\nsino:\n    mostrar "Seguí"',
+        campos:[{et:'Puntos', ok:v=>/^\d+$/.test(v)&&+v>10, ph:'un número'}],
+        pista:'Tiene que ser más que 10. ¿El 10 sirve?',
+        explica:'Cualquier número más grande que 10 sirve. El 10 no, porque no es mayor que 10. Mirá abajo cómo corre con tu número.' },
+      { type:'escribir', a1:true,
+        consigna:'Escribí una edad con la que NO pueda entrar.',
+        code:'edad = ___\nsi edad > 12 entonces:\n    mostrar "Entra"\nsino:\n    mostrar "No entra"',
+        campos:[{et:'Edad', ok:v=>/^\d+$/.test(v)&&+v<=12, ph:'un número'}],
+        pista:'Entra si tiene más de 12. ¿Con 12 entra?',
+        explica:'Con 12 o menos la pregunta da que no, y aparece No entra. El 12 justo tampoco entra.' },
+      { type:'escribir', a1:true,
+        consigna:'Primero suma, después decide. Seguí el programa.',
+        code:'puntos = 0\nrepetir 3 veces:\n    puntos = puntos + 5\nsi puntos > 12 entonces:\n    mostrar "Premio"\nsino:\n    mostrar "Casi"',
+        campos:[{et:'puntos al final', ok:['15']},{et:'Aparece', ok:['premio']}],
+        pista:'El si está afuera del repetir: se pregunta una sola vez, cuando ya terminó de sumar.',
+        explica:'Tres vueltas de 5 dan 15. Recién ahí se pregunta: 15 es mayor que 12, así que aparece Premio.' },
+      { type:'escribir', a1:true,
+        consigna:'Con y tienen que pasar LAS DOS cosas. ¿Qué aparece?',
+        code:'lluvia = 1\nfrio = 0\nsi lluvia = 1 y frio = 1 entonces:\n    mostrar "Botas y campera"\nsino:\n    mostrar "Zapatillas"',
+        campos:[{et:'Aparece', ok:['zapatillas']}],
+        pista:'1 quiere decir que sí, 0 que no. ¿Llueve? ¿Hace frío?',
+        explica:'Llueve, pero no hace frío. Con y hacen falta las dos, así que va por el sino: Zapatillas.' },
+      { type:'escribir', a1:true,
+        consigna:'Ahora con o: alcanza con UNA de las dos. ¿Qué aparece?',
+        code:'lluvia = 1\nfrio = 0\nsi lluvia = 1 o frio = 1 entonces:\n    mostrar "Botas y campera"\nsino:\n    mostrar "Zapatillas"',
+        campos:[{et:'Aparece', ok:['botas y campera']}],
+        explica:'Con o alcanza con una. Llueve, así que ya está: Botas y campera.' },
+      { type:'order', a1:true,
+        consigna:'Armá la cerradura. Con esta clave tiene que aparecer Cerrado.',
+        correcto:['clave = 4321','si clave = 1234 entonces:','    mostrar "Abierto"','sino:','    mostrar "Cerrado"'],
+        explica:'Primero se guarda la clave que se apretó, después se pregunta. 4321 no es 1234, así que va por el sino.' }
+    ]
+  },
+  {
+    id:'p1uni', nom:'Uní las partes', desc:'Palabras, símbolos y programas: cada uno con su pareja.',
+    concepto:'Unir conceptos', enOrden:true,
+    ejs:[
+      { type:'unir', a1:true,
+        consigna:'Uní cada palabra con lo que quiere decir.',
+        pares:[['programa','Instrucciones que la máquina sigue en orden'],['variable','Una caja con nombre que guarda un valor'],['repetir','Hacer lo mismo varias veces'],['si','Decidir según una pregunta'],['mostrar','Escribir algo en la pantalla']],
+        explica:'Son las cinco palabras de todo lo que hicimos. Con esas cinco ya se arma un juego.' },
+      { type:'unir', a1:true, codigo:'izq',
+        consigna:'Uní cada símbolo con lo que hace.',
+        pares:[['puntos = 5','Guarda el 5 en la caja'],['si puntos = 5','Pregunta si vale 5'],['>','Mayor que'],['<','Menor que'],['"hola"','Texto: sale tal cual']],
+        explica:'El = sirve para dos cosas: suelto guarda, y adentro de un si pregunta.' },
+      { type:'unir', a1:true,
+        consigna:'Uní cada parte de la consola con lo que hace.',
+        pares:[['El botón','La máquina se entera de que lo apretaste'],['La luz','Avisa con algo que se ve'],['El buzzer','Avisa con un sonido'],['La placa','Guarda el programa y decide'],['El programa','Le dice a la placa qué hacer']],
+        explica:'El botón es una entrada; la luz y el buzzer son salidas. La placa decide, y lo que decide se lo dice el programa.' },
+      { type:'unir', a1:true, codigo:'izq',
+        consigna:'Uní cada programa con lo que aparece.',
+        pares:[['x = 1\nx = x + 1\nmostrar x','2'],['x = 5\nx = 1\nmostrar x','1'],['x = 2\nrepetir 3 veces:\n    x = x + 1\nmostrar x','5'],['x = 3\nmostrar "x"','x']],
+        explica:'Seguí la caja línea por línea. El último muestra la letra x, porque está entre comillas.' },
+      { type:'unir', a1:true,
+        consigna:'Uní cada problema con cómo se arregla.',
+        pares:[['Aparece la palabra puntos en vez del número','Sacarle las comillas a puntos'],['Tenía que dibujar un cuadrado y dibuja una línea','Meter el girar adentro del repetir'],['El puntaje nunca sube','Escribir puntos = puntos + 1'],['Muestra el total antes de terminar de sumar','Poner el mostrar después del repetir']],
+        explica:'Arreglar un programa es eso: ver qué hace, compararlo con lo que tenía que hacer y encontrar la línea culpable.' },
+      { type:'unir', a1:true,
+        consigna:'Uní cada juego con lo que necesita su programa.',
+        pares:[['Papa caliente','Esperar un tiempo al azar'],['El dado','Un número al azar del 1 al 6'],['Reflejos','Medir cuánto tardó en apretar'],['El contador','Una caja que suma 1 en cada apretada']],
+        explica:'Cada juego es la misma consola con otro programa. Lo que cambia es la idea de adentro.' },
+      { type:'unir', a1:true,
+        consigna:'Uní cada cantidad de luces con hasta cuánto puede contar (en binario).',
+        pares:[['1 luz','Hasta 1'],['2 luces','Hasta 3'],['3 luces','Hasta 7'],['4 luces','Hasta 15']],
+        explica:'Cada luz vale el doble que la anterior: 1, 2, 4, 8. Todas prendidas: 1, 1+2 = 3, 1+2+4 = 7, 1+2+4+8 = 15.' }
+    ]
+  },
+  {
+    id:'p1jue', nom:'Programas de juego', desc:'Para cuando ya te salen los otros: programas que juntan todo.',
+    concepto:'Juntar todo', enOrden:true,
+    ejs:[
+      { type:'escribir', a1:true,
+        consigna:'El contador de intentos. ¿Qué aparece?',
+        code:'intentos = 0\nrepetir 3 veces:\n    intentos = intentos + 1\nmostrar intentos',
+        campos:[{et:'Aparece', ok:['3']}],
+        explica:'Cada vuelta suma 1: después de 3 vueltas, 3 intentos.' },
+      { type:'order', a1:true,
+        consigna:'EL TOPO. Armá el contador: tiene que aparecer 5.',
+        correcto:['topos = 0','repetir 5 veces:','    topos = topos + 1','mostrar topos'],
+        explica:'La caja empieza en 0, el repetir suma, y el mostrar va al final, afuera del repetir.' },
+      { type:'escribir', a1:true,
+        consigna:'El reloj. Seguí el programa.',
+        code:'segundos = 10\nrepetir 4 veces:\n    segundos = segundos - 2\nsi segundos < 5 entonces:\n    mostrar "Apurate"\nsino:\n    mostrar "Tranqui"',
+        campos:[{et:'segundos al final', ok:['2']},{et:'Aparece', ok:['apurate']}],
+        pista:'Primero terminá las 4 vueltas. Después hacé la pregunta.',
+        explica:'4 vueltas restando 2: 8, 6, 4, 2. Y 2 es menor que 5: Apurate.' },
+      { type:'escribir', a1:true,
+        consigna:'Puntaje con bonus. ¿Qué aparece?',
+        code:'puntos = 3\nbonus = 2\npuntos = puntos + puntos\npuntos = puntos + bonus\nmostrar puntos',
+        campos:[{et:'Aparece', ok:['8']}],
+        pista:'puntos + puntos es el doble.',
+        explica:'Se duplica: 3 + 3 = 6. Después se suma el bonus: 6 + 2 = 8.' },
+      { type:'escribir', a1:true,
+        consigna:'Escribí la línea que falta para que aparezca 2.',
+        code:'vidas = 3\n___\nmostrar vidas',
+        campos:[{et:'La línea que falta', ok:['vidas = vidas - 1','vidas = 2'], exacto:true, ph:'vidas = ...'}],
+        pista:'Hay que cambiar lo que tiene la caja vidas. Empieza con vidas =',
+        explica:'vidas = vidas − 1 saca una vida. vidas = 2 también anda, pero en un juego se usa la primera: sirve tenga las vidas que tenga.' },
+      { type:'escribir', a1:true,
+        consigna:'El récord está en 50. Escribí un puntaje que lo supere.',
+        code:'record = 50\npuntos = ___\nsi puntos > record entonces:\n    mostrar "¡Récord nuevo!"\nsino:\n    mostrar "Casi"',
+        campos:[{et:'Puntos', ok:v=>/^\d+$/.test(v)&&+v>50, ph:'un número'}],
+        pista:'Tiene que ser mayor que lo que hay en la caja record.',
+        explica:'Cualquier número más grande que 50 supera el récord. El si compara las dos cajas.' },
+      { type:'escribir', a1:true,
+        consigna:'EL DADO. Salió un 4. Y después, escribí un número del dado con el que te toque esperar.',
+        code:'dado = 4\nsi dado > 3 entonces:\n    mostrar "Avanzás"\nsino:\n    mostrar "Esperás"',
+        campos:[{et:'Con un 4 aparece', ok:['avanzas']},{et:'Un número para esperar', ok:['1','2','3']}],
+        pista:'Un dado va del 1 al 6. ¿Cuáles NO son mayores que 3?',
+        explica:'4 es mayor que 3: Avanzás. Con 1, 2 o 3 la respuesta es no y te toca esperar.' },
+      { type:'escribir', a1:true,
+        consigna:'¿Qué aparece?',
+        code:'a = 1\nrepetir 4 veces:\n    a = a + a\nsi a = 16 entonces:\n    mostrar "Bien"\nsino:\n    mostrar "Mal"',
+        campos:[{et:'a al final', ok:['16']},{et:'Aparece', ok:['bien']}],
+        pista:'a + a es el doble. Duplicá 4 veces empezando en 1.',
+        explica:'Se duplica 4 veces: 1 → 2 → 4 → 8 → 16. Y 16 es 16: Bien.' },
+      { type:'escribir', a1:true,
+        consigna:'LA CERRADURA. Hay 2 botones y la clave son 3 apretadas. ¿Cuántas claves distintas hay?',
+        campos:[{et:'Claves', ok:['8']}],
+        pista:'2 posibilidades para la primera, 2 para la segunda y 2 para la tercera. ¿Se suman o se multiplican?',
+        explica:'2 × 2 × 2 = 8. Con más apretadas crece muy rápido: por eso una clave larga es más difícil de adivinar.' },
+      { type:'escribir', a1:true,
+        consigna:'LA CERRADURA. Y con 3 botones y 2 apretadas, ¿cuántas claves hay?',
+        campos:[{et:'Claves', ok:['9']}],
+        pista:'3 para la primera apretada y 3 para la segunda.',
+        explica:'3 × 3 = 9. Se multiplica tantas veces como apretadas tiene la clave.' },
+      { type:'escribir', a1:true,
+        consigna:'El último y el más difícil. Seguí todo.',
+        code:'puntos = 0\nvidas = 2\nrepetir 3 veces:\n    puntos = puntos + 4\nsi puntos > 10 entonces:\n    vidas = vidas + 1\nmostrar vidas',
+        campos:[{et:'puntos al final', ok:['12']},{et:'Aparece', ok:['3']}],
+        pista:'Primero el repetir, después el si. ¿Qué cambia adentro del si?',
+        explica:'3 vueltas de 4 son 12 puntos. 12 es mayor que 10, así que gana una vida: 2 + 1 = 3.' }
+    ]
+  },
 ];
 
 /* ============================================================
@@ -2172,6 +2629,7 @@ const app = document.getElementById('app');
 const shuffle = a => { const r=a.slice(); for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]];} return r; };
 
 function getRunLines(ej){
+  if(ej.code && ej._llenar) return ej.code.replace('___', ej._llenar).split('\n');
   if(ej.code && !ej.code.includes('___')) return ej.code.split('\n');
   if(ej.lineas) return ej.lineas.slice();
   return null;
@@ -3277,7 +3735,8 @@ function tallerHTML(){
 const NIVEL={sec:1,alg:1,flow:1,ope:1,tip:1,buc:1,con:1,dib:1,robot1:1,caja:2,
              var:2,dec:2,miniprog:2,bug:2,sensores:2,teoria:2,repaso:2,
              situac:3,desafios:3,desafios2:3,
-             jue:1,juem:1};
+             jue:1,juem:1,
+             p1sec:1,p1var:1,p1rep:1,p1uni:1,p1si:2,p1jue:3};
 const NIVELN=['','Inicial','Intermedio','Avanzado'];
 
 /* ============================================================
@@ -3302,6 +3761,10 @@ const ANIOS = {
     esp:['desafio1ro']},
    {t:'Los juegos del cuatrimestre', d:'Lo principal de ahora. Practicás acá y después lo armás con bloques en Tinkercad.',
     esp:['juegos'], ids:[{id:'jue',tag:'a1'},{id:'juem',tag:'a1'}]},
+   /* Para los que no llegan a los circuitos: sólo código, en la compu.
+      Se escribe la respuesta o se unen parejas, casi nada de opciones. */
+   {t:'Practicar código, a tu ritmo', d:'Sin circuitos: todo se hace acá. Escribís la respuesta, unís las partes o armás el programa. Cada sala va de lo más fácil a lo más difícil.',
+    ids:['p1sec','p1var','p1rep','p1si','p1uni','p1jue']},
    {t:'Para arrancar', d:'Si es tu primera vez con esto, empezá por acá.',
     esp:['intro']},
    /* Sección visual de 1ro: se juega con dibujos, sin nada para leer.
@@ -4122,7 +4585,8 @@ function startSala(id){
   } else {
     const ent = entradasAnio(SES.anio).find(e=>e.id===id) || {id};
     sala = SALAS.find(s=>s.id===id);
-    ejs = shuffle(ejsDeSala(ent));
+    /* enOrden: la sala va de lo más fácil a lo más difícil, no se mezcla */
+    ejs = sala.enOrden ? ejsDeSala(ent) : shuffle(ejsDeSala(ent));
   }
   cur = {sala, ejs, i:0, puntos:0, streak:0, answered:false,
     modo: MODO.id,
@@ -4153,12 +4617,137 @@ function render(){
 
   if(ej.type==='order')    h += renderOrder(ej);
   else if(ej.type==='bug') h += renderBug(ej);
+  else if(ej.type==='escribir') h += renderEscribir(ej);
+  else if(ej.type==='unir')     h += renderUnir(ej);
   else                     h += renderChoice(ej);
 
   h += `<div id="fb"></div></div>`;
   app.innerHTML = h;
   cur.answered=false;
   if(ej.type==='order') mountOrder(ej);
+  if(ej.type==='escribir') mountEscribir(ej);
+  if(ej.type==='unir') mountUnir(ej);
+}
+
+/* ---- escribir la respuesta (uno o varios casilleros) ----
+   campos:[{et:'Aparece', ok:['8']}]  · ok puede ser una lista o una función (v)=>bool
+   exacto:true en el campo → es una línea de código: se respetan las comillas.
+   No hay opciones para tocar: se resuelve o no se resuelve. Al reintentar
+   quedan escritas las respuestas y se marcan en rojo sólo las que están mal. */
+function normResp(s, exacto){
+  s=String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'')
+    .replace(/[“”«»]/g,'"').replace(/[−–]/g,'-').replace(/\s+/g,'');
+  if(!exacto) s=s.replace(/["'¡!¿?.,;:]/g,'');
+  return s;
+}
+function campoOk(c, v){
+  const n=normResp(v, c.exacto);
+  if(typeof c.ok==='function') return !!c.ok(n);
+  return c.ok.some(o=>normResp(o, c.exacto)===n);
+}
+function renderEscribir(ej){
+  const una = ej.campos.length===1;
+  return `<div class="campos${una?' una':''}">${ej.campos.map((c,k)=>
+    `<label class="campo"><span>${c.et||'Respuesta'}</span>
+      <input class="cin${c.exacto?' mono':''}" data-k="${k}" autocomplete="off" autocapitalize="off" spellcheck="false"
+        placeholder="${c.ph||'Escribí acá'}"></label>`).join('')}</div>
+    <button class="btn" id="checkBtn" onclick="checkEscribir()" disabled>Comprobar</button>`;
+}
+function mountEscribir(ej){
+  const ins=[...app.querySelectorAll('.cin')], b=document.getElementById('checkBtn');
+  const listo=()=>{ b.disabled = ins.some(i=>!i.value.trim()); };
+  ins.forEach((i,k)=>{
+    if(ej._vals) i.value=ej._vals[k]||'';
+    if(ej._marca && ej._marca[k]===false) i.classList.add('noin');
+    i.addEventListener('input',()=>{ i.classList.remove('noin'); listo(); });
+    i.addEventListener('keydown',e=>{ if(e.key!=='Enter') return; e.preventDefault();
+      if(k<ins.length-1) ins[k+1].focus(); else if(!b.disabled) checkEscribir(); });
+  });
+  listo();
+  const prim = ins.find(i=>i.classList.contains('noin')) || ins.find(i=>!i.value) || ins[0];
+  if(prim) prim.focus({preventScroll:true});
+}
+function checkEscribir(){
+  if(cur.answered) return;
+  const ej=cur.ejs[cur.i], ins=[...app.querySelectorAll('.cin')];
+  ej._vals = ins.map(i=>i.value);
+  ej._marca = ej.campos.map((c,k)=>campoOk(c, ins[k].value));
+  ins.forEach((i,k)=>{ i.disabled=true; i.classList.add(ej._marca[k]?'okin':'noin'); });
+  document.getElementById('checkBtn').disabled=true;
+  cur.answered=true;
+  const good = ej._marca.every(Boolean);
+  /* con un hueco ___ y un solo casillero, el escenario corre el programa con lo que escribió */
+  if(good && ej.code && ej.code.includes('___') && ej.campos.length===1) ej._llenar=ins[0].value.trim();
+  if(good) ej._vals=ej._marca=null;
+  let extra=ej.explica;
+  if(!good && ej.campos.length>1){
+    const bien=ej._marca.filter(Boolean).length;
+    extra = `<b>${bien} de ${ej.campos.length} están bien.</b> Las que están en rojo, revisalas. ` + extra;
+  }
+  feedback(good, extra);
+}
+
+/* ---- unir con flechas: tocás uno de la izquierda y después su pareja ----
+   pares:[['izq','der'],...] · codigo:'izq'|'der'|'ambos' → esa columna se ve como código */
+let unirState;
+function renderUnir(ej){
+  return `<p class="muted unirhint">Tocá uno de la izquierda y después su pareja de la derecha. Si te equivocás, tocalo de nuevo.</p>
+    <div class="unir"><div class="ucol" id="uIzq"></div><div class="ucol" id="uDer"></div></div>
+    <button class="btn" id="checkBtn" onclick="checkUnir()" disabled>Comprobar</button>`;
+}
+function mountUnir(ej){
+  if(!ej._der) ej._der = shuffle(ej.pares.map((p,i)=>i));
+  unirState = {sel:null, par:{}};   // par: índice izquierda → índice derecha (posición en _der)
+  drawUnir();
+}
+function uTxt(t, cod){ return cod ? `<span class="ucode">${paint(t)}</span>` : escapeHtml(t); }
+function drawUnir(){
+  const ej=cur.ejs[cur.i], c=ej.codigo||'';
+  const izq=document.getElementById('uIzq'), der=document.getElementById('uDer');
+  const usadaPor = {}; Object.keys(unirState.par).forEach(l=>usadaPor[unirState.par[l]]=+l);
+  izq.innerHTML = ej.pares.map((p,i)=>{
+    const n = unirState.par[i]!==undefined ? `<b class="unum u${i%6}">${i+1}</b>` : `<b class="unum vac">${i+1}</b>`;
+    return `<button type="button" class="uit${unirState.sel===i?' sel':''}${unirState.par[i]!==undefined?' hecho u'+(i%6):''}" data-l="${i}">${n}${uTxt(p[0], c==='izq'||c==='ambos')}</button>`;
+  }).join('');
+  der.innerHTML = ej._der.map((orig,pos)=>{
+    const l = usadaPor[pos];
+    const n = l!==undefined ? `<b class="unum u${l%6}">${l+1}</b>` : `<b class="unum vac">·</b>`;
+    return `<button type="button" class="uit${l!==undefined?' hecho u'+(l%6):''}" data-r="${pos}">${n}${uTxt(ej.pares[orig][1], c==='der'||c==='ambos')}</button>`;
+  }).join('');
+  if(cur.answered) return;
+  izq.querySelectorAll('.uit').forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.l;
+    if(unirState.par[i]!==undefined){ delete unirState.par[i]; unirState.sel=i; }
+    else unirState.sel = i;   /* tocar el que ya está elegido no lo desmarca */
+    drawUnir();
+  });
+  der.querySelectorAll('.uit').forEach(b=>b.onclick=()=>{
+    const pos=+b.dataset.r;
+    const l = Object.keys(unirState.par).find(k=>unirState.par[k]===pos);
+    if(unirState.sel===null){ if(l!==undefined){ delete unirState.par[l]; unirState.sel=+l; drawUnir(); } return; }
+    if(l!==undefined) delete unirState.par[l];
+    unirState.par[unirState.sel]=pos;
+    /* la próxima de la izquierda sin pareja queda elegida, para no tener que ir y volver */
+    const sig = ej.pares.findIndex((p,k)=>unirState.par[k]===undefined);
+    unirState.sel = sig<0 ? null : sig;
+    drawUnir();
+  });
+  document.getElementById('checkBtn').disabled = Object.keys(unirState.par).length<ej.pares.length;
+}
+function checkUnir(){
+  if(cur.answered) return;
+  const ej=cur.ejs[cur.i]; cur.answered=true; unirState.sel=null;
+  drawUnir();
+  let bien=0;
+  ej.pares.forEach((p,i)=>{
+    const ok = ej._der[unirState.par[i]]===i; if(ok) bien++;
+    const bi=app.querySelector(`#uIzq [data-l="${i}"]`), br=app.querySelector(`#uDer [data-r="${unirState.par[i]}"]`);
+    [bi,br].forEach(x=>{ if(x){ x.classList.add(ok?'uok':'uno'); x.disabled=true; } });
+  });
+  app.querySelectorAll('.uit').forEach(x=>x.disabled=true);
+  document.getElementById('checkBtn').disabled=true;
+  const good = bien===ej.pares.length;
+  feedback(good, good ? ej.explica : `<b>${bien} de ${ej.pares.length} parejas están bien.</b> ` + ej.explica);
 }
 
 /* ---- opción múltiple (mc / fill) ---- */
@@ -4256,6 +4845,8 @@ function hintFor(ej){
   if(ej.type==='order') return 'Probá tu orden con ▶ y fijate si hace lo que pide la consigna. Corregí lo que no encaje.';
   if(ej.type==='fill')  return 'Pensá qué tiene que pasar para que el programa cumpla la consigna, y probá esa opción.';
   if(ej.type==='bug')   return 'Leé línea por línea imaginando qué hace cada una. ¿Cuál NO hace lo que debería?';
+  if(ej.type==='unir')  return 'Empezá por la pareja que estés más seguro. Las que quedan son menos y se resuelven más fácil.';
+  if(ej.type==='escribir' && ej.code) return 'Leé el programa de arriba para abajo, una línea por vez, como si fueras la máquina. Anotá en un papelito cuánto vale cada caja después de cada línea.';
   if(ej.code)           return 'Seguí el programa línea por línea y anotá el valor de cada variable. ¿Con qué valor llega al "mostrar"?';
   return 'Descartá las opciones que claramente no tienen sentido y quedate con la que mejor lo explica.';
 }
