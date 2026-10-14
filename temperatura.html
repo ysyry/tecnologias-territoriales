@@ -124,6 +124,19 @@ body.modo-coh .est{display:none!important}
 .modo button{font:700 .85em var(--f-cuerpo);border-radius:999px;padding:10px 18px;cursor:pointer;border:1.5px solid var(--violeta);background:transparent;color:var(--violeta)}
 .modo button[aria-pressed="true"]{background:var(--violeta);color:var(--hoja)}
 .modo button:focus-visible{outline:3px solid var(--violeta);outline-offset:2px}
+/* el reto de la página web: mismo armado que en 4to */
+.pasitos .sub{margin:10px 0 10px;padding-left:1.2em;display:flex;flex-direction:column;gap:8px;list-style:disc}
+.pasitos .ojo{display:block;margin-top:6px;font-size:.9em;color:var(--tenue)}
+.esq-web{margin:6px 0 0;width:100%}
+.lenguaje{border:1.5px solid var(--raya);border-radius:12px;background:var(--hoja)}
+.lenguaje summary{cursor:pointer;padding:16px 20px;font-weight:700;color:var(--violeta)}
+.lenguaje summary:focus-visible{outline:3px solid var(--violeta);outline-offset:2px}
+.len-cuerpo{padding:0 20px 22px;display:flex;flex-direction:column;gap:14px}
+.pals{display:flex;flex-direction:column}
+.pal{display:grid;grid-template-columns:minmax(0,15em) minmax(0,1fr);gap:6px 18px;padding:10px 0;border-bottom:1px solid var(--raya);font-size:.88em}
+.pal code{font-family:var(--f-mono);color:var(--tinta);font-weight:500}
+@media (max-width:640px){.pal{grid-template-columns:1fr}}
+.carpeta{font-family:var(--f-mono);font-size:.85em;color:var(--tinta);background:var(--hoja);border:1px solid var(--raya);border-radius:10px;padding:14px 18px;margin:0;line-height:1.7}
 </style>
 </head>
 <body>
@@ -365,9 +378,153 @@ ms,grados
               <li>Seleccioná las dos columnas y andá a <b>Insertar → Gráfico</b>.</li>
             </ol>
             <p><b>Excel, con el archivo:</b> <button type="button" id="bajar-csv" class="pista-b">Bajar el CSV</button> Se baja un archivo <span class="dice">.csv</span>: abrilo con doble clic y se abre en Excel.</p>
+            <p><b>El gráfico, como imagen:</b> <button type="button" id="bajar-graf" class="pista-b">Bajar el gráfico</button> Se baja <span class="dice">grafico.png</span>. Lo van a usar en el reto 6.</p>
           </div>
           <button class="pista-b" type="button">Pista</button>
           <div class="pista" hidden>Los títulos aparecen muchas veces: ¿en qué parte del código están, setup o loop? ¿Cuál se repite?<br>El tiempo y los grados salen pegados: ¿qué falta escribir entre los dos?</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reto tapado" id="rweb">
+      <div class="nivel">6</div>
+      <div class="cuerpo">
+        <h3>Ya midieron y tienen su gráfico. ¿Cómo lo compartimos para que lo pueda ver cualquiera?</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <div class="formula" hidden>
+          <p><b>Charlen primero:</b> ¿una captura por WhatsApp? ¿El CSV por mail? ¿Qué se pierde en cada caso? ¿Quién lo puede abrir y quién no?</p>
+          <p>Vamos a probar con una <b>página web</b>. Es una carpeta con tres archivos adentro, y se abre con cualquier navegador. Cuando terminen, su carpeta va a tener esto:</p>
+          <pre class="carpeta est">📁 mi-estacion
+   📄 index.html        ← la página: la escriben ustedes
+   🖼️ grafico.png       ← el gráfico del reto 5
+   📊 temperaturas.csv  ← la tabla del reto 5</pre>
+          <pre class="carpeta coh">📁 mi-cohete
+   📄 index.html        ← la página: la escriben ustedes
+   🖼️ grafico.png       ← el gráfico del reto 5
+   📊 vuelo.csv         ← la tabla del reto 5</pre>
+
+          <div class="rot">Paso 1 · La carpeta y los dos archivos</div>
+          <ol class="pasitos">
+            <li><b>Creá una carpeta</b> en el escritorio de la compu: clic derecho → <b>Nuevo</b> → <b>Carpeta</b>. Ponele de nombre <span class="dice est">mi-estacion</span><span class="dice coh">mi-cohete</span>.</li>
+            <li>Volvé al reto 5 y tocá <b>Bajar el gráfico</b> y <b>Bajar el CSV</b>.</li>
+            <li>Abrí la carpeta <b>Descargas</b>. Ahí están los dos archivos: <b>arrastralos</b> a tu carpeta <span class="dice est">mi-estacion</span><span class="dice coh">mi-cohete</span>.</li>
+          </ol>
+
+          <div class="rot">Paso 2 · Escribir la página</div>
+          <ol class="pasitos" start="4">
+            <li>Abrí el <b>Bloc de notas</b> (buscalo en el menú Inicio). Tocá <b>Copiar</b> acá abajo y pegalo en el Bloc de notas (Ctrl+V).</li>
+          </ol>
+          <div class="codigo est"><button class="copiar" type="button" data-cod="web-est">Copiar</button><pre id="web-est">&lt;!doctype html&gt;                         &lt;!-- avisa que esto es una página web --&gt;
+&lt;meta charset="utf-8"&gt;                  &lt;!-- para que se vean bien las tildes y la ñ --&gt;
+&lt;title&gt;Octubre en la huerta&lt;/title&gt;    &lt;!-- el nombre que aparece en la pestaña --&gt;
+
+&lt;h1&gt;¿Cómo es octubre en la huerta?&lt;/h1&gt;  &lt;!-- h1: el título grande de la página --&gt;
+&lt;p&gt;Somos ... de 3ro. Nuestra estación meteorológica mide
+la temperatura de la huerta cada ... segundos.&lt;/p&gt;   &lt;!-- p: un párrafo de texto --&gt;
+
+&lt;img src="grafico.png" width="600"&gt;     &lt;!-- img: muestra la imagen que está en la carpeta --&gt;
+
+&lt;p&gt;Lo que encontramos: ...&lt;/p&gt;
+&lt;p&gt;&lt;a href="temperaturas.csv"&gt;Bajá nuestros datos&lt;/a&gt;&lt;/p&gt;   &lt;!-- a: un enlace a otro archivo --&gt;</pre></div>
+          <div class="codigo coh"><button class="copiar" type="button" data-cod="web-coh">Copiar</button><pre id="web-coh">&lt;!doctype html&gt;                         &lt;!-- avisa que esto es una página web --&gt;
+&lt;meta charset="utf-8"&gt;                  &lt;!-- para que se vean bien las tildes y la ñ --&gt;
+&lt;title&gt;Adentro del cohete&lt;/title&gt;      &lt;!-- el nombre que aparece en la pestaña --&gt;
+
+&lt;h1&gt;¿Qué pasa adentro del cohete?&lt;/h1&gt;   &lt;!-- h1: el título grande de la página --&gt;
+&lt;p&gt;Somos ... de 3ro. Nuestro cohete de agua lleva un aparato
+que mide la temperatura cada ... milésimas de segundo.&lt;/p&gt;   &lt;!-- p: un párrafo de texto --&gt;
+
+&lt;img src="grafico.png" width="600"&gt;     &lt;!-- img: muestra la imagen que está en la carpeta --&gt;
+
+&lt;p&gt;Lo que encontramos: ...&lt;/p&gt;
+&lt;p&gt;&lt;a href="vuelo.csv"&gt;Bajá nuestros datos&lt;/a&gt;&lt;/p&gt;   &lt;!-- a: un enlace a otro archivo --&gt;</pre></div>
+          <details class="lenguaje">
+            <summary>¿Qué quiere decir cada etiqueta?</summary>
+            <div class="len-cuerpo">
+              <div class="pals">
+                <div class="pal"><code>&lt;h1&gt; … &lt;/h1&gt;</code><span>Un <b>título</b>. Casi todo en HTML va así: una etiqueta que abre y otra que cierra, con / adelante.</span></div>
+                <div class="pal"><code>&lt;p&gt; … &lt;/p&gt;</code><span>Un <b>párrafo</b> de texto.</span></div>
+                <div class="pal"><code>&lt;img src="…"&gt;</code><span>Muestra una <b>imagen</b>. En src va el nombre del archivo. Esta etiqueta no se cierra.</span></div>
+                <div class="pal"><code>&lt;a href="…"&gt; … &lt;/a&gt;</code><span>Un <b>enlace</b>: al tocarlo, el navegador abre el archivo o la página que dice href.</span></div>
+                <div class="pal"><code>&lt;title&gt;</code><span>El nombre que aparece en la <b>pestaña</b> del navegador.</span></div>
+                <div class="pal"><code>&lt;!-- … --&gt;</code><span>Un <b>comentario</b>: no se ve en la página. Es como el <code>//</code> del código de Arduino.</span></div>
+              </div>
+            </div>
+          </details>
+
+          <div class="rot">Paso 3 · Guardar y abrir</div>
+          <ol class="pasitos" start="5">
+            <li><b>Guardalo</b> con <b>Archivo → Guardar como</b>. En la ventana que se abre, fijate en estas cuatro cosas:
+              <ul class="sub">
+                <li>Arriba, elegí tu carpeta <span class="dice est">mi-estacion</span><span class="dice coh">mi-cohete</span>.</li>
+                <li>En <b>Tipo</b>, elegí <b>Todos los archivos</b>.</li>
+                <li>En <b>Nombre de archivo</b>, escribí <span class="dice">index.html</span>.</li>
+                <li>Apretá <b>Guardar</b>.</li>
+              </ul>
+              <span class="ojo">Si te olvidás del Tipo, Windows lo guarda como <span class="dice">index.html.txt</span> y se abre como texto, no como página.</span>
+            </li>
+            <li>Andá a tu carpeta y hacé <b>doble clic en index.html</b>. Se abre en el navegador: ¿aparece el gráfico?</li>
+          </ol>
+
+          <div class="rot">Paso 4 · Que cuente lo de ustedes</div>
+          <ol class="pasitos" start="7">
+            <li>Volvé al Bloc de notas y cambiá cada <b>...</b> por lo de ustedes: quiénes son, cada cuánto mide el aparato y qué encontraron.</li>
+            <li>Guardá (Ctrl+G) y en el navegador <b>recargá</b> (F5). El cambio aparece.</li>
+          </ol>
+          <p class="est"><b>Para «lo que encontramos»</b>, miren el gráfico: ¿cuál fue la temperatura más baja? ¿Y la más alta? Si esto fuera de noche, ¿habría helado?</p>
+          <p class="coh"><b>Para «lo que encontramos»</b>, miren el gráfico: ¿cuántas mediciones juntó? ¿Cambió la temperatura o se quedó quieta? En 6 segundos de vuelo, ¿cuántas mediciones habría?</p>
+
+          <div class="explica">
+            <div class="rot">Para pensar en equipo</div>
+            <ol class="pasitos">
+              <li>Mirá la barra de direcciones del navegador. ¿Qué dice? Si le pasás esa dirección a alguien, ¿la puede abrir desde su casa?</li>
+              <li>En el código aparece <span class="dice">grafico.png</span>. Cambiale el nombre a la imagen en la carpeta y recargá. ¿Qué pasó? ¿Por qué?</li>
+              <li>¿Qué tendría que pasar para que cualquiera la abra desde su celular?</li>
+            </ol>
+            <figure class="esq-web">
+            <svg viewBox="0 0 680 330" role="img" aria-label="Dos casos. En tu compu: la carpeta y el navegador están en la misma compu, la dirección empieza con file, y el celular de afuera no llega. En internet: la carpeta se copia a un servidor, que es una compu siempre prendida en otro lugar; el celular le pide la página por internet con una dirección https y el servidor le manda los archivos.">
+              <text x="160" y="24" text-anchor="middle" font-family="Manrope,sans-serif" font-weight="800" font-size="16" fill="var(--tinta)">En tu compu</text>
+              <rect x="40" y="50" width="240" height="150" rx="12" fill="var(--hoja)" stroke="var(--tenue)" stroke-width="2"/>
+              <rect x="130" y="200" width="60" height="14" fill="var(--tenue)"/>
+              <path d="M62 80 h34 l8 8 h40 v44 h-82 z" fill="#A8760F" opacity=".85"/>
+              <text class="est" x="103" y="150" text-anchor="middle" font-family="DM Mono,monospace" font-size="11" fill="var(--tinta)">mi-estacion/</text>
+              <text class="coh" x="103" y="150" text-anchor="middle" font-family="DM Mono,monospace" font-size="11" fill="var(--tinta)">mi-cohete/</text>
+              <text x="103" y="166" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="var(--tenue)">index.html</text>
+              <text x="103" y="180" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="var(--tenue)">grafico.png</text>
+              <path d="M150 110 h30" stroke="var(--violeta)" stroke-width="3"/><path d="M180 110 l-8 -6 v12 z" fill="var(--violeta)"/>
+              <rect x="186" y="78" width="80" height="64" rx="6" fill="var(--papel)" stroke="var(--violeta)" stroke-width="2"/>
+              <text x="226" y="100" text-anchor="middle" font-family="Manrope,sans-serif" font-weight="700" font-size="11" fill="var(--tinta)">navegador</text>
+              <text x="226" y="122" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="var(--violeta)">file://…</text>
+              <rect x="120" y="250" width="44" height="72" rx="8" fill="var(--hoja)" stroke="var(--tenue)" stroke-width="2"/>
+              <path d="M170 280 C210 280 240 250 240 214" fill="none" stroke="var(--rojo)" stroke-width="2.5" stroke-dasharray="5 5"/>
+              <text x="250" y="262" font-family="Manrope,sans-serif" font-weight="800" font-size="22" fill="var(--rojo)">✕</text>
+              <text x="178" y="306" font-family="Manrope,sans-serif" font-size="12" fill="var(--tenue)">alguien, desde su casa:</text>
+              <text x="178" y="321" font-family="Manrope,sans-serif" font-size="12" font-weight="700" fill="var(--rojo)">no llega</text>
+
+              <line x1="330" y1="40" x2="330" y2="320" stroke="var(--raya)" stroke-width="2"/>
+
+              <text x="510" y="24" text-anchor="middle" font-family="Manrope,sans-serif" font-weight="800" font-size="16" fill="var(--tinta)">En internet</text>
+              <rect x="368" y="62" width="104" height="128" rx="8" fill="var(--hoja)" stroke="var(--tenue)" stroke-width="2"/>
+              <rect x="380" y="76" width="80" height="18" rx="3" fill="var(--raya)"/><rect x="380" y="102" width="80" height="18" rx="3" fill="var(--raya)"/><rect x="380" y="128" width="80" height="18" rx="3" fill="var(--raya)"/>
+              <circle cx="450" cy="85" r="3" fill="var(--verde)"/><circle cx="450" cy="111" r="3" fill="var(--verde)"/><circle cx="450" cy="137" r="3" fill="var(--verde)"/>
+              <text x="420" y="168" text-anchor="middle" font-family="Manrope,sans-serif" font-weight="800" font-size="13" fill="var(--tinta)">servidor</text>
+              <text x="420" y="210" text-anchor="middle" font-family="Manrope,sans-serif" font-size="11" fill="var(--tenue)">una compu siempre</text>
+              <text x="420" y="224" text-anchor="middle" font-family="Manrope,sans-serif" font-size="11" fill="var(--tenue)">prendida, en otro lugar,</text>
+              <text x="420" y="238" text-anchor="middle" font-family="Manrope,sans-serif" font-size="11" fill="var(--tenue)">con tu carpeta adentro</text>
+              <ellipse cx="560" cy="126" rx="44" ry="26" fill="var(--papel)" stroke="var(--tenue)" stroke-width="2"/>
+              <text x="560" y="131" text-anchor="middle" font-family="Manrope,sans-serif" font-weight="700" font-size="12" fill="var(--tinta)">internet</text>
+              <rect x="618" y="92" width="44" height="72" rx="8" fill="var(--hoja)" stroke="var(--violeta)" stroke-width="2"/>
+              <path d="M612 108 C590 90 520 84 480 96" fill="none" stroke="var(--violeta)" stroke-width="2.5"/><path d="M480 96 l10 -6 l1 10 z" fill="var(--violeta)"/>
+              <text x="548" y="76" text-anchor="middle" font-family="Manrope,sans-serif" font-weight="700" font-size="11" fill="var(--violeta)">1 · pide https://…</text>
+              <path d="M480 156 C520 170 590 166 612 148" fill="none" stroke="var(--verde)" stroke-width="2.5"/><path d="M612 148 l-11 1 l5 9 z" fill="var(--verde)"/>
+              <text x="548" y="186" text-anchor="middle" font-family="Manrope,sans-serif" font-weight="700" font-size="11" fill="var(--verde)">2 · le manda los archivos</text>
+              <text x="640" y="182" text-anchor="middle" font-family="Manrope,sans-serif" font-size="11" fill="var(--tenue)">cualquiera</text>
+              <text x="510" y="290" text-anchor="middle" font-family="Manrope,sans-serif" font-size="12" fill="var(--tinta)">Es la misma carpeta. Lo que cambia es <tspan font-weight="800">dónde vive</tspan>.</text>
+            </svg>
+            </figure>
+          </div>
+          <button class="pista-b" type="button">Pista</button>
+          <div class="pista" hidden>¿No se ve la imagen? Fijate que el archivo se llame exactamente <b>grafico.png</b> y que esté en la misma carpeta que index.html. Si lo bajaste dos veces, Windows lo llama <b>grafico (1).png</b>: cambiale el nombre.<br><br>¿Se ve el código en vez de la página? Se guardó como .txt. Para verlo: en la carpeta, menú <b>Vista → Mostrar → Extensiones de nombre de archivo</b> (en Windows 10: <b>Vista</b> → tildá <b>Extensiones de nombre de archivo</b>). Si dice <b>index.html.txt</b>, cambiale el nombre a <b>index.html</b>.<br><br>¿Se ven raras las tildes? Al guardar, en <b>Codificación</b> elegí <b>UTF-8</b>.</div>
         </div>
       </div>
     </div>
@@ -569,6 +726,24 @@ document.getElementById('bajar-csv').addEventListener('click',()=>{
   document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),1000);
   if(typeof registrar==='function') registrar('csv','Reto 5 · bajó el CSV');
 });
+
+/* El gráfico del reto 5 como grafico.png, para la página del reto 6. Igual que en 4to. */
+document.getElementById('bajar-graf').addEventListener('click',()=>{
+  const svg=document.querySelector('#graf svg'); if(!svg) return;
+  const cs=getComputedStyle(document.documentElement), clon=svg.cloneNode(true);
+  const res=v=>v&&v.includes('var(')?v.replace(/var\((--[\w-]+)\)/g,(m,k)=>cs.getPropertyValue(k).trim()||'#000'):v;
+  clon.querySelectorAll('*').forEach(e=>{for(const at of ['fill','stroke']) if(e.getAttribute(at)) e.setAttribute(at,res(e.getAttribute(at)));
+    if(e.tagName==='text'){e.setAttribute('font-family','DM Mono, monospace');e.setAttribute('font-size','12');if(!e.getAttribute('fill'))e.setAttribute('fill',cs.getPropertyValue('--tenue').trim())}});
+  clon.setAttribute('xmlns','http://www.w3.org/2000/svg');
+  const vb=svg.viewBox.baseVal, W=vb.width*2, H=vb.height*2;
+  const img=new Image(), url=URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(clon)],{type:'image/svg+xml'}));
+  img.onload=()=>{const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+    x.fillStyle=cs.getPropertyValue('--hoja').trim()||'#fff';x.fillRect(0,0,W,H);x.drawImage(img,0,0,W,H);URL.revokeObjectURL(url);
+    c.toBlob(b=>{const u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download='grafico.png';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000)});
+    if(typeof registrar==='function') registrar('png','Reto 5 · bajó el gráfico');};
+  img.src=url;
+});
+document.querySelectorAll('[data-cod^="web-"]').forEach(b=>b.addEventListener('click',()=>registrar('web','Reto 6 · copió el código de la página')));
 </script>
 </body>
 </html>
