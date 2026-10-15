@@ -233,6 +233,15 @@ p.est,p.coh{margin:0}
 .prim,.sec{align-self:flex-start;font:700 .8em var(--f-cuerpo);border-radius:999px;padding:10px 22px;cursor:pointer}
 .prim{background:var(--violeta);color:var(--hoja);border:0}
 .sec{background:transparent;color:var(--violeta);border:1.5px solid var(--violeta)}
+.mas-img{margin:14px 0;padding:12px 14px;border:1.5px dashed var(--raya);border-radius:10px}
+.mas-img p{margin:.3em 0 .7em}
+.sumar-img{display:inline-block;cursor:pointer;padding:7px 14px;border-radius:8px;font-weight:700}
+.sumar-img:focus-within{outline:2px solid var(--violeta);outline-offset:2px}
+.imgs-lista{list-style:none;padding:0;margin:10px 0 0;display:flex;flex-direction:column;gap:6px}
+.imgs-lista li{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:.9em}
+.imgs-lista img{width:54px;height:40px;object-fit:cover;border-radius:6px;border:1px solid var(--raya)}
+.imgs-lista code{font-family:var(--f-mono);color:var(--inf)}
+.imgs-lista .falta{color:#b3261e}
 .bajar3{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0 4px}
 .carpeta-dib{display:inline-flex;flex-direction:column;gap:2px;margin-top:8px;font:500 .8em var(--f-mono);color:var(--tinta);background:var(--hoja);border:1.5px solid var(--raya);border-radius:10px;padding:10px 16px}
 .carpeta-dib span:not(.cd-nom){padding-left:1.4em;color:var(--texto)}
@@ -759,6 +768,13 @@ segundos,humedad,avisando
           </div>
           <p class="nota" id="ed-toast" aria-live="polite"></p>
 
+          <div class="mas-img">
+            <div class="rot">¿Una foto propia? · la huerta, la escuela, el lago</div>
+            <p>Escribir <span class="dice">&lt;img src="huerta.png"&gt;</span> no alcanza: el código sólo <b>nombra</b> el archivo, y esta app no puede entrar a tu compu a buscarlo. Primero <b>sumalo acá</b>; después escribí su nombre <b>igualito</b> en el código.</p>
+            <label class="sec sumar-img">🖼️ Sumar una imagen de mi compu<input type="file" id="sumar-img" accept="image/*" hidden></label>
+            <ul id="imgs-lista" class="imgs-lista"></ul>
+          </div>
+
           <div class="misiones">
             <div class="rot">Misiones · se tildan solas cuando lo logran</div>
             <ol id="misiones"></ol>
@@ -811,6 +827,7 @@ segundos,humedad,avisando
             </li>
             <li><b>Arrastralos</b> de Descargas a tu carpeta. Tienen que quedar los tres juntos:
               <div class="carpeta-dib" aria-hidden="true"><span class="cd-nom est">mi-estacion</span><span class="cd-nom coh">mi-riego</span><span>index.html</span><span>grafico.png</span><span>datos.csv</span></div>
+              <span class="nota">¿Sumaste una foto propia, como <i>huerta.png</i>? Copiala también a la carpeta, con el mismo nombre.</span>
             </li>
             <li><b>Doble clic en index.html.</b> Se abre en el navegador: es tu página, ahora desde tu compu.</li>
           </ol>
@@ -1479,7 +1496,52 @@ function graficoSVG(){
     });
   }
   let tm;
-  function pintar(){ fr.srcdoc=ta.value.replace(/(src\s*=\s*["'])grafico\.png(["'])/gi,(m,a,b)=>a+srcGrafico()+b); }
+  // Imágenes propias: la app no puede leer la carpeta del alumno, así que las suben acá y se reemplazan por nombre exacto.
+  const IKEY='pps.web4to.imgs', imgs=LS.get(IKEY,{})||{}, ilista=document.getElementById('imgs-lista');
+  const escH=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  function nombradas(){ const out=[]; ta.value.replace(/<img[^>]*\ssrc\s*=\s*["']([^"']+)["']/gi,(m,s)=>{out.push(s.replace(/^\.\//,''))}); return out; }
+  function listarImgs(){
+    const usadas=nombradas(), fil=[];
+    Object.keys(imgs).forEach(n=>fil.push(`<li><img src="${imgs[n]}" alt=""><span>Lista para usar: <code>&lt;img src="${escH(n)}" width="100%"&gt;</code></span>
+      ${usadas.includes(n)?'<b>✓ ya está en la página</b>':`<button type="button" class="sec img-copiar" data-n="${escH(n)}">Copiar</button>`}
+      <button type="button" class="sec img-sacar" data-n="${escH(n)}" aria-label="Sacar ${escH(n)}">✕</button></li>`));
+    usadas.filter(s=>s!=='grafico.png'&&!imgs[s]&&!/^(https?:|data:)/i.test(s)).forEach(s=>{
+      const casi=Object.keys(imgs).find(n=>n.toLowerCase()===s.toLowerCase());
+      fil.push(`<li class="falta">⚠ El código pide <code>${escH(s)}</code>, pero ese archivo no está acá. ${casi?`¿Será <code>${escH(casi)}</code>? Mayúsculas y minúsculas cuentan.`:'Sumalo con el botón, o fijate cómo se llama exactamente.'}</li>`);
+    });
+    ilista.innerHTML=fil.join('');
+  }
+  ilista.addEventListener('click',e=>{
+    const b=e.target.closest('button'); if(!b) return; const n=b.dataset.n;
+    if(b.classList.contains('img-sacar')){ delete imgs[n]; LS.set(IKEY,imgs); pintar(); return; }
+    const t=`<img src="${n}" width="100%">`;
+    (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('Copiado. Pegalo en el código donde quieras la imagen (Ctrl+V).'),()=>toast('Copialo a mano: '+t));
+  });
+  document.getElementById('sumar-img').addEventListener('change',e=>{
+    const f=e.target.files&&e.target.files[0]; e.target.value=''; if(!f) return;
+    const n=f.name, rd=new FileReader();
+    rd.onload=()=>{
+      const im=new Image();
+      im.onload=()=>{
+        // Achicar las fotos grandes para que entren en el navegador
+        let url=rd.result; const max=1000;
+        if(f.size>300000||im.width>max){ const k=Math.min(1,max/im.width), c=document.createElement('canvas');
+          c.width=Math.round(im.width*k); c.height=Math.round(im.height*k); const g=c.getContext('2d');
+          g.fillStyle='#fff'; g.fillRect(0,0,c.width,c.height); g.drawImage(im,0,0,c.width,c.height); url=c.toDataURL('image/jpeg',.85); }
+        imgs[n]=url; if(!LS.set(IKEY,imgs)) toast('La imagen quedó, pero es muy pesada para guardarla: si recargás la página hay que sumarla de nuevo.');
+        else toast(`Listo. Ahora escribí <img src="${n}" width="100%"> en el código, o tocá Copiar.`);
+        pintar(); if(typeof registrar==='function') registrar('web-img','Reto 5 · página web: sumó una imagen propia');
+      };
+      im.onerror=()=>toast('Ese archivo no parece una imagen. Probá con una .png o .jpg.');
+      im.src=rd.result;
+    };
+    rd.readAsDataURL(f);
+  });
+  function pintar(){
+    let h=ta.value.replace(/(src\s*=\s*["'])(?:\.\/)?grafico\.png(["'])/gi,(m,a,b)=>a+srcGrafico()+b);
+    h=h.replace(/(src\s*=\s*["'])(?:\.\/)?([^"']+)(["'])/g,(m,a,s,b)=>imgs[s]?a+imgs[s]+b:m);
+    fr.srcdoc=h; listarImgs();
+  }
   fr.addEventListener('load',revisar);
   ta.addEventListener('input',()=>{clearTimeout(tm);tm=setTimeout(()=>{pintar();LS.set(KEY(),ta.value)},350)});
   ta.addEventListener('keydown',e=>{ if(e.key==='Tab'&&!e.shiftKey){e.preventDefault();ta.setRangeText('  ',ta.selectionStart,ta.selectionEnd,'end');ta.dispatchEvent(new Event('input'))} });
