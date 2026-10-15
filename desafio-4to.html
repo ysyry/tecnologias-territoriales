@@ -238,6 +238,12 @@ p.est,p.coh{margin:0}
 .carpeta-dib span:not(.cd-nom){padding-left:1.4em;color:var(--texto)}
 .carpeta-dib .cd-nom{font-weight:500;color:var(--violeta)}
 .carpeta-dib .cd-nom::after{content:"/"}
+.separa{border-top:3px solid var(--violeta);padding-top:32px;display:flex;flex-direction:column;gap:12px}
+.separa p{margin:0;max-width:44em}
+.chequeo{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;background:var(--hoja);border:1.5px solid var(--raya);border-radius:12px;padding:16px 18px}
+.chequeo label{font-weight:700;color:var(--tinta);flex-basis:100%}
+.chequeo input{width:7em;font:500 1em var(--f-mono);color:var(--tinta);background:var(--papel);border:1.5px solid var(--raya);border-radius:8px;padding:8px 10px}
+.chequeo input:focus-visible{outline:3px solid var(--violeta);outline-offset:2px}
 </style>
 </head>
 <body>
@@ -805,6 +811,406 @@ segundos,humedad,avisando
         </div>
       </div>
     </div>
+
+    <div class="separa">
+      <div class="rot">Para los que terminaron</div>
+      <h2 class="est">Una estación de verdad mide más que la temperatura</h2>
+      <h2 class="coh">Un riego de verdad mira más que la tierra</h2>
+      <p class="est">Las estaciones meteorológicas miden también <b>la luz del sol</b>, <b>la lluvia</b> y <b>el viento</b>. Vamos a sumarlos de a uno, cada uno con el componente de Tinkercad que más se le parece.</p>
+      <p class="coh">Un buen riego no mira sólo si la tierra tiene sed: también <b>a qué hora</b> es, <b>cuánta agua</b> lleva gastada y <b>si hiela</b>. Vamos a sumarlo de a uno.</p>
+    </div>
+
+    <!-- ===================== ESTACIÓN ===================== -->
+    <div class="reto tapado est" id="r6e">
+      <div class="nivel">6</div>
+      <div class="cuerpo">
+        <div class="rot">Sensor nuevo · la luz</div>
+        <h3>Las heladas fuertes son de noche. ¿Y si el aparato supiera si es de día?</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <div class="formula" hidden>
+          <div class="explica">
+            <div class="rot">Cómo se conecta el fotorresistor</div>
+            <p>Buscalo en Tinkercad como <b>Fotorresistor</b>. Una pata a <b>5V</b>. La otra pata a <b>A1</b>, y desde esa misma pata una <b>resistencia de 10 kΩ</b> a <b>GND</b>.</p>
+            <p class="nota">Las estaciones reales miden la <b>radiación solar</b> con un sensor parecido, pero más preciso.</p>
+          </div>
+          <ol class="pasitos">
+            <li>Copiá este código en Tinkercad. Ahora la tabla tiene una columna más: <span class="dice">luz</span>.</li>
+          </ol>
+          <div class="codigo"><button class="copiar" type="button" data-cod="c6e">Copiar</button><pre id="c6e">// Estación · temperatura y luz
+float anterior = 100;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(13, OUTPUT);
+  Serial.println("segundos,grados,luz,alerta");   // los títulos, una sola vez
+}
+
+void loop() {
+  int lectura = analogRead(A0);
+  float grados = (lectura * 5.0 / 1023 - 0.5) * 100;
+  int luz = analogRead(A1);          // el fotorresistor: con más luz, el número sube
+
+  int alerta = 0;
+  if (grados &lt; 3 &amp;&amp; grados &lt; anterior) {   // ← sumale: «y es de noche»
+    alerta = 1;
+  }
+  digitalWrite(13, alerta);
+  anterior = grados;
+
+  Serial.print(millis() / 1000);
+  Serial.print(",");
+  Serial.print(grados);
+  Serial.print(",");
+  Serial.print(luz);
+  Serial.print(",");
+  Serial.println(alerta);
+  delay(1000);
+}</pre></div>
+          <ol class="pasitos" start="2">
+            <li>Dale play. Hacé clic en el fotorresistor y mové su deslizador: <b>¿qué número da con mucha luz? ¿Y casi a oscuras?</b></li>
+            <li>Decidan en equipo: <b>¿debajo de qué número es de noche?</b> Ese es su umbral.</li>
+            <li>Sumá la condición al <b>if</b>, con <span class="dice">&amp;&amp;</span>. Probalo: con frío y de día no tiene que avisar; con frío y de noche, sí.</li>
+          </ol>
+          <div class="explica">
+            <div class="rot">Para pensar</div>
+            <p>Ahora el aparato decide con <b>dos sensores</b>. En el diagrama de estados del reto 3, ¿qué cambia en la flecha que va a <b>Alerta</b>?</p>
+          </div>
+          <button class="pista-b" type="button">Respuesta</button>
+          <div class="pista" hidden>El if queda así (cambien el 200 por el número que eligieron):<pre class="mini">if (grados &lt; 3 &amp;&amp; grados &lt; anterior &amp;&amp; luz &lt; 200) {</pre>En el diagrama, la flecha a Alerta dice: «hace menos de 3, viene bajando <b>y es de noche</b>».</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reto tapado est" id="r7e">
+      <div class="nivel">7</div>
+      <div class="cuerpo">
+        <div class="rot">Sensor nuevo · la lluvia</div>
+        <h3>Apretás el botón una sola vez, y el pluviómetro dice que llovió un montón. ¿Qué está mal?</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <div class="formula" hidden>
+          <div class="explica">
+            <div class="rot">Cómo mide la lluvia una estación</div>
+            <p>El <b>pluviómetro de balancín</b> tiene una cucharita doble. Cuando se llena con 0,2 mm de lluvia, se vuelca, y en ese momento cierra un contacto: <b>clic</b>. Para saber cuánto llovió, el aparato <b>cuenta los clics</b>.</p>
+            <p>En Tinkercad, el clic es un <b>botón</b> (Pulsador). Una pata al <b>pin 2</b> y la pata de la <b>diagonal</b> a <b>GND</b>. No lleva resistencia: la pone la placa por adentro, con <span class="dice">INPUT_PULLUP</span>.</p>
+          </div>
+          <div class="codigo"><button class="copiar" type="button" data-cod="c7e">Copiar</button><pre id="c7e">// Pluviómetro de balancín: cada vez que la cucharita se vuelca, llovieron 0,2 mm
+int vuelcos = 0;              // el contador: va afuera del loop para que no se borre
+int antes = HIGH;             // cómo estaba el botón en la vuelta anterior
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(2, INPUT_PULLUP);   // el botón: suelto da HIGH, apretado da LOW
+}
+
+void loop() {
+  int ahora = digitalRead(2);
+  if (ahora == LOW) {                    // ¿está apretado?
+    vuelcos = vuelcos + 1;
+    Serial.print("Lluvia: ");
+    Serial.print(vuelcos * 0.2);
+    Serial.println(" mm");
+  }
+  antes = ahora;
+  delay(20);
+}</pre></div>
+          <div class="compara">
+            <div><div class="rot">Apretás una vez y sale</div><pre class="salida mal">Lluvia: 0.20 mm
+Lluvia: 0.40 mm
+Lluvia: 0.60 mm
+Lluvia: 0.80 mm
+Lluvia: 1.00 mm
+…</pre></div>
+            <div><div class="rot">Tiene que salir</div><pre class="salida bien">Lluvia: 0.20 mm</pre><p class="nota">Y con cada apretada, 0,2 más.</p></div>
+          </div>
+          <p>Charlen: <b>el loop da 50 vueltas por segundo.</b> ¿Cuántas vueltas dura tu dedo apretando? ¿Qué tendría que pasar para contar <b>una sola vez</b>? La variable <span class="dice">antes</span> está en el código y nadie la usa…</p>
+          <button class="pista-b" type="button">Pista</button>
+          <div class="pista" hidden>No hay que contar cuando <b>está</b> apretado, sino cuando <b>recién se apretó</b>: ahora está apretado y en la vuelta anterior no.<pre class="mini">if (ahora == LOW &amp;&amp; antes == HIGH) {</pre>Esto se llama detectar el <b>flanco</b>: el instante del cambio. Es la misma idea que la flecha de un diagrama de estados.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reto tapado est" id="r8e">
+      <div class="nivel">8</div>
+      <div class="cuerpo">
+        <div class="rot">Sensor nuevo · el viento</div>
+        <h3>¿Cuánto viento hace? Contá cuántas vueltas da el anemómetro en 5 segundos.</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <div class="formula" hidden>
+          <div class="explica">
+            <div class="rot">Cómo mide el viento una estación</div>
+            <p>El <b>anemómetro</b> tiene tres cazoletas que giran con el viento. En cada vuelta cierra un contacto, igual que el pluviómetro. <b>Más vueltas en el mismo tiempo, más viento.</b> En uno común, una vuelta por segundo son 2,4 km/h.</p>
+            <p>Usá el mismo botón del pin 2. <b>Cada apretada es una vuelta.</b></p>
+          </div>
+          <div class="llenar" data-id="viento" data-reto="8">
+            <p><b>Completá los dos huecos.</b> Después tocá Revisar.</p>
+            <pre class="llenar-cod">// Anemómetro: cada vez que apretás el botón, las cazoletas dieron una vuelta
+int vueltas = 0;
+int antes = HIGH;
+unsigned long inicio = 0;     // cuándo empezó a contar
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(2, INPUT_PULLUP);
+}
+
+void loop() {
+  int ahora = digitalRead(2);
+  if (ahora == LOW &amp;&amp; antes == HIGH) {     // recién se apretó: una vuelta
+    vueltas = vueltas + 1;
+  }
+  antes = ahora;
+
+  if (millis() - inicio &gt;= <input class="hueco-c" data-ok="5000" size="5" aria-label="Completá" autocomplete="off" spellcheck="false">) {      // ¿pasaron 5 segundos? (en milésimas)
+    float porSegundo = vueltas / 5.0;
+    float kmh = porSegundo * 2.4;
+    Serial.print("Viento: ");
+    Serial.print(kmh);
+    Serial.println(" km/h");
+    vueltas = <input class="hueco-c" data-ok="0" size="3" aria-label="Completá" autocomplete="off" spellcheck="false">;                  // empieza a contar de nuevo
+    inicio = millis();
+  }
+  delay(10);
+}</pre>
+            <div class="acciones"><button type="button" class="destapar ll-revisar">Revisar</button><button type="button" class="pista-b ll-copiar" hidden>Copiar el código completo</button><span class="nota ll-msg" aria-live="polite"></span></div>
+          </div>
+          <ol class="pasitos">
+            <li><b>Competencia:</b> ¿quién hace el viento más fuerte? Apretá lo más rápido que puedas durante 5 segundos.</li>
+            <li>En Villa La Angostura el viento llega a 60 km/h. ¿Cuántas apretadas en 5 segundos harían falta? ¿Se puede con un dedo?</li>
+            <li>¿Qué pasa si no ponés <span class="dice">vueltas = 0</span>? Probalo.</li>
+          </ol>
+          <button class="pista-b" type="button">Respuesta</button>
+          <div class="pista" hidden>5 segundos son <b>5000</b> milésimas, y después de mostrar el viento las vueltas vuelven a <b>0</b>. Si no, se siguen sumando y el viento «crece» solo.<br><br>Para 60 km/h: 60 ÷ 2,4 = 25 vueltas por segundo, o sea <b>125 apretadas en 5 segundos</b>. Con un dedo, imposible.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reto tapado est" id="rxe">
+      <div class="nivel">+</div>
+      <div class="cuerpo">
+        <div class="rot">Extra · juntar dos sensores</div>
+        <h3>Con 0 grados y viento, ¿se siente 0? El pronóstico dice «sensación térmica». Programala.</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <div class="formula" hidden>
+          <p>Con viento, el cuerpo pierde calor más rápido y el frío se siente más. El Servicio Meteorológico calcula la <b>sensación térmica</b> con una fórmula que usa la temperatura <b>y</b> el viento. Acá está escrita como una <b>función</b>: le das dos números y te devuelve uno.</p>
+          <div class="codigo"><button class="copiar" type="button" data-cod="cxe">Copiar</button><pre id="cxe">// Sensación térmica: con viento, el frío se siente más
+float sensacion(float t, float v) {      // t: grados · v: viento en km/h
+  if (t &gt; 10 || v &lt; 5) {                 // la fórmula sirve sólo con frío y con viento
+    return t;
+  }
+  float vv = pow(v, 0.16);               // pow(v, 0.16): v elevado a la 0,16
+  return 13.12 + 0.6215 * t - 11.37 * vv + 0.3965 * t * vv;
+}
+
+void setup() {
+  Serial.begin(9600);
+  Serial.println(sensacion(0, 30));      // probala: 0 grados, viento de 30 km/h
+}
+
+void loop() {
+}</pre></div>
+          <div class="chequeo">
+            <label for="st-r">Correlo: ¿qué número sale con 0 grados y 30 km/h?</label>
+            <input id="st-r" inputmode="decimal" autocomplete="off" placeholder="-?"><button type="button" class="prim" id="st-ok">Revisar</button>
+            <span class="nota" id="st-msg" aria-live="polite"></span>
+          </div>
+          <ol class="pasitos">
+            <li>Probá con <b>5 grados y 50 km/h</b>, un día de viento en el lago. ¿Cuánto se siente?</li>
+            <li><b>El desafío:</b> juntá el código del viento (reto 8) con el de la temperatura, y que cada 5 segundos muestre <span class="dice">grados, viento, sensación</span>. La función se copia arriba de todo, afuera de setup y loop.</li>
+          </ol>
+          <button class="pista-b" type="button">Pista</button>
+          <div class="pista" hidden>Adentro del <b>if</b> de los 5 segundos del reto 8, leé la temperatura como en el reto 1 y escribí:<pre class="mini">Serial.print(grados);
+Serial.print(",");
+Serial.print(kmh);
+Serial.print(",");
+Serial.println(sensacion(grados, kmh));</pre></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== RIEGO ===================== -->
+    <div class="reto tapado coh" id="r6r">
+      <div class="nivel">6</div>
+      <div class="cuerpo">
+        <div class="rot">Sensor nuevo · la luz</div>
+        <h3>Regar al mediodía, con pleno sol, es tirar agua: se evapora. ¿Y si el aparato esperara?</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <div class="formula" hidden>
+          <div class="explica">
+            <div class="rot">Cómo se conecta el fotorresistor</div>
+            <p>Buscalo en Tinkercad como <b>Fotorresistor</b>. Una pata a <b>5V</b>. La otra pata a <b>A1</b>, y desde esa misma pata una <b>resistencia de 10 kΩ</b> a <b>GND</b>.</p>
+          </div>
+          <div class="codigo"><button class="copiar" type="button" data-cod="c6r">Copiar</button><pre id="c6r">// Riego · humedad y luz
+int avisando = 0;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(13, OUTPUT);
+  Serial.println("segundos,humedad,luz,avisando");   // los títulos, una sola vez
+}
+
+void loop() {
+  int humedad = analogRead(A0);
+  int luz = analogRead(A1);          // el fotorresistor: con más luz, el número sube
+
+  if (avisando == 0 &amp;&amp; humedad &lt; 200) {   // ← sumale: «y no es pleno sol»
+    avisando = 1;
+  }
+  if (avisando == 1 &amp;&amp; humedad &gt; 250) {
+    avisando = 0;
+  }
+  digitalWrite(13, avisando);
+
+  Serial.print(millis() / 1000);
+  Serial.print(",");
+  Serial.print(humedad);
+  Serial.print(",");
+  Serial.print(luz);
+  Serial.print(",");
+  Serial.println(avisando);
+  delay(1000);
+}</pre></div>
+          <ol class="pasitos">
+            <li>Dale play. Hacé clic en el fotorresistor y mové su deslizador: <b>¿qué número da a pleno sol? ¿Y a la tarde, con poca luz?</b></li>
+            <li>Decidan en equipo: <b>¿arriba de qué número es «pleno sol»?</b></li>
+            <li>Sumá la condición al primer <b>if</b>, con <span class="dice">&amp;&amp;</span>. Probalo: con la tierra seca y mucho sol, espera; cuando baja el sol, avisa.</li>
+          </ol>
+          <div class="explica">
+            <div class="rot">Para pensar</div>
+            <p>¿Y si la tierra está <b>muy</b> seca, de una planta que se está muriendo? ¿Igual tiene que esperar a que baje el sol? ¿Cómo lo programarían?</p>
+          </div>
+          <button class="pista-b" type="button">Respuesta</button>
+          <div class="pista" hidden>El primer if queda así (cambien el 600 por el número que eligieron):<pre class="mini">if (avisando == 0 &amp;&amp; humedad &lt; 200 &amp;&amp; luz &lt; 600) {</pre>Para la planta muy seca: un <b>o</b> (<code>||</code>) que riegue igual si la humedad baja de, por ejemplo, 100.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reto tapado coh" id="r7r">
+      <div class="nivel">7</div>
+      <div class="cuerpo">
+        <div class="rot">Cuánta agua</div>
+        <h3>El aparato regó una vez, pero el contador dice 37. ¿Qué está mal?</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <div class="formula" hidden>
+          <p>Para saber cuánta agua ahorramos, el aparato tiene que <b>contar cuántas veces regó</b>. Cada riego son 5 litros.</p>
+          <div class="codigo"><button class="copiar" type="button" data-cod="c7r">Copiar</button><pre id="c7r">// Riego · cuántas veces regó y cuánta agua usó
+int avisando = 0;
+int riegos = 0;               // el contador: va afuera del loop para que no se borre
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(13, OUTPUT);
+}
+
+void loop() {
+  int humedad = analogRead(A0);
+
+  if (avisando == 0 &amp;&amp; humedad &lt; 200) {
+    avisando = 1;
+  }
+  if (avisando == 1 &amp;&amp; humedad &gt; 250) {
+    avisando = 0;
+  }
+  riegos = riegos + 1;        // un riego más
+  digitalWrite(13, avisando);
+
+  Serial.print("Riegos: ");
+  Serial.print(riegos);
+  Serial.print(" | agua: ");
+  Serial.print(riegos * 5);   // cada riego, 5 litros
+  Serial.println(" litros");
+  delay(1000);
+}</pre></div>
+          <div class="compara">
+            <div><div class="rot">Sale</div><pre class="salida mal">Riegos: 1 | agua: 5 litros
+Riegos: 2 | agua: 10 litros
+Riegos: 3 | agua: 15 litros
+…  (aunque la tierra esté mojada)</pre></div>
+            <div><div class="rot">Tiene que salir</div><pre class="salida bien">Riegos: 0 | agua: 0 litros
+Riegos: 0 | agua: 0 litros
+Riegos: 1 | agua: 5 litros   ← se secó
+Riegos: 1 | agua: 5 litros</pre></div>
+          </div>
+          <p>Charlen: mirando el diagrama de estados del reto 3, <b>¿en qué momento exacto empieza un riego?</b> ¿En qué parte del código pasa eso?</p>
+          <button class="pista-b" type="button">Pista</button>
+          <div class="pista" hidden>Un riego empieza cuando el aparato <b>pasa</b> de Tranquilo a Avisando: la flecha del diagrama. En el código, esa flecha es el <b>primer if</b>. La línea <code>riegos = riegos + 1;</code> va adentro de ese if, abajo de <code>avisando = 1;</code>.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reto tapado coh" id="r8r">
+      <div class="nivel">8</div>
+      <div class="cuerpo">
+        <div class="rot">Sensor nuevo · la temperatura</div>
+        <h3>En julio, si riega de noche, el agua se congela en los caños y los revienta. Que no riegue con helada.</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <div class="formula" hidden>
+          <div class="explica">
+            <div class="rot">Cómo se conecta el TMP36</div>
+            <p>Con la parte plana hacia vos: la pata izquierda a <b>5V</b>, la del medio a <b>A2</b> y la derecha a <b>GND</b>. Es el mismo sensor que usa el equipo de la estación.</p>
+          </div>
+          <div class="llenar" data-id="helada" data-reto="8">
+            <p><b>Completá los huecos.</b> Después tocá Revisar.</p>
+            <pre class="llenar-cod">// Riego · que no riegue con helada
+int avisando = 0;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(13, OUTPUT);
+}
+
+void loop() {
+  int humedad = analogRead(<input class="hueco-c" data-ok="A0" size="3" aria-label="Completá" autocomplete="off" spellcheck="false">);
+  int lectura = analogRead(<input class="hueco-c" data-ok="A2" size="3" aria-label="Completá" autocomplete="off" spellcheck="false">);                    // el TMP36
+  float grados = (lectura * 5.0 / 1023 - 0.5) * 100;
+
+  if (avisando == 0 &amp;&amp; humedad &lt; 200 &amp;&amp; grados <input class="hueco-c" data-ok="&gt;=" data-ok2="&gt;" size="3" aria-label="Completá" autocomplete="off" spellcheck="false"> 2) {   // tiene sed y no hiela
+    avisando = 1;
+  }
+  if (avisando == 1 &amp;&amp; (humedad &gt; 250 <input class="hueco-c" data-ok="||" size="3" aria-label="Completá" autocomplete="off" spellcheck="false"> grados &lt; 2)) {   // se mojó, O empezó a helar
+    avisando = 0;
+  }
+  digitalWrite(13, avisando);
+
+  Serial.print(humedad);
+  Serial.print(" | ");
+  Serial.print(grados);
+  Serial.print(" grados | ");
+  Serial.println(avisando == 1 ? "regar" : "no regar");
+  delay(1000);
+}</pre>
+            <div class="acciones"><button type="button" class="destapar ll-revisar">Revisar</button><button type="button" class="pista-b ll-copiar" hidden>Copiar el código completo</button><span class="nota ll-msg" aria-live="polite"></span></div>
+          </div>
+          <ol class="pasitos">
+            <li>Probalo con la tierra seca: a 20 grados riega; bajá la temperatura a 0 y tiene que dejar de regar.</li>
+            <li>Ahora el aparato decide con <b>dos sensores</b>. Dibujen otra vez el diagrama: ¿qué dice ahora cada flecha?</li>
+          </ol>
+          <button class="pista-b" type="button">Pista</button>
+          <div class="pista" hidden>La humedad está en <b>A0</b> y el TMP36 en <b>A2</b>.<br>«No hiela» es <b>grados &gt;= 2</b>: dos grados o más.<br>Para dejar de regar alcanza con que pase <b>una</b> de las dos cosas: eso es un «o», que se escribe <b>||</b>.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reto tapado coh" id="rxr">
+      <div class="nivel">+</div>
+      <div class="cuerpo">
+        <div class="rot">Extra · las cuentas</div>
+        <h3>¿Cuánta agua le ahorra su aparato a la huerta, comparado con el timer?</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <div class="formula" hidden>
+          <p>El timer riega <b>todos los días</b>, haya llovido o no, y cada vez usa <b>20 litros</b>. En una semana de otoño, con dos días de lluvia, su aparato regó <b>6 veces</b> de <b>5 litros</b>.</p>
+          <div class="chequeo">
+            <label for="ag-r">¿Cuántos litros ahorró en la semana?</label>
+            <input id="ag-r" inputmode="numeric" autocomplete="off" placeholder="?"><button type="button" class="prim" id="ag-ok">Revisar</button>
+            <span class="nota" id="ag-msg" aria-live="polite"></span>
+          </div>
+          <ol class="pasitos">
+            <li>¿Y en un mes? ¿Y en todo el verano, de diciembre a febrero?</li>
+            <li><b>El desafío:</b> sumá al código del reto 7 una línea que muestre cuánto se ahorró. Pista: el timer gastaría <span class="dice">20 × días</span>, y los días se pueden sacar de <span class="dice">millis()</span>.</li>
+            <li>Pónganlo en su página web: es el dato que más le importa a quien cuida la huerta.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
   </section>
 
   <section class="falla" aria-label="Si no anda">
@@ -1044,8 +1450,8 @@ document.querySelectorAll('.llenar').forEach(L=>{
   const norm=v=>v.replace(/\s+/g,'').toLowerCase();
   ins.forEach(i=>i.addEventListener('input',()=>i.classList.remove('bien','mal')));
   L.querySelector('.ll-revisar').addEventListener('click',()=>{
-    let ok=0; ins.forEach(i=>{const b=norm(i.value)===norm(i.dataset.ok); i.classList.toggle('bien',b); i.classList.toggle('mal',!b&&i.value!==''); if(b) ok++;});
-    if(ok===ins.length){msg.textContent='¡Completo! Copialo a Tinkercad y probalo con el deslizador.'; cp.hidden=false; if(typeof registrar==='function') registrar('llenar-'+L.dataset.id,'Reto 2 · completó el código');}
+    let ok=0; ins.forEach(i=>{const b=[i.dataset.ok,i.dataset.ok2].filter(Boolean).some(o=>norm(i.value)===norm(o)); i.classList.toggle('bien',b); i.classList.toggle('mal',!b&&i.value!==''); if(b) ok++;});
+    if(ok===ins.length){msg.textContent='¡Completo! Copialo a Tinkercad y probalo.'; cp.hidden=false; if(typeof registrar==='function') registrar('llenar-'+L.dataset.id,'Reto '+(L.dataset.reto||'2')+' · completó el código');}
     else msg.textContent=`${ok} de ${ins.length} bien. Los rojos, revisalos; los vacíos, completalos.`;
   });
   cp.addEventListener('click',()=>{
@@ -1241,6 +1647,15 @@ function graficoSVG(){
 
   cargar(); actualizarAviso();
 })();
+
+/* retos extra: una cuenta para revisar */
+[['st',v=>Math.abs(v+6.47)<=0.1,'¡Eso! Con 0 grados y viento de 30 km/h se siente como −6,5. El viento «enfría» seis grados y medio.','No da eso. ¿Lo corriste en Tinkercad? Mirá el monitor: es un número negativo.','Extra · sensación térmica: calculó −6,5'],
+ ['ag',v=>v===110,'¡Bien! El timer gasta 7 × 20 = 140 litros, el aparato 6 × 5 = 30: ahorró 110 litros en una semana.','No da eso. Calculá primero cuánto gasta el timer en 7 días, y después cuánto gastó el aparato.','Extra · cuenta del agua: 110 litros']].forEach(([id,ok,bien,mal,reg])=>{
+  const inp=document.getElementById(id+'-r'), b=document.getElementById(id+'-ok'), m=document.getElementById(id+'-msg');
+  const rev=()=>{const v=parseFloat(inp.value.replace(',','.').replace('−','-')); if(isNaN(v)){m.textContent='Escribí un número.';return}
+    if(ok(v)){m.textContent=bien; if(typeof registrar==='function') registrar('cuenta-'+id,reg)} else m.textContent=mal;};
+  b.addEventListener('click',rev); inp.addEventListener('keydown',e=>{if(e.key==='Enter')rev()});
+});
 </script>
 </body>
 </html>
