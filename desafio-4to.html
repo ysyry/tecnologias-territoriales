@@ -247,6 +247,33 @@ p.est,p.coh{margin:0}
 .placa{border:2px solid var(--violeta);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:12px}
 .placa p{margin:0}
 #placa-ult{margin:0}
+.ed-cod{flex:1;min-height:540px;resize:vertical;border:0;background:var(--codigo);color:var(--codigo-t);font:500 .7em/1.6 var(--f-mono);padding:14px;tab-size:2;white-space:pre;overflow:auto}
+.ed-cod:focus-visible{outline:3px solid var(--violeta);outline-offset:-3px}
+.ed-vista{flex:1;min-height:540px;border:0;background:#fff;width:100%}
+.editor.mini .ed-cod{min-height:150px}
+.editor.mini .ed-vista{min-height:170px}
+.bug{border:1.5px solid var(--raya);border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:12px;background:var(--hoja);margin-bottom:22px;transition:border-color .3s}
+.bug.ok{border-color:var(--verde)}
+.bug-cab{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:start}
+.bug-n{font:800 1.5em/1 var(--f-titulo);color:var(--inf);width:1.7em;height:1.7em;border-radius:50%;border:2.5px solid var(--inf);display:flex;align-items:center;justify-content:center}
+.bug.ok .bug-n{background:var(--verde);border-color:var(--verde);color:#fff}
+.bug-cab h4{margin:2px 0 4px;font:600 1.15em var(--f-titulo);color:var(--tinta)}
+.bug-cab p{margin:0}
+.bug-tag{font:500 .62em var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--inf)}
+.bug-est{font-weight:700;color:var(--tenue)}
+.bug.ok .bug-est{color:var(--verde)}
+.bug-pista{margin:0;background:var(--inf-w);border-radius:8px;padding:12px 14px;color:var(--tinta)}
+.bug-idea{border-left:4px solid var(--verde);padding:4px 0 4px 16px;display:flex;flex-direction:column;gap:4px}
+.bug-idea p{margin:0}
+.bug-idea code,.bug-pista code{font-family:var(--f-mono);font-size:.88em;background:var(--inf-w);border-radius:5px;padding:0 .3em}
+.bug-cuenta{margin:0;font:800 1.2em var(--f-titulo);color:var(--violeta)}
+.lector{margin:0;font-family:var(--f-mono);font-size:.8em;background:var(--papel);border:1.5px dashed var(--tenue);border-radius:8px;padding:10px 14px}
+.pegar2{width:100%;font:500 .8em var(--f-mono);color:var(--tinta);background:var(--hoja);border:1.5px solid var(--raya);border-radius:10px;padding:14px;resize:vertical}
+.ley2{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:.78em;color:var(--texto);align-items:center}
+.ley2>span{display:inline-flex;align-items:center;gap:8px}
+.ley2 i{display:inline-block;width:22px;height:5px;border-radius:3px}
+.ley2 .l1{background:var(--violeta)} .ley2 .l2{background:#D99A00} .ley2 .l3{width:12px;height:12px;border-radius:50%;background:var(--rojo)} .ley2 .l4{width:16px;height:14px;background:#1E1934;opacity:.3;border-radius:2px}
+.ley2 input{width:5em;font:500 1em var(--f-mono);border:1.5px solid var(--raya);border-radius:6px;padding:2px 6px;background:var(--hoja);color:var(--tinta)}
 </style>
 </head>
 <body>
@@ -887,17 +914,36 @@ void loop() {
       </div>
     </div>
 
+
+    <div class="reto tapado meta" id="r6w">
+      <div class="nivel">6</div>
+      <div class="cuerpo">
+        <div class="rot">La página, a fondo · encontrá el error</div>
+        <h3>El navegador nunca dice «error»: hace lo que puede y se calla. Doce páginas rotas, doce síntomas. ¿Qué entendió mal quien la escribió?</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <div class="formula" hidden>
+          <div class="explica">
+            <div class="rot">Cómo se juega</div>
+            <p>En cada tarjeta hay un <b>síntoma</b>: lo que alguien vio y no entiende. Leé el código, encontrá el error y <b>arreglalo ahí mismo</b>. Cuando quede bien, la tarjeta se pone verde y aparece <b>la idea</b> que había que entender.</p>
+            <p>A diferencia de la placa, que no compila si hay un error, el navegador <b>siempre muestra algo</b>. Por eso hay que aprender a leer los síntomas.</p>
+          </div>
+          <p class="bug-cuenta" id="bug-cuenta" aria-live="polite">0 de 12 arreglados</p>
+          <div id="bugs"></div>
+        </div>
+      </div>
+    </div>
+
     <div class="separa">
-      <div class="rot">Para los que terminaron</div>
+      <div class="rot">Ahora, la estación con luz</div>
       <h2 class="est">Una estación de verdad mide más que la temperatura</h2>
       <h2 class="coh">Un riego de verdad mira más que la tierra</h2>
-      <p class="est">Las estaciones meteorológicas miden también <b>la luz del sol</b>, <b>la lluvia</b> y <b>el viento</b>. Vamos a sumarlos de a uno, cada uno con el componente de Tinkercad que más se le parece.</p>
-      <p class="coh">Un buen riego no mira sólo si la tierra tiene sed: también <b>a qué hora</b> es, <b>cuánta agua</b> lleva gastada y <b>si hiela</b>. Vamos a sumarlo de a uno.</p>
+      <p class="est">Las estaciones meteorológicas miden también <b>la luz del sol</b>. Vamos a sumarla al aparato, mirarla junto a la temperatura en un gráfico, y hacer que la página también decida si es de día o de noche.</p>
+      <p class="coh">Un buen riego no mira sólo si la tierra tiene sed: también <b>si hay sol</b>. Vamos a sumar la luz al aparato, mirarla junto a la humedad en un gráfico, y hacer que la página también decida.</p>
     </div>
 
     <!-- ===================== ESTACIÓN ===================== -->
     <div class="reto tapado est" id="r6e">
-      <div class="nivel">6</div>
+      <div class="nivel">7</div>
       <div class="cuerpo">
         <div class="rot">Sensor nuevo · la luz</div>
         <h3>Las heladas fuertes son de noche. ¿Y si el aparato supiera si es de día?</h3>
@@ -956,155 +1002,11 @@ void loop() {
       </div>
     </div>
 
-    <div class="reto tapado est" id="r7e">
-      <div class="nivel">7</div>
-      <div class="cuerpo">
-        <div class="rot">Sensor nuevo · la lluvia</div>
-        <h3>Apretás el botón una sola vez, y el pluviómetro dice que llovió un montón. ¿Qué está mal?</h3>
-        <button class="destapar" type="button">Destapar</button>
-        <div class="formula" hidden>
-          <div class="explica">
-            <div class="rot">Cómo mide la lluvia una estación</div>
-            <p>El <b>pluviómetro de balancín</b> tiene una cucharita doble. Cuando se llena con 0,2 mm de lluvia, se vuelca, y en ese momento cierra un contacto: <b>clic</b>. Para saber cuánto llovió, el aparato <b>cuenta los clics</b>.</p>
-            <p>En Tinkercad, el clic es un <b>botón</b> (Pulsador). Una pata al <b>pin 2</b> y la pata de la <b>diagonal</b> a <b>GND</b>. No lleva resistencia: la pone la placa por adentro, con <span class="dice">INPUT_PULLUP</span>.</p>
-          </div>
-          <div class="codigo"><button class="copiar" type="button" data-cod="c7e">Copiar</button><pre id="c7e">// Pluviómetro de balancín: cada vez que la cucharita se vuelca, llovieron 0,2 mm
-int vuelcos = 0;              // el contador: va afuera del loop para que no se borre
-int antes = HIGH;             // cómo estaba el botón en la vuelta anterior
 
-void setup() {
-  Serial.begin(9600);
-  pinMode(2, INPUT_PULLUP);   // el botón: suelto da HIGH, apretado da LOW
-}
-
-void loop() {
-  int ahora = digitalRead(2);
-  if (ahora == LOW) {                    // ¿está apretado?
-    vuelcos = vuelcos + 1;
-    Serial.print("Lluvia: ");
-    Serial.print(vuelcos * 0.2);
-    Serial.println(" mm");
-  }
-  antes = ahora;
-  delay(20);
-}</pre></div>
-          <div class="compara">
-            <div><div class="rot">Apretás una vez y sale</div><pre class="salida mal">Lluvia: 0.20 mm
-Lluvia: 0.40 mm
-Lluvia: 0.60 mm
-Lluvia: 0.80 mm
-Lluvia: 1.00 mm
-…</pre></div>
-            <div><div class="rot">Tiene que salir</div><pre class="salida bien">Lluvia: 0.20 mm</pre><p class="nota">Y con cada apretada, 0,2 más.</p></div>
-          </div>
-          <p>Charlen: <b>el loop da 50 vueltas por segundo.</b> ¿Cuántas vueltas dura tu dedo apretando? ¿Qué tendría que pasar para contar <b>una sola vez</b>? La variable <span class="dice">antes</span> está en el código y nadie la usa…</p>
-          <button class="pista-b" type="button">Pista</button>
-          <div class="pista" hidden>No hay que contar cuando <b>está</b> apretado, sino cuando <b>recién se apretó</b>: ahora está apretado y en la vuelta anterior no.<pre class="mini">if (ahora == LOW &amp;&amp; antes == HIGH) {</pre>Esto se llama detectar el <b>flanco</b>: el instante del cambio. Es la misma idea que la flecha de un diagrama de estados.</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="reto tapado est" id="r8e">
-      <div class="nivel">8</div>
-      <div class="cuerpo">
-        <div class="rot">Sensor nuevo · el viento</div>
-        <h3>¿Cuánto viento hace? Contá cuántas vueltas da el anemómetro en 5 segundos.</h3>
-        <button class="destapar" type="button">Destapar</button>
-        <div class="formula" hidden>
-          <div class="explica">
-            <div class="rot">Cómo mide el viento una estación</div>
-            <p>El <b>anemómetro</b> tiene tres cazoletas que giran con el viento. En cada vuelta cierra un contacto, igual que el pluviómetro. <b>Más vueltas en el mismo tiempo, más viento.</b> En uno común, una vuelta por segundo son 2,4 km/h.</p>
-            <p>Usá el mismo botón del pin 2. <b>Cada apretada es una vuelta.</b></p>
-          </div>
-          <div class="llenar" data-id="viento" data-reto="8">
-            <p><b>Completá los dos huecos.</b> Después tocá Revisar.</p>
-            <pre class="llenar-cod">// Anemómetro: cada vez que apretás el botón, las cazoletas dieron una vuelta
-int vueltas = 0;
-int antes = HIGH;
-unsigned long inicio = 0;     // cuándo empezó a contar
-
-void setup() {
-  Serial.begin(9600);
-  pinMode(2, INPUT_PULLUP);
-}
-
-void loop() {
-  int ahora = digitalRead(2);
-  if (ahora == LOW &amp;&amp; antes == HIGH) {     // recién se apretó: una vuelta
-    vueltas = vueltas + 1;
-  }
-  antes = ahora;
-
-  if (millis() - inicio &gt;= <input class="hueco-c" data-ok="5000" size="5" aria-label="Completá" autocomplete="off" spellcheck="false">) {      // ¿pasaron 5 segundos? (en milésimas)
-    float porSegundo = vueltas / 5.0;
-    float kmh = porSegundo * 2.4;
-    Serial.print("Viento: ");
-    Serial.print(kmh);
-    Serial.println(" km/h");
-    vueltas = <input class="hueco-c" data-ok="0" size="3" aria-label="Completá" autocomplete="off" spellcheck="false">;                  // empieza a contar de nuevo
-    inicio = millis();
-  }
-  delay(10);
-}</pre>
-            <div class="acciones"><button type="button" class="destapar ll-revisar">Revisar</button><button type="button" class="pista-b ll-copiar" hidden>Copiar el código completo</button><span class="nota ll-msg" aria-live="polite"></span></div>
-          </div>
-          <ol class="pasitos">
-            <li><b>Competencia:</b> ¿quién hace el viento más fuerte? Apretá lo más rápido que puedas durante 5 segundos.</li>
-            <li>En Villa La Angostura el viento llega a 60 km/h. ¿Cuántas apretadas en 5 segundos harían falta? ¿Se puede con un dedo?</li>
-            <li>¿Qué pasa si no ponés <span class="dice">vueltas = 0</span>? Probalo.</li>
-          </ol>
-          <button class="pista-b" type="button">Respuesta</button>
-          <div class="pista" hidden>5 segundos son <b>5000</b> milésimas, y después de mostrar el viento las vueltas vuelven a <b>0</b>. Si no, se siguen sumando y el viento «crece» solo.<br><br>Para 60 km/h: 60 ÷ 2,4 = 25 vueltas por segundo, o sea <b>125 apretadas en 5 segundos</b>. Con un dedo, imposible.</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="reto tapado est" id="rxe">
-      <div class="nivel">+</div>
-      <div class="cuerpo">
-        <div class="rot">Extra · juntar dos sensores</div>
-        <h3>Con 0 grados y viento, ¿se siente 0? El pronóstico dice «sensación térmica». Programala.</h3>
-        <button class="destapar" type="button">Destapar</button>
-        <div class="formula" hidden>
-          <p>Con viento, el cuerpo pierde calor más rápido y el frío se siente más. El Servicio Meteorológico calcula la <b>sensación térmica</b> con una fórmula que usa la temperatura <b>y</b> el viento. Acá está escrita como una <b>función</b>: le das dos números y te devuelve uno.</p>
-          <div class="codigo"><button class="copiar" type="button" data-cod="cxe">Copiar</button><pre id="cxe">// Sensación térmica: con viento, el frío se siente más
-float sensacion(float t, float v) {      // t: grados · v: viento en km/h
-  if (t &gt; 10 || v &lt; 5) {                 // la fórmula sirve sólo con frío y con viento
-    return t;
-  }
-  float vv = pow(v, 0.16);               // pow(v, 0.16): v elevado a la 0,16
-  return 13.12 + 0.6215 * t - 11.37 * vv + 0.3965 * t * vv;
-}
-
-void setup() {
-  Serial.begin(9600);
-  Serial.println(sensacion(0, 30));      // probala: 0 grados, viento de 30 km/h
-}
-
-void loop() {
-}</pre></div>
-          <div class="chequeo">
-            <label for="st-r">Correlo: ¿qué número sale con 0 grados y 30 km/h?</label>
-            <input id="st-r" inputmode="decimal" autocomplete="off" placeholder="-?"><button type="button" class="prim" id="st-ok">Revisar</button>
-            <span class="nota" id="st-msg" aria-live="polite"></span>
-          </div>
-          <ol class="pasitos">
-            <li>Probá con <b>5 grados y 50 km/h</b>, un día de viento en el lago. ¿Cuánto se siente?</li>
-            <li><b>El desafío:</b> juntá el código del viento (reto 8) con el de la temperatura, y que cada 5 segundos muestre <span class="dice">grados, viento, sensación</span>. La función se copia arriba de todo, afuera de setup y loop.</li>
-          </ol>
-          <button class="pista-b" type="button">Pista</button>
-          <div class="pista" hidden>Adentro del <b>if</b> de los 5 segundos del reto 8, leé la temperatura como en el reto 1 y escribí:<pre class="mini">Serial.print(grados);
-Serial.print(",");
-Serial.print(kmh);
-Serial.print(",");
-Serial.println(sensacion(grados, kmh));</pre></div>
-        </div>
-      </div>
-    </div>
-
+    
     <!-- ===================== RIEGO ===================== -->
     <div class="reto tapado coh" id="r6r">
-      <div class="nivel">6</div>
+      <div class="nivel">7</div>
       <div class="cuerpo">
         <div class="rot">Sensor nuevo · la luz</div>
         <h3>Regar al mediodía, con pleno sol, es tirar agua: se evapora. ¿Y si el aparato esperara?</h3>
@@ -1159,130 +1061,93 @@ void loop() {
       </div>
     </div>
 
-    <div class="reto tapado coh" id="r7r">
-      <div class="nivel">7</div>
+
+    <div class="reto tapado" id="r7l">
+      <div class="nivel">8</div>
       <div class="cuerpo">
-        <div class="rot">Cuánta agua</div>
-        <h3>El aparato regó una vez, pero el contador dice 37. ¿Qué está mal?</h3>
+        <div class="rot">Dos sensores, un gráfico</div>
+        <h3 class="est">Cuando se va el sol, ¿baja la temperatura enseguida? Pongan la luz y los grados en el mismo gráfico.</h3>
+        <h3 class="coh">¿La tierra se seca igual de día que de noche? Pongan la luz y la humedad en el mismo gráfico.</h3>
         <button class="destapar" type="button">Destapar</button>
         <div class="formula" hidden>
-          <p>Para saber cuánta agua ahorramos, el aparato tiene que <b>contar cuántas veces regó</b>. Cada riego son 5 litros.</p>
-          <div class="codigo"><button class="copiar" type="button" data-cod="c7r">Copiar</button><pre id="c7r">// Riego · cuántas veces regó y cuánta agua usó
-int avisando = 0;
-int riegos = 0;               // el contador: va afuera del loop para que no se borre
-
-void setup() {
-  Serial.begin(9600);
-  pinMode(13, OUTPUT);
-}
-
-void loop() {
-  int humedad = analogRead(A0);
-
-  if (avisando == 0 &amp;&amp; humedad &lt; 200) {
-    avisando = 1;
-  }
-  if (avisando == 1 &amp;&amp; humedad &gt; 250) {
-    avisando = 0;
-  }
-  riegos = riegos + 1;        // un riego más
-  digitalWrite(13, avisando);
-
-  Serial.print("Riegos: ");
-  Serial.print(riegos);
-  Serial.print(" | agua: ");
-  Serial.print(riegos * 5);   // cada riego, 5 litros
-  Serial.println(" litros");
-  delay(1000);
-}</pre></div>
-          <div class="compara">
-            <div><div class="rot">Sale</div><pre class="salida mal">Riegos: 1 | agua: 5 litros
-Riegos: 2 | agua: 10 litros
-Riegos: 3 | agua: 15 litros
-…  (aunque la tierra esté mojada)</pre></div>
-            <div><div class="rot">Tiene que salir</div><pre class="salida bien">Riegos: 0 | agua: 0 litros
-Riegos: 0 | agua: 0 litros
-Riegos: 1 | agua: 5 litros   ← se secó
-Riegos: 1 | agua: 5 litros</pre></div>
+          <p>Con el código del reto 7, el monitor muestra <b>cuatro columnas</b>: <span class="est"><span class="dice">segundos,grados,luz,alerta</span></span><span class="coh"><span class="dice">segundos,humedad,luz,avisando</span></span>. Dejalo midiendo, mové los dos deslizadores, y después copiá todo del monitor y pegalo acá.</p>
+          <textarea id="pegar2" class="pegar2" rows="4" placeholder="Pegá acá lo que copiaste del monitor (con la columna de luz)"></textarea>
+          <div class="acciones"><button type="button" class="sec" id="ej-dia">Usar un día de ejemplo en la huerta</button><span class="nota" id="g2-msg" aria-live="polite"></span></div>
+          <div id="graf2" class="graf" hidden></div>
+          <div class="ley2" id="ley2" hidden>
+            <span><i class="l1"></i><span class="est">grados (escala de la izquierda)</span><span class="coh">humedad (escala de la izquierda)</span></span>
+            <span><i class="l2"></i>luz (escala de la derecha)</span>
+            <span><i class="l3"></i><span class="est">el aparato avisó</span><span class="coh">el aparato avisó</span></span>
+            <span><i class="l4"></i>de noche (luz menor que <input id="umb2" type="number" value="200" min="0" max="1023" aria-label="Umbral de noche">)</span>
           </div>
-          <p>Charlen: mirando el diagrama de estados del reto 3, <b>¿en qué momento exacto empieza un riego?</b> ¿En qué parte del código pasa eso?</p>
+          <div class="explica">
+            <div class="rot">Miren el día de ejemplo y charlen</div>
+            <ol class="pasitos est">
+              <li>¿A qué hora se hace de noche? ¿Y a qué hora hace <b>más frío</b>? ¿Es la misma hora?</li>
+              <li>La temperatura más baja del día llega <b>justo antes de que salga el sol</b>. ¿Por qué será? ¿Qué pasó toda la noche con el calor de la tierra?</li>
+              <li>Entonces, ¿a qué hora tiene que estar más atento el aparato? ¿Cuándo tendrían que ir a tapar las plantas?</li>
+              <li>Cambiá el número de «de noche» en la leyenda: ¿qué pasa con las franjas oscuras? Ese número es el umbral que eligieron en el reto 7.</li>
+            </ol>
+            <ol class="pasitos coh">
+              <li>¿En qué horas baja más rápido la humedad: con luz o sin luz? ¿Por qué?</li>
+              <li>¿A qué hora avisó el aparato? ¿Avisó con pleno sol, o esperó?</li>
+              <li>Si regaran a las 13 h, ¿cuánta de esa agua le llegaría a la planta?</li>
+              <li>Cambiá el número de «de noche» en la leyenda: ¿qué pasa con las franjas oscuras?</li>
+            </ol>
+          </div>
+          <p><b>Para su página:</b> <button type="button" id="bajar-graf-luz" class="sec">Bajar este gráfico</button> Se baja como <span class="dice">grafico-luz.png</span>. Ponelo en tu carpeta y sumalo a tu <span class="dice">index.html</span> con otra etiqueta <span class="dice">&lt;img&gt;</span>, con una frase que cuente lo que descubrieron.</p>
           <button class="pista-b" type="button">Pista</button>
-          <div class="pista" hidden>Un riego empieza cuando el aparato <b>pasa</b> de Tranquilo a Avisando: la flecha del diagrama. En el código, esa flecha es el <b>primer if</b>. La línea <code>riegos = riegos + 1;</code> va adentro de ese if, abajo de <code>avisando = 1;</code>.</div>
+          <div class="pista" hidden><span class="est">Con el sol, la tierra junta calor. Cuando se va, lo suelta toda la noche y se enfría de a poco: por eso lo más frío llega al amanecer, no al atardecer. Las heladas que queman los brotes son las de las 6 o 7 de la mañana.</span><span class="coh">Con sol y calor, el agua de la tierra se evapora: la humedad baja mucho más rápido. De noche casi no baja. Por eso conviene regar a la tarde o a la noche: el agua se queda en la tierra.</span><br><br>En tu index.html, abajo del primer gráfico:<pre class="mini">&lt;img src="grafico-luz.png" width="100%"&gt;
+&lt;p&gt;Lo más frío fue a las 7, justo antes de que saliera el sol.&lt;/p&gt;</pre></div>
         </div>
       </div>
     </div>
 
-    <div class="reto tapado coh" id="r8r">
-      <div class="nivel">8</div>
+    <div class="reto tapado" id="r8l">
+      <div class="nivel">9</div>
       <div class="cuerpo">
-        <div class="rot">Sensor nuevo · la temperatura</div>
-        <h3>En julio, si riega de noche, el agua se congela en los caños y los revienta. Que no riegue con helada.</h3>
+        <div class="rot">La página también decide</div>
+        <h3>Una página que cambia sola: de día se ve clara, de noche oscura<span class="est">, y si viene una helada, avisa</span><span class="coh">, y si hay que regar, avisa</span>.</h3>
         <button class="destapar" type="button">Destapar</button>
         <div class="formula" hidden>
           <div class="explica">
-            <div class="rot">Cómo se conecta el TMP36</div>
-            <p>Con la parte plana hacia vos: la pata izquierda a <b>5V</b>, la del medio a <b>A2</b> y la derecha a <b>GND</b>. Es el mismo sensor que usa el equipo de la estación.</p>
+            <div class="rot">Un tercer lenguaje</div>
+            <p>HTML dice <b>qué hay</b>. CSS dice <b>cómo se ve</b>. Y <b>JavaScript</b> hace que la página <b>decida</b>: va dentro de <span class="dice">&lt;script&gt;</span>, al final.</p>
+            <p>Miren el <b>if</b> de abajo y compárenlo con el de la placa: ¡es casi igual! La placa decide si prende el LED; la página decide de qué color se pinta.</p>
           </div>
-          <div class="llenar" data-id="helada" data-reto="8">
-            <p><b>Completá los huecos.</b> Después tocá Revisar.</p>
-            <pre class="llenar-cod">// Riego · que no riegue con helada
-int avisando = 0;
-
-void setup() {
-  Serial.begin(9600);
-  pinMode(13, OUTPUT);
-}
-
-void loop() {
-  int humedad = analogRead(<input class="hueco-c" data-ok="A0" size="3" aria-label="Completá" autocomplete="off" spellcheck="false">);
-  int lectura = analogRead(<input class="hueco-c" data-ok="A2" size="3" aria-label="Completá" autocomplete="off" spellcheck="false">);                    // el TMP36
-  float grados = (lectura * 5.0 / 1023 - 0.5) * 100;
-
-  if (avisando == 0 &amp;&amp; humedad &lt; 200 &amp;&amp; grados <input class="hueco-c" data-ok="&gt;=" data-ok2="&gt;" size="3" aria-label="Completá" autocomplete="off" spellcheck="false"> 2) {   // tiene sed y no hiela
-    avisando = 1;
-  }
-  if (avisando == 1 &amp;&amp; (humedad &gt; 250 <input class="hueco-c" data-ok="||" size="3" aria-label="Completá" autocomplete="off" spellcheck="false"> grados &lt; 2)) {   // se mojó, O empezó a helar
-    avisando = 0;
-  }
-  digitalWrite(13, avisando);
-
-  Serial.print(humedad);
-  Serial.print(" | ");
-  Serial.print(grados);
-  Serial.print(" grados | ");
-  Serial.println(avisando == 1 ? "regar" : "no regar");
-  delay(1000);
-}</pre>
-            <div class="acciones"><button type="button" class="destapar ll-revisar">Revisar</button><button type="button" class="pista-b ll-copiar" hidden>Copiar el código completo</button><span class="nota ll-msg" aria-live="polite"></span></div>
+          <div class="compara">
+            <div><div class="rot">En la placa · C++</div><pre class="salida bien">if (luz &lt; 200) {
+  digitalWrite(13, HIGH);
+}</pre></div>
+            <div><div class="rot">En la página · JavaScript</div><pre class="salida bien">if (luz &lt; 200) {
+  document.body.className = "noche";
+}</pre></div>
           </div>
-          <ol class="pasitos">
-            <li>Probalo con la tierra seca: a 20 grados riega; bajá la temperatura a 0 y tiene que dejar de regar.</li>
-            <li>Ahora el aparato decide con <b>dos sensores</b>. Dibujen otra vez el diagrama: ¿qué dice ahora cada flecha?</li>
-          </ol>
+          <div class="editor">
+            <div class="ed-izq">
+              <div class="ed-bar"><span>ahora.html · el código</span><button type="button" id="ed2-reset">Volver a empezar</button></div>
+              <textarea id="ed2-cod" class="ed-cod" spellcheck="false" aria-label="El código de la página que decide"></textarea>
+            </div>
+            <div class="ed-der">
+              <div class="ed-bar"><span>Así se ve</span><span class="ed-dir">ahora.html</span></div>
+              <iframe id="ed2-vista" class="ed-vista" title="Así se ve la página que decide"></iframe>
+            </div>
+          </div>
+          <div class="misiones">
+            <div class="rot">Misiones · se tildan solas cuando lo logran</div>
+            <ol id="misiones2"></ol>
+          </div>
+          <div class="explica">
+            <div class="rot">Que sea parte de su sitio</div>
+            <ol class="pasitos">
+              <li>Tocá <button type="button" id="bajar-ahora" class="prim">Bajar ahora.html</button> y movelo a tu carpeta, al lado de <span class="dice">index.html</span>.</li>
+              <li>En tu <span class="dice">index.html</span> (el del reto 5), sumá un enlace: <span class="dice">&lt;a href="ahora.html"&gt;Cómo está la huerta ahora&lt;/a&gt;</span></li>
+              <li>Doble clic en index.html y tocá el enlace: ¡ya es un <b>sitio</b> de dos páginas!</li>
+            </ol>
+            <p class="nota">Por ahora los números de la página los escriben ustedes. Cuando la estación esté en la huerta, los va a escribir el aparato solo: eso es lo que hace una estación conectada a internet.</p>
+          </div>
           <button class="pista-b" type="button">Pista</button>
-          <div class="pista" hidden>La humedad está en <b>A0</b> y el TMP36 en <b>A2</b>.<br>«No hiela» es <b>grados &gt;= 2</b>: dos grados o más.<br>Para dejar de regar alcanza con que pase <b>una</b> de las dos cosas: eso es un «o», que se escribe <b>||</b>.</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="reto tapado coh" id="rxr">
-      <div class="nivel">+</div>
-      <div class="cuerpo">
-        <div class="rot">Extra · las cuentas</div>
-        <h3>¿Cuánta agua le ahorra su aparato a la huerta, comparado con el timer?</h3>
-        <button class="destapar" type="button">Destapar</button>
-        <div class="formula" hidden>
-          <p>El timer riega <b>todos los días</b>, haya llovido o no, y cada vez usa <b>20 litros</b>. En una semana de otoño, con dos días de lluvia, su aparato regó <b>6 veces</b> de <b>5 litros</b>.</p>
-          <div class="chequeo">
-            <label for="ag-r">¿Cuántos litros ahorró en la semana?</label>
-            <input id="ag-r" inputmode="numeric" autocomplete="off" placeholder="?"><button type="button" class="prim" id="ag-ok">Revisar</button>
-            <span class="nota" id="ag-msg" aria-live="polite"></span>
-          </div>
-          <ol class="pasitos">
-            <li>¿Y en un mes? ¿Y en todo el verano, de diciembre a febrero?</li>
-            <li><b>El desafío:</b> sumá al código del reto 7 una línea que muestre cuánto se ahorró. Pista: el timer gastaría <span class="dice">20 × días</span>, y los días se pueden sacar de <span class="dice">millis()</span>.</li>
-            <li>Pónganlo en su página web: es el dato que más le importa a quien cuida la huerta.</li>
-          </ol>
+          <div class="pista" hidden><b>¿La vista quedó en blanco o no cambia?</b> En JavaScript un error chiquito frena todo lo que sigue: fijate que cada línea termine con <b>;</b>, que las comillas abran y cierren, y que cada <b>{</b> tenga su <b>}</b>. Si no lo encontrás, Ctrl+Z o Volver a empezar.<br><br><b>Para la misión de la alerta:</b> un <b>if</b> adentro del otro, o un <b>&amp;&amp;</b>, igual que en la placa.</div>
         </div>
       </div>
     </div>
@@ -1723,15 +1588,6 @@ function graficoSVG(){
   cargar(); actualizarAviso();
 })();
 
-/* retos extra: una cuenta para revisar */
-[['st',v=>Math.abs(v+6.47)<=0.1,'¡Eso! Con 0 grados y viento de 30 km/h se siente como −6,5. El viento «enfría» seis grados y medio.','No da eso. ¿Lo corriste en Tinkercad? Mirá el monitor: es un número negativo.','Extra · sensación térmica: calculó −6,5'],
- ['ag',v=>v===110,'¡Bien! El timer gasta 7 × 20 = 140 litros, el aparato 6 × 5 = 30: ahorró 110 litros en una semana.','No da eso. Calculá primero cuánto gasta el timer en 7 días, y después cuánto gastó el aparato.','Extra · cuenta del agua: 110 litros']].forEach(([id,ok,bien,mal,reg])=>{
-  const inp=document.getElementById(id+'-r'), b=document.getElementById(id+'-ok'), m=document.getElementById(id+'-msg');
-  const rev=()=>{const v=parseFloat(inp.value.replace(',','.').replace('−','-')); if(isNaN(v)){m.textContent='Escribí un número.';return}
-    if(ok(v)){m.textContent=bien; if(typeof registrar==='function') registrar('cuenta-'+id,reg)} else m.textContent=mal;};
-  b.addEventListener('click',rev); inp.addEventListener('keydown',e=>{if(e.key==='Enter')rev()});
-});
-
 /* reto 4: leer una placa de verdad por USB, sin instalar nada (Web Serial: Chrome y Edge) */
 (function(){
   const bc=document.getElementById('placa-con'), bs=document.getElementById('placa-stop'), msg=document.getElementById('placa-msg'),
@@ -1770,6 +1626,356 @@ function graficoSVG(){
     await parar();
   });
   bs.addEventListener('click',async()=>{ await parar(); msg.textContent='Parado. Los datos quedaron abajo: ya podés bajar el gráfico y el CSV.'; });
+})();
+
+/* ---- retos 7 y 8: la luz junto a la temperatura (o la humedad), en el gráfico y en la página ---- */
+function svgAPNG(svg,nombre,reg){
+  const cs=getComputedStyle(document.documentElement), clon=svg.cloneNode(true);
+  const res=v=>v&&v.includes('var(')?v.replace(/var\((--[\w-]+)\)/g,(m,k)=>cs.getPropertyValue(k).trim()||'#000'):v;
+  clon.querySelectorAll('*').forEach(e=>{for(const at of ['fill','stroke']) if(e.getAttribute(at)) e.setAttribute(at,res(e.getAttribute(at)));
+    if(e.tagName==='text'){e.setAttribute('font-family','DM Mono, monospace');e.setAttribute('font-size','12');if(!e.getAttribute('fill'))e.setAttribute('fill',cs.getPropertyValue('--tenue').trim())}});
+  clon.setAttribute('xmlns','http://www.w3.org/2000/svg');
+  const vb=svg.viewBox.baseVal, W=vb.width*2, H=vb.height*2;
+  const img=new Image(), url=URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(clon)],{type:'image/svg+xml'}));
+  img.onload=()=>{const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+    x.fillStyle=cs.getPropertyValue('--hoja').trim()||'#fff';x.fillRect(0,0,W,H);x.drawImage(img,0,0,W,H);URL.revokeObjectURL(url);
+    c.toBlob(b=>{const u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=nombre;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000)});
+    if(reg&&typeof registrar==='function') registrar(reg,'Bajó '+nombre);};
+  img.src=url;
+}
+(function(){
+  const ta=document.getElementById('pegar2'), box=document.getElementById('graf2'), msg=document.getElementById('g2-msg'),
+        ley=document.getElementById('ley2'), umb=document.getElementById('umb2');
+  const LUZ=[0,0,0,0,0,0,10,90,260,480,680,830,910,930,880,760,590,380,170,40,0,0,0,0];
+  function ejemplo(){
+    const L=[];
+    if(!esCoh()){
+      const T=[5.2,4.6,4.0,3.4,2.8,2.1,1.5,1.2,2.4,4.8,7.5,10.2,12.6,14.3,15.4,15.8,15.1,13.6,11.5,9.6,8.2,7.1,6.3,5.7];
+      L.push('hora,grados,luz,alerta'); let ant=100;
+      T.forEach((g,i)=>{L.push(`${i},${g.toFixed(2)},${LUZ[i]},${g<3&&g<ant&&LUZ[i]<200?1:0}`);ant=g});
+    }else{
+      L.push('hora,humedad,luz,avisando'); let h=262, av=0;
+      LUZ.forEach((l,i)=>{
+        if(av===0&&h<200&&l<600)av=1; if(av===1&&h>250)av=0;
+        L.push(`${i},${Math.round(h)},${l},${av}`);
+        h-= 2 + l/55; if(av===1) h+=170;
+      });
+    }
+    return L.join('\n');
+  }
+  function datos(){
+    const toks=ta.value.split(/\s+/).filter(Boolean), filas=[]; let cab=null;
+    for(const t of toks){const c=t.split(',');
+      if(c.length>=3&&c.every(v=>/^-?\d+(\.\d+)?$/.test(v))) filas.push(c.map(Number));
+      else if(!cab&&c.length>=3&&/^[a-zA-Záéíóú]/.test(c[0])) cab=c;}
+    return {filas,cab};
+  }
+  function dibujar(){
+    const {filas,cab}=datos();
+    if(filas.length<2){box.hidden=ley.hidden=true;msg.textContent=ta.value.trim()?'No encuentro renglones con tres o cuatro números, como 0,24.78,512,0. ¿Copiaste lo del monitor con el código del reto 6?':'';return false}
+    const u=Number(umb.value)||200, W=640,H=280,L=48,R=52,T=16,B=36;
+    const xs=filas.map(f=>f[0]), v1=filas.map(f=>f[1]), lz=filas.map(f=>f[2]);
+    let x0=Math.min(...xs),x1=Math.max(...xs); if(x1===x0)x1=x0+1;
+    let a0=Math.floor(Math.min(...v1,0)/10)*10, a1=Math.ceil(Math.max(...v1)/10)*10; if(a1===a0)a1=a0+10;
+    if(esCoh()){a0=Math.floor(Math.min(...v1)/100)*100;a1=Math.ceil(Math.max(...v1)/100)*100;if(a1===a0)a1=a0+100}
+    const l1=Math.max(100,Math.ceil(Math.max(...lz)/100)*100);
+    const X=v=>L+(v-x0)/(x1-x0)*(W-L-R), Y=v=>T+(a1-v)/(a1-a0)*(H-T-B), YL=v=>T+(l1-v)/l1*(H-T-B);
+    const paso=(x1-x0)/Math.max(1,filas.length-1);
+    let g='';
+    filas.forEach(f=>{ if(f[2]<u){const a=Math.max(L,X(f[0]-paso/2)), b=Math.min(W-R,X(f[0]+paso/2)); g+=`<rect x="${a}" y="${T}" width="${b-a}" height="${H-T-B}" fill="#1E1934" opacity=".14"/>`;} });
+    const pa=(a1-a0)>60?(a1-a0>300?100:20):5;
+    for(let v=a0;v<=a1;v+=pa) g+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--raya)"/><text x="${L-8}" y="${Y(v)+4}" text-anchor="end">${v}</text>`;
+    for(let v=0;v<=l1;v+=l1/4) g+=`<text x="${W-R+8}" y="${YL(v)+4}" fill="#B07800">${Math.round(v)}</text>`;
+    const unidad=cab&&/hora/i.test(cab[0])?' h':' s';
+    g+=`<text x="${L}" y="${H-10}">${x0}${unidad}</text><text x="${W-R}" y="${H-10}" text-anchor="end">${x1}${unidad}</text>`;
+    const linea=(arr,F,col)=>`<path d="${filas.map((f,i)=>(i?'L':'M')+X(f[0]).toFixed(1)+' '+F(arr[i]).toFixed(1)).join(' ')}" fill="none" stroke="${col}" stroke-width="3" stroke-linejoin="round"/>`;
+    g+=linea(lz,YL,'#D99A00')+linea(v1,Y,'var(--violeta)');
+    filas.forEach(f=>{ if(f[3]===1) g+=`<circle cx="${X(f[0])}" cy="${Y(f[1])}" r="6" fill="var(--rojo)"/>`; });
+    box.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Gráfico con dos líneas: ${esCoh()?'la humedad':'la temperatura'} y la luz, con las horas de noche sombreadas">${g}</svg>`;
+    box.hidden=ley.hidden=false;
+    const iMin=v1.indexOf(Math.min(...v1));
+    msg.textContent=`${filas.length} mediciones. ${esCoh()?'La humedad más baja':'Lo más frío'}: ${v1[iMin]}, ${unidad===' h'?'a las '+xs[iMin]+' h':'en el segundo '+xs[iMin]}.`;
+    return true;
+  }
+  ta.addEventListener('input',e=>{ if(dibujar()&&e.isTrusted&&typeof registrar==='function') registrar('graf-luz','Reto 8 · armó el gráfico con la luz'); });
+  umb.addEventListener('input',dibujar);
+  document.getElementById('ej-dia').addEventListener('click',()=>{ta.value=ejemplo();dibujar();});
+  document.querySelectorAll('.modo button').forEach(b=>b.addEventListener('click',()=>{ if(!box.hidden&&/^hora/.test(ta.value)) ta.value=ejemplo(); dibujar(); }));
+  document.getElementById('bajar-graf-luz').addEventListener('click',()=>{
+    const s=box.querySelector('svg'); if(box.hidden||!s){msg.textContent='Primero el gráfico: pegá sus datos o usá el día de ejemplo.';return}
+    svgAPNG(s,'grafico-luz.png','png-luz');
+  });
+})();
+
+(function(){
+  const TPL={
+    est:{t1:'Temperatura', id1:'temp', u1:' grados', var1:'grados', val1:'2.5'},
+    coh:{t1:'Humedad de la tierra', id1:'hum', u1:'', var1:'humedad', val1:'180'}};
+  const plantilla=k=>{const t=TPL[k]; return `<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>La huerta ahora</title>
+<style>
+  body {
+    font-family: Verdana, sans-serif;
+    padding: 30px;
+  }
+  .dia {
+    background: #fde68a;
+    color: #3b2f00;
+  }
+  .noche {
+    background: #10131c;
+    color: #e8ecff;
+  }
+  .tarjeta {
+    display: inline-block;
+    border: 3px solid;
+    border-radius: 14px;
+    padding: 16px 22px;
+    margin: 8px;
+    font-size: 22px;
+  }
+</style>
+</head>
+<body>
+
+<h1>La huerta, ahora</h1>
+<div class="tarjeta">${t.t1}: <b id="${t.id1}"></b>${t.u1}</div>
+<div class="tarjeta">Luz: <b id="luz"></b></div>
+<p id="estado"></p>
+
+<script>
+// la última medición: cambiá los números y mirá qué pasa
+let ${t.var1} = ${t.val1};
+let luz = 650;
+
+document.getElementById("${t.id1}").textContent = ${t.var1};
+document.getElementById("luz").textContent = luz;
+
+if (luz < 200) {
+  document.body.className = "noche";
+  document.getElementById("estado").textContent = "Es de noche.";
+} else {
+  document.body.className = "dia";
+  document.getElementById("estado").textContent = "Es de día.";
+}
+<\/script>
+
+</body>
+</html>
+`};
+  const modo=()=>esCoh()?'coh':'est';
+  const reglas=doc=>{const out=[];try{for(const s of doc.styleSheets)for(const r of s.cssRules)out.push(r)}catch(_){}return out};
+  const regla=(doc,sel)=>reglas(doc).find(r=>(r.selectorText||'').trim()===sel);
+  const estado=d=>{const e=d.getElementById('estado');return e?e.textContent:''};
+  const MIS=[
+    {id:'noche',t:'Hacé que sea de noche',d:'Cambiá el número de <span class="dice">let luz = 650;</span> por uno chico. La página tiene que ponerse oscura sola.',
+     snip:'let luz = 80;', ok:d=>/noche/.test(d.body.className)},
+    {id:'umbral',t:'Su umbral',d:'En el <b>if</b>, cambiá el 200 por el número de «de noche» que eligieron en el reto 7. Es la misma decisión que toma la placa.',
+     snip:'if (luz < 150) {', ok:(d,c)=>{const m=c.match(/if\s*\(\s*luz\s*<\s*(\d+)/);return m&&m[1]!=='200'}},
+    {id:'colores',t:'La noche de otro color',d:'En el CSS, cambiá el <span class="dice">background</span> de <span class="dice">.noche</span> (o el de <span class="dice">.dia</span>).',
+     snip:'.noche {\n    background: #1e3a8a;\n    color: white;\n  }',
+     ok:d=>{const n=regla(d,'.noche'),a=regla(d,'.dia');return (n&&n.style.backgroundColor&&n.style.backgroundColor!=='rgb(16, 19, 28)')||(a&&a.style.backgroundColor&&a.style.backgroundColor!=='rgb(253, 230, 138)')}},
+    {id:'aviso',t:'',d:'', ok:null},
+    {id:'resalta',t:'Que el aviso se note',d:'Sumá al CSS una clase <span class="dice">.alerta</span>, y en el if del aviso, ponésela al párrafo del estado.',
+     snip:'.alerta {\n    background: #dc2626;\n    color: white;\n    font-size: 30px;\n    padding: 12px;\n  }\n\n(y adentro del if del aviso, en el script:)\n  document.getElementById("estado").className = "alerta";',
+     ok:d=>{const e=d.getElementById('estado');return !!(e&&/alerta/.test(e.className)&&regla(d,'.alerta'))}},
+    {id:'astro',t:'Un sol y una luna',extra:true,d:'Un círculo dibujado sólo con CSS, que de día es sol y de noche es luna. Sumá el div arriba del h1 y las reglas al CSS.',
+     snip:'<div class="astro"></div>\n\n.astro {\n    width: 80px;\n    height: 80px;\n    border-radius: 50%;\n  }\n  .dia .astro { background: orange; }\n  .noche .astro {\n    background: #e5e7eb;\n    box-shadow: inset -20px 0 0 #10131c;\n  }',
+     ok:d=>{const e=d.querySelector('.astro');if(!e)return false;const s=d.defaultView.getComputedStyle(e);return parseFloat(s.width)>0&&s.borderRadius.includes('50%')}},
+  ];
+  function misAviso(){
+    const m=MIS.find(x=>x.id==='aviso');
+    if(modo()==='est'){m.t='La alerta de helada';m.d='Abajo del if/else, sumá otro if: si es de noche <b>y</b> hace menos de 3 grados, que el estado diga «¡Alerta de helada!». Probalo con la luz y los grados.';
+      m.snip='if (luz < 200 && grados < 3) {\n  document.getElementById("estado").textContent = "¡Alerta de helada! Tapen las plantas.";\n}';m.ok=d=>/helada/i.test(estado(d));}
+    else{m.t='El aviso de riego';m.d='Abajo del if/else, sumá otro if: si la tierra tiene sed <b>y</b> no es pleno sol, que el estado diga «Hay que regar». Probalo con la luz y la humedad.';
+      m.snip='if (humedad < 200 && luz < 600) {\n  document.getElementById("estado").textContent = "Hay que regar.";\n}';m.ok=d=>/regar/i.test(estado(d));}
+  }
+  const ta=document.getElementById('ed2-cod'), fr=document.getElementById('ed2-vista'), lista=document.getElementById('misiones2');
+  const KEY=()=>'pps.ahora4to.'+modo(), hechas={};
+  function pintarLista(){
+    misAviso();
+    lista.innerHTML=MIS.map((m,i)=>`<li class="mision" data-id="${m.id}"><span class="tilde" aria-hidden="true">✓</span>
+      <div><b>${i+1}. ${m.t}</b>${m.extra?'<span class="extra-tag">extra</span>':''}<br>${m.d}<details><summary>¿Cómo queda?</summary><pre></pre></details></div></li>`).join('');
+    lista.querySelectorAll('.mision').forEach((li,i)=>li.querySelector('pre').textContent=MIS[i].snip);
+  }
+  function revisar(){
+    let d; try{d=fr.contentDocument}catch(_){return} if(!d||!d.body) return;
+    MIS.forEach(m=>{let ok=false; try{ok=!!m.ok(d,ta.value)}catch(_){}
+      const li=lista.querySelector(`[data-id="${m.id}"]`); if(li) li.classList.toggle('ok',ok);
+      const k=modo()+m.id; if(ok&&!hechas[k]){hechas[k]=1; if(typeof registrar==='function') registrar('ahora-'+m.id,'Reto 9 · página que decide: '+m.t.toLowerCase());}});
+  }
+  let tm;
+  const pintar=()=>{fr.srcdoc=ta.value};
+  fr.addEventListener('load',revisar);
+  ta.addEventListener('input',()=>{clearTimeout(tm);tm=setTimeout(()=>{pintar();LS.set(KEY(),ta.value)},350)});
+  ta.addEventListener('keydown',e=>{ if(e.key==='Tab'&&!e.shiftKey){e.preventDefault();ta.setRangeText('  ',ta.selectionStart,ta.selectionEnd,'end');ta.dispatchEvent(new Event('input'))} });
+  function cargar(){ pintarLista(); ta.value=LS.get(KEY(),null)||plantilla(modo()); pintar(); }
+  document.getElementById('ed2-reset').addEventListener('click',()=>{
+    if(ta.value!==plantilla(modo())&&!confirm('¿Borrar tus cambios y volver al código del principio?')) return;
+    ta.value=plantilla(modo()); LS.set(KEY(),ta.value); pintar();
+  });
+  document.querySelectorAll('.modo button').forEach(b=>b.addEventListener('click',cargar));
+  document.getElementById('bajar-ahora').addEventListener('click',()=>{
+    const url=URL.createObjectURL(new Blob([ta.value],{type:'text/html;charset=utf-8'}));
+    const a=document.createElement('a'); a.href=url; a.download='ahora.html'; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+    if(typeof registrar==='function') registrar('ahora-bajo','Reto 9 · bajó ahora.html ('+lista.querySelectorAll('.mision.ok').length+' misiones)',ta.value.slice(0,1500));
+  });
+  cargar();
+})();
+
+/* ---- reto 6: la página, a fondo · encontrá el error (cada uno, una idea de HTML/CSS o del ciclo de datos) ---- */
+(function(){
+  const GRAF='data:image/svg+xml;charset=utf-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 140"><rect width="400" height="140" fill="#fff"/><g stroke="#ddd"><line x1="30" y1="20" x2="390" y2="20"/><line x1="30" y1="70" x2="390" y2="70"/><line x1="30" y1="120" x2="390" y2="120"/></g><path d="M30 40 L80 52 L130 70 L180 95 L230 112 L280 104 L330 80 L390 60" fill="none" stroke="#5B3FA8" stroke-width="4"/></svg>');
+  const reglas=d=>{const o=[];try{for(const s of d.styleSheets)for(const r of s.cssRules)o.push(r)}catch(_){}return o};
+  const txt=d=>(d.body&&d.body.innerText)||'';
+  const BUGS=[
+    {tag:'HTML · estructura',t:'«Todo me quedó gigante»',
+     s:'Sólo el título tenía que ser grande, pero los dos párrafos también salen enormes y en negrita.',
+     c:`<h1>La estación de la huerta
+<p>Medimos la temperatura cada hora.</p>
+<p>Somos de 4to.</p>`,
+     ok:d=>{const h=d.querySelector('h1');return h&&!h.querySelector('p')&&d.querySelectorAll('p').length>=2},
+     p:'¿Dónde termina el título? Buscá la etiqueta que abre y la que cierra.',
+     i:'<b>Las etiquetas son cajas: lo que se abre, se cierra.</b> Si falta <code>&lt;/h1&gt;</code>, el navegador no adivina dónde terminaba el título y mete todo lo que sigue adentro de esa caja.'},
+    {tag:'HTML · estructura',t:'«Me aparece el código en la página»',
+     s:'Quería el título verde. No cambió de color, y encima en la página se lee <i>h1 { color: green; }</i> como si fuera texto.',
+     c:`<h1>La estación de la huerta</h1>
+h1 { color: green; }
+<p>Medimos la temperatura cada hora.</p>`,
+     ok:d=>!/\{/.test(txt(d))&&reglas(d).some(r=>(r.selectorText||'')==='h1'&&r.style.color),
+     p:'Una página tiene dos lenguajes. ¿Dónde tiene que ir el CSS para que el navegador lo lea como CSS?',
+     i:'<b>Cada lenguaje en su lugar.</b> El CSS va adentro de <code>&lt;style&gt; … &lt;/style&gt;</code>. Suelto en el medio del HTML, el navegador lo trata como cualquier otro texto y lo muestra.'},
+    {tag:'Archivos y rutas',t:'«En mi compu se ve, en la de mi compañera no»',
+     s:'Juan armó la página en su compu y el gráfico se veía. Le pasó la carpeta a Abril por pendrive, y en la compu de ella el gráfico no aparece. La carpeta tiene <i>index.html</i> y <i>grafico.png</i>, juntos.',
+     c:`<h1>La estación de la huerta</h1>
+<img src="C:\\Users\\Juan\\Downloads\\grafico.png" width="100%">`,
+     ok:(d,c)=>/<img[^>]*\ssrc\s*=\s*["'](\.\/)?grafico\.png["']/.test(c),
+     p:'Esa dirección empieza con <b>C:\\Users\\Juan</b>. ¿En qué compu existe esa carpeta? ¿Y en un servidor de internet?',
+     i:'<b>Ruta relativa.</b> <code>src="grafico.png"</code> quiere decir «buscalo al lado mío, en mi misma carpeta», y eso vale en cualquier compu y en internet. <code>C:\\Users\\Juan\\…</code> sólo existe en la compu de Juan.'},
+    {tag:'Archivos y rutas',t:'«En Windows andaba, en internet no»',
+     s:'La subieron a internet y el gráfico no aparece. En la carpeta el archivo se llama <i>grafico.png</i>. En la compu de la escuela se veía perfecto.',
+     c:`<h1>La estación de la huerta</h1>
+<img src="Grafico.PNG" width="100%">`,
+     ok:(d,c)=>/<img[^>]*\ssrc\s*=\s*["'](\.\/)?grafico\.png["']/.test(c),
+     p:'Compará letra por letra el nombre del código con el nombre del archivo.',
+     i:'<b>En internet, mayúsculas y minúsculas son distintas.</b> Windows las trata igual, por eso en la compu andaba; los servidores no. Por eso los archivos de una página se nombran en minúscula, sin tildes ni espacios.'},
+    {tag:'Archivos y rutas',t:'«El enlace no lleva a ningún lado»',
+     s:'En la carpeta están <i>index.html</i> y <i>ahora.html</i>. Tocan el enlace y el navegador dice que no encuentra el archivo.',
+     c:`<h1>La estación de la huerta</h1>
+<p><a href="ahora">Cómo está la huerta ahora</a></p>`,
+     ok:d=>{const a=d.querySelector('a');return a&&/^(\.\/)?ahora\.html$/.test(a.getAttribute('href'))},
+     p:'¿Cómo se llama <b>exactamente</b> el archivo? ¿Le falta algo al nombre del enlace?',
+     i:'<b>Un enlace es el nombre exacto de un archivo, con su extensión.</b> «ahora» y «ahora.html» son dos nombres distintos: para el navegador, «ahora» no existe.'},
+    {tag:'CSS · clases',t:'«Escribí el estilo y no le hace caso»',
+     s:'En el CSS hay un estilo para las cajas <i>dato</i>: fondo dorado. Ninguna de las dos cajas sale dorada.',
+     c:`<style>
+  .dato { background: gold; padding: 12px; }
+</style>
+<div class=".dato">Lo más frío: 1,2 grados</div>
+<div class="Dato">Lo más cálido: 15,8 grados</div>`,
+     ok:d=>d.querySelectorAll('div.dato').length===2,
+     p:'Mirá cómo está escrito el apodo en el CSS y cómo en cada div. El punto, ¿va en los dos lados?',
+     i:'<b>En el CSS, el punto quiere decir «clase»</b>: <code>.dato</code> es «todo lo que tenga la clase dato». En el HTML va el nombre solo, sin punto: <code>class="dato"</code>. Y otra vez, las mayúsculas importan.'},
+    {tag:'CSS · sintaxis',t:'«Se rompieron las dos cosas a la vez»',
+     s:'Querían el título color tomate y grande. No cambió ni el color ni el tamaño.',
+     c:`<style>
+  h1 {
+    color: tomato
+    font-size: 60px;
+  }
+</style>
+<h1>La estación de la huerta</h1>`,
+     ok:d=>{const h=d.querySelector('h1');if(!h)return false;const s=d.defaultView.getComputedStyle(h);return s.fontSize==='60px'&&s.color==='rgb(255, 99, 71)'},
+     p:'Cada propiedad termina con algo. ¿Las dos lo tienen?',
+     i:'<b>El punto y coma separa una propiedad de la otra.</b> Sin él, el navegador lee «tomato font-size: 60px» como un único valor que no entiende, y tira las dos. No avisa nada: simplemente no lo aplica.'},
+    {tag:'CSS · cascada',t:'«Le puse rojo y sigue azul»',
+     s:'Querían el título rojo. Escribieron <i>color: red</i>, lo guardaron, recargaron… y sigue azul.',
+     c:`<style>
+  h1 { color: red; }
+  p { font-size: 20px; }
+  h1 { color: navy; }
+</style>
+<h1>La estación de la huerta</h1>
+<p>Medimos la temperatura cada hora.</p>`,
+     ok:d=>{const h=d.querySelector('h1');return h&&d.defaultView.getComputedStyle(h).color==='rgb(255, 0, 0)'},
+     p:'¿Hay una sola regla para el h1? Si dos reglas dicen cosas distintas, ¿cuál gana?',
+     i:'<b>Cascada: cuando dos reglas dicen lo mismo, gana la última.</b> El navegador lee el CSS de arriba hacia abajo y la segunda regla pisa a la primera. Por eso se llama <i>Cascading</i> Style Sheets.'},
+    {tag:'Ciclo de datos · considerar los datos',t:'«La tabla se desarmó»',
+     s:'Pasaron su CSV a una tabla de HTML. La fila de las 7 quedó con un hueco y el 90 se fue a cualquier lado.',
+     c:`<table border="1">
+  <tr><th>Hora</th><th>Grados</th><th>Luz</th></tr>
+  <tr><td>6</td><td>1.5</td><td>10</td></tr>
+  <tr><td>7</td><td>1.2</td></tr><td>90</td>
+  <tr><td>8</td><td>2.4</td><td>260</td></tr>
+</table>`,
+     ok:d=>{const f=[...d.querySelectorAll('tr')];return f.length===4&&f.every(r=>r.children.length===3)&&/90/.test(f[2].textContent)},
+     p:'Cada fila abre con <b>&lt;tr&gt;</b> y cierra con <b>&lt;/tr&gt;</b>. ¿Todas las celdas de la fila de las 7 quedaron adentro?',
+     i:'<b>Una tabla son filas, y cada fila son celdas</b>: <code>&lt;tr&gt;</code> es la fila y <code>&lt;td&gt;</code> la celda. Es la misma idea que el CSV del primer cuatrimestre: cada renglón es una fila y cada coma separa una celda. Si una celda queda afuera de su fila, el dato pierde su lugar, y un dato fuera de lugar es un dato que miente.'},
+    {tag:'Ciclo de datos · procedencia',t:'«Un gráfico que no dice nada»',
+     s:'La profe de Mate abrió la página y preguntó: «¿Esto qué es? ¿Grados, luz, humedad? ¿Por segundo, por hora? ¿De dónde salió?».',
+     c:`<h1>Nuestro proyecto</h1>
+<img src="grafico.png" width="100%">
+<p>Este es nuestro gráfico.</p>`,
+     ok:d=>{const t=txt(d).toLowerCase();return /(grado|humedad|luz)/.test(t)&&/(segundo|hora|minuto)/.test(t)&&/(tinkercad|sensor|medim|simula|huerta)/.test(t)},
+     p:'Cambiá la frase de abajo del gráfico: que diga <b>qué se midió</b> (en qué unidad), <b>cada cuánto</b>, y <b>de dónde salieron los datos</b> (¿Tinkercad o la huerta?).',
+     i:'<b>Un dato sin metadatos casi no sirve.</b> Es lo de «Considerar los datos» del primer cuatrimestre: antes de mirar un número hay que saber qué mide, en qué unidad, quién lo midió, cómo y cuándo. Ahora los datos son de ustedes, y les toca a ustedes contarlo.'},
+    {tag:'Ciclo de datos · interpretar',t:'«La conclusión que no sale de los datos»',
+     s:'Midieron 20 segundos en Tinkercad, moviendo el deslizador a mano. En la página escribieron la conclusión de abajo. ¿Qué tiene de mal?',
+     c:`<h1>La estación de la huerta</h1>
+<p>Medimos 20 segundos en Tinkercad.</p>
+<p>Lo que encontramos: en la huerta hiela todas las noches.</p>`,
+     ok:(d,c)=>{const t=txt(d).toLowerCase();return !/todas las noches/.test(t)&&/encontramos/.test(t)&&/(simula|tinkercad|deslizador|prueba|segundos)/.test(t.split('encontramos')[1]||'')},
+     p:'¿Esos 20 segundos fueron en la huerta? ¿De noche? ¿Quién eligió las temperaturas? Reescribí la conclusión diciendo sólo lo que los datos muestran: por ejemplo, qué hizo el aparato en la simulación.',
+     i:'<b>Interpretar es decir lo que los datos muestran, y nada más.</b> Veinte segundos de simulación no dicen nada de «todas las noches»: es un problema de <b>muestreo</b>, como en el primer cuatrimestre. Lo que sí muestran es que el aparato avisó cuando tenía que avisar. Para hablar de la huerta, hay que medir en la huerta, muchas noches.'},
+    {tag:'HTML · accesibilidad',t:'«No se ve ningún error… para mí»',
+     s:'La página se ve bien. Pero una persona ciega usa un <b>lector de pantalla</b>, que lee la página en voz alta. Abajo está lo que escucha. ¿Qué le falta?',
+     c:`<h1>La estación de la huerta</h1>
+<img src="grafico.png" width="100%">`,
+     lector:true,
+     ok:d=>{const i=d.querySelector('img');return i&&(i.getAttribute('alt')||'').trim().length>=15},
+     p:'La etiqueta img acepta un atributo <b>alt</b> con una descripción: <code>alt="…"</code>. ¿Qué tendría que decir para que alguien que no ve el gráfico entienda lo que muestra?',
+     i:'<b>El alt describe la imagen con palabras.</b> Lo lee el lector de pantalla, y también aparece si la imagen no carga. Una página pública es para todos: si el dato está sólo en el dibujo, hay quien se lo pierde.'},
+  ];
+  const cont=document.getElementById('bugs'), cuenta=document.getElementById('bug-cuenta'), hechos=new Set();
+  const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  cont.innerHTML=BUGS.map((b,i)=>`<div class="bug" data-i="${i}">
+    <div class="bug-cab"><span class="bug-n">${i+1}</span><div><span class="bug-tag">${b.tag}</span><h4>${b.t}</h4><p>${b.s}</p></div></div>
+    <div class="editor mini"><div class="ed-izq"><div class="ed-bar"><span>el código · arreglalo acá</span><button type="button" class="bug-reset">Volver a empezar</button></div><textarea class="ed-cod" spellcheck="false" aria-label="Código para arreglar ${i+1}"></textarea></div>
+      <div class="ed-der"><div class="ed-bar"><span>Así se ve</span></div><iframe class="ed-vista" title="Así se ve ${i+1}"></iframe></div></div>
+    ${b.lector?'<p class="lector"><b>Lo que escucha con el lector de pantalla:</b> <span></span></p>':''}
+    <div class="acciones"><span class="bug-est" aria-live="polite">Todavía tiene el error.</span><button type="button" class="sec bug-pis">Pista</button></div>
+    <p class="bug-pista" hidden>${b.p}</p>
+    <div class="bug-idea" hidden><div class="rot">La idea</div><p>${b.i}</p></div>
+  </div>`).join('');
+  cont.querySelectorAll('.bug').forEach(card=>{
+    const i=+card.dataset.i, b=BUGS[i], ta=card.querySelector('textarea'), fr=card.querySelector('iframe'),
+          est=card.querySelector('.bug-est'), idea=card.querySelector('.bug-idea');
+    ta.value=b.c; ta.rows=Math.max(5,b.c.split('\n').length+1);
+    const pintar=()=>{fr.srcdoc='<!doctype html><meta charset="utf-8"><body style="font-family:Georgia,serif;margin:14px">'+
+      ta.value.replace(/(src\s*=\s*["'])(\.\/)?grafico\.png(["'])/g,(m,a,x,z)=>a+GRAF+z)};
+    fr.addEventListener('load',()=>{
+      let d; try{d=fr.contentDocument}catch(_){return} if(!d||!d.body) return;
+      d.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('a');if(a){e.preventDefault();
+        const h=a.getAttribute('href'); est.textContent=/^(\.\/)?ahora\.html$/.test(h)?'El enlace busca «ahora.html»: ese archivo está en la carpeta.':`El navegador busca un archivo llamado «${h}»… y en la carpeta no hay ninguno con ese nombre.`;}});
+      if(b.lector){const l=card.querySelector('.lector span'), h=d.querySelector('h1'), im=d.querySelector('img');
+        const alt=im&&im.getAttribute('alt'); l.textContent='«Título: '+(h?h.textContent:'')+'. '+(alt?'Imagen: '+alt:'Imagen. grafico punto png')+'.»';}
+      let ok=false; try{ok=!!b.ok(d,ta.value)}catch(_){}
+      card.classList.toggle('ok',ok); idea.hidden=!ok;
+      est.textContent=ok?'¡Arreglado!':'Todavía tiene el error.';
+      if(ok&&!hechos.has(i)){hechos.add(i); if(typeof registrar==='function') registrar('bug'+(i+1),'Reto 6 · arregló el error '+(i+1)+': '+b.t.replace(/[«»]/g,''));}
+      cuenta.textContent=hechos.size+' de '+BUGS.length+' arreglados'+(hechos.size===BUGS.length?' · ¡todos!':'');
+    });
+    let tm; ta.addEventListener('input',()=>{clearTimeout(tm);tm=setTimeout(pintar,300)});
+    ta.addEventListener('keydown',e=>{ if(e.key==='Tab'&&!e.shiftKey){e.preventDefault();ta.setRangeText('  ',ta.selectionStart,ta.selectionEnd,'end');ta.dispatchEvent(new Event('input'))} });
+    card.querySelector('.bug-reset').addEventListener('click',()=>{ta.value=b.c;pintar()});
+    card.querySelector('.bug-pis').addEventListener('click',e=>{const p=card.querySelector('.bug-pista');p.hidden=!p.hidden;e.target.textContent=p.hidden?'Pista':'Ocultar pista';
+      if(!p.hidden&&typeof registrar==='function') registrar('bugpista'+(i+1),'Reto 6 · pidió la pista del error '+(i+1),'',1)});
+    pintar();
+  });
 })();
 </script>
 </body>
