@@ -271,6 +271,16 @@ p.est,p.coh{margin:0}
 .ley2 i{display:inline-block;width:22px;height:5px;border-radius:3px}
 .ley2 .l1{background:var(--violeta)} .ley2 .l2{background:#D99A00} .ley2 .l3{width:12px;height:12px;border-radius:50%;background:var(--rojo)} .ley2 .l4{width:16px;height:14px;background:#1E1934;opacity:.3;border-radius:2px}
 .ley2 input{width:5em;font:500 1em var(--f-mono);border:1.5px solid var(--raya);border-radius:6px;padding:2px 6px;background:var(--hoja);color:var(--tinta)}
+.datos-pag{border:2px solid var(--violeta);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.datos-pag p{margin:0}
+.mini-b{padding:4px 12px;font-size:.85em}
+.flujo-img{display:flex;align-items:stretch;gap:10px;flex-wrap:wrap}
+.flujo-img>div{flex:1 1 170px;display:flex;flex-direction:column;gap:8px;background:var(--papel);border:1.5px solid var(--raya);border-radius:10px;padding:12px 14px;font-size:.85em}
+.flujo-img b{color:var(--tinta)}
+.flujo-img code{font-family:var(--f-mono);font-size:.9em;color:var(--inf)}
+.flujo-img>span{align-self:center;font:800 1.4em var(--f-titulo);color:var(--violeta)}
+.mini-graf{display:block;height:46px;border-radius:6px;background:#fff linear-gradient(to bottom right,transparent 48%,var(--violeta) 49%,var(--violeta) 53%,transparent 54%)}
+@media (max-width:640px){.flujo-img>span{transform:rotate(90deg);margin:0 auto}}
 </style>
 </head>
 <body>
@@ -711,9 +721,29 @@ segundos,humedad,avisando
                <b>CSS · cómo se ve:</b> los colores, la letra, los bordes. Va adentro de <span class="dice">&lt;style&gt;</span>, arriba de todo.</p>
           </div>
 
-          <div id="sin-graf" class="aviso-graf" hidden>
-            <p><b>¿No llegaste a armar el gráfico en el reto 4?</b> No importa: usá los datos de ejemplo y seguí. Si después tienen los suyos, los pegan en el reto 4 y la página se actualiza sola.</p>
-            <button type="button" id="usar-ejemplo" class="sec">Usar datos de ejemplo</button>
+          <div class="datos-pag">
+            <div class="rot">Primero: sus datos</div>
+            <p>El gráfico y la tabla de su página <b>no se escriben a mano</b>: salen de lo que midió el aparato. En el código, <span class="dice">grafico.png</span> es el dibujo y <span class="dice">datos.csv</span> es la tabla. Para que sean los suyos:</p>
+            <ol class="pasitos">
+              <li>En Tinkercad, con el código del reto 4, dale play, mové el deslizador un rato y pará la simulación.</li>
+              <li>En el <b>Monitor en serie</b>, seleccioná con el mouse desde los títulos (<span class="dice est">segundos,grados,alerta</span><span class="dice coh">segundos,humedad,avisando</span>) hasta el último renglón, y copiá con <b>Ctrl+C</b>.</li>
+              <li>Hacé clic en el recuadro de abajo y pegá con <b>Ctrl+V</b>. El gráfico aparece solo en su página.</li>
+            </ol>
+            <textarea id="pegar-web" class="pegar2" rows="4" placeholder="Pegá acá lo que copiaste del monitor de Tinkercad"></textarea>
+            <div class="acciones"><span class="nota" id="datos-msg" aria-live="polite"></span><button type="button" id="usar-ejemplo" class="sec">¿No tienen datos? Usar los de ejemplo</button></div>
+          </div>
+
+          <div class="explica">
+            <div class="rot">¿Y la imagen del gráfico? No se pega</div>
+            <p>En el código no está el dibujo: está su <b>nombre</b>. <span class="dice">&lt;img src="grafico.png"&gt;</span> es como un cartel que dice «acá va el archivo que se llama grafico.png». El navegador busca un archivo con ese nombre, al lado de la página, y lo muestra en ese lugar.</p>
+            <div class="flujo-img" aria-label="El código nombra el archivo, el archivo está en la carpeta, y el navegador lo muestra en la página">
+              <div><b>1 · El código lo nombra</b><code>&lt;img src="grafico.png"&gt;</code></div>
+              <span aria-hidden="true">→</span>
+              <div><b>2 · El archivo está en la carpeta</b><code>index.html<br>grafico.png ✓</code></div>
+              <span aria-hidden="true">→</span>
+              <div><b>3 · El navegador lo muestra</b><i class="mini-graf" aria-hidden="true"></i></div>
+            </div>
+            <p><b>Acá</b>, la app hace sola el paso 2: apenas pegan sus datos, pone su gráfico donde dice grafico.png. <b>En su compu</b>, lo hacen ustedes en la etapa 2: bajan el archivo <span class="dice">grafico.png</span> y lo dejan en la misma carpeta que <span class="dice">index.html</span>.</p>
           </div>
 
           <h4 class="etapa-t"><b>1</b> Armala acá</h4>
@@ -1407,6 +1437,9 @@ function graficoSVG(){
     {id:'caja',t:'Otra caja con un dato',d:'Copiá la línea del <span class="dice">&lt;div class="dato"&gt;</span>, pegala abajo y escribí otro dato. Se ve igual que la primera sin tocar el CSS: por eso sirve el <b>class</b>.',
      snip:'<div class="dato">La temperatura más baja: 1,5 grados.</div>',
      ok:d=>d.querySelectorAll('.dato').length>=2},
+    {id:'tabla',t:'Que se vea la tabla',d:'El enlace baja el CSV, pero en la página no se ven los números. Tocá <button type="button" class="sec mini-b" id="copiar-tabla">Copiar mis datos como tabla</button> y pegala en el código, antes del enlace. Mirala: cada renglón del CSV se volvió un <span class="dice">&lt;tr&gt;</span>, y cada coma separa un <span class="dice">&lt;td&gt;</span>.',
+     snip:'<table border="1">\n  <tr><th>segundos</th><th>grados</th><th>alerta</th></tr>\n  <tr><td>0</td><td>9.10</td><td>0</td></tr>\n  <tr><td>1</td><td>8.40</td><td>0</td></tr>\n  …\n</table>',
+     ok:d=>{const t=d.querySelector('table');return t&&t.querySelectorAll('tr').length>=3}},
     {id:'hover',t:'Que reaccione al mouse',d:'Adentro de <span class="dice">&lt;style&gt;</span>, antes de <span class="dice">&lt;/style&gt;</span>, pegá esto. Después pasá el mouse por las cajas.',
      snip:'.dato:hover {\n    transform: scale(1.05);\n    background: #fde68a;\n  }',
      ok:d=>reglas(d).some(r=>(r.selectorText||'').includes(':hover'))},
@@ -1427,7 +1460,7 @@ function graficoSVG(){
   lista.querySelectorAll('.mision').forEach((li,i)=>{const p=li.querySelector('pre'); if(p) p.textContent=MIS[i].snip;});
 
   function placeholder(){
-    return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 220"><rect x="2" y="2" width="636" height="216" rx="14" fill="#ffffff" stroke="#999" stroke-width="3" stroke-dasharray="10 8"/><text x="320" y="104" text-anchor="middle" font-family="sans-serif" font-size="22" fill="#666">Acá va su gráfico (grafico.png)</text><text x="320" y="136" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#888">Pegá los datos en el reto 4, o usá los de ejemplo</text></svg>`);
+    return 'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 220"><rect x="2" y="2" width="636" height="216" rx="14" fill="#ffffff" stroke="#999" stroke-width="3" stroke-dasharray="10 8"/><text x="320" y="104" text-anchor="middle" font-family="sans-serif" font-size="22" fill="#666">Acá va su gráfico (grafico.png)</text><text x="320" y="136" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#888">Pegá sus datos arriba, en «Primero: sus datos»</text></svg>`);
   }
   function srcGrafico(){
     const g=graficoSVG(); if(!g) return placeholder();
@@ -1468,7 +1501,7 @@ function graficoSVG(){
   }));
 
   /* sin gráfico propio: datos de ejemplo, calculados con la misma regla del código del reto 4 */
-  const peg=document.getElementById('pegar'), aviso=document.getElementById('sin-graf');
+  const peg=document.getElementById('pegar');
   function ejemplo(){
     const L=[];
     if(modo()==='est'){
@@ -1482,16 +1515,33 @@ function graficoSVG(){
     }
     return L.join('\n');
   }
+  const pw=document.getElementById('pegar-web'), dmsg=document.getElementById('datos-msg');
+  pw.addEventListener('input',e=>{ peg.value=pw.value; peg.dispatchEvent(new Event('input'));
+    if(e.isTrusted&&typeof registrar==='function') setTimeout(()=>{ if(graficoSVG()) registrar('web-datos','Reto 5 · pegó sus datos en la página'); },120); });
   function actualizarAviso(){
-    aviso.hidden=!!graficoSVG();
+    if(pw.value!==peg.value) pw.value=peg.value;
+    const gm=document.getElementById('graf-msg');
+    dmsg.textContent=graficoSVG()?'Listo: '+(gm?gm.textContent:'')+'. Ya están en su página: el gráfico se ve en la vista de abajo, y la tabla es la que baja el enlace.'
+      :(pw.value.trim()?'No encuentro renglones como 0,24.78,0. ¿Copiaste desde los títulos hasta el final?':'Todavía no hay datos: en la página, donde va el gráfico, hay un recuadro vacío.');
     const m=document.getElementById('graf-msg'), s=lista.querySelector('.mis-datos');
     if(s) s.textContent=graficoSVG()&&m&&m.textContent?'Del gráfico: '+m.textContent+'.':'';
   }
   document.getElementById('usar-ejemplo').addEventListener('click',()=>{
     peg.value=ejemplo(); peg.dispatchEvent(new Event('input'));
-    toast('Listo: ya hay un gráfico de ejemplo en la página. Cuando tengan sus datos, los pegan en el reto 4.');
+    toast('Listo: ya hay un gráfico de ejemplo en la página. Cuando tengan sus datos, los pegan en el recuadro de «Primero: sus datos».');
   });
   peg.addEventListener('input',()=>setTimeout(()=>{actualizarAviso();pintar()},60));
+
+  document.getElementById('copiar-tabla').addEventListener('click',()=>{
+    const toks=peg.value.split(/\s+/).filter(t=>/^[^,]+(,[^,]+)+$/.test(t));
+    const cab=toks.find(t=>!/^-?\d/.test(t)), filas=toks.filter(t=>/^-?\d/.test(t));
+    if(filas.length<2){toast('Primero pegá sus datos arriba, en «Primero: sus datos», o usá los de ejemplo.');return}
+    const paso=Math.max(1,Math.ceil(filas.length/12)), elegidas=filas.filter((_,i)=>i%paso===0);
+    const td=(t,tag)=>'<tr>'+t.split(',').map(v=>`<${tag}>${v}</${tag}>`).join('')+'</tr>';
+    const code='<table border="1">\n'+(cab?'  '+td(cab,'th')+'\n':'')+elegidas.map(f=>'  '+td(f,'td')).join('\n')+'\n</table>\n';
+    const nota=paso>1?` Son ${elegidas.length} renglones de los ${filas.length}: uno cada ${paso}, para que no quede larguísima.`:'';
+    try{navigator.clipboard.writeText(code).then(()=>toast('Copiada. Hacé clic en el código, antes de <p><a href=…, y pegá con Ctrl+V.'+nota),()=>toast('No se pudo copiar: probá de nuevo.'))}catch(_){toast('No se pudo copiar: probá de nuevo.')}
+  });
 
   /* etapa 2: los tres archivos */
   document.getElementById('bajar-index').addEventListener('click',()=>{
