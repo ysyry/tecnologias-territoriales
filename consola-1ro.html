@@ -235,20 +235,6 @@ table.esq th{color:var(--tinta)}
     </div>
   </div>
 
-  <details class="panel">
-    <summary>Cómo se arma la consola (para la profe)</summary>
-    <table class="esq" style="margin-top:12px">
-      <tr><th>Pieza</th><th>Una pata</th><th>La otra pata</th></tr>
-      <tr><td>—</td><td>GND del Arduino → línea −</td><td>5V del Arduino → línea +</td></tr>
-      <tr><td>LED rojo</td><td>corta → línea −</td><td>larga → resistencia de 220 Ω → <b>pin 3</b></td></tr>
-      <tr><td>LED verde</td><td>corta → línea −</td><td>larga → resistencia de 220 Ω → <b>pin 4</b></td></tr>
-      <tr><td>Botón (atravesando la canaleta)</td><td>una pata → línea +</td><td>la de la diagonal → <b>pin 8</b>, y de esa columna una de 10 kΩ → línea −</td></tr>
-      <tr><td>Buzzer</td><td>+ (la larga) → <b>pin 12</b></td><td>la otra → línea −</td></tr>
-      <tr><td>Sensor de luz (fotorresistencia)</td><td>una pata → línea +</td><td>la otra → <b>A1</b>, y de esa columna una de 10 kΩ → línea −</td></tr>
-      <tr><td>Sensor de luz (módulo de 3 patas)</td><td>VCC → línea + · GND → línea −</td><td>AO → <b>A1</b></td></tr>
-    </table>
-    <p class="ayuda">Cuando la consola se enciende, mira cuánta luz hay y desde ahí sabe qué es «tapado». <b>Al enchufarla, no tapes el sensor.</b></p>
-  </details>
 </main>
 
 <script>
