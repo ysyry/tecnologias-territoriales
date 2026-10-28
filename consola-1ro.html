@@ -569,6 +569,7 @@ $('traer').onclick=async()=>{
   try{
     const res=await fetch(URL_BUZON+'?envios=1&k='+encodeURIComponent(k));const t=await res.text();
     if(t.startsWith('clave')){$('profe-est').textContent='La clave no es esa.';return}
+    if(!t.trim().startsWith('[')){$('profe-est').textContent='El buzón todavía no muestra la lista: hay que actualizar su script en Google.';return}
     const lista=JSON.parse(t).filter(x=>String(x.codigo).startsWith(MARCA));
     $('profe-est').textContent=lista.length?lista.length+' programas':'Todavía no mandó nadie.';
     const E=$('envios');E.innerHTML='';
