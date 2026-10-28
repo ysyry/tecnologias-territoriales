@@ -7,15 +7,17 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Manrope:wght@500;700&family=DM+Mono:wght@400;500&display=swap">
 <style>
-/* La consola de 1ro: cada pareja arma su juego tocando bloques (sin arrastrar, sin Tinkercad),
-   lo prueba en la consola dibujada y saca el código para cargarlo en la consola del curso.
-   Consola mínima, para armar en un rato: luz roja en 3, luz verde en 4, botón en 8, buzzer en 12. */
+/* La consola de 1ro: cada pareja elige un juego para cambiar, un programa con errores para
+   arreglar o arma el suyo, tocando bloques (sin arrastrar, sin Tinkercad). Al lado, el diagrama
+   de flujo de lo que el programa tiene que hacer. Lo prueban en la consola dibujada y se lo
+   mandan a la profe, que lo carga en la consola del curso desde su pantalla (#profe).
+   Consola: luz roja en 3, luz verde en 4, botón en 8, buzzer en 12, sensor de luz en A1. */
 :root{
   --papel:#F3F1F7; --hoja:#FCFBFE; --raya:#DAD4E6;
   --tinta:#161226; --texto:#3B3350; --tenue:#5F5779;
   --violeta:#5B3FA8; --inf:#9A3A80; --inf-w:rgba(154,58,128,.10);
   --rojo:#C8352E; --verde:#2E8B57;
-  --b-salida:#3E7FD9; --b-control:#E8930C; --b-mate:#3B9E4C; --b-entrada:#8A5BE6; --b-var:#C94BB8;
+  --b-salida:#3E7FD9; --b-control:#E8930C; --b-mate:#3B9E4C; --b-entrada:#8A5BE6; --b-var:#C94BB8; --b-sensor:#0F9A9A;
   --caja:#2A2440;
   --f-titulo:"Bricolage Grotesque",Georgia,serif;
   --f-cuerpo:Manrope,system-ui,sans-serif;
@@ -34,169 +36,231 @@
   --rojo:#F07068; --verde:#5CC98C; --caja:#000;
   color-scheme:dark}
 *{box-sizing:border-box}
-body{background:var(--papel);color:var(--texto);font-family:var(--f-cuerpo);font-size:clamp(16px,1.4vw,19px);line-height:1.5;margin:0}
-main{max-width:1200px;margin:0 auto;padding:clamp(24px,4vw,48px) 16px 80px;display:flex;flex-direction:column;gap:32px}
+body{background:var(--papel);color:var(--texto);font-family:var(--f-cuerpo);font-size:clamp(16px,1.3vw,18px);line-height:1.5;margin:0}
+main{max-width:1440px;margin:0 auto;padding:clamp(24px,4vw,44px) 16px 80px;display:flex;flex-direction:column;gap:28px}
+[hidden]{display:none!important}
 .rot{font-family:var(--f-mono);font-size:.72em;letter-spacing:.14em;text-transform:uppercase;color:var(--inf)}
-h1{font-family:var(--f-titulo);font-weight:800;color:var(--tinta);font-size:clamp(40px,6vw,76px);line-height:1;letter-spacing:-.02em;margin:.2em 0 0}
-.bajada{font-size:1.15em;max-width:36em;margin:.5em 0 0}
-h2{font-family:var(--f-titulo);font-weight:600;color:var(--tinta);font-size:clamp(22px,2.4vw,30px);line-height:1.1;margin:0 0 10px}
+h1{font-family:var(--f-titulo);font-weight:800;color:var(--tinta);font-size:clamp(40px,6vw,72px);line-height:1;letter-spacing:-.02em;margin:.2em 0 0}
+.bajada{font-size:1.12em;max-width:38em;margin:.5em 0 0}
+h2{font-family:var(--f-titulo);font-weight:600;color:var(--tinta);font-size:clamp(21px,2.2vw,28px);line-height:1.1;margin:0 0 10px}
+h3{font-family:var(--f-titulo);font-weight:600;color:var(--tinta);font-size:1.05em;margin:0 0 8px}
 button,select,input{font:inherit}
 .fila{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 .btn{border:2px solid var(--violeta);background:var(--hoja);color:var(--violeta);font-weight:700;border-radius:999px;padding:8px 18px;cursor:pointer}
 .btn.lleno{background:var(--violeta);color:var(--hoja)}
-.btn:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--inf);outline-offset:2px}
-input[type=text]{border:2px solid var(--raya);background:var(--hoja);color:var(--tinta);border-radius:10px;padding:8px 12px;min-width:0}
-
-.trabajo{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:28px;align-items:start}
-@media (max-width:860px){.trabajo{grid-template-columns:1fr}}
+.btn:focus-visible,select:focus-visible,input:focus-visible,.carta:focus-visible{outline:3px solid var(--inf);outline-offset:2px}
+input[type=text],input[type=password]{border:2px solid var(--raya);background:var(--hoja);color:var(--tinta);border-radius:10px;padding:8px 12px;min-width:0}
 .panel{background:var(--hoja);border:1px solid var(--raya);border-radius:18px;padding:20px;min-width:0}
+.ayuda{font-size:.9em;color:var(--tenue)}
+.ayuda b{color:var(--tinta)}
+.estado{font-weight:700;color:var(--tinta);min-height:1.5em}
+
+/* elegir qué hacer */
+.grupos{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,3fr) minmax(0,1.2fr);gap:22px}
+@media (max-width:1000px){.grupos{grid-template-columns:1fr}}
+.cartas{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.carta{text-align:left;border:2px solid var(--raya);background:var(--hoja);border-radius:14px;padding:12px;cursor:pointer;color:var(--texto);display:flex;flex-direction:column;gap:4px}
+.carta b{color:var(--tinta);font-family:var(--f-titulo);font-size:1.08em}
+.carta small{font-size:.82em;color:var(--tenue);line-height:1.35}
+.carta .ic{font-size:1.4em;line-height:1}
+.carta:hover{border-color:var(--violeta)}
+.carta[aria-pressed="true"]{border-color:var(--violeta);background:var(--inf-w)}
+.carta.bug{border-style:dashed}
+.consigna{border-left:6px solid var(--violeta)}
+.consigna p{margin:0;font-size:1.08em;color:var(--tinta)}
+
+/* las tres columnas: diagrama · programa · consola */
+.trabajo{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.3fr) minmax(0,1fr);gap:22px;align-items:start}
+@media (max-width:1150px){.trabajo{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.col-consola{grid-column:1 / -1}}
+@media (max-width:760px){.trabajo{grid-template-columns:1fr}}
 .pegado{position:sticky;top:16px}
-@media (max-width:860px){.pegado{position:static}}
+@media (max-width:1150px){.pegado{position:static}}
 
 /* bloques */
-.evento{margin-bottom:18px}
+.evento{margin-bottom:16px}
 .cab{display:inline-flex;align-items:center;gap:8px;background:var(--b-entrada);color:#fff;font-weight:700;padding:8px 14px;border-radius:12px 12px 12px 0}
-.cab.siempre{background:var(--b-control)}
-.cab.empezar{background:var(--b-mate)}
+.cab.siempre{background:var(--b-control)} .cab.empezar{background:var(--b-mate)} .cab.sensor{background:var(--b-sensor)}
+.cab .x{background:rgba(0,0,0,.22);color:#fff;border:0;border-radius:999px;width:26px;height:26px;cursor:pointer;padding:0}
 .lista{margin-left:14px;border-left:10px solid var(--b-entrada);padding:6px 0 6px 8px;display:flex;flex-direction:column;gap:5px;border-radius:0 0 0 8px}
-.lista.siempre{border-color:var(--b-control)} .lista.empezar{border-color:var(--b-mate)}
+.lista.siempre{border-color:var(--b-control)} .lista.empezar{border-color:var(--b-mate)} .lista.sensor{border-color:var(--b-sensor)}
 .blk{display:flex;flex-direction:column;gap:5px;align-self:flex-start;max-width:100%}
 .blk>.linea{align-self:flex-start}
-.linea{display:inline-flex;flex-wrap:wrap;align-items:center;gap:6px;color:#fff;font-weight:700;font-size:.9em;padding:6px 8px 6px 12px;border-radius:7px}
+.linea{display:inline-flex;flex-wrap:wrap;align-items:center;gap:6px;color:#fff;font-weight:700;font-size:.88em;padding:6px 8px 6px 12px;border-radius:7px}
 .linea select,.linea input{background:#fff;color:#1b1b1b;border:0;border-radius:999px;padding:2px 8px;font-weight:700;font-size:1em}
 .linea input{width:4.2em}
 .linea .x{background:rgba(0,0,0,.22);color:#fff;border:0;border-radius:999px;width:26px;height:26px;cursor:pointer;line-height:1;padding:0}
 .linea .x:hover{background:rgba(0,0,0,.4)}
-.salida{background:var(--b-salida)} .control{background:var(--b-control)} .mate{background:var(--b-mate)} .var{background:var(--b-var)}
+.salida{background:var(--b-salida)} .control{background:var(--b-control)} .var{background:var(--b-var)} .sensor{background:var(--b-sensor)}
 .sub{margin-left:18px;border-left:8px solid var(--b-control);padding:4px 0 4px 8px;display:flex;flex-direction:column;gap:5px}
-.sub.var{background:none;border-color:var(--b-var)}
+.sub.var{background:none;border-color:var(--b-var)} .sub.sensor{background:none;border-color:var(--b-sensor)}
 .sino{color:var(--tenue);font-weight:700;font-size:.85em;margin-left:18px}
 .agregar{align-self:flex-start;border:2px dashed var(--raya);background:none;color:var(--tenue);border-radius:8px;padding:3px 12px;cursor:pointer;font-weight:700;font-size:.85em}
 .agregar:hover,.agregar.activo{border-color:var(--violeta);color:var(--violeta)}
 .paleta{display:flex;flex-wrap:wrap;gap:6px;padding:8px;border:2px solid var(--violeta);border-radius:10px;background:var(--papel)}
-.paleta button{border:0;color:#fff;font-weight:700;font-size:.85em;padding:6px 10px;border-radius:7px;cursor:pointer}
+.paleta button{border:0;color:#fff;font-weight:700;font-size:.82em;padding:6px 10px;border-radius:7px;cursor:pointer}
 .activa{outline:3px solid #FFD84A;outline-offset:2px}
 .nuevos{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
 
+/* diagrama de flujo */
+.fl{display:flex;flex-direction:column;align-items:center;min-width:0}
+.fl>*{max-width:100%}
+.fl-ev,.fl-p,.fl-q,.fl-fin{font-size:.82em;font-weight:700;text-align:center;padding:7px 12px;line-height:1.25}
+.fl-ev{background:var(--b-entrada);color:#fff;border-radius:999px}
+.fl-ev.empezar{background:var(--b-mate)} .fl-ev.siempre{background:var(--b-control)} .fl-ev.sensor{background:var(--b-sensor)}
+.fl-p{background:var(--hoja);color:var(--tinta);border:2px solid var(--b-salida);border-radius:8px}
+.fl-p.var{border-color:var(--b-var)} .fl-p.control{border-color:var(--b-control)}
+.fl-q{background:var(--b-control);color:#fff;clip-path:polygon(12% 0,88% 0,100% 50%,88% 100%,12% 100%,0 50%);padding:9px 26px}
+.fl-q.var{background:var(--b-var)} .fl-q.sensor{background:var(--b-sensor)}
+.fl-fin{color:var(--tenue);font-weight:500;font-style:italic}
+.fl-a{color:var(--tenue);line-height:1;font-size:.9em;padding:2px 0}
+.fl-br{display:flex;gap:10px;align-items:flex-start;justify-content:center;width:100%}
+.fl-col{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;border-top:2px solid var(--raya);padding-top:2px}
+.fl-sn{font-family:var(--f-mono);font-size:.72em;color:var(--tenue)}
+.fl-nada{font-size:.78em;color:var(--tenue)}
+.fl+.fl{margin-top:16px;padding-top:14px;border-top:1px dashed var(--raya);width:100%}
+
 /* la consola */
-.consola{background:var(--caja);border-radius:22px;padding:22px 18px;display:flex;flex-direction:column;gap:20px;align-items:center}
-.luces{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;width:100%;max-width:240px}
-.botones{display:grid;grid-template-columns:1fr;width:100%;max-width:110px}
+.consola{background:var(--caja);border-radius:22px;padding:20px 18px;display:grid;grid-template-columns:1fr 1fr;gap:16px 10px;align-items:center;justify-items:center}
+.luces{grid-column:1 / -1;display:grid;grid-template-columns:repeat(2,1fr);gap:22px;width:100%;max-width:220px}
 .luz{aspect-ratio:1;border-radius:50%;background:var(--c);opacity:.18;transition:opacity .05s,box-shadow .05s}
 .luz.on{opacity:1;box-shadow:0 0 22px 6px var(--c)}
-.boton{aspect-ratio:1;border-radius:50%;border:0;background:radial-gradient(circle at 35% 30%,#fff6,#0000 55%),#8d86a6;box-shadow:0 6px 0 #4b4566;cursor:pointer}
-.boton:active,.boton.apretado{transform:translateY(5px);box-shadow:0 1px 0 #4b4566}
-.etq{color:#cfc8e6;font-family:var(--f-mono);font-size:.7em;text-align:center}
-.buzzer{color:#cfc8e6;font-family:var(--f-mono);font-size:.8em;transition:color .05s}
+.buzzer{grid-column:1 / -1;color:#cfc8e6;font-family:var(--f-mono);font-size:.8em;transition:color .05s}
 .buzzer.suena{color:#FFD84A}
-.estado{font-weight:700;color:var(--tinta);min-height:1.5em}
-pre{background:var(--papel);border:1px solid var(--raya);border-radius:12px;padding:14px;overflow:auto;font-family:var(--f-mono);font-size:.78em;color:var(--tinta);max-height:420px;white-space:pre}
-.ayuda{font-size:.9em;color:var(--tenue)}
-.ayuda b{color:var(--tinta)}
-ol.carga{margin:.4em 0 0;padding-left:1.3em}
+.pieza{display:flex;flex-direction:column;align-items:center;gap:4px;width:100%;max-width:96px}
+.boton{width:100%;aspect-ratio:1;border-radius:50%;border:0;background:radial-gradient(circle at 35% 30%,#fff6,#0000 55%),#8d86a6;box-shadow:0 6px 0 #4b4566;cursor:pointer;touch-action:none}
+.boton.apretado{transform:translateY(5px);box-shadow:0 1px 0 #4b4566}
+.sensorv{width:70%;aspect-ratio:1;border-radius:50%;border:4px solid #cfc8e6;background:radial-gradient(circle,#FFE9A8 0 30%,#d9a441 31% 40%,#5a4a2a 41%);cursor:pointer;touch-action:none}
+.sensorv.tapado{background:#111;border-color:#555}
+.etq{color:#cfc8e6;font-family:var(--f-mono);font-size:.7em;text-align:center;line-height:1.2}
+pre{background:var(--papel);border:1px solid var(--raya);border-radius:12px;padding:14px;overflow:auto;font-family:var(--f-mono);font-size:.76em;color:var(--tinta);max-height:420px;white-space:pre}
 details summary{cursor:pointer;font-weight:700;color:var(--violeta)}
-.contado{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
-@media (max-width:860px){.contado{grid-template-columns:1fr}}
-.contado label{display:flex;flex-direction:column;gap:6px;font-weight:700;color:var(--tinta)}
-.contado label span{font-weight:500;color:var(--tenue);font-size:.88em}
-textarea{font:inherit;border:2px solid var(--raya);background:var(--hoja);color:var(--tinta);border-radius:10px;padding:8px 12px;min-height:84px;resize:vertical}
+textarea{font:inherit;border:2px solid var(--raya);background:var(--hoja);color:var(--tinta);border-radius:10px;padding:8px 12px;min-height:84px;resize:vertical;width:100%}
 textarea:focus-visible{outline:3px solid var(--inf);outline-offset:2px}
+.preg{display:flex;flex-direction:column;gap:6px;font-weight:700;color:var(--tinta)}
+.preg span{font-weight:500;color:var(--tenue);font-size:.88em}
+.preg #p-texto{font-weight:700;color:var(--tinta);font-size:1em}
+table.esq{border-collapse:collapse;font-size:.88em;width:100%}
+table.esq td,table.esq th{border-bottom:1px solid var(--raya);padding:6px 8px;text-align:left;vertical-align:top}
+table.esq th{color:var(--tinta)}
+
+/* la pantalla de la profe */
+.envio{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--raya)}
+.envio b{color:var(--tinta)}
+.envio small{color:var(--tenue)}
 </style>
 </head>
 <body>
 <main>
   <header>
-    <div class="rot">1ro · Informática · el juego de la consola</div>
+    <div class="rot">1ro · Informática · la consola</div>
     <h1>La consola de 1ro</h1>
-    <p class="bajada">Un botón, dos luces y un buzzer, y la consola es la misma para todo el curso. Lo que cambia de un juego a otro es el programa. Armá el tuyo acá, probalo en la consola de la pantalla y después cargalo en la consola del curso.</p>
+    <p class="bajada">Un botón, dos luces, un buzzer y un sensor de luz. La consola es la misma para todo el curso: lo que cambia de un juego a otro es el programa.</p>
   </header>
 
-  <section class="panel">
+  <!-- la pantalla de la profe: sólo con #profe -->
+  <section class="panel" id="profe" hidden>
+    <h2>Lo que mandaron</h2>
     <div class="fila">
-      <label>Nombre del juego <input type="text" id="nombre" placeholder="Ej: La bomba" maxlength="40"></label>
-      <label>Hecho por <input type="text" id="autores" placeholder="Los dos nombres" maxlength="60"></label>
+      <input type="password" id="clave" placeholder="La clave del buzón" aria-label="La clave del buzón">
+      <button class="btn lleno" id="traer">Traer</button>
+      <span class="estado" id="profe-est"></span>
     </div>
-    <div class="fila" style="margin-top:12px">
-      <label>Arrancar desde un ejemplo:
-        <select id="ejemplo">
-          <option value="">elegí uno…</option>
-          <option value="papa">Papa caliente</option>
-          <option value="moneda">Cara o cruz</option>
-          <option value="tercera">La tercera es la vencida</option>
-          <option value="bomba">La bomba</option>
-          <option value="semaforo">El semáforo</option>
-        </select>
-      </label>
-      <button class="btn" id="limpiar">Empezar de cero</button>
+    <p class="ayuda">Tocá <b>Abrir</b> para verlo y probarlo acá abajo, y <b>Copiar para la placa</b> para pegarlo en Arduino IDE y subirlo a la consola.</p>
+    <div id="envios"></div>
+  </section>
+
+  <section class="panel" id="elegir">
+    <h2>Elegí qué hacer</h2>
+    <div class="grupos">
+      <div><h3>Para jugar y cambiar</h3><div class="cartas" id="c-juegos"></div></div>
+      <div><h3>Con errores para arreglar</h3><div class="cartas" id="c-bugs"></div></div>
+      <div><h3>El tuyo</h3><div class="cartas" id="c-libre"></div></div>
     </div>
   </section>
 
+  <section class="panel consigna">
+    <div class="fila" style="justify-content:space-between">
+      <h2 id="d-titulo" style="margin:0"></h2>
+      <label class="fila" style="gap:8px">Hecho por <input type="text" id="autores" placeholder="Los dos nombres" maxlength="60"></label>
+    </div>
+    <p id="d-consigna" style="margin-top:8px"></p>
+  </section>
+
   <div class="trabajo">
+    <section class="panel">
+      <h2>Qué tiene que hacer</h2>
+      <p class="ayuda" id="d-diag-ayuda"></p>
+      <div id="diagrama"></div>
+    </section>
+
     <section class="panel">
       <h2>El programa</h2>
       <p class="ayuda">Tocá <b>+ agregar</b> donde quieras poner un bloque. Los números se cambian tocándolos.</p>
       <div id="programa"></div>
       <div class="nuevos" id="nuevos"></div>
+      <div class="fila" style="margin-top:14px"><button class="btn" id="limpiar">Volver a empezar</button></div>
     </section>
 
-    <div class="pegado">
+    <div class="pegado col-consola">
       <section class="panel">
         <h2>Probalo</h2>
         <div class="consola" aria-label="La consola">
           <div class="luces" id="luces"></div>
           <div class="buzzer" id="buzzer">♪ buzzer</div>
-          <div class="botones" id="botones"></div>
+          <div class="pieza"><button class="boton" id="boton" aria-label="El botón"></button><div class="etq">botón</div></div>
+          <div class="pieza"><button class="sensorv" id="sensor" aria-label="El sensor de luz: mantené apretado para taparlo"></button><div class="etq">sensor de luz</div></div>
         </div>
         <div class="fila" style="margin-top:14px">
           <button class="btn lleno" id="jugar">▶ Encender</button>
           <button class="btn" id="parar">■ Apagar</button>
           <span class="estado" id="estado"></span>
         </div>
-        <p class="ayuda">El botón se aprieta con el mouse o con la <b>barra espaciadora</b>.</p>
+        <p class="ayuda">El botón se aprieta con el mouse o la <b>barra espaciadora</b>. El sensor se tapa manteniendo apretado encima, o con la tecla <b>T</b>.</p>
       </section>
 
-      <section class="panel" style="margin-top:20px">
-        <h2>Llevarlo a la consola</h2>
-        <p class="ayuda">Cuando el juego ya anda acá, pasá a la compu que tiene la consola enchufada.</p>
-        <ol class="carga ayuda">
-          <li>Tocá <b>Copiar el código</b>.</li>
-          <li>En esa compu, abrí <b>Arduino IDE</b>, borrá todo y pegá.</li>
-          <li>Tocá la flecha <b>→ Subir</b>. Cuando dice «Subido», ya es tu juego.</li>
-        </ol>
+      <section class="panel" style="margin-top:18px">
+        <h2>Para la consola del curso</h2>
+        <label class="preg"><span id="p-texto"></span><span id="p-ayuda"></span><textarea id="respuesta"></textarea></label>
         <div class="fila" style="margin-top:12px">
-          <button class="btn lleno" id="copiar">Copiar el código</button>
-          <span class="estado" id="copiado"></span>
+          <button class="btn lleno" id="mandar">Mandárselo a la profe</button>
+          <span class="estado" id="mandado"></span>
         </div>
-        <details style="margin-top:12px">
-          <summary>Ver el código</summary>
+        <p class="ayuda">Le llega el programa y tu respuesta. La profe lo carga en la consola y lo juega todo el curso.</p>
+        <details style="margin-top:10px">
+          <summary>Ver el código para la placa</summary>
+          <div class="fila" style="margin:10px 0"><button class="btn" id="copiar">Copiar el código</button><span class="estado" id="copiado"></span></div>
           <pre id="codigo"></pre>
         </details>
       </section>
     </div>
   </div>
 
-  <section class="panel" aria-labelledby="t-contado">
-    <h2 id="t-contado">Tu juego, contado</h2>
-    <div class="contado" style="grid-template-columns:1fr">
-      <label>¿Cómo cambia la luz en tu juego?<span>Qué pasa cuando apretás el botón, y cuándo se prende cada luz.</span><textarea id="r-luz"></textarea></label>
-    </div>
-    <div class="fila" style="margin-top:14px">
-      <button class="btn lleno" id="mandar">Mandárselo a la profe</button>
-      <span class="estado" id="mandado"></span>
-    </div>
-  </section>
+  <details class="panel">
+    <summary>Cómo se arma la consola (para la profe)</summary>
+    <table class="esq" style="margin-top:12px">
+      <tr><th>Pieza</th><th>Una pata</th><th>La otra pata</th></tr>
+      <tr><td>—</td><td>GND del Arduino → línea −</td><td>5V del Arduino → línea +</td></tr>
+      <tr><td>LED rojo</td><td>corta → línea −</td><td>larga → resistencia de 220 Ω → <b>pin 3</b></td></tr>
+      <tr><td>LED verde</td><td>corta → línea −</td><td>larga → resistencia de 220 Ω → <b>pin 4</b></td></tr>
+      <tr><td>Botón (atravesando la canaleta)</td><td>una pata → línea +</td><td>la de la diagonal → <b>pin 8</b>, y de esa columna una de 10 kΩ → línea −</td></tr>
+      <tr><td>Buzzer</td><td>+ (la larga) → <b>pin 12</b></td><td>la otra → línea −</td></tr>
+      <tr><td>Sensor de luz (fotorresistencia)</td><td>una pata → línea +</td><td>la otra → <b>A1</b>, y de esa columna una de 10 kΩ → línea −</td></tr>
+      <tr><td>Sensor de luz (módulo de 3 patas)</td><td>VCC → línea + · GND → línea −</td><td>AO → <b>A1</b></td></tr>
+    </table>
+    <p class="ayuda">Cuando la consola se enciende, mira cuánta luz hay y desde ahí sabe qué es «tapado». <b>Al enchufarla, no tapes el sensor.</b></p>
+  </details>
 </main>
 
 <script>
-const COLORES=['#E5413A','#2FB35E'];
-const NCOLOR=['roja','verde'];
-const PIN_LUZ=[3,4], PIN_BOTON=[8], PIN_BUZZER=12;
-// con #trucha se guarda aparte, así lo que arreglan no pisa su juego ni se pierde al recargar
-const K=location.hash==='#trucha'?'consola1ro.trucha.v1':'consola1ro.v2';
+const COLORES=['#E5413A','#2FB35E'], NCOLOR=['roja','verde'];
+const PIN_LUZ=[3,4], PIN_BOTON=8, PIN_BUZZER=12;
+const $=id=>document.getElementById(id);
+const el=(tag,cls,txt)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e};
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const copia=o=>JSON.parse(JSON.stringify(o,(k,v)=>k==='_id'?undefined:v));
 
-// --- el programa ---
-// prog = {empezar:[...], siempre:[...], boton:{1:[...]}}
-// paso = {t:'prender'|'apagar'|'todas'|'sonar'|'esperar'|'azar'|'luzazar'|'moneda'|'sumar'|'cero'|'sicont', ...}
+// --- los bloques ---
+// prog = {empezar:[...], siempre:[...], boton:[...], tapan:[...]}  (siempre, boton y tapan son opcionales)
 const BLOQUES=[
   {t:'prender', c:'salida', txt:'prender luz', nuevo:()=>({t:'prender',l:1})},
   {t:'apagar', c:'salida', txt:'apagar luz', nuevo:()=>({t:'apagar',l:1})},
@@ -206,60 +270,112 @@ const BLOQUES=[
   {t:'esperar', c:'control', txt:'esperar', nuevo:()=>({t:'esperar',n:1})},
   {t:'azar', c:'control', txt:'esperar al azar', nuevo:()=>({t:'azar',a:2,b:6})},
   {t:'moneda', c:'control', txt:'tirar una moneda: si sale cara… si no…', nuevo:()=>({t:'moneda',si:[],no:[]})},
+  {t:'espera', c:'control', txt:'esperar a que aprieten: si aprietan… si no…', nuevo:()=>({t:'espera',n:1,si:[],no:[]})},
+  {t:'sitapado', c:'sensor', txt:'si el sensor está tapado… si no…', nuevo:()=>({t:'sitapado',si:[],no:[]})},
   {t:'sumar', c:'var', txt:'sumar 1 al contador', nuevo:()=>({t:'sumar'})},
   {t:'cero', c:'var', txt:'volver el contador a 0', nuevo:()=>({t:'cero'})},
   {t:'sicont', c:'var', txt:'si el contador es… si no…', nuevo:()=>({t:'sicont',n:3,si:[],no:[]})},
 ];
 const POR_T=Object.fromEntries(BLOQUES.map(b=>[b.t,b]));
+const EVENTOS=[
+  {k:'empezar', cls:'empezar', txt:'al encender', fija:true},
+  {k:'siempre', cls:'siempre', txt:'siempre, una y otra vez'},
+  {k:'boton', cls:'', txt:'cuando aprieto el botón'},
+  {k:'tapan', cls:'sensor', txt:'cuando tapan el sensor'},
+];
+const SONIDOS={corto:[[880,150]],largo:[[440,600]],'de premio':[[523,120],[659,120],[784,250]],'de perder':[[392,150],[330,150],[262,350]],sirena:[[660,200],[880,200],[660,200],[880,200]]};
 
-const EJEMPLOS={
-  papa:{nombre:'Papa caliente',prog:{empezar:[],siempre:[{t:'azar',a:3,b:10},{t:'prender',l:1},{t:'sonar',s:'largo'},{t:'esperar',n:1},{t:'apagar',l:1}],boton:{}}},
-  moneda:{nombre:'Cara o cruz',prog:{empezar:[],boton:{1:[{t:'todas'},{t:'moneda',si:[{t:'prender',l:2}],no:[{t:'prender',l:1}]},{t:'sonar',s:'corto'}]}}},
-  tercera:{nombre:'La tercera es la vencida',prog:{empezar:[{t:'cero'}],boton:{1:[{t:'sumar'},{t:'sicont',n:3,si:[{t:'prender',l:2},{t:'sonar',s:'de premio'},{t:'esperar',n:1},{t:'apagar',l:2},{t:'cero'}],no:[{t:'sonar',s:'corto'}]}]}}},
-  bomba:{nombre:'La bomba',prog:{empezar:[{t:'prender',l:2}],boton:{1:[{t:'apagar',l:2},{t:'azar',a:2,b:8},{t:'prender',l:1},{t:'sonar',s:'largo'},{t:'esperar',n:2},{t:'apagar',l:1},{t:'prender',l:2}]}}},
-  // la de la clase del 28/10: no está en la lista, se abre con consola-1ro.html#trucha
-  trucha:{nombre:'La moneda',prog:{empezar:[{t:'cero'}],boton:{1:[{t:'todas'},{t:'sumar'},{t:'sicont',n:3,si:[{t:'prender',l:1},{t:'cero'}],no:[{t:'moneda',si:[{t:'prender',l:2}],no:[{t:'prender',l:1}]}]},{t:'sonar',s:'corto'}]}}},
-  semaforo:{nombre:'El semáforo',prog:{empezar:[],siempre:[{t:'prender',l:2},{t:'esperar',n:3},{t:'apagar',l:2},{t:'prender',l:1},{t:'esperar',n:3},{t:'apagar',l:1}],boton:{}}},
-};
+// --- lo que pueden elegir ---
+const P=(t,o={})=>Object.assign({t},o);
+const MONEDA_JUSTA={empezar:[],boton:[P('todas'),P('moneda',{si:[P('prender',{l:2})],no:[P('prender',{l:1})]}),P('sonar',{s:'corto'})]};
+const BOMBA={empezar:[P('prender',{l:2})],boton:[P('apagar',{l:2}),P('azar',{a:3,b:10}),P('prender',{l:1}),P('sonar',{s:'sirena'}),P('esperar',{n:2}),P('apagar',{l:1}),P('prender',{l:2})]};
+const SEMAFORO={empezar:[],siempre:[P('prender',{l:2}),P('esperar',{n:3}),P('apagar',{l:2}),P('prender',{l:1}),P('esperar',{n:3}),P('apagar',{l:1})]};
+const D=[
+  {id:'reflejos',g:'juegos',ic:'⚡',n:'Reflejos',d:'¿Llegás a apretar a tiempo?',
+   c:'La verde se prende cuando menos lo esperás. Si apretás antes de que se apague, premio. Si no, perdiste.',
+   q:'¿Se puede hacer trampa en este juego? ¿Cómo?',qa:'Probalo de muchas formas. Después pensá cómo lo arreglarías.',
+   prog:{empezar:[],siempre:[P('todas'),P('azar',{a:2,b:6}),P('prender',{l:2}),P('espera',{n:0.6,si:[P('apagar',{l:2}),P('sonar',{s:'de premio'}),P('esperar',{n:1})],no:[P('apagar',{l:2}),P('prender',{l:1}),P('sonar',{s:'de perder'}),P('esperar',{n:1})]})]}},
+  {id:'bomba',g:'juegos',ic:'💣',n:'La bomba',d:'Pasala de mano en mano.',
+   c:'Apretás el botón y la consola pasa de mano en mano. Nadie sabe cuándo explota. Al que le explota, pierde.',
+   q:'¿Qué le cambiaste para que sea más difícil?',qa:'Contalo con los bloques: cuál cambiaste y cómo.',prog:BOMBA},
+  {id:'monedas',g:'juegos',ic:'🪙',n:'Dos monedas',d:'Cada luz tira la suya.',
+   c:'La roja y la verde son dos monedas distintas: cada una se prende o no, al azar. Tirá muchas veces.',
+   q:'¿Cuántos resultados distintos pueden salir? ¿Cuáles son?',qa:'Anotá todos los que viste. ¿Falta alguno?',
+   prog:{empezar:[],boton:[P('todas'),P('moneda',{si:[P('prender',{l:1})],no:[]}),P('moneda',{si:[P('prender',{l:2})],no:[]}),P('sonar',{s:'corto'})]}},
+  {id:'guardian',g:'juegos',ic:'👁️',n:'El guardián',d:'Usa el sensor de luz.',
+   c:'Si alguien pasa la mano por encima del sensor, se prende la roja y suena la sirena. El botón la vuelve a dejar tranquila.',
+   q:'¿Dónde pondrías al guardián en la escuela? ¿Qué cuidaría?',qa:'Y pensá: ¿se lo puede engañar?',
+   prog:{empezar:[P('prender',{l:2})],tapan:[P('apagar',{l:2}),P('prender',{l:1}),P('sonar',{s:'sirena'}),P('sonar',{s:'sirena'})],boton:[P('apagar',{l:1}),P('prender',{l:2}),P('sonar',{s:'corto'})]}},
+  {id:'trucha',g:'bugs',ic:'🎭',n:'La moneda trucha',d:'Sale roja demasiado.',
+   c:'Tendría que ser una moneda justa: mitad verde, mitad roja. Pero la roja sale demasiadas veces. Encontrá la trampa y arreglala.',
+   q:'¿Dónde estaba la trampa? ¿Cómo la arreglaron?',qa:'Contalo con los bloques: cuál era y qué le cambiaron.',
+   prog:{empezar:[P('cero')],boton:[P('todas'),P('sumar'),P('sicont',{n:3,si:[P('prender',{l:1}),P('cero')],no:[P('moneda',{si:[P('prender',{l:2})],no:[P('prender',{l:1})]})]}),P('sonar',{s:'corto'})]},bien:MONEDA_JUSTA},
+  {id:'semaforo',g:'bugs',ic:'🚦',n:'El semáforo roto',d:'La roja casi no se ve.',
+   c:'Tendría que quedarse 3 segundos en verde y 3 en rojo, una y otra vez. Pero la roja casi no se ve. Compará el programa con el diagrama.',
+   q:'¿Qué le faltaba al programa?',qa:'Buscá la diferencia entre el diagrama y los bloques.',
+   prog:{empezar:[],siempre:[P('prender',{l:2}),P('esperar',{n:3}),P('apagar',{l:2}),P('prender',{l:1}),P('apagar',{l:1})]},bien:SEMAFORO},
+  {id:'bombarota',g:'bugs',ic:'🧨',n:'La bomba rota',d:'Tiene dos errores.',
+   c:'Tendría que explotar en un momento que nadie sabe. Tiene dos errores: uno se nota enseguida, y el otro, si jugás varias veces.',
+   q:'¿Cuáles eran los dos errores?',qa:'Para cada uno: qué pasaba y qué bloque cambiaron.',
+   prog:{empezar:[P('prender',{l:2})],boton:[P('apagar',{l:2}),P('esperar',{n:5}),P('prender',{l:1}),P('sonar',{s:'sirena'}),P('esperar',{n:2}),P('prender',{l:2})]},bien:BOMBA},
+  {id:'libre',g:'libre',ic:'✏️',n:'Mi juego',d:'Inventalo vos.',
+   c:'Inventá un juego para la consola. Primero pensá cómo se juega; después armalo con los bloques.',
+   q:'¿Cómo cambia la luz en tu juego?',qa:'Qué pasa cuando apretás el botón, y cuándo se prende cada luz.',
+   prog:{empezar:[],boton:[]}},
+];
+const POR_ID=Object.fromEntries(D.map(d=>[d.id,d]));
 
-let prog=vacio(), destino=null; // destino: la lista donde está abierta la paleta
-function vacio(){return {empezar:[],boton:{1:[]}}}
-function guarda(){try{localStorage.setItem(K,JSON.stringify({prog,nombre:$('nombre').value,autores:$('autores').value}))}catch(e){}}
-function carga(){try{const d=JSON.parse(localStorage.getItem(K));if(d&&d.prog){prog=d.prog;$('nombre').value=d.nombre||'';$('autores').value=d.autores||''}}catch(e){}}
-const $=id=>document.getElementById(id);
-const el=(tag,cls,txt)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e};
+let actual=null, prog=null, nombre='', destino=null;
+const kProg=id=>'consola1ro.d.'+id, kResp=id=>'consola1ro.r.'+id;
+function guarda(){if(actual&&actual.id!=='_profe')LS.set(kProg(actual.id),copia(prog))}
+
+// --- elegir ---
+function cartas(){
+  for(const g of ['juegos','bugs','libre']){const c=$('c-'+g);c.innerHTML='';
+    D.filter(d=>d.g===g).forEach(d=>{const b=el('button','carta'+(g==='bugs'?' bug':''));b.type='button';
+      b.append(el('span','ic',d.ic),el('b',null,d.n),el('small',null,d.d));
+      b.setAttribute('aria-pressed',actual&&actual.id===d.id?'true':'false');
+      b.onclick=()=>{location.hash=d.id};c.append(b)})}
+}
+function abrir(d,p){
+  apagar();actual=d;destino=null;
+  prog=p||LS.get(kProg(d.id),null)||copia(d.prog);
+  nombre=d.n;
+  $('d-titulo').textContent=d.ic+' '+d.n;$('d-consigna').textContent=d.c;
+  $('d-diag-ayuda').textContent=d.bien?'Así tendría que funcionar. El programa no hace lo mismo: ¿dónde está la diferencia?':d.g==='libre'?'Se va dibujando solo, a medida que armás tu programa.':'Así funciona el programa. Cuando lo cambies, el diagrama cambia con vos.';
+  $('p-texto').textContent=d.q;$('p-ayuda').textContent=d.qa;
+  $('respuesta').value=LS.get(kResp(d.id),'');
+  $('mandado').textContent='';
+  cartas();dibujar();
+}
+function cambio(){guarda();dibujar()}
 
 // --- dibujar el editor ---
 function selLuz(p){const s=el('select');NCOLOR.forEach((n,i)=>{const o=el('option',null,n);o.value=i+1;s.append(o)});s.value=p.l;s.onchange=()=>{p.l=+s.value;cambio()};return s}
-function numero(p,k,min,max){const i=el('input');i.type='number';i.min=min;i.max=max;i.step=k==='n'&&p.t!=='sicont'?0.5:1;i.value=p[k];i.onchange=()=>{let v=parseFloat(i.value);if(isNaN(v))v=min;v=Math.max(min,Math.min(max,v));p[k]=v;i.value=v;cambio()};return i}
-function txt(s){return el('span',null,s)}
-
+function numero(p,k,min,max,paso){const i=el('input');i.type='number';i.min=min;i.max=max;i.step=paso;i.value=p[k];i.onchange=()=>{let v=parseFloat(i.value);if(isNaN(v))v=min;v=Math.max(min,Math.min(max,v));p[k]=v;i.value=v;cambio()};return i}
+const txt=s=>el('span',null,s);
 function dibujarPaso(p,lista,idx){
   const b=POR_T[p.t], caja=el('div','blk'), li=el('div','linea '+b.c);
-  if(p._corriendo)li.classList.add('activa');
   li.dataset.id=p._id=p._id||Math.random().toString(36).slice(2);
   switch(p.t){
     case 'prender': li.append(txt('prender luz'),selLuz(p));break;
     case 'apagar': li.append(txt('apagar luz'),selLuz(p));break;
     case 'todas': li.append(txt('apagar las dos luces'));break;
     case 'luzazar': li.append(txt('prender una luz al azar'));break;
-    case 'sonar':{li.append(txt('sonar'));const s=el('select');['corto','largo','de premio'].forEach(v=>{const o=el('option',null,v);s.append(o)});s.value=p.s;s.onchange=()=>{p.s=s.value;cambio()};li.append(s);break}
-    case 'esperar': li.append(txt('esperar'),numero(p,'n',0.5,30),txt('segundos'));break;
-    case 'azar': li.append(txt('esperar al azar entre'),numero(p,'a',1,30),txt('y'),numero(p,'b',1,30),txt('segundos'));break;
+    case 'sonar':{li.append(txt('sonar'));const s=el('select');Object.keys(SONIDOS).forEach(v=>s.append(el('option',null,v)));s.value=p.s;s.onchange=()=>{p.s=s.value;cambio()};li.append(s);break}
+    case 'esperar': li.append(txt('esperar'),numero(p,'n',0.5,30,0.5),txt('segundos'));break;
+    case 'azar': li.append(txt('esperar al azar entre'),numero(p,'a',1,30,1),txt('y'),numero(p,'b',1,30,1),txt('segundos'));break;
     case 'moneda': li.append(txt('tirar una moneda · si sale cara'));break;
+    case 'espera': li.append(txt('esperar hasta'),numero(p,'n',0.2,10,0.1),txt('segundos a que aprieten · si aprietan'));break;
+    case 'sitapado': li.append(txt('si el sensor está tapado'));break;
     case 'sumar': li.append(txt('sumar 1 al contador'));break;
     case 'cero': li.append(txt('volver el contador a 0'));break;
-    case 'sicont': li.append(txt('si el contador es'),numero(p,'n',1,50));break;
+    case 'sicont': li.append(txt('si el contador es'),numero(p,'n',1,50,1));break;
   }
   const x=el('button','x','✕');x.title='Sacar este bloque';x.setAttribute('aria-label','Sacar este bloque');
   x.onclick=()=>{lista.splice(idx,1);cambio()};li.append(x);
   caja.append(li);
-  if(p.si){
-    const cls=p.t==='sicont'?'sub var':'sub';
-    caja.append(dibujarLista(p.si,cls));
-    caja.append(el('div','sino','si no'));
-    caja.append(dibujarLista(p.no,cls));
-  }
+  if(p.si){const cls='sub '+(b.c==='control'?'':b.c);caja.append(dibujarLista(p.si,cls),el('div','sino','si no'),dibujarLista(p.no,cls))}
   return caja;
 }
 function dibujarLista(lista,cls){
@@ -268,50 +384,89 @@ function dibujarLista(lista,cls){
   const a=el('button','agregar'+(destino===lista?' activo':''),'+ agregar');
   a.onclick=()=>{destino=destino===lista?null:lista;dibujar()};
   d.append(a);
-  if(destino===lista){
-    const pal=el('div','paleta');
+  if(destino===lista){const pal=el('div','paleta');
     BLOQUES.forEach(b=>{const bt=el('button',b.c,b.txt);bt.onclick=()=>{lista.push(b.nuevo());destino=null;cambio()};pal.append(bt)});
-    d.append(pal);
-  }
+    d.append(pal)}
   return d;
 }
-function evento(titulo,cls,lista,quitar){
-  const e=el('div','evento'), c=el('div','cab '+cls);
-  c.append(txt(titulo));
-  if(quitar){const x=el('button','x','✕');x.style.cssText='background:rgba(0,0,0,.22);color:#fff;border:0;border-radius:999px;width:26px;height:26px;cursor:pointer';x.setAttribute('aria-label','Sacar '+titulo);x.onclick=quitar;c.append(x)}
-  e.append(c,dibujarLista(lista,'lista '+cls));
-  return e;
-}
 function dibujar(){
-  const P=$('programa');P.innerHTML='';
-  P.append(evento('al encender','empezar',prog.empezar));
-  if(prog.siempre)P.append(evento('siempre, una y otra vez','siempre',prog.siempre,()=>{delete prog.siempre;cambio()}));
-  for(const n of [1]) if(prog.boton[n])
-    P.append(evento('cuando aprieto el botón','',prog.boton[n],()=>{delete prog.boton[n];cambio()}));
+  const PG=$('programa');PG.innerHTML='';
+  for(const ev of EVENTOS){
+    if(!prog[ev.k]){if(ev.fija)prog[ev.k]=[];else continue}
+    const e=el('div','evento'), c=el('div','cab '+ev.cls);c.append(txt(ev.txt));
+    if(!ev.fija){const x=el('button','x','✕');x.setAttribute('aria-label','Sacar '+ev.txt);x.onclick=()=>{delete prog[ev.k];cambio()};c.append(x)}
+    e.append(c,dibujarLista(prog[ev.k],'lista '+ev.cls));PG.append(e);
+  }
   const N=$('nuevos');N.innerHTML='';
-  if(!prog.siempre){const b=el('button','btn','+ siempre');b.onclick=()=>{prog.siempre=[];cambio()};N.append(b)}
-  for(const n of [1]) if(!prog.boton[n]){const b=el('button','btn','+ cuando aprieto el botón');b.onclick=()=>{prog.boton[n]=[];cambio()};N.append(b)}
-  $('codigo').textContent=arduino();
+  EVENTOS.filter(ev=>!prog[ev.k]).forEach(ev=>{const b=el('button','btn','+ '+ev.txt);b.onclick=()=>{prog[ev.k]=[];cambio()};N.append(b)});
+  $('diagrama').innerHTML='';$('diagrama').append(diagrama(actual.bien||prog));
+  $('codigo').textContent=arduino(prog,nombre,$('autores').value);
 }
-function cambio(){guarda();dibujar()}
+
+// --- el diagrama de flujo, hecho con el programa ---
+const Q={moneda:['¿Sale cara?','control'],espera:null,sitapado:['¿Está tapado el sensor?','sensor'],sicont:null};
+function etiqueta(p){
+  switch(p.t){
+    case 'prender': return ['Prender la '+NCOLOR[p.l-1],''];
+    case 'apagar': return ['Apagar la '+NCOLOR[p.l-1],''];
+    case 'todas': return ['Apagar las dos',''];
+    case 'luzazar': return ['Prender una luz al azar',''];
+    case 'sonar': return ['Sonar: '+p.s,''];
+    case 'esperar': return ['Esperar '+String(p.n).replace('.',',')+' s','control'];
+    case 'azar': return [`Esperar un rato al azar (${Math.min(p.a,p.b)} a ${Math.max(p.a,p.b)} s)`,'control'];
+    case 'sumar': return ['Contador + 1','var'];
+    case 'cero': return ['Contador en 0','var'];
+  }
+}
+function flujo(lista,cont){
+  lista.forEach((p,i)=>{
+    if(i||cont.childElementCount)cont.append(el('div','fl-a','↓'));
+    if(p.si){
+      const [t,c]=p.t==='espera'?[`¿Aprietan antes de ${String(p.n).replace('.',',')} s?`,'control']:p.t==='sicont'?[`¿El contador es ${p.n}?`,'var']:Q[p.t];
+      cont.append(el('div','fl-q '+c,t));
+      const br=el('div','fl-br');
+      [['sí',p.si],['no',p.no]].forEach(([sn,l])=>{const col=el('div','fl-col');col.append(el('div','fl-sn',sn));
+        if(l.length){const f=el('div','fl');f.style.width='100%';flujo(l,f);col.append(f)}else col.append(el('div','fl-nada','(nada)'));br.append(col)});
+      cont.append(br);
+    }else{const [t,c]=etiqueta(p);cont.append(el('div','fl-p '+c,t))}
+  });
+}
+function diagrama(pr){
+  const raiz=el('div');
+  const FIN={empezar:null,siempre:'↺ vuelve a empezar',boton:'espera el próximo botón',tapan:'espera a que lo vuelvan a tapar'};
+  const NOM={empezar:'Al encender',siempre:'Siempre',boton:'Cuando aprieto el botón',tapan:'Cuando tapan el sensor'};
+  for(const ev of EVENTOS){const l=pr[ev.k];if(!l||(!l.length&&ev.k==='empezar'))continue;
+    const f=el('div','fl');f.append(el('div','fl-ev '+ev.cls,NOM[ev.k]));
+    if(l.length)flujo(l,f);else f.append(el('div','fl-a','↓'),el('div','fl-nada','(todavía nada)'));
+    if(FIN[ev.k])f.append(el('div','fl-a','↓'),el('div','fl-fin',FIN[ev.k]));
+    raiz.append(f)}
+  if(!raiz.childElementCount)raiz.append(el('p','ayuda','Todavía está vacío.'));
+  return raiz;
+}
 
 // --- la consola en pantalla ---
-const luces=[],btns=[];
+const luces=[];
 COLORES.forEach((c,i)=>{const l=el('div','luz');l.style.setProperty('--c',c);l.title='luz '+NCOLOR[i];luces.push(l);$('luces').append(l)});
-[1].forEach(n=>{const w=el('div');w.style.cssText='display:flex;flex-direction:column;gap:4px';const b=el('button','boton');b.setAttribute('aria-label','el botón');b.onpointerdown=()=>{apretar(n);b.classList.add('apretado')};b.onpointerup=b.onpointerleave=()=>b.classList.remove('apretado');w.append(b,el('div','etq','botón'));btns.push(b);$('botones').append(w)});
-document.addEventListener('keydown',e=>{if(e.code!=='Space'||e.repeat||/INPUT|SELECT|BUTTON/.test(e.target.tagName))return;e.preventDefault();apretar(1);btns[0].classList.add('apretado')});
-document.addEventListener('keyup',e=>{if(e.code==='Space')btns[0].classList.remove('apretado')});
+let corriendo=0, sostenido=false, apretado=false, tapadoAhora=false, tapadoEv=false, contador=0, audio=null;
+function setBoton(on){if(on&&!sostenido&&corriendo)apretado=true;sostenido=on;$('boton').classList.toggle('apretado',on)}
+function setSensor(on){if(on&&!tapadoAhora&&corriendo)tapadoEv=true;tapadoAhora=on;$('sensor').classList.toggle('tapado',on)}
+$('boton').onpointerdown=e=>{e.preventDefault();setBoton(true)};
+$('boton').onpointerup=$('boton').onpointerleave=$('boton').onpointercancel=()=>setBoton(false);
+$('sensor').onpointerdown=e=>{e.preventDefault();setSensor(true)};
+$('sensor').onpointerup=$('sensor').onpointerleave=$('sensor').onpointercancel=()=>setSensor(false);
+const escribiendo=e=>/INPUT|SELECT|TEXTAREA|BUTTON/.test(e.target.tagName);
+document.addEventListener('keydown',e=>{if(e.repeat||escribiendo(e))return;
+  if(e.code==='Space'){e.preventDefault();setBoton(true)} if(e.key==='t'||e.key==='T')setSensor(true)});
+document.addEventListener('keyup',e=>{if(e.code==='Space')setBoton(false);if(e.key==='t'||e.key==='T')setSensor(false)});
 
-let corriendo=0, apretados=new Set(), contador=0, audio=null;
-function apretar(n){if(corriendo)apretados.add(n)}
 function luz(i,on){luces[i].classList.toggle('on',on)}
 const dormir=ms=>new Promise(r=>setTimeout(r,ms));
-async function esperar(ms,id){const fin=Date.now()+ms;while(Date.now()<fin){if(id!==corriendo)throw 'apagado';await dormir(Math.min(30,fin-Date.now()))}}
+async function esperar(ms,id){const fin=Date.now()+ms;while(Date.now()<fin){if(id!==corriendo)throw 'apagado';await dormir(Math.min(20,fin-Date.now()))}}
 function pitar(frec,ms){
   try{audio=audio||new (window.AudioContext||window.webkitAudioContext)();const o=audio.createOscillator(),g=audio.createGain();o.type='square';o.frequency.value=frec;g.gain.value=.05;o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+ms/1000)}catch(e){}
   $('buzzer').classList.add('suena');setTimeout(()=>$('buzzer').classList.remove('suena'),ms);
 }
-const SONIDOS={corto:[[880,150]],largo:[[440,600]],'de premio':[[523,120],[659,120],[784,250]]};
+function marcar(p,on){const e=document.querySelector(`.linea[data-id="${p._id}"]`);if(e)e.classList.toggle('activa',on)}
 async function correr(lista,id){
   for(const p of lista){
     if(id!==corriendo)throw 'apagado';
@@ -325,6 +480,11 @@ async function correr(lista,id){
       case 'esperar': await esperar(p.n*1000,id);break;
       case 'azar':{const a=Math.min(p.a,p.b),b=Math.max(p.a,p.b);await esperar((a+Math.random()*(b-a))*1000,id);break}
       case 'moneda': marcar(p,false);await correr(Math.random()<.5?p.si:p.no,id);break;
+      case 'espera':{ // como en la placa: mira el botón una y otra vez hasta que se acaba el tiempo
+        apretado=false;const fin=Date.now()+p.n*1000;let si=false;
+        while(Date.now()<fin){if(id!==corriendo)throw 'apagado';if(sostenido||apretado){si=true;break}await dormir(10)}
+        apretado=false;marcar(p,false);await correr(si?p.si:p.no,id);break}
+      case 'sitapado': marcar(p,false);await correr(tapadoAhora?p.si:p.no,id);break;
       case 'sumar': contador++;break;
       case 'cero': contador=0;break;
       case 'sicont': marcar(p,false);await correr(contador===p.n?p.si:p.no,id);break;
@@ -332,18 +492,18 @@ async function correr(lista,id){
     marcar(p,false);
   }
 }
-function marcar(p,on){const e=document.querySelector(`.linea[data-id="${p._id}"]`);if(e)e.classList.toggle('activa',on)}
 async function encender(){
-  apagar();const id=corriendo=Date.now();contador=0;apretados.clear();
+  apagar();const id=corriendo=Date.now();contador=0;apretado=false;tapadoEv=false;
   $('estado').textContent='Encendida';
   try{
     await correr(prog.empezar,id);
-    // el mismo orden que el loop() de la placa: primero «siempre», después mira los botones
+    // el mismo orden que el loop() de la placa: «siempre», después el botón, después el sensor
     while(id===corriendo){
       if(prog.siempre)await correr(prog.siempre,id);
-      for(const n of [1]) if(prog.boton[n]&&apretados.has(n)){apretados.delete(n);await correr(prog.boton[n],id)}
-      apretados.clear();
-      await esperar(20,id);
+      if(prog.boton&&apretado){apretado=false;await correr(prog.boton,id)}
+      if(prog.tapan&&tapadoEv){tapadoEv=false;await correr(prog.tapan,id);while(tapadoAhora&&id===corriendo)await esperar(20,id)}
+      if(!prog.boton)apretado=false; if(!prog.tapan)tapadoEv=false;
+      await esperar(15,id);
     }
   }catch(e){if(e!=='apagado')throw e}
 }
@@ -351,9 +511,10 @@ function apagar(){corriendo=0;luces.forEach((_,i)=>luz(i,false));document.queryS
 $('jugar').onclick=encender;$('parar').onclick=apagar;
 
 // --- el código para la placa ---
-function c_lista(lista,ind){return lista.map(p=>c_paso(p,ind)).join('')}
+const usa=(pr,t)=>JSON.stringify(pr).includes(`"t":"${t}"`);
+function c_lista(l,ind){return l.map(p=>c_paso(p,ind)).join('')}
 function c_paso(p,ind){
-  const s=' '.repeat(ind), L=n=>PIN_LUZ[n-1];
+  const s=' '.repeat(ind), L=n=>PIN_LUZ[n-1], sub=(l)=>c_lista(l,ind+2);
   switch(p.t){
     case 'prender': return `${s}digitalWrite(${L(p.l)}, HIGH);   // prender luz ${NCOLOR[p.l-1]}\n`;
     case 'apagar': return `${s}digitalWrite(${L(p.l)}, LOW);    // apagar luz ${NCOLOR[p.l-1]}\n`;
@@ -362,62 +523,88 @@ function c_paso(p,ind){
     case 'sonar': return SONIDOS[p.s].map(([f,ms])=>`${s}tone(${PIN_BUZZER}, ${f}, ${ms}); delay(${ms});   // sonar ${p.s}\n`).join('');
     case 'esperar': return `${s}delay(${Math.round(p.n*1000)});   // esperar ${p.n} s\n`;
     case 'azar':{const a=Math.min(p.a,p.b),b=Math.max(p.a,p.b);return `${s}delay(random(${a*1000}, ${b*1000+1}));   // esperar al azar entre ${a} y ${b} s\n`}
-    case 'moneda': return `${s}if (random(2) == 1) {   // tirar una moneda: si sale cara\n${c_lista(p.si,ind+2)}${s}} else {\n${c_lista(p.no,ind+2)}${s}}\n`;
+    case 'moneda': return `${s}if (random(2) == 1) {   // tirar una moneda: si sale cara\n${sub(p.si)}${s}} else {\n${sub(p.no)}${s}}\n`;
+    case 'espera': return `${s}if (aprietanAntes(${Math.round(p.n*1000)})) {   // esperar hasta ${p.n} s a que aprieten\n${sub(p.si)}${s}} else {\n${sub(p.no)}${s}}\n`;
+    case 'sitapado': return `${s}if (tapado()) {   // si el sensor está tapado\n${sub(p.si)}${s}} else {\n${sub(p.no)}${s}}\n`;
     case 'sumar': return `${s}contador = contador + 1;\n`;
     case 'cero': return `${s}contador = 0;\n`;
-    case 'sicont': return `${s}if (contador == ${p.n}) {\n${c_lista(p.si,ind+2)}${s}} else {\n${c_lista(p.no,ind+2)}${s}}\n`;
+    case 'sicont': return `${s}if (contador == ${p.n}) {\n${sub(p.si)}${s}} else {\n${sub(p.no)}${s}}\n`;
   }
 }
-function arduino(){
-  const nom=($('nombre').value||'Mi juego').replace(/\n/g,' '), aut=($('autores').value||'').replace(/\n/g,' ');
-  let c=`// ${nom}${aut?' — hecho por '+aut:''}\n// La consola de 1ro: luz roja en 3 · luz verde en 4 · botón en 8 · buzzer en 12\n\nint contador = 0;\n\nvoid setup() {\n  pinMode(3, OUTPUT);\n  pinMode(4, OUTPUT);\n  pinMode(8, INPUT);\n  pinMode(${PIN_BUZZER}, OUTPUT);\n  randomSeed(analogRead(A5));\n  // al encender\n${c_lista(prog.empezar,2)}}\n\nvoid loop() {\n`;
-  if(prog.siempre)c+=`  // siempre, una y otra vez\n${c_lista(prog.siempre,2)}`;
-  for(const n of [1]) if(prog.boton[n]){
-    const pin=PIN_BOTON[n-1];
-    c+=`\n  // cuando aprieto el botón\n  if (digitalRead(${pin}) == HIGH) {\n${c_lista(prog.boton[n],4)}    while (digitalRead(${pin}) == HIGH) {}   // esperar a que suelte\n    delay(50);\n  }\n`;
-  }
+function arduino(pr,nom,aut){
+  const una=t=>String(t||'').replace(/[\r\n]+/g,' ');
+  const sensor=usa(pr,'sitapado')||(pr.tapan&&true);
+  let c=`// ${una(nom)||'Mi juego'}${aut?' — hecho por '+una(aut):''}\n// La consola de 1ro: luz roja en 3 · luz verde en 4 · botón en 8 · buzzer en 12 · sensor de luz en A1\n\nint contador = 0;\n`;
+  if(sensor)c+=`int luzInicial = 0;   // cuánta luz había al encender\n\n// El sensor está tapado si la luz cambió mucho desde que se encendió\nbool tapado() {\n  int diferencia = analogRead(A1) - luzInicial;\n  if (diferencia < 0) diferencia = -diferencia;\n  return diferencia > luzInicial / 3 + 20;\n}\n`;
+  if(usa(pr,'espera'))c+=`\n// Mira el botón una y otra vez, hasta que se acaba el tiempo\nbool aprietanAntes(unsigned long ms) {\n  unsigned long inicio = millis();\n  while (millis() - inicio < ms) {\n    if (digitalRead(${PIN_BOTON}) == HIGH) return true;\n  }\n  return false;\n}\n`;
+  c+=`\nvoid setup() {\n  pinMode(3, OUTPUT);\n  pinMode(4, OUTPUT);\n  pinMode(${PIN_BOTON}, INPUT);\n  pinMode(${PIN_BUZZER}, OUTPUT);\n  randomSeed(analogRead(A5));\n`;
+  if(sensor)c+=`  delay(200);\n  luzInicial = analogRead(A1);\n`;
+  c+=`  // al encender\n${c_lista(pr.empezar||[],2)}}\n\nvoid loop() {\n`;
+  if(pr.siempre)c+=`  // siempre, una y otra vez\n${c_lista(pr.siempre,2)}`;
+  if(pr.boton)c+=`\n  // cuando aprieto el botón\n  if (digitalRead(${PIN_BOTON}) == HIGH) {\n${c_lista(pr.boton,4)}    while (digitalRead(${PIN_BOTON}) == HIGH) {}   // esperar a que suelte\n    delay(50);\n  }\n`;
+  if(pr.tapan)c+=`\n  // cuando tapan el sensor\n  if (tapado()) {\n${c_lista(pr.tapan,4)}    while (tapado()) {}   // esperar a que lo destapen\n    delay(50);\n  }\n`;
   return c+'}\n';
 }
-$('copiar').onclick=async()=>{
-  const t=arduino();
-  try{await navigator.clipboard.writeText(t);$('copiado').textContent='¡Copiado! Ahora pegalo en Arduino IDE.'}
-  catch(e){$('codigo').closest('details').open=true;const r=document.createRange();r.selectNodeContents($('codigo'));const s=getSelection();s.removeAllRanges();s.addRange(r);$('copiado').textContent='Apretá Ctrl+C para copiarlo.'}
-};
+async function copiarTexto(t,msg){
+  try{await navigator.clipboard.writeText(t);msg.textContent='¡Copiado!'}
+  catch(e){msg.textContent='Seleccioná el código y apretá Ctrl+C.'}
+}
+$('copiar').onclick=()=>copiarTexto(arduino(prog,nombre,$('autores').value),$('copiado'));
 
-$('ejemplo').onchange=e=>{const ej=EJEMPLOS[e.target.value];if(!ej)return;apagar();prog=JSON.parse(JSON.stringify(ej.prog));if(!$('nombre').value)$('nombre').value=ej.nombre;e.target.value='';destino=null;cambio()};
-$('limpiar').onclick=()=>{if(!confirm('¿Borrar el programa y empezar de cero?'))return;apagar();prog=vacio();destino=null;cambio()};
-$('nombre').oninput=$('autores').oninput=()=>{guarda();$('codigo').textContent=arduino()};
-
-// --- tu juego, contado: se guarda en la compu y va a la planilla del buzón, como el resto de la app ---
-const PREG=[['r-luz','¿Cómo cambia la luz en tu juego?']];
-const K_RESP='consola1ro.resp.v1', K_DAT='pps.datos.v1';
+// --- mandárselo a la profe: el programa va a «Envíos» y la respuesta a la planilla, como el resto de la app ---
 const URL_BUZON='https://script.google.com/macros/s/AKfycbzLxvvU5Nw5Zx1yKyeb9z7WB1b2AQD8x7FcPpFznLSr3K8kImnVx4dNrX1Z0WntVigUjg/exec';
-try{const r=JSON.parse(localStorage.getItem(K_RESP))||{};PREG.forEach(([id])=>{$(id).value=r[id]||''})}catch(e){}
-PREG.forEach(([id])=>$(id).addEventListener('input',()=>{const r={};PREG.forEach(([i])=>r[i]=$(i).value);try{localStorage.setItem(K_RESP,JSON.stringify(r))}catch(e){}}));
-$('mandar').onclick=()=>{
+const K_DAT='pps.datos.v1', MARCA='consola1ro:';
+const hoy=()=>{const d=new Date(),z=n=>String(n).padStart(2,'0');return `${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())}`};
+const nuevoId=l=>l+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+function postear(t){return fetch(URL_BUZON,{method:'POST',mode:'no-cors',cache:'no-store',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(t)})}
+$('autores').value=LS.get('consola1ro.autores','');
+$('autores').oninput=()=>{LS.set('consola1ro.autores',$('autores').value);$('codigo').textContent=arduino(prog,nombre,$('autores').value)};
+$('respuesta').oninput=()=>LS.set(kResp(actual.id),$('respuesta').value);
+$('mandar').onclick=async()=>{
   const quien=$('autores').value.trim();
   if(quien.length<3){$('mandado').textContent='Escribí arriba quiénes lo hicieron.';$('autores').focus();return}
-  const z=n=>String(n).padStart(2,'0'),d=new Date(),fecha=`${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())}`;
-  const ejs=PREG.map(([id,q],i)=>({c:q,t:'consola',q:$(id).value.trim()||'(sin responder)',i:i+1,ok:!!$(id).value.trim(),ok1:true,p:0,s:false,sg:0}));
-  ejs.push({c:'El programa',t:'consola',q:arduino(),i:2,ok:true,ok1:true,p:0,s:false,sg:0});
-  const t={id:'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,7),alumno:quien,anio:'1ro',fecha,ts:d.toISOString(),
-    sala:'consola1ro',salaNom:'La consola de 1ro · '+($('nombre').value.trim()||'sin nombre'),modo:'practica',
-    total:1,resueltos:ejs.filter(e=>e.ok).length-1,sinAyuda:0,pistas:0,salteadas:0,seg:0,ejs};
-  try{const a=JSON.parse(localStorage.getItem(K_DAT))||[];a.push(t);localStorage.setItem(K_DAT,JSON.stringify(a))}catch(e){}
-  fetch(URL_BUZON,{method:'POST',mode:'no-cors',cache:'no-store',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(t)})
-    .then(()=>{$('mandado').textContent='¡Le llegó a la profe!'}).catch(()=>{$('mandado').textContent='No hay internet: quedó guardado en esta compu.'});
+  const r=$('respuesta').value.trim(), ts=new Date().toISOString();
+  const envio={id:nuevoId('e'),alumno:quien,anio:'1ro',fecha:hoy(),ts,sala:'consola1ro',salaNom:'La consola · '+actual.n,modo:'practica',
+    envio:MARCA+JSON.stringify({d:actual.id,n:actual.n,p:copia(prog),r}),programa:arduino(prog,actual.n,quien)};
+  const tanda={id:nuevoId('c'),alumno:quien,anio:'1ro',fecha:hoy(),ts,sala:'consola1ro',salaNom:'La consola · '+actual.n,modo:'practica',
+    total:1,resueltos:r?1:0,sinAyuda:0,pistas:0,salteadas:0,seg:0,ejs:[{c:actual.q,t:'consola',q:r||'(sin responder)',i:1,ok:!!r,ok1:true,p:0,s:false,sg:0}]};
+  const a=LS.get(K_DAT,[]);(Array.isArray(a)?a:[]).push(tanda);LS.set(K_DAT,a);
+  try{await postear(envio);await postear(tanda);$('mandado').textContent='¡Le llegó a la profe! Ella lo carga en la consola.'}
+  catch(e){$('mandado').textContent='No hay internet. Probá de nuevo en un rato.'}
+};
+$('limpiar').onclick=()=>{if(!confirm('¿Volver al programa del principio? Se pierde lo que cambiaste.'))return;apagar();prog=copia(actual.prog);destino=null;cambio()};
+
+// --- la pantalla de la profe (#profe) ---
+$('clave').value=LS.get('consola1ro.clave','');
+$('traer').onclick=async()=>{
+  const k=$('clave').value.trim();LS.set('consola1ro.clave',k);
+  if(!k){$('profe-est').textContent='Escribí la clave.';return}
+  $('profe-est').textContent='Buscando…';
+  try{
+    const res=await fetch(URL_BUZON+'?envios=1&k='+encodeURIComponent(k));const t=await res.text();
+    if(t.startsWith('clave')){$('profe-est').textContent='La clave no es esa.';return}
+    const lista=JSON.parse(t).filter(x=>String(x.codigo).startsWith(MARCA));
+    $('profe-est').textContent=lista.length?lista.length+' programas':'Todavía no mandó nadie.';
+    const E=$('envios');E.innerHTML='';
+    lista.forEach(x=>{let o;try{o=JSON.parse(String(x.codigo).slice(MARCA.length))}catch(e){return}
+      const f=el('div','envio'),izq=el('div');
+      izq.append(el('b',null,x.alumno+' · '+o.n),el('br'),el('small',null,new Date(x.t).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})+(o.r?' · «'+o.r+'»':'')));
+      const der=el('div','fila'),ab=el('button','btn','Abrir'),cp=el('button','btn lleno','Copiar para la placa'),m=el('span','estado');
+      ab.onclick=()=>{const d=POR_ID[o.d]||POR_ID.libre;abrir(Object.assign({},d,{id:'_profe',n:o.n+' · '+x.alumno,bien:d.bien}),o.p);$('autores').value=x.alumno;window.scrollTo({top:$('d-titulo').offsetTop-20,behavior:'smooth'})};
+      cp.onclick=()=>copiarTexto(arduino(o.p,o.n,x.alumno),m);
+      der.append(ab,cp,m);f.append(izq,der);E.append(f)});
+  }catch(e){$('profe-est').textContent='No pude traerlos. ¿Hay internet?'}
 };
 
-if(location.hash==='#trucha'){
-  // la moneda de la profe: se abre siempre igual, y la pregunta es otra
-  let ya=null;try{ya=localStorage.getItem(K)}catch(e){}
-  if(ya)carga();else{prog=JSON.parse(JSON.stringify(EJEMPLOS.trucha.prog));$('nombre').value='La moneda'}
-  const l=document.querySelector('label:has(#r-luz)');
-  l.firstChild.textContent='¿Dónde estaba la trampa? ¿Cómo la arreglaron?';
-  l.querySelector('span').textContent='Contalo con los bloques: cuál era y qué le cambiaron.';
-  PREG[0][1]='¿Dónde estaba la trampa?';
-  dibujar();
-}else{carga();dibujar();}
+// --- qué se abre ---
+function ruta(){
+  const h=location.hash.slice(1), esProfe=h==='profe';
+  $('profe').hidden=!esProfe;$('elegir').hidden=esProfe;
+  if(esProfe){if(!actual)abrir(POR_ID.libre);return}
+  abrir(POR_ID[h]||POR_ID.libre);
+}
+window.addEventListener('hashchange',ruta);
+ruta();
 </script>
 </body>
 </html>
