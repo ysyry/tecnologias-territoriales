@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La consola de 1ro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Manrope:wght@500;700&family=DM+Mono:wght@400;500&display=swap">
+<style>
+/* La consola de 1ro: cada pareja arma su juego tocando bloques (sin arrastrar, sin Tinkercad),
+   lo prueba en la consola dibujada y saca el código para cargarlo en la consola del curso.
+   Consola mínima, para armar en un rato: luz roja en 3, luz verde en 4, botón en 8, buzzer en 12. */
+:root{
+  --papel:#F3F1F7; --hoja:#FCFBFE; --raya:#DAD4E6;
+  --tinta:#161226; --texto:#3B3350; --tenue:#5F5779;
+  --violeta:#5B3FA8; --inf:#9A3A80; --inf-w:rgba(154,58,128,.10);
+  --rojo:#C8352E; --verde:#2E8B57;
+  --b-salida:#3E7FD9; --b-control:#E8930C; --b-mate:#3B9E4C; --b-entrada:#8A5BE6; --b-var:#C94BB8;
+  --caja:#2A2440;
+  --f-titulo:"Bricolage Grotesque",Georgia,serif;
+  --f-cuerpo:Manrope,system-ui,sans-serif;
+  --f-mono:"DM Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --papel:#0E0C18; --hoja:#1B1830; --raya:#332D50;
+  --tinta:#F6F3FF; --texto:#D6D0E8; --tenue:#ABA3C4;
+  --violeta:#B197EE; --inf:#E88BCB; --inf-w:rgba(232,139,203,.14);
+  --rojo:#F07068; --verde:#5CC98C; --caja:#000;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --papel:#0E0C18; --hoja:#1B1830; --raya:#332D50;
+  --tinta:#F6F3FF; --texto:#D6D0E8; --tenue:#ABA3C4;
+  --violeta:#B197EE; --inf:#E88BCB; --inf-w:rgba(232,139,203,.14);
+  --rojo:#F07068; --verde:#5CC98C; --caja:#000;
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--papel);color:var(--texto);font-family:var(--f-cuerpo);font-size:clamp(16px,1.4vw,19px);line-height:1.5;margin:0}
+main{max-width:1200px;margin:0 auto;padding:clamp(24px,4vw,48px) 16px 80px;display:flex;flex-direction:column;gap:32px}
+.rot{font-family:var(--f-mono);font-size:.72em;letter-spacing:.14em;text-transform:uppercase;color:var(--inf)}
+h1{font-family:var(--f-titulo);font-weight:800;color:var(--tinta);font-size:clamp(40px,6vw,76px);line-height:1;letter-spacing:-.02em;margin:.2em 0 0}
+.bajada{font-size:1.15em;max-width:36em;margin:.5em 0 0}
+h2{font-family:var(--f-titulo);font-weight:600;color:var(--tinta);font-size:clamp(22px,2.4vw,30px);line-height:1.1;margin:0 0 10px}
+button,select,input{font:inherit}
+.fila{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{border:2px solid var(--violeta);background:var(--hoja);color:var(--violeta);font-weight:700;border-radius:999px;padding:8px 18px;cursor:pointer}
+.btn.lleno{background:var(--violeta);color:var(--hoja)}
+.btn:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--inf);outline-offset:2px}
+input[type=text]{border:2px solid var(--raya);background:var(--hoja);color:var(--tinta);border-radius:10px;padding:8px 12px;min-width:0}
+
+.trabajo{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:28px;align-items:start}
+@media (max-width:860px){.trabajo{grid-template-columns:1fr}}
+.panel{background:var(--hoja);border:1px solid var(--raya);border-radius:18px;padding:20px;min-width:0}
+.pegado{position:sticky;top:16px}
+@media (max-width:860px){.pegado{position:static}}
+
+/* bloques */
+.evento{margin-bottom:18px}
+.cab{display:inline-flex;align-items:center;gap:8px;background:var(--b-entrada);color:#fff;font-weight:700;padding:8px 14px;border-radius:12px 12px 12px 0}
+.cab.siempre{background:var(--b-control)}
+.cab.empezar{background:var(--b-mate)}
+.lista{margin-left:14px;border-left:10px solid var(--b-entrada);padding:6px 0 6px 8px;display:flex;flex-direction:column;gap:5px;border-radius:0 0 0 8px}
+.lista.siempre{border-color:var(--b-control)} .lista.empezar{border-color:var(--b-mate)}
+.blk{display:flex;flex-direction:column;gap:5px;align-self:flex-start;max-width:100%}
+.blk>.linea{align-self:flex-start}
+.linea{display:inline-flex;flex-wrap:wrap;align-items:center;gap:6px;color:#fff;font-weight:700;font-size:.9em;padding:6px 8px 6px 12px;border-radius:7px}
+.linea select,.linea input{background:#fff;color:#1b1b1b;border:0;border-radius:999px;padding:2px 8px;font-weight:700;font-size:1em}
+.linea input{width:4.2em}
+.linea .x{background:rgba(0,0,0,.22);color:#fff;border:0;border-radius:999px;width:26px;height:26px;cursor:pointer;line-height:1;padding:0}
+.linea .x:hover{background:rgba(0,0,0,.4)}
+.salida{background:var(--b-salida)} .control{background:var(--b-control)} .mate{background:var(--b-mate)} .var{background:var(--b-var)}
+.sub{margin-left:18px;border-left:8px solid var(--b-control);padding:4px 0 4px 8px;display:flex;flex-direction:column;gap:5px}
+.sub.var{background:none;border-color:var(--b-var)}
+.sino{color:var(--tenue);font-weight:700;font-size:.85em;margin-left:18px}
+.agregar{align-self:flex-start;border:2px dashed var(--raya);background:none;color:var(--tenue);border-radius:8px;padding:3px 12px;cursor:pointer;font-weight:700;font-size:.85em}
+.agregar:hover,.agregar.activo{border-color:var(--violeta);color:var(--violeta)}
+.paleta{display:flex;flex-wrap:wrap;gap:6px;padding:8px;border:2px solid var(--violeta);border-radius:10px;background:var(--papel)}
+.paleta button{border:0;color:#fff;font-weight:700;font-size:.85em;padding:6px 10px;border-radius:7px;cursor:pointer}
+.activa{outline:3px solid #FFD84A;outline-offset:2px}
+.nuevos{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+
+/* la consola */
+.consola{background:var(--caja);border-radius:22px;padding:22px 18px;display:flex;flex-direction:column;gap:20px;align-items:center}
+.luces{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;width:100%;max-width:240px}
+.botones{display:grid;grid-template-columns:1fr;width:100%;max-width:110px}
+.luz{aspect-ratio:1;border-radius:50%;background:var(--c);opacity:.18;transition:opacity .05s,box-shadow .05s}
+.luz.on{opacity:1;box-shadow:0 0 22px 6px var(--c)}
+.boton{aspect-ratio:1;border-radius:50%;border:0;background:radial-gradient(circle at 35% 30%,#fff6,#0000 55%),#8d86a6;box-shadow:0 6px 0 #4b4566;cursor:pointer}
+.boton:active,.boton.apretado{transform:translateY(5px);box-shadow:0 1px 0 #4b4566}
+.etq{color:#cfc8e6;font-family:var(--f-mono);font-size:.7em;text-align:center}
+.buzzer{color:#cfc8e6;font-family:var(--f-mono);font-size:.8em;transition:color .05s}
+.buzzer.suena{color:#FFD84A}
+.estado{font-weight:700;color:var(--tinta);min-height:1.5em}
+pre{background:var(--papel);border:1px solid var(--raya);border-radius:12px;padding:14px;overflow:auto;font-family:var(--f-mono);font-size:.78em;color:var(--tinta);max-height:420px;white-space:pre}
+.ayuda{font-size:.9em;color:var(--tenue)}
+.ayuda b{color:var(--tinta)}
+ol.carga{margin:.4em 0 0;padding-left:1.3em}
+details summary{cursor:pointer;font-weight:700;color:var(--violeta)}
+.contado{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+@media (max-width:860px){.contado{grid-template-columns:1fr}}
+.contado label{display:flex;flex-direction:column;gap:6px;font-weight:700;color:var(--tinta)}
+.contado label span{font-weight:500;color:var(--tenue);font-size:.88em}
+textarea{font:inherit;border:2px solid var(--raya);background:var(--hoja);color:var(--tinta);border-radius:10px;padding:8px 12px;min-height:84px;resize:vertical}
+textarea:focus-visible{outline:3px solid var(--inf);outline-offset:2px}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="rot">1ro · Informática · el juego de la consola</div>
+    <h1>La consola de 1ro</h1>
+    <p class="bajada">Un botón, dos luces y un buzzer, y la consola es la misma para todo el curso. Lo que cambia de un juego a otro es el programa. Armá el tuyo acá, probalo en la consola de la pantalla y después cargalo en la consola del curso.</p>
+  </header>
+
+  <section class="panel">
+    <div class="fila">
+      <label>Nombre del juego <input type="text" id="nombre" placeholder="Ej: La bomba" maxlength="40"></label>
+      <label>Hecho por <input type="text" id="autores" placeholder="Los dos nombres" maxlength="60"></label>
+    </div>
+    <div class="fila" style="margin-top:12px">
+      <label>Arrancar desde un ejemplo:
+        <select id="ejemplo">
+          <option value="">elegí uno…</option>
+          <option value="papa">Papa caliente</option>
+          <option value="moneda">Cara o cruz</option>
+          <option value="tercera">La tercera es la vencida</option>
+          <option value="bomba">La bomba</option>
+          <option value="semaforo">El semáforo</option>
+        </select>
+      </label>
+      <button class="btn" id="limpiar">Empezar de cero</button>
+    </div>
+  </section>
+
+  <div class="trabajo">
+    <section class="panel">
+      <h2>El programa</h2>
+      <p class="ayuda">Tocá <b>+ agregar</b> donde quieras poner un bloque. Los números se cambian tocándolos.</p>
+      <div id="programa"></div>
+      <div class="nuevos" id="nuevos"></div>
+    </section>
+
+    <div class="pegado">
+      <section class="panel">
+        <h2>Probalo</h2>
+        <div class="consola" aria-label="La consola">
+          <div class="luces" id="luces"></div>
+          <div class="buzzer" id="buzzer">♪ buzzer</div>
+          <div class="botones" id="botones"></div>
+        </div>
+        <div class="fila" style="margin-top:14px">
+          <button class="btn lleno" id="jugar">▶ Encender</button>
+          <button class="btn" id="parar">■ Apagar</button>
+          <span class="estado" id="estado"></span>
+        </div>
+        <p class="ayuda">El botón se aprieta con el mouse o con la <b>barra espaciadora</b>.</p>
+      </section>
+
+      <section class="panel" style="margin-top:20px">
+        <h2>Llevarlo a la consola</h2>
+        <p class="ayuda">Cuando el juego ya anda acá, pasá a la compu que tiene la consola enchufada.</p>
+        <ol class="carga ayuda">
+          <li>Tocá <b>Copiar el código</b>.</li>
+          <li>En esa compu, abrí <b>Arduino IDE</b>, borrá todo y pegá.</li>
+          <li>Tocá la flecha <b>→ Subir</b>. Cuando dice «Subido», ya es tu juego.</li>
+        </ol>
+        <div class="fila" style="margin-top:12px">
+          <button class="btn lleno" id="copiar">Copiar el código</button>
+          <span class="estado" id="copiado"></span>
+        </div>
+        <details style="margin-top:12px">
+          <summary>Ver el código</summary>
+          <pre id="codigo"></pre>
+        </details>
+      </section>
+    </div>
+  </div>
+
+  <section class="panel" aria-labelledby="t-contado">
+    <h2 id="t-contado">Tu juego, contado</h2>
+    <div class="contado" style="grid-template-columns:1fr">
+      <label>¿Cómo cambia la luz en tu juego?<span>Qué pasa cuando apretás el botón, y cuándo se prende cada luz.</span><textarea id="r-luz"></textarea></label>
+    </div>
+    <div class="fila" style="margin-top:14px">
+      <button class="btn lleno" id="mandar">Mandárselo a la profe</button>
+      <span class="estado" id="mandado"></span>
+    </div>
+  </section>
+</main>
+
+<script>
+const COLORES=['#E5413A','#2FB35E'];
+const NCOLOR=['roja','verde'];
+const PIN_LUZ=[3,4], PIN_BOTON=[8], PIN_BUZZER=12;
+const K='consola1ro.v2';
+
+// --- el programa ---
+// prog = {empezar:[...], siempre:[...], boton:{1:[...]}}
+// paso = {t:'prender'|'apagar'|'todas'|'sonar'|'esperar'|'azar'|'luzazar'|'moneda'|'sumar'|'cero'|'sicont', ...}
+const BLOQUES=[
+  {t:'prender', c:'salida', txt:'prender luz', nuevo:()=>({t:'prender',l:1})},
+  {t:'apagar', c:'salida', txt:'apagar luz', nuevo:()=>({t:'apagar',l:1})},
+  {t:'todas', c:'salida', txt:'apagar las dos', nuevo:()=>({t:'todas'})},
+  {t:'luzazar', c:'salida', txt:'prender una luz al azar', nuevo:()=>({t:'luzazar'})},
+  {t:'sonar', c:'salida', txt:'sonar', nuevo:()=>({t:'sonar',s:'corto'})},
+  {t:'esperar', c:'control', txt:'esperar', nuevo:()=>({t:'esperar',n:1})},
+  {t:'azar', c:'control', txt:'esperar al azar', nuevo:()=>({t:'azar',a:2,b:6})},
+  {t:'moneda', c:'control', txt:'tirar una moneda: si sale cara… si no…', nuevo:()=>({t:'moneda',si:[],no:[]})},
+  {t:'sumar', c:'var', txt:'sumar 1 al contador', nuevo:()=>({t:'sumar'})},
+  {t:'cero', c:'var', txt:'volver el contador a 0', nuevo:()=>({t:'cero'})},
+  {t:'sicont', c:'var', txt:'si el contador es… si no…', nuevo:()=>({t:'sicont',n:3,si:[],no:[]})},
+];
+const POR_T=Object.fromEntries(BLOQUES.map(b=>[b.t,b]));
+
+const EJEMPLOS={
+  papa:{nombre:'Papa caliente',prog:{empezar:[],siempre:[{t:'azar',a:3,b:10},{t:'prender',l:1},{t:'sonar',s:'largo'},{t:'esperar',n:1},{t:'apagar',l:1}],boton:{}}},
+  moneda:{nombre:'Cara o cruz',prog:{empezar:[],boton:{1:[{t:'todas'},{t:'moneda',si:[{t:'prender',l:2}],no:[{t:'prender',l:1}]},{t:'sonar',s:'corto'}]}}},
+  tercera:{nombre:'La tercera es la vencida',prog:{empezar:[{t:'cero'}],boton:{1:[{t:'sumar'},{t:'sicont',n:3,si:[{t:'prender',l:2},{t:'sonar',s:'de premio'},{t:'esperar',n:1},{t:'apagar',l:2},{t:'cero'}],no:[{t:'sonar',s:'corto'}]}]}}},
+  bomba:{nombre:'La bomba',prog:{empezar:[{t:'prender',l:2}],boton:{1:[{t:'apagar',l:2},{t:'azar',a:2,b:8},{t:'prender',l:1},{t:'sonar',s:'largo'},{t:'esperar',n:2},{t:'apagar',l:1},{t:'prender',l:2}]}}},
+  // la de la clase del 28/10: no está en la lista, se abre con consola-1ro.html#trucha
+  trucha:{nombre:'La moneda',prog:{empezar:[{t:'cero'}],boton:{1:[{t:'todas'},{t:'sumar'},{t:'sicont',n:3,si:[{t:'prender',l:1},{t:'cero'}],no:[{t:'moneda',si:[{t:'prender',l:2}],no:[{t:'prender',l:1}]}]},{t:'sonar',s:'corto'}]}}},
+  semaforo:{nombre:'El semáforo',prog:{empezar:[],siempre:[{t:'prender',l:2},{t:'esperar',n:3},{t:'apagar',l:2},{t:'prender',l:1},{t:'esperar',n:3},{t:'apagar',l:1}],boton:{}}},
+};
+
+let prog=vacio(), destino=null; // destino: la lista donde está abierta la paleta
+function vacio(){return {empezar:[],boton:{1:[]}}}
+function guarda(){try{localStorage.setItem(K,JSON.stringify({prog,nombre:$('nombre').value,autores:$('autores').value}))}catch(e){}}
+function carga(){try{const d=JSON.parse(localStorage.getItem(K));if(d&&d.prog){prog=d.prog;$('nombre').value=d.nombre||'';$('autores').value=d.autores||''}}catch(e){}}
+const $=id=>document.getElementById(id);
+const el=(tag,cls,txt)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e};
+
+// --- dibujar el editor ---
+function selLuz(p){const s=el('select');NCOLOR.forEach((n,i)=>{const o=el('option',null,n);o.value=i+1;s.append(o)});s.value=p.l;s.onchange=()=>{p.l=+s.value;cambio()};return s}
+function numero(p,k,min,max){const i=el('input');i.type='number';i.min=min;i.max=max;i.step=k==='n'&&p.t!=='sicont'?0.5:1;i.value=p[k];i.onchange=()=>{let v=parseFloat(i.value);if(isNaN(v))v=min;v=Math.max(min,Math.min(max,v));p[k]=v;i.value=v;cambio()};return i}
+function txt(s){return el('span',null,s)}
+
+function dibujarPaso(p,lista,idx){
+  const b=POR_T[p.t], caja=el('div','blk'), li=el('div','linea '+b.c);
+  if(p._corriendo)li.classList.add('activa');
+  li.dataset.id=p._id=p._id||Math.random().toString(36).slice(2);
+  switch(p.t){
+    case 'prender': li.append(txt('prender luz'),selLuz(p));break;
+    case 'apagar': li.append(txt('apagar luz'),selLuz(p));break;
+    case 'todas': li.append(txt('apagar las dos luces'));break;
+    case 'luzazar': li.append(txt('prender una luz al azar'));break;
+    case 'sonar':{li.append(txt('sonar'));const s=el('select');['corto','largo','de premio'].forEach(v=>{const o=el('option',null,v);s.append(o)});s.value=p.s;s.onchange=()=>{p.s=s.value;cambio()};li.append(s);break}
+    case 'esperar': li.append(txt('esperar'),numero(p,'n',0.5,30),txt('segundos'));break;
+    case 'azar': li.append(txt('esperar al azar entre'),numero(p,'a',1,30),txt('y'),numero(p,'b',1,30),txt('segundos'));break;
+    case 'moneda': li.append(txt('tirar una moneda · si sale cara'));break;
+    case 'sumar': li.append(txt('sumar 1 al contador'));break;
+    case 'cero': li.append(txt('volver el contador a 0'));break;
+    case 'sicont': li.append(txt('si el contador es'),numero(p,'n',1,50));break;
+  }
+  const x=el('button','x','✕');x.title='Sacar este bloque';x.setAttribute('aria-label','Sacar este bloque');
+  x.onclick=()=>{lista.splice(idx,1);cambio()};li.append(x);
+  caja.append(li);
+  if(p.si){
+    const cls=p.t==='sicont'?'sub var':'sub';
+    caja.append(dibujarLista(p.si,cls));
+    caja.append(el('div','sino','si no'));
+    caja.append(dibujarLista(p.no,cls));
+  }
+  return caja;
+}
+function dibujarLista(lista,cls){
+  const d=el('div',cls);
+  lista.forEach((p,i)=>d.append(dibujarPaso(p,lista,i)));
+  const a=el('button','agregar'+(destino===lista?' activo':''),'+ agregar');
+  a.onclick=()=>{destino=destino===lista?null:lista;dibujar()};
+  d.append(a);
+  if(destino===lista){
+    const pal=el('div','paleta');
+    BLOQUES.forEach(b=>{const bt=el('button',b.c,b.txt);bt.onclick=()=>{lista.push(b.nuevo());destino=null;cambio()};pal.append(bt)});
+    d.append(pal);
+  }
+  return d;
+}
+function evento(titulo,cls,lista,quitar){
+  const e=el('div','evento'), c=el('div','cab '+cls);
+  c.append(txt(titulo));
+  if(quitar){const x=el('button','x','✕');x.style.cssText='background:rgba(0,0,0,.22);color:#fff;border:0;border-radius:999px;width:26px;height:26px;cursor:pointer';x.setAttribute('aria-label','Sacar '+titulo);x.onclick=quitar;c.append(x)}
+  e.append(c,dibujarLista(lista,'lista '+cls));
+  return e;
+}
+function dibujar(){
+  const P=$('programa');P.innerHTML='';
+  P.append(evento('al encender','empezar',prog.empezar));
+  if(prog.siempre)P.append(evento('siempre, una y otra vez','siempre',prog.siempre,()=>{delete prog.siempre;cambio()}));
+  for(const n of [1]) if(prog.boton[n])
+    P.append(evento('cuando aprieto el botón','',prog.boton[n],()=>{delete prog.boton[n];cambio()}));
+  const N=$('nuevos');N.innerHTML='';
+  if(!prog.siempre){const b=el('button','btn','+ siempre');b.onclick=()=>{prog.siempre=[];cambio()};N.append(b)}
+  for(const n of [1]) if(!prog.boton[n]){const b=el('button','btn','+ cuando aprieto el botón');b.onclick=()=>{prog.boton[n]=[];cambio()};N.append(b)}
+  $('codigo').textContent=arduino();
+}
+function cambio(){guarda();dibujar()}
+
+// --- la consola en pantalla ---
+const luces=[],btns=[];
+COLORES.forEach((c,i)=>{const l=el('div','luz');l.style.setProperty('--c',c);l.title='luz '+NCOLOR[i];luces.push(l);$('luces').append(l)});
+[1].forEach(n=>{const w=el('div');w.style.cssText='display:flex;flex-direction:column;gap:4px';const b=el('button','boton');b.setAttribute('aria-label','el botón');b.onpointerdown=()=>{apretar(n);b.classList.add('apretado')};b.onpointerup=b.onpointerleave=()=>b.classList.remove('apretado');w.append(b,el('div','etq','botón'));btns.push(b);$('botones').append(w)});
+document.addEventListener('keydown',e=>{if(e.code!=='Space'||e.repeat||/INPUT|SELECT|BUTTON/.test(e.target.tagName))return;e.preventDefault();apretar(1);btns[0].classList.add('apretado')});
+document.addEventListener('keyup',e=>{if(e.code==='Space')btns[0].classList.remove('apretado')});
+
+let corriendo=0, apretados=new Set(), contador=0, audio=null;
+function apretar(n){if(corriendo)apretados.add(n)}
+function luz(i,on){luces[i].classList.toggle('on',on)}
+const dormir=ms=>new Promise(r=>setTimeout(r,ms));
+async function esperar(ms,id){const fin=Date.now()+ms;while(Date.now()<fin){if(id!==corriendo)throw 'apagado';await dormir(Math.min(30,fin-Date.now()))}}
+function pitar(frec,ms){
+  try{audio=audio||new (window.AudioContext||window.webkitAudioContext)();const o=audio.createOscillator(),g=audio.createGain();o.type='square';o.frequency.value=frec;g.gain.value=.05;o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+ms/1000)}catch(e){}
+  $('buzzer').classList.add('suena');setTimeout(()=>$('buzzer').classList.remove('suena'),ms);
+}
+const SONIDOS={corto:[[880,150]],largo:[[440,600]],'de premio':[[523,120],[659,120],[784,250]]};
+async function correr(lista,id){
+  for(const p of lista){
+    if(id!==corriendo)throw 'apagado';
+    marcar(p,true);
+    switch(p.t){
+      case 'prender': luz(p.l-1,true);break;
+      case 'apagar': luz(p.l-1,false);break;
+      case 'todas': luces.forEach((_,i)=>luz(i,false));break;
+      case 'luzazar': luz(Math.floor(Math.random()*2),true);break;
+      case 'sonar': for(const [f,ms] of SONIDOS[p.s]){pitar(f,ms);await esperar(ms,id)}break;
+      case 'esperar': await esperar(p.n*1000,id);break;
+      case 'azar':{const a=Math.min(p.a,p.b),b=Math.max(p.a,p.b);await esperar((a+Math.random()*(b-a))*1000,id);break}
+      case 'moneda': marcar(p,false);await correr(Math.random()<.5?p.si:p.no,id);break;
+      case 'sumar': contador++;break;
+      case 'cero': contador=0;break;
+      case 'sicont': marcar(p,false);await correr(contador===p.n?p.si:p.no,id);break;
+    }
+    marcar(p,false);
+  }
+}
+function marcar(p,on){const e=document.querySelector(`.linea[data-id="${p._id}"]`);if(e)e.classList.toggle('activa',on)}
+async function encender(){
+  apagar();const id=corriendo=Date.now();contador=0;apretados.clear();
+  $('estado').textContent='Encendida';
+  try{
+    await correr(prog.empezar,id);
+    // el mismo orden que el loop() de la placa: primero «siempre», después mira los botones
+    while(id===corriendo){
+      if(prog.siempre)await correr(prog.siempre,id);
+      for(const n of [1]) if(prog.boton[n]&&apretados.has(n)){apretados.delete(n);await correr(prog.boton[n],id)}
+      apretados.clear();
+      await esperar(20,id);
+    }
+  }catch(e){if(e!=='apagado')throw e}
+}
+function apagar(){corriendo=0;luces.forEach((_,i)=>luz(i,false));document.querySelectorAll('.linea.activa').forEach(e=>e.classList.remove('activa'));$('estado').textContent=''}
+$('jugar').onclick=encender;$('parar').onclick=apagar;
+
+// --- el código para la placa ---
+function c_lista(lista,ind){return lista.map(p=>c_paso(p,ind)).join('')}
+function c_paso(p,ind){
+  const s=' '.repeat(ind), L=n=>PIN_LUZ[n-1];
+  switch(p.t){
+    case 'prender': return `${s}digitalWrite(${L(p.l)}, HIGH);   // prender luz ${NCOLOR[p.l-1]}\n`;
+    case 'apagar': return `${s}digitalWrite(${L(p.l)}, LOW);    // apagar luz ${NCOLOR[p.l-1]}\n`;
+    case 'todas': return `${s}digitalWrite(3, LOW); digitalWrite(4, LOW);   // apagar las dos\n`;
+    case 'luzazar': return `${s}digitalWrite(random(3, 5), HIGH);   // prender una luz al azar\n`;
+    case 'sonar': return SONIDOS[p.s].map(([f,ms])=>`${s}tone(${PIN_BUZZER}, ${f}, ${ms}); delay(${ms});   // sonar ${p.s}\n`).join('');
+    case 'esperar': return `${s}delay(${Math.round(p.n*1000)});   // esperar ${p.n} s\n`;
+    case 'azar':{const a=Math.min(p.a,p.b),b=Math.max(p.a,p.b);return `${s}delay(random(${a*1000}, ${b*1000+1}));   // esperar al azar entre ${a} y ${b} s\n`}
+    case 'moneda': return `${s}if (random(2) == 1) {   // tirar una moneda: si sale cara\n${c_lista(p.si,ind+2)}${s}} else {\n${c_lista(p.no,ind+2)}${s}}\n`;
+    case 'sumar': return `${s}contador = contador + 1;\n`;
+    case 'cero': return `${s}contador = 0;\n`;
+    case 'sicont': return `${s}if (contador == ${p.n}) {\n${c_lista(p.si,ind+2)}${s}} else {\n${c_lista(p.no,ind+2)}${s}}\n`;
+  }
+}
+function arduino(){
+  const nom=($('nombre').value||'Mi juego').replace(/\n/g,' '), aut=($('autores').value||'').replace(/\n/g,' ');
+  let c=`// ${nom}${aut?' — hecho por '+aut:''}\n// La consola de 1ro: luz roja en 3 · luz verde en 4 · botón en 8 · buzzer en 12\n\nint contador = 0;\n\nvoid setup() {\n  pinMode(3, OUTPUT);\n  pinMode(4, OUTPUT);\n  pinMode(8, INPUT);\n  pinMode(${PIN_BUZZER}, OUTPUT);\n  randomSeed(analogRead(A5));\n  // al encender\n${c_lista(prog.empezar,2)}}\n\nvoid loop() {\n`;
+  if(prog.siempre)c+=`  // siempre, una y otra vez\n${c_lista(prog.siempre,2)}`;
+  for(const n of [1]) if(prog.boton[n]){
+    const pin=PIN_BOTON[n-1];
+    c+=`\n  // cuando aprieto el botón\n  if (digitalRead(${pin}) == HIGH) {\n${c_lista(prog.boton[n],4)}    while (digitalRead(${pin}) == HIGH) {}   // esperar a que suelte\n    delay(50);\n  }\n`;
+  }
+  return c+'}\n';
+}
+$('copiar').onclick=async()=>{
+  const t=arduino();
+  try{await navigator.clipboard.writeText(t);$('copiado').textContent='¡Copiado! Ahora pegalo en Arduino IDE.'}
+  catch(e){$('codigo').closest('details').open=true;const r=document.createRange();r.selectNodeContents($('codigo'));const s=getSelection();s.removeAllRanges();s.addRange(r);$('copiado').textContent='Apretá Ctrl+C para copiarlo.'}
+};
+
+$('ejemplo').onchange=e=>{const ej=EJEMPLOS[e.target.value];if(!ej)return;apagar();prog=JSON.parse(JSON.stringify(ej.prog));if(!$('nombre').value)$('nombre').value=ej.nombre;e.target.value='';destino=null;cambio()};
+$('limpiar').onclick=()=>{if(!confirm('¿Borrar el programa y empezar de cero?'))return;apagar();prog=vacio();destino=null;cambio()};
+$('nombre').oninput=$('autores').oninput=()=>{guarda();$('codigo').textContent=arduino()};
+
+// --- tu juego, contado: se guarda en la compu y va a la planilla del buzón, como el resto de la app ---
+const PREG=[['r-luz','¿Cómo cambia la luz en tu juego?']];
+const K_RESP='consola1ro.resp.v1', K_DAT='pps.datos.v1';
+const URL_BUZON='https://script.google.com/macros/s/AKfycbzLxvvU5Nw5Zx1yKyeb9z7WB1b2AQD8x7FcPpFznLSr3K8kImnVx4dNrX1Z0WntVigUjg/exec';
+try{const r=JSON.parse(localStorage.getItem(K_RESP))||{};PREG.forEach(([id])=>{$(id).value=r[id]||''})}catch(e){}
+PREG.forEach(([id])=>$(id).addEventListener('input',()=>{const r={};PREG.forEach(([i])=>r[i]=$(i).value);try{localStorage.setItem(K_RESP,JSON.stringify(r))}catch(e){}}));
+$('mandar').onclick=()=>{
+  const quien=$('autores').value.trim();
+  if(quien.length<3){$('mandado').textContent='Escribí arriba quiénes lo hicieron.';$('autores').focus();return}
+  const z=n=>String(n).padStart(2,'0'),d=new Date(),fecha=`${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())}`;
+  const ejs=PREG.map(([id,q],i)=>({c:q,t:'consola',q:$(id).value.trim()||'(sin responder)',i:i+1,ok:!!$(id).value.trim(),ok1:true,p:0,s:false,sg:0}));
+  ejs.push({c:'El programa',t:'consola',q:arduino(),i:2,ok:true,ok1:true,p:0,s:false,sg:0});
+  const t={id:'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,7),alumno:quien,anio:'1ro',fecha,ts:d.toISOString(),
+    sala:'consola1ro',salaNom:'La consola de 1ro · '+($('nombre').value.trim()||'sin nombre'),modo:'practica',
+    total:1,resueltos:ejs.filter(e=>e.ok).length-1,sinAyuda:0,pistas:0,salteadas:0,seg:0,ejs};
+  try{const a=JSON.parse(localStorage.getItem(K_DAT))||[];a.push(t);localStorage.setItem(K_DAT,JSON.stringify(a))}catch(e){}
+  fetch(URL_BUZON,{method:'POST',mode:'no-cors',cache:'no-store',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(t)})
+    .then(()=>{$('mandado').textContent='¡Le llegó a la profe!'}).catch(()=>{$('mandado').textContent='No hay internet: quedó guardado en esta compu.'});
+};
+
+if(location.hash==='#trucha'){
+  // la moneda de la profe: se abre siempre igual, y la pregunta es otra
+  prog=JSON.parse(JSON.stringify(EJEMPLOS.trucha.prog));$('nombre').value='La moneda';
+  const l=document.querySelector('label:has(#r-luz)');
+  l.firstChild.textContent='¿Dónde estaba la trampa? ¿Cómo la arreglaron?';
+  l.querySelector('span').textContent='Contalo con los bloques: cuál era y qué le cambiaron.';
+  PREG[0][1]='¿Dónde estaba la trampa?';
+  dibujar();
+}else{carga();dibujar();}
+</script>
+</body>
+</html>
