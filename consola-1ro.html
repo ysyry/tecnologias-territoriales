@@ -551,6 +551,8 @@ $('respuesta').oninput=()=>LS.set(kResp(actual.id),$('respuesta').value);
 $('mandar').onclick=async()=>{
   const quien=$('autores').value.trim();
   if(quien.length<3){$('mandado').textContent='Escribí arriba quiénes lo hicieron.';$('autores').focus();return}
+  // un envío por vez: si no, apretan veinte veces seguidas y llegan veinte copias
+  if($('mandar').disabled)return;$('mandar').disabled=true;setTimeout(()=>{$('mandar').disabled=false},8000);
   const r=$('respuesta').value.trim(), ts=new Date().toISOString();
   const envio={id:nuevoId('e'),alumno:quien,anio:'1ro',fecha:hoy(),ts,sala:'consola1ro',salaNom:'La consola · '+actual.n,modo:'practica',
     envio:MARCA+JSON.stringify({d:actual.id,n:actual.n,p:copia(prog),r}),programa:arduino(prog,actual.n,quien)};
@@ -559,7 +561,7 @@ $('mandar').onclick=async()=>{
       // el código entero también va a «Detalle»: si el buzón no tiene la lista, la profe lo copia de la planilla
       {c:'El programa para la placa',t:'consola',q:arduino(prog,actual.n,quien),i:1,ok:true,ok1:true,p:0,s:false,sg:0}]};
   const a=LS.get(K_DAT,[]);(Array.isArray(a)?a:[]).push(tanda);LS.set(K_DAT,a);
-  try{await postear(envio);await postear(tanda);$('mandado').textContent='¡Le llegó a la profe! Ella lo carga en la consola.'}
+  try{await postear(envio);await postear(tanda);$('mandado').textContent='✓ Mandado. Avisale a la profe que ya está.'}
   catch(e){$('mandado').textContent='No hay internet. Probá de nuevo en un rato.'}
 };
 $('limpiar').onclick=()=>{if(!confirm('¿Volver al programa del principio? Se pierde lo que cambiaste.'))return;apagar();prog=copia(actual.prog);destino=null;cambio()};
