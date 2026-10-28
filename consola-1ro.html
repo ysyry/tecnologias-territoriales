@@ -538,7 +538,9 @@ async function copiarTexto(t,msg){
 $('copiar').onclick=()=>copiarTexto(arduino(prog,nombre,$('autores').value),$('copiado'));
 
 // --- mandárselo a la profe: el programa va a «Envíos» y la respuesta a la planilla, como el resto de la app ---
-const URL_BUZON='https://script.google.com/macros/s/AKfycbzLxvvU5Nw5Zx1yKyeb9z7WB1b2AQD8x7FcPpFznLSr3K8kImnVx4dNrX1Z0WntVigUjg/exec';
+// abierta desde la notebook de la profe (buzon-aula.py), manda ahí y no a Google
+const EN_AULA=location.protocol==='http:';
+const URL_BUZON=EN_AULA?'/buzon':'https://script.google.com/macros/s/AKfycbzLxvvU5Nw5Zx1yKyeb9z7WB1b2AQD8x7FcPpFznLSr3K8kImnVx4dNrX1Z0WntVigUjg/exec';
 const K_DAT='pps.datos.v1', MARCA='consola1ro:';
 const hoy=()=>{const d=new Date(),z=n=>String(n).padStart(2,'0');return `${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())}`};
 const nuevoId=l=>l+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
@@ -553,7 +555,9 @@ $('mandar').onclick=async()=>{
   const envio={id:nuevoId('e'),alumno:quien,anio:'1ro',fecha:hoy(),ts,sala:'consola1ro',salaNom:'La consola · '+actual.n,modo:'practica',
     envio:MARCA+JSON.stringify({d:actual.id,n:actual.n,p:copia(prog),r}),programa:arduino(prog,actual.n,quien)};
   const tanda={id:nuevoId('c'),alumno:quien,anio:'1ro',fecha:hoy(),ts,sala:'consola1ro',salaNom:'La consola · '+actual.n,modo:'practica',
-    total:1,resueltos:r?1:0,sinAyuda:0,pistas:0,salteadas:0,seg:0,ejs:[{c:actual.q,t:'consola',q:r||'(sin responder)',i:1,ok:!!r,ok1:true,p:0,s:false,sg:0}]};
+    total:1,resueltos:r?1:0,sinAyuda:0,pistas:0,salteadas:0,seg:0,ejs:[{c:actual.q,t:'consola',q:r||'(sin responder)',i:1,ok:!!r,ok1:true,p:0,s:false,sg:0},
+      // el código entero también va a «Detalle»: si el buzón no tiene la lista, la profe lo copia de la planilla
+      {c:'El programa para la placa',t:'consola',q:arduino(prog,actual.n,quien),i:1,ok:true,ok1:true,p:0,s:false,sg:0}]};
   const a=LS.get(K_DAT,[]);(Array.isArray(a)?a:[]).push(tanda);LS.set(K_DAT,a);
   try{await postear(envio);await postear(tanda);$('mandado').textContent='¡Le llegó a la profe! Ella lo carga en la consola.'}
   catch(e){$('mandado').textContent='No hay internet. Probá de nuevo en un rato.'}
@@ -564,7 +568,7 @@ $('limpiar').onclick=()=>{if(!confirm('¿Volver al programa del principio? Se pi
 $('clave').value=LS.get('consola1ro.clave','');
 $('traer').onclick=async()=>{
   const k=$('clave').value.trim();LS.set('consola1ro.clave',k);
-  if(!k){$('profe-est').textContent='Escribí la clave.';return}
+  if(!k&&!EN_AULA){$('profe-est').textContent='Escribí la clave.';return}
   $('profe-est').textContent='Buscando…';
   try{
     const res=await fetch(URL_BUZON+'?envios=1&k='+encodeURIComponent(k));const t=await res.text();
