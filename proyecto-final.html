@@ -1,0 +1,1050 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proyecto final · Explorando la realidad</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Manrope:wght@500;700&family=DM+Mono:wght@400;500&display=swap">
+<style>
+[hidden]{display:none!important}
+/* Proyecto final, con la placa en la mesa: las mismas piezas que temperatura.html, ahora con la placa en la mesa. Una pieza por reto; la profe sube cada una desde su compu. */
+:root{
+  --papel:#F3F1F7; --hoja:#FCFBFE; --raya:#DAD4E6;
+  --tinta:#161226; --texto:#3B3350; --tenue:#5F5779;
+  --violeta:#5B3FA8; --inf:#9A3A80; --inf-w:rgba(154,58,128,.10);
+  --rojo:#C8352E; --verde:#2E8B57; --verde-w:rgba(46,139,87,.12); --negro:#161226; --codigo:#1E1934; --codigo-t:#EDE8FA;
+  --f-titulo:"Bricolage Grotesque",Georgia,serif;
+  --f-cuerpo:Manrope,system-ui,sans-serif;
+  --f-mono:"DM Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --papel:#0E0C18; --hoja:#1B1830; --raya:#332D50;
+  --tinta:#F6F3FF; --texto:#D6D0E8; --tenue:#ABA3C4;
+  --violeta:#B197EE; --inf:#E88BCB; --inf-w:rgba(232,139,203,.14);
+  --rojo:#F07068; --verde:#5CC98C; --verde-w:rgba(92,201,140,.14); --negro:#D6D0E8; --codigo:#15121F; --codigo-t:#EDE8FA;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --papel:#0E0C18; --hoja:#1B1830; --raya:#332D50;
+  --tinta:#F6F3FF; --texto:#D6D0E8; --tenue:#ABA3C4;
+  --violeta:#B197EE; --inf:#E88BCB; --inf-w:rgba(232,139,203,.14);
+  --rojo:#F07068; --verde:#5CC98C; --verde-w:rgba(92,201,140,.14); --negro:#D6D0E8; --codigo:#15121F; --codigo-t:#EDE8FA;
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--papel);color:var(--texto);font-family:var(--f-cuerpo);font-size:clamp(17px,1.6vw,22px);line-height:1.5;margin:0}
+main{max-width:1100px;margin:0 auto;padding:clamp(28px,5vw,64px) 20px 80px;display:flex;flex-direction:column;gap:clamp(40px,6vw,72px)}
+.rot{font-family:var(--f-mono);font-size:.7em;letter-spacing:.14em;text-transform:uppercase;color:var(--inf)}
+h1{font-family:var(--f-titulo);font-weight:800;color:var(--tinta);font-size:clamp(40px,6.4vw,84px);line-height:1;letter-spacing:-.02em;margin:.25em 0 0;text-wrap:balance}
+.bajada{font-size:1.25em;color:var(--texto);max-width:34em;margin:.6em 0 0;text-wrap:balance}
+h2{font-family:var(--f-titulo);font-weight:600;color:var(--tinta);font-size:clamp(26px,3vw,38px);line-height:1.1;margin:0}
+.pasos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.paso{display:flex;flex-direction:column;gap:14px;min-width:0}
+.num{font-family:var(--f-titulo);font-weight:800;font-size:2.4em;line-height:1;color:var(--violeta)}
+.paso p{margin:0;color:var(--tinta);font-weight:700}
+.paso small{color:var(--tenue);font-weight:500;font-size:.85em}
+svg{width:100%;height:auto;max-width:100%}
+.codigo{position:relative;background:var(--codigo);color:var(--codigo-t);border-radius:10px;padding:18px 18px 18px 20px;overflow-x:auto;font-family:var(--f-mono);font-size:.78em;line-height:1.55;min-width:0}
+.codigo pre{margin:0}
+.codigo .c{color:#9E93C4}
+.codigo .n{background:rgba(177,151,238,.22);box-shadow:-20px 0 0 rgba(177,151,238,.22),3px 0 0 rgba(177,151,238,.22);border-left:0}
+.copiar{position:absolute;top:10px;right:10px;font:500 13px var(--f-mono);background:#ffffff1a;color:var(--codigo-t);border:1px solid #ffffff33;border-radius:6px;padding:6px 10px;cursor:pointer}
+.copiar:focus-visible,.destapar:focus-visible,.pista-b:focus-visible,.revisar:focus-visible{outline:3px solid var(--violeta);outline-offset:2px}
+.retos{display:flex;flex-direction:column;gap:clamp(40px,5vw,64px)}
+.retos h2{margin-bottom:8px}
+.reto{border-top:2px solid var(--raya);padding-top:32px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px 28px;align-items:start}
+.reto .nivel{font-family:var(--f-titulo);font-weight:800;font-size:1.6em;line-height:1.1;color:var(--inf)}
+.reto h3{font-family:var(--f-titulo);font-weight:600;font-size:1.35em;line-height:1.2;color:var(--tinta);margin:0;text-wrap:balance}
+.reto .cuerpo{display:flex;flex-direction:column;gap:20px;min-width:0}
+.tapado h3{color:transparent;background:var(--raya);border-radius:6px;user-select:none}
+.tapado .tiempo{visibility:hidden}
+.destapar,.pista-b,.revisar{align-self:flex-start;font:700 .8em var(--f-cuerpo);border-radius:999px;padding:10px 22px;cursor:pointer}
+.destapar,.revisar{background:var(--violeta);color:var(--hoja);border:0}
+.pista-b{background:transparent;color:var(--violeta);border:1.5px solid var(--violeta)}
+.pista{font-size:.9em;line-height:1.7;background:var(--inf-w);border-radius:8px;padding:18px 20px;color:var(--tinta)}
+.meta{border-top-color:var(--inf)}
+.tiempo{font-family:var(--f-mono);font-size:.62em;letter-spacing:.08em;color:var(--tenue);font-weight:400;display:block;margin-top:8px}
+.pasitos{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:12px;color:var(--tinta)}
+.pasitos .ojo{display:block;margin-top:4px;font-size:.88em;color:var(--tenue)}
+.nota{color:var(--tenue);font-size:.9em;margin:0}
+@media (prefers-reduced-motion:no-preference){.reto:not(.tapado) h3{animation:ap .35s ease-out}@keyframes ap{from{opacity:0;transform:translateY(6px)}}}
+/* huecos del código */
+.hueco{font:500 1em var(--f-mono);color:#fff;background:rgba(255,255,255,.08);border:0;border-bottom:2px dashed #B197EE;border-radius:4px 4px 0 0;padding:0 4px;text-align:center}
+.hueco:focus-visible{outline:2px solid #B197EE;outline-offset:2px}
+.hueco.ok{border-bottom:2px solid #5CC98C;background:rgba(92,201,140,.18)}
+.hueco.mal{border-bottom:2px solid #F07068;background:rgba(240,112,104,.18)}
+.dice{font-family:var(--f-mono);font-weight:500;background:var(--inf-w);color:var(--inf);border-radius:6px;padding:0 .3em;white-space:nowrap}
+.res{margin:0;font-weight:700;color:var(--tinta)}
+.res.ok{color:var(--verde)}
+.res.mal{color:var(--rojo)}
+/* la profe sube */
+.profe{display:flex;gap:16px;align-items:flex-start;background:var(--hoja);border:1.5px solid var(--violeta);border-radius:12px;padding:18px 20px}
+.profe .ic{font-size:1.6em;line-height:1}
+.profe p{margin:0;color:var(--tinta)}
+.profe small{display:block;color:var(--tenue);font-size:.85em;margin-top:4px}
+/* anda cuando */
+.anda{display:flex;flex-direction:column;gap:10px;background:var(--verde-w);border-radius:12px;padding:16px 20px}
+.anda b{color:var(--tinta)}
+.anda label{display:flex;gap:12px;align-items:flex-start;cursor:pointer;color:var(--tinta)}
+.anda input{width:22px;height:22px;margin-top:3px;accent-color:var(--verde);flex:none}
+/* preguntas de opción */
+.opc{display:flex;flex-direction:column;gap:10px}
+.opc p{margin:0;color:var(--tinta);font-weight:700}
+.opc button{font:500 .9em var(--f-cuerpo);text-align:left;color:var(--tinta);background:var(--hoja);border:1.5px solid var(--raya);border-radius:10px;padding:12px 16px;cursor:pointer}
+.opc button.ok{border-color:var(--verde);background:var(--verde-w)}
+.opc button.mal{border-color:var(--rojo);text-decoration:line-through;color:var(--tenue)}
+.opc .exp{font-size:.9em;color:var(--texto)}
+/* tabla de calibración */
+.tabla-w{overflow-x:auto}
+.tabla{border-collapse:collapse;font-variant-numeric:tabular-nums}
+.tabla th,.tabla td{border:1px solid var(--raya);padding:10px 16px;text-align:center}
+.tabla th{color:var(--tinta);font-weight:700}
+.tabla input{width:5em;font:500 1em var(--f-mono);text-align:center;color:var(--tinta);background:transparent;border:0;border-bottom:1.5px dashed var(--tenue);padding:2px}
+.tabla input:focus-visible,.umbral input:focus-visible,#pegar:focus-visible,#mundos:focus-visible,.quien input:focus-visible{outline:3px solid var(--violeta);outline-offset:2px}
+.umbral{display:flex;flex-wrap:wrap;gap:10px;align-items:center;background:var(--hoja);border:2px solid var(--violeta);border-radius:12px;padding:16px 20px;color:var(--tinta);font-weight:700}
+.umbral input{width:5em;font:500 1.1em var(--f-mono);text-align:center;color:var(--tinta);background:var(--inf-w);border:0;border-bottom:2px solid var(--violeta);border-radius:6px 6px 0 0;padding:4px}
+.lineas{display:flex;flex-direction:column;gap:4px}
+.linea{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 14px;align-items:center;border-bottom:1px solid var(--raya);padding:14px 0}
+.linea .que{color:var(--tinta);font-weight:600;min-width:0}
+.linea .que code{font-family:var(--f-mono);font-size:.85em;background:var(--inf-w);border-radius:5px;padding:0 .3em}
+.linea button{font:700 .72em var(--f-cuerpo);background:transparent;color:var(--violeta);border:1.5px solid var(--violeta);border-radius:999px;padding:5px 12px;cursor:pointer}
+.linea span:last-child{grid-column:1/-1;color:var(--texto);font-size:.9em}
+#pegar,#mundos{width:100%;font:500 .8em var(--f-mono);color:var(--tinta);background:var(--hoja);border:1.5px solid var(--raya);border-radius:10px;padding:14px;resize:vertical}
+#mundos{font-family:var(--f-cuerpo);font-size:.9em}
+.graf{background:var(--hoja);border:1px solid var(--raya);border-radius:12px;padding:16px}
+.graf svg text{font-family:var(--f-mono);font-size:12px;fill:var(--tenue)}
+.mundos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.mundos div{background:var(--hoja);border:1px solid var(--raya);border-radius:12px;padding:16px 18px}
+.mundos b{display:block;font-family:var(--f-titulo);font-size:1.2em;color:var(--tinta)}
+.mundos span{color:var(--tenue);font-size:.88em}
+.falla{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px;font-size:.9em}
+.falla b{display:block;color:var(--tinta);margin-bottom:6px}
+@media (max-width:760px){.pasos,.falla,.mundos{grid-template-columns:1fr}}
+.quien{max-width:1100px;margin:12px auto 0;padding:0 20px;font-size:.8em;color:var(--tenue);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.quien b{color:var(--tinta)}
+.quien input{font:inherit;color:var(--tinta);background:var(--hoja);border:1.5px solid var(--raya);border-radius:8px;padding:8px 10px;min-width:0}
+.quien button{font:700 1em var(--f-cuerpo);background:var(--violeta);color:var(--hoja);border:0;border-radius:999px;padding:8px 16px;cursor:pointer}
+body:not(.modo-coh) .coh{display:none!important}
+body.modo-coh .est{display:none!important}
+.modo{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px}
+.modo button{font:700 .85em var(--f-cuerpo);border-radius:999px;padding:10px 18px;cursor:pointer;border:1.5px solid var(--violeta);background:transparent;color:var(--violeta)}
+.modo button[aria-pressed="true"]{background:var(--violeta);color:var(--hoja)}
+.modo button:focus-visible{outline:3px solid var(--violeta);outline-offset:2px}
+/* la placa: barra fija abajo, siempre a mano */
+.barra{position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--hoja);border-top:2px solid var(--violeta);padding:10px 20px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:.8em}
+.barra button{font:700 1em var(--f-cuerpo);border-radius:999px;padding:8px 18px;cursor:pointer;background:var(--violeta);color:var(--hoja);border:0}
+.barra button.sec{background:transparent;color:var(--violeta);border:1.5px solid var(--violeta)}
+.barra button:focus-visible{outline:3px solid var(--violeta);outline-offset:2px}
+.barra .ult{font-family:var(--f-mono);font-size:1.15em;color:var(--tinta);background:var(--inf-w);border-radius:6px;padding:2px 10px}
+.barra .msg{color:var(--tenue)}
+body{padding-bottom:70px}
+.reglas{display:flex;gap:16px;align-items:flex-start;background:var(--inf-w);border-radius:12px;padding:18px 20px;color:var(--tinta);font-weight:700}
+.reglas span{font-size:1.4em;line-height:1}
+
+/* ===== El armado propio del proyecto final: misma paleta, otra ficha ===== */
+.cadena{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;gap:12px;align-items:stretch}
+.eslabon{position:relative;background:var(--hoja);border:2px solid var(--raya);border-radius:16px;padding:18px 18px 16px;display:flex;flex-direction:column;gap:2px;transition:border-color .3s,background .3s}
+.eslabon .e-n{font-family:var(--f-titulo);font-weight:800;font-size:2em;line-height:1;color:var(--violeta);margin-bottom:6px}
+.eslabon b{color:var(--tinta);font-size:1.05em}
+.eslabon small{color:var(--tenue);font-size:.8em}
+.eslabon.hecho{border-color:var(--verde);background:var(--verde-w)}
+.eslabon.hecho::after{content:"✓";position:absolute;top:10px;right:14px;font-weight:800;color:var(--verde);font-size:1.2em}
+.flecha{align-self:center;color:var(--tenue);font-size:1.3em}
+@media (max-width:760px){.cadena{grid-template-columns:1fr}.flecha{transform:rotate(90deg);justify-self:center}}
+.retos{gap:28px}
+.reto{--acento:var(--violeta);display:block;border:0;border-left:6px solid var(--acento);background:var(--hoja);border-radius:16px;padding:28px 30px 30px;box-shadow:0 1px 0 var(--raya)}
+#pc,#pm{--acento:var(--verde)} #p2{--acento:var(--inf)} #px{--acento:var(--tenue)}
+.reto .nivel{float:left;margin-right:18px;font-size:2.6em;line-height:.95;color:var(--acento)}
+.reto h3{font-size:1.45em;min-height:1.6em}
+.reto .tiempo{display:inline-block;margin:10px 0 0;font-size:.55em;letter-spacing:.06em;background:var(--papel);border:1px solid var(--raya);border-radius:999px;padding:3px 12px;color:var(--tenue)}
+.reto .cuerpo,.reto .formula{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:20px 32px;align-items:start;grid-auto-flow:row dense}
+.reto .cuerpo>*,.reto .formula>*{grid-column:1/-1}
+.reto .cuerpo>h3{grid-column:1/-1}
+.reto .cuerpo>.pasitos,.reto .cuerpo>.revisar,.reto .cuerpo>.res,.reto .cuerpo>.pista-b,.reto .cuerpo>.pista,.reto .cuerpo>.profe,
+.reto .formula>p,.reto .formula>.opc,.reto .formula>.revisar,.reto .formula>.res,.reto .formula>.pista-b,.reto .formula>.pista,.reto .formula>.profe{grid-column:1}
+.reto .cuerpo>.codigo,.reto .formula>.codigo{grid-column:2;grid-row:span 8;align-self:stretch}
+.reto .formula>.nota{grid-column:1}
+.rescate{margin:0;font-size:.82em;color:var(--tenue);border-left:3px solid var(--raya);padding-left:12px}
+.reto .cuerpo>.rescate,.reto .formula>.rescate{grid-column:1}
+.barra .reloj{margin-left:auto;font-weight:700;color:var(--tinta)}
+.reto .cuerpo>button,.reto .formula>button,.reto .destapar,.reto .revisar,.reto .pista-b{justify-self:start;align-self:start}
+.reto .cuerpo>.codigo,.reto .formula>.codigo{align-self:start}
+.reto .formula>p.coh,.reto .formula>p.est{grid-column:1}
+.codigo::before{content:"tu programa hasta ahora";display:block;font-size:.8em;letter-spacing:.12em;text-transform:uppercase;color:#9E93C4;margin-bottom:10px}
+.codigo .n{display:inline-block;width:calc(100% + 38px);margin:0 -18px 0 -20px;padding:0 18px 0 17px;background:rgba(177,151,238,.18);border-left:3px solid #B197EE;box-shadow:none}
+.tapado{opacity:.62}
+.tapado h3{color:var(--tinta);background:none;user-select:auto}
+.tapado .tiempo{visibility:visible}
+.reto .destapar{margin-top:6px}
+@media (max-width:900px){.reto .cuerpo,.reto .formula{grid-template-columns:1fr}.reto .cuerpo>*,.reto .formula>*{grid-column:1!important;grid-row:auto!important}}
+.fotos{margin:0;display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.6fr);gap:12px;align-items:start}
+.fotos img{width:100%;height:auto;border-radius:12px;display:block}
+.fotos figcaption{grid-column:1/-1;color:var(--tenue);font-size:.85em}
+/* portada propia del proyecto final */
+.portada{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,.8fr);gap:40px;align-items:center}
+.port-txt{display:flex;flex-direction:column;gap:18px}
+h1.pf{font-size:clamp(56px,9vw,128px);line-height:.88;letter-spacing:-.035em;margin:0;color:var(--violeta)}
+.pf-sub{margin:0;font-size:1.25em;color:var(--tinta);max-width:28em}
+.pf-preg{margin:0;display:inline-flex;flex-direction:column;align-self:flex-start;background:var(--hoja);border:2px solid var(--inf);border-radius:14px;padding:12px 20px;font-family:var(--f-titulo);font-weight:800;font-size:1.6em;color:var(--tinta);line-height:1.1}
+.pf-preg span{font-family:var(--f-mono);font-weight:400;font-size:.42em;letter-spacing:.14em;text-transform:uppercase;color:var(--inf);margin-bottom:6px}
+.port-foto{width:100%;max-height:560px;object-fit:cover;border-radius:22px;transform:rotate(1.5deg);box-shadow:0 18px 40px -20px rgba(22,18,38,.5)}
+@media (max-width:760px){.portada{grid-template-columns:1fr}.port-foto{max-height:340px;transform:none}}
+main{padding-bottom:110px}
+
+/* ===== el armador de bloques ===== */
+.kit,.armador-s,.calib,.probar,.mundos-s{display:flex;flex-direction:column;gap:18px}
+.piezas-kit{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.pk{background:var(--hoja);border:1px solid var(--raya);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:6px;font-size:.85em}
+.pk b{color:var(--tinta);font-size:1.05em}
+.pk.base{border:2px solid var(--violeta)}
+.pk code,.para-profe code{font-family:var(--f-mono);font-size:.92em;background:var(--inf-w);border-radius:4px;padding:0 .25em}
+.misiones{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.mision{display:flex;gap:10px;align-items:flex-start;background:var(--hoja);border:2px solid var(--raya);border-radius:14px;padding:12px 14px;font-size:.85em}
+.mision .m-n{font-family:var(--f-titulo);font-weight:800;font-size:1.6em;line-height:1;color:var(--violeta)}
+.mision b{color:var(--tinta)}
+.mision small{display:block;color:var(--tenue);margin-top:4px}
+.mision .tiempo{display:inline-block;font-family:var(--f-mono);font-size:.75em;color:var(--tenue)}
+.mision.hecho{border-color:var(--verde);background:var(--verde-w)}
+.armador{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.3fr);gap:24px;align-items:start}
+.paleta{display:flex;flex-direction:column;gap:14px;background:var(--hoja);border:1px solid var(--raya);border-radius:16px;padding:16px;position:sticky;top:12px}
+.grupo>div{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.g-t{font-family:var(--f-mono);font-size:.68em;letter-spacing:.12em;text-transform:uppercase}
+.g-t small{text-transform:none;letter-spacing:0}
+.bloque{--c:var(--violeta);font:700 .78em var(--f-cuerpo);color:var(--tinta);background:var(--papel);border:2px solid var(--c);border-left-width:8px;border-radius:10px;padding:8px 12px;cursor:grab;user-select:none;text-align:left}
+.bloque:active{cursor:grabbing}
+.bloque:focus-visible{outline:3px solid var(--violeta);outline-offset:2px}
+.medir{--c:var(--verde);color:var(--verde)} .mostrar{--c:var(--violeta);color:var(--violeta)} .decidir{--c:var(--inf);color:var(--inf)} .avisar{--c:#C77A1E;color:#C77A1E} .esperar{--c:var(--tenue);color:var(--tenue)}
+.bloque.medir,.bloque.mostrar,.bloque.decidir,.bloque.avisar,.bloque.esperar{color:var(--tinta)}
+.obra{display:flex;flex-direction:column;gap:12px}
+.prog-cab{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.prog-cab b{font-family:var(--f-titulo);font-size:1.3em;color:var(--tinta)}
+.prog,.dentro{list-style:none;margin:0;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:64px;border:2px dashed var(--raya);border-radius:14px;background:var(--hoja)}
+.prog.sobre,.dentro.sobre{border-color:var(--violeta);background:var(--inf-w)}
+.prog li{--c:var(--violeta);background:var(--papel);border:2px solid var(--c);border-left-width:8px;border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:6px;cursor:grab}
+.prog li .fila-b{display:flex;gap:8px;align-items:center}
+.prog li .fila-b span{flex:1;font-weight:700;color:var(--tinta);font-size:.85em}
+.prog li .fila-b button{font:700 .75em var(--f-cuerpo);background:transparent;border:1px solid var(--raya);border-radius:6px;padding:2px 8px;cursor:pointer;color:var(--tenue)}
+.dentro{min-height:44px;margin-left:10px;padding:8px}
+.prog li.medir{--c:var(--verde)} .prog li.mostrar{--c:var(--violeta)} .prog li.decidir{--c:var(--inf)} .prog li.avisar{--c:#C77A1E} .prog li.esperar{--c:var(--tenue)}
+.dentro:empty::before{content:"soltá acá adentro un aviso";color:var(--tenue);font-size:.75em}
+.vacio{margin:-4px 0 0;color:var(--tenue);font-size:.85em}
+.acciones-a{display:flex;gap:10px;flex-wrap:wrap}
+.cod-eq{font-weight:700;font-size:.95em;color:var(--tinta)}
+.res ul{margin:6px 0 0;padding-left:1.2em}
+.ver-codigo summary{cursor:pointer;font-weight:700;color:var(--violeta);margin-bottom:10px}
+.ver-codigo .codigo::before{content:none}
+.tablas{display:flex;flex-wrap:wrap;gap:18px}
+.para-profe{border:1.5px dashed var(--raya);border-radius:12px;padding:14px 18px;font-size:.88em}
+.para-profe summary{cursor:pointer;font-weight:700;color:var(--tenue)}
+.pp{display:flex;flex-direction:column;gap:12px;margin-top:12px}
+.pp input{font:500 1.1em var(--f-mono);padding:8px 10px;border:1.5px solid var(--raya);border-radius:8px;background:var(--hoja);color:var(--tinta)}
+@media (max-width:900px){.armador,.misiones,.piezas-kit{grid-template-columns:1fr}.paleta{position:static}}
+/* más liviano: menos tamaño en todo */
+body{font-size:clamp(16px,1.25vw,19px)}
+main{gap:clamp(32px,4vw,52px)}
+.portada{grid-template-columns:minmax(0,1fr) 240px;gap:32px}
+h1.pf{font-size:clamp(40px,5vw,68px);line-height:1;letter-spacing:-.03em}
+.pf-sub{font-size:1.05em;color:var(--texto)}
+.pf-preg{font-size:1.15em;padding:10px 16px;border-width:1.5px}
+.port-foto{max-height:300px;transform:rotate(1deg)}
+h2{font-size:clamp(22px,2.2vw,30px)}
+@media (max-width:760px){.portada{grid-template-columns:1fr}.port-foto{max-height:220px}}
+.pk em,em.pide{font-style:normal;font-family:var(--f-mono);font-size:.7em;font-weight:400;letter-spacing:.06em;color:#C77A1E;border:1px solid #C77A1E;border-radius:999px;padding:0 6px;margin-left:4px;white-space:nowrap}
+details.pk summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:6px}
+details.pk summary::-webkit-details-marker{display:none}
+details.pk summary::after{content:"＋";margin-left:auto;color:var(--tenue);font-weight:700}
+details.pk[open] summary::after{content:"－"}
+details.pk[open]{border-color:#C77A1E}
+details.pk span{display:block;margin-top:8px}
+.piezas-kit{align-items:start}
+.paso-k{grid-column:1/-1;margin:6px 0 -4px;color:var(--tinta);font-size:.9em}
+.pal-lista{display:flex;flex-direction:column;gap:8px}
+.pal-lista .bloque{display:flex;flex-direction:column;gap:2px;width:100%;padding:10px 14px}
+.pal-lista .bloque b{font-size:1em}
+.pal-lista .bloque small{font-weight:500;color:var(--tenue);font-size:.92em}
+.mas summary{cursor:pointer;font-weight:700;color:#C77A1E;margin:4px 0 10px}
+.ley{display:inline-block;font-family:var(--f-mono);font-size:.8em;border-left:6px solid var(--c);padding:0 6px;margin:2px 2px 0 0;color:var(--tinta)}
+.base-g{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:16px;align-items:start}
+.base-g svg{max-width:300px;display:block;margin-bottom:8px}
+.mini-c{font-size:.72em;padding:12px 14px}
+.mini-c::before{content:none!important}
+.como{margin:4px 0;padding-left:1.3em;display:flex;flex-direction:column;gap:6px;color:var(--tinta)}
+.pk .anda{font-size:.95em}
+.anda-k{margin:8px 0 0;color:var(--tinta)}
+.piezas-kit .pk.base{grid-column:1/-1}
+@media (max-width:760px){.base-g{grid-template-columns:1fr}}
+/* la pantalla de la profe */
+.profe-tool{max-width:1100px;margin:0 auto;padding:32px 20px 60px;display:flex;flex-direction:column;gap:20px}
+.pt-pasos{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;font-size:.9em;color:var(--tinta)}
+.pt-pasos div{display:flex;gap:10px;align-items:flex-start;background:var(--hoja);border:1px solid var(--raya);border-radius:12px;padding:12px}
+.pt-pasos span{font-family:var(--f-titulo);font-weight:800;font-size:1.5em;line-height:1;color:var(--violeta)}
+.pt-equipos{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.pt-eq{display:flex;flex-direction:column;gap:2px;text-align:left;font:inherit;background:var(--hoja);border:2px solid var(--raya);border-radius:14px;padding:14px;cursor:pointer;color:var(--tinta)}
+.pt-eq b{font-size:1.1em}.pt-eq span{color:var(--texto);font-size:.85em}.pt-eq small{font-family:var(--f-mono);color:var(--tenue);font-size:.72em;word-break:break-all;margin-top:4px}
+.pt-eq.on{border-color:var(--violeta);background:var(--inf-w)}
+.pt-entrada{display:flex;flex-direction:column;gap:10px}
+#pp-cod{font:500 1.6em var(--f-mono);padding:14px 16px;border:2px solid var(--violeta);border-radius:12px;background:var(--hoja);color:var(--tinta);width:100%}
+.pt-resc{display:flex;gap:8px;align-items:center;flex-wrap:wrap;color:var(--tenue);font-size:.9em}
+.pt-resc button{font:700 .9em var(--f-cuerpo);background:transparent;color:var(--violeta);border:1.5px solid var(--violeta);border-radius:999px;padding:6px 14px;cursor:pointer}
+.pt-res{margin:0;font-weight:700;color:var(--tenue)}.pt-res.ok{color:var(--verde)}.pt-res.mal{color:var(--rojo)}
+.pt-copiar{align-self:flex-start;font:800 1.2em var(--f-cuerpo);background:var(--violeta);color:var(--hoja);border:0;border-radius:999px;padding:14px 28px;cursor:pointer}
+.profe-tool code{font-family:var(--f-mono);background:var(--inf-w);border-radius:4px;padding:0 .3em}
+@media (max-width:760px){.pt-pasos,.pt-equipos{grid-template-columns:1fr 1fr}}
+.profe-tool .codigo::before{content:"el programa del equipo"}
+/* los tres pasos */
+.paso-s{display:flex;flex-direction:column;gap:16px;background:var(--hoja);border:1px solid var(--raya);border-left:6px solid var(--violeta);border-radius:18px;padding:24px 26px}
+#s2{border-left-color:#C77A1E} #s3{border-left-color:var(--verde)}
+.ps-cab{display:flex;gap:16px;align-items:center}
+.ps-n{font-family:var(--f-titulo);font-weight:800;font-size:3em;line-height:1;color:var(--violeta)}
+#s2 .ps-n{color:#C77A1E} #s3 .ps-n{color:var(--verde)}
+.ps-cab h2{margin:0}.ps-cab .tiempo{font-family:var(--f-mono);font-size:.75em;color:var(--tenue)}
+.ps-g{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:20px;align-items:start}
+.ps-esq svg{max-width:300px;display:block;margin-bottom:8px}
+.ps-esq p{margin:0 0 8px}
+.paso-s code{font-family:var(--f-mono);font-size:.9em;background:var(--inf-w);border-radius:4px;padding:0 .25em}
+.profe-p{display:flex;gap:14px;align-items:flex-start;border:1.5px solid var(--violeta);border-radius:12px;padding:14px 18px}
+.profe-p p{margin:0;color:var(--tinta)} .profe-p small{color:var(--tenue)} .profe-p .ic{font-size:1.5em}
+.medir-l{display:flex;flex-direction:column;gap:10px}
+.medir-l p{margin:0}
+.opciones{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.opciones.dos{grid-template-columns:repeat(3,minmax(0,1fr));max-width:none}
+.op{display:flex;flex-direction:column;gap:4px;align-items:flex-start;text-align:left;font:inherit;background:var(--papel);border:2px solid var(--raya);border-radius:16px;padding:16px;cursor:pointer;color:var(--tinta)}
+.op .op-i{font-size:1.8em;line-height:1.1}
+.op small{color:var(--tenue);font-size:.85em}
+.op[aria-checked="true"]{border-color:#C77A1E;background:rgba(199,122,30,.12)}
+#s3 .op[aria-checked="true"]{border-color:var(--verde);background:var(--verde-w)}
+.op:focus-visible{outline:3px solid var(--violeta);outline-offset:2px}
+.elegido{display:flex;flex-direction:column;gap:16px}
+.libre{border:1.5px dashed var(--raya);border-radius:16px;padding:16px 20px}
+.libre>summary{cursor:pointer;font-weight:700;color:var(--violeta)}
+.libre .armador-s{margin-top:16px}
+@media (max-width:900px){.ps-g,.opciones{grid-template-columns:1fr 1fr}.ps-g{grid-template-columns:1fr}}
+.pt-rapido{display:flex;flex-direction:column;gap:10px;background:var(--hoja);border:1px solid var(--raya);border-radius:14px;padding:16px}
+.pt-fila{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.pt-fila>span{width:6.5em;font-family:var(--f-mono);font-size:.75em;letter-spacing:.1em;text-transform:uppercase;color:var(--tenue)}
+.pt-fila button{font:700 1em var(--f-cuerpo);background:var(--papel);color:var(--tinta);border:2px solid var(--raya);border-radius:12px;padding:10px 16px;cursor:pointer}
+.pt-fila button.on{border-color:var(--violeta);background:var(--inf-w)}
+.pt-fila label{display:flex;gap:6px;align-items:center;color:var(--tinta)}
+.pt-fila input{width:5.5em;font:500 1.1em var(--f-mono);padding:8px;border:1.5px solid var(--raya);border-radius:8px;background:var(--papel);color:var(--tinta)}
+.pt-otro summary{cursor:pointer;color:var(--tenue);font-size:.9em;margin-bottom:8px}
+.enviar-p{display:flex;gap:16px;align-items:center;flex-wrap:wrap;border:1.5px solid var(--violeta);border-radius:12px;padding:14px 18px}
+.enviar-p p{margin:0}.enviar-p small{color:var(--tenue)}
+.enviar{font:800 1.05em var(--f-cuerpo);background:var(--violeta);color:var(--hoja);border:0;border-radius:999px;padding:12px 24px;cursor:pointer}
+.enviar:focus-visible{outline:3px solid var(--violeta);outline-offset:2px}
+.pt-llegan{background:var(--hoja);border:2px solid var(--verde);border-radius:14px;padding:16px}
+.pt-ll-cab{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.pt-ll-cab b{font-size:1.2em;color:var(--tinta)}
+.pt-ll-cab input{margin-left:auto;font:inherit;padding:6px 10px;border:1.5px solid var(--raya);border-radius:8px;background:var(--papel);color:var(--tinta)}
+#pt-lista{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+#pt-lista li{display:flex;gap:12px;align-items:center;flex-wrap:wrap;border-bottom:1px solid var(--raya);padding:6px 0}
+#pt-lista .h{font-family:var(--f-mono);color:var(--tenue)}#pt-lista code{font-family:var(--f-mono);font-size:.85em;color:var(--violeta);flex:1;word-break:break-all}
+#pt-lista button{font:700 .9em var(--f-cuerpo);background:var(--violeta);color:var(--hoja);border:0;border-radius:999px;padding:6px 14px;cursor:pointer}
+.verbos{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.verbos li{font-family:var(--f-titulo);font-weight:600;font-size:1.05em;color:var(--tinta);background:var(--hoja);border:1.5px solid var(--raya);border-radius:999px;padding:4px 14px}
+.verbos li:nth-child(1){border-color:var(--violeta)}.verbos li:nth-child(2){border-color:var(--inf)}.verbos li:nth-child(3){border-color:#C77A1E}.verbos li:nth-child(4){border-color:var(--verde)}.verbos li:nth-child(5){border-color:var(--tenue)}
+.datos{display:flex;flex-direction:column;gap:12px;border-top:1px solid var(--raya);padding-top:16px}
+.datos h3{margin:0;font-family:var(--f-titulo);color:var(--tinta)}
+.analizar{background:var(--papel);border-radius:12px;padding:14px 18px}
+.analizar p{margin:0}.analizar ul{margin:8px 0 0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px;color:var(--tinta)}
+/* animaciones de la portada */
+.port-media{position:relative}
+.vivo{position:absolute;left:-18px;bottom:22px;width:72%;background:rgba(22,18,38,.88);backdrop-filter:blur(4px);border:1px solid rgba(177,151,238,.4);border-radius:12px;padding:8px 10px 6px;color:#EDE8FA;transform:rotate(-1.5deg);box-shadow:0 10px 24px -12px rgba(0,0,0,.6)}
+.vivo-cab{display:flex;align-items:center;gap:6px;font-family:var(--f-mono);font-size:.68em;letter-spacing:.08em;text-transform:uppercase;color:#ABA3C4}
+.vivo-cab b{margin-left:auto;font-size:1.5em;color:#fff;letter-spacing:0;font-variant-numeric:tabular-nums}
+.punto{width:8px;height:8px;border-radius:50%;background:#5CC98C}
+.vivo svg{display:block;width:100%;height:46px}
+@media (prefers-reduced-motion:no-preference){
+  .portada .rot,.portada h1.pf,.portada .pf-sub,.portada .pf-preg{animation:sube .7s cubic-bezier(.2,.7,.2,1) both}
+  .portada h1.pf{animation-delay:.08s}.portada .pf-sub{animation-delay:.18s}.portada .pf-preg{animation-delay:1s}
+  .verbos li{animation:sube .5s cubic-bezier(.2,.7,.2,1) both,prende 6s ease-in-out infinite}
+  .verbos li:nth-child(1){animation-delay:.3s,1.2s}.verbos li:nth-child(2){animation-delay:.42s,2.4s}.verbos li:nth-child(3){animation-delay:.54s,3.6s}.verbos li:nth-child(4){animation-delay:.66s,4.8s}.verbos li:nth-child(5){animation-delay:.78s,6s}
+  .port-media{animation:aparece .9s .25s cubic-bezier(.2,.7,.2,1) both}
+  .port-foto{animation:flota 7s ease-in-out infinite}
+  .vivo{animation:aparece .6s 1.1s both}
+  .punto{animation:late 1.2s ease-in-out infinite}
+  .brote{display:inline-block;transform-origin:50% 90%;animation:brota 3.5s ease-in-out infinite}
+}
+.brote{font-style:normal}
+@keyframes sube{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes aparece{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes flota{0%,100%{transform:rotate(1deg) translateY(0)}50%{transform:rotate(.2deg) translateY(-6px)}}
+@keyframes late{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(92,201,140,.6)}50%{opacity:.6;box-shadow:0 0 0 5px rgba(92,201,140,0)}}
+@keyframes brota{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+@keyframes prende{0%,12%,100%{background:var(--hoja);color:var(--tinta)}4%,9%{background:var(--c,var(--violeta));color:var(--papel)}}
+.verbos li:nth-child(1){--c:var(--violeta)}.verbos li:nth-child(2){--c:var(--inf)}.verbos li:nth-child(3){--c:#C77A1E}.verbos li:nth-child(4){--c:var(--verde)}.verbos li:nth-child(5){--c:var(--tenue)}
+@media (max-width:760px){.vivo{left:8px;width:80%}}
+/* la portada en mosaico */
+.portada{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:36px;align-items:center}
+.mosaico{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1fr);grid-template-rows:auto auto auto;gap:12px;align-items:stretch}
+.mosaico img{width:100%;height:100%;object-fit:cover;border-radius:16px;display:block;max-height:none;transform:none;box-shadow:none}
+.m-maceta{grid-column:1;grid-row:1/4;min-height:330px}
+.m-proto{grid-column:2;grid-row:1;aspect-ratio:16/9}
+.mosaico .vivo{position:static;grid-column:2;grid-row:2;width:auto;transform:none;box-shadow:none}
+.m-zona{grid-column:2;grid-row:3;align-self:stretch;margin:0;justify-content:center}
+@media (prefers-reduced-motion:no-preference){
+  .m-maceta{animation:aparece .8s .2s cubic-bezier(.2,.7,.2,1) both}
+  .m-proto{animation:aparece .8s .4s cubic-bezier(.2,.7,.2,1) both}
+  .mosaico .vivo{animation:aparece .7s .6s cubic-bezier(.2,.7,.2,1) both}
+  .m-zona{animation:aparece .7s .8s cubic-bezier(.2,.7,.2,1) both}
+}
+@media (max-width:760px){.portada{grid-template-columns:1fr}.m-maceta{min-height:220px}}
+.mosaico{height:360px;grid-template-rows:1.15fr .95fr .7fr}
+.m-maceta{min-height:0}
+.m-proto{aspect-ratio:auto;min-height:0}
+.mosaico .vivo{display:flex;flex-direction:column;justify-content:center;min-height:0}
+.mosaico .vivo svg{height:38px}
+.m-zona{padding:8px 16px;font-size:1.05em}
+@media (max-width:760px){.mosaico{height:auto;grid-template-rows:auto}.m-maceta{min-height:240px}.m-proto{aspect-ratio:16/9}}
+/* el diagrama de flujo */
+.flujo{display:flex;flex-direction:column;gap:10px}
+.diag{background:var(--papel);border:1px solid var(--raya);border-radius:14px;padding:12px}
+.diag svg{display:block;width:100%;max-width:420px;margin:0 auto;height:auto}
+.diag .tx{font:700 12.5px var(--f-cuerpo);fill:var(--tinta);text-anchor:middle}
+.diag .tx2{font:500 11px var(--f-cuerpo);fill:var(--texto);text-anchor:middle}
+.diag .tx2.fuerte{font-weight:700;fill:var(--tinta)}
+.diag .tsi{font:700 11px var(--f-mono);fill:var(--verde)} .diag .tno{font:700 11px var(--f-mono);fill:var(--rojo)}
+.diag .tvu{font:500 10px var(--f-mono);fill:var(--tenue);text-anchor:middle;letter-spacing:.08em}
+.diag .fl{stroke:var(--tenue);stroke-width:1.6;fill:none} .diag .fl.vuelta{stroke-dasharray:5 4} .diag .pta{fill:var(--tenue)}
+.diag .d-ini{fill:var(--violeta)} .diag .d-ini+text{fill:var(--hoja)}
+.diag .d-set{fill:var(--hoja);stroke:var(--raya);stroke-width:1.5}
+.diag .d-med{fill:var(--verde-w);stroke:var(--verde);stroke-width:2}
+.diag .d-mos{fill:var(--inf-w);stroke:var(--violeta);stroke-width:2}
+.diag .d-dec{fill:var(--inf-w);stroke:var(--inf);stroke-width:2}
+.diag .d-avi{fill:rgba(199,122,30,.14);stroke:#C77A1E;stroke-width:2} .diag .d-avi.no{fill:var(--hoja);stroke-dasharray:4 3}
+.diag .d-esp{fill:var(--hoja);stroke:var(--tenue);stroke-width:2}
+.ver-cod summary{cursor:pointer;font-weight:700;color:var(--violeta);font-size:.9em}
+.ver-cod .codigo{margin-top:8px}
+.diag-libre{margin-bottom:6px}
+.paso-s{gap:22px}
+.op-fija{cursor:default;border-style:dashed;border-color:#C77A1E;background:transparent}
+</style>
+</head>
+<body>
+<a href="./" style="display:inline-block;margin:16px 20px 0;font:600 15px Manrope,system-ui,sans-serif;color:var(--violeta);text-decoration:none">← Volver a Tecnologías para el territorio</a>
+<div id="quien" class="quien"></div>
+<section class="profe-tool" id="profe-tool" hidden>
+  <div class="pt-cab"><div class="rot">Proyecto final · para la profe</div><h1 class="pf">Subir los programas</h1></div>
+  <div class="pt-pasos">
+    <div><span>1</span>En la mesa del equipo: tocalo acá y enchufá su placa.</div>
+    <div><span>2</span>«Usar» lo que mandaron, o tocá el paso y el sensor.</div>
+    <div><span>3</span>Copiá, pegá en el IDE (Archivo → Nuevo) y Subir.</div>
+    <div><span>4</span>Desenchufala de tu compu: la enchufan en la de ellos y tocan Conectar.</div>
+  </div>
+  <div class="pt-llegan">
+    <div class="pt-ll-cab"><b>Lo que mandaron</b><span class="nota" id="pt-ll-est"></span><input id="pt-clave" type="password" placeholder="clave del buzón" aria-label="Clave del buzón"></div>
+    <ol id="pt-lista"></ol>
+  </div>
+  <div class="pt-equipos" id="pt-equipos"></div>
+  <div class="pt-rapido">
+    <div class="pt-fila"><span>Paso</span><button type="button" data-p="1">1 · luz</button><button type="button" data-p="2">2 · humedad y LED</button></div>
+    <div class="pt-fila" data-si="2"><span>Sensor</span><button type="button" data-t="hq">🌱 Horquilla</button><button type="button" data-t="cp">🌱 Capacitivo</button></div>
+    <div class="pt-fila" data-si="2"><span>Umbral</span><label>tierra <input id="pt-t" inputmode="numeric" placeholder="700"></label></div>
+  </div>
+  <details class="pt-otro"><summary>¿Lo armaron con bloques? Escribí el código que te dictan</summary>
+    <input id="pp-cod" aria-label="Código del equipo" placeholder="el código que te dictan" autocomplete="off" spellcheck="false">
+  </details>
+  <p class="pt-res" id="pt-res"></p>
+  <button class="pt-copiar" type="button" id="pp-copiar">Copiar para el IDE</button>
+  <div class="codigo"><pre id="pp-prog"></pre></div>
+  <p class="nota">¿«Permission denied» al subir? En una terminal: <code>sudo chmod a+rw /dev/ttyACM0</code> (el Nano suele ser <code>/dev/ttyUSB0</code>). ¿El Nano no sube? Herramientas → Procesador → <b>ATmega328P (Old Bootloader)</b>.</p>
+</section>
+<main>
+  <header>
+    <div class="modo" role="group" aria-label="Elegí tu proyecto" hidden>
+      <button type="button" data-modo="est">🌤️ Estación meteorológica</button>
+      <button type="button" data-modo="coh">🚀 Cohete de agua</button>
+    </div>
+    <div class="est portada">
+      <div class="port-txt">
+        <div class="rot">3ro · proyecto final · miércoles 28/10</div>
+        <h1 class="pf">Explorando la realidad</h1>
+        <p class="pf-sub">El proyecto final: un aparato que arman ustedes para ver lo que no se ve a simple vista.</p>
+        <ol class="verbos"><li>explorar</li><li>crear</li><li>armar</li><li>medir</li><li>analizar datos</li></ol>
+      </div>
+      <div class="mosaico">
+        <img class="m-maceta" src="img/proyecto-final-maceta.jpg" alt="Un aparato armado: la placa Arduino, la protoboard y un sensor de horquilla clavado en una maceta con una planta">
+        <img class="m-proto" src="img/proyecto-final-protoboard.jpg" alt="De cerca: la plaquita del sensor y la fotorresistencia pinchadas en la protoboard, con los cables a la placa">
+        <div class="vivo" aria-hidden="true"><div class="vivo-cab"><span class="punto"></span><span>luz</span><b id="vivo-n">640</b></div><svg viewBox="0 0 200 60" preserveAspectRatio="none"><path id="vivo-l" d="" fill="none" stroke="#B197EE" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/></svg></div>
+        <p class="pf-preg m-zona"><span>Zona de experimento</span><em class="brote">🌱</em> La huerta</p>
+      </div>
+    </div>
+    <div class="coh">
+      <div class="rot">3ro · cohete de agua · la placa en la mesa</div>
+      <h1>¿El sensor de luz puede ver un vuelo?</h1>
+      <p class="bajada">Lo que armaron en Tinkercad, ahora con la placa y los cables en la mesa. El cohete sube y baja en 6 segundos, y adentro la luz cambia todo el tiempo. Arman el aparato entero con un sensor de luz y averiguan si mide lo bastante rápido para ver un vuelo.</p>
+    </div>
+  </header>
+
+
+
+  <section class="paso-s" id="s1" aria-label="Paso 1">
+    <div class="ps-cab"><span class="ps-n">1</span><div><h2>Todos juntos: el sensor de luz</h2><span class="tiempo">hasta las 8:50</span></div></div>
+    <p class="nota">Con el USB desenchufado. Antes de enchufar, otro del equipo revisa cable por cable.</p>
+    <div class="ps-g">
+      <div class="ps-esq"><svg viewBox="0 0 330 150" role="img" aria-label="La fotorresistencia: una pata a 5V, la otra a A1, y desde esa misma fila una resistencia de 10 kΩ a GND">
+              <circle cx="60" cy="75" r="26" fill="var(--tenue)"/>
+              <path d="M44 66 h8 v18 h8 v-18 h8 v18 h8" fill="none" stroke="var(--papel)" stroke-width="3"/>
+              <text x="60" y="122" text-anchor="middle" font-family="Manrope,sans-serif" font-size="11" fill="var(--tenue)">sensor de luz</text>
+              <path d="M86 62 C130 62 150 35 250 35" fill="none" stroke="var(--rojo)" stroke-width="5" stroke-linecap="round"/>
+              <path d="M86 88 L250 88" fill="none" stroke="var(--verde)" stroke-width="5" stroke-linecap="round"/>
+              <path d="M170 88 L170 104" stroke="var(--tinta)" stroke-width="3"/>
+              <rect x="160" y="104" width="20" height="16" rx="3" fill="#C9A26B"/>
+              <text x="186" y="116" font-family="DM Mono,monospace" font-size="11" fill="var(--tenue)">10 kΩ</text>
+              <path d="M170 120 L170 135 L250 135" fill="none" stroke="var(--tinta)" stroke-width="5" stroke-linecap="round"/>
+              <text x="260" y="40" font-family="DM Mono,monospace" font-size="15" font-weight="500" fill="var(--tinta)">5V</text>
+              <text x="260" y="93" font-family="DM Mono,monospace" font-size="15" font-weight="500" fill="var(--tinta)">A1</text>
+              <text x="260" y="140" font-family="DM Mono,monospace" font-size="15" font-weight="500" fill="var(--tinta)">GND</text>
+            </svg>
+        <p>Una pata a <code>5V</code>. La otra a <code>A1</code>, y desde esa misma fila una resistencia de 10 kΩ (marrón, negro, naranja) a <code>GND</code>.</p>
+        <p class="nota">¿Les tocó el Nano? Va pinchado en la protoboard; los nombres de los pines están escritos en la placa.</p>
+      </div>
+      <div class="flujo"><div class="diag" data-diag="1"></div><details class="ver-cod"><summary>Ver el código comentado</summary><div class="codigo mini-c"><pre data-paso="1"></pre></div></details></div>
+    </div>
+    <div class="enviar-p"><button type="button" class="enviar" data-enviar="1">Enviar a la profe</button><div><p class="cod-eq" data-cod-eq="1"></p><small class="env-msg">La profe pasa por su mesa y lo carga. Después enchufan la placa en esta compu y tocan <b>Conectar</b>, abajo.</small></div></div>
+    <div class="anda"><b>Anda si…</b>
+      <label><input type="checkbox" data-a="b1">acá abajo caen filas: el segundo y la luz, una por segundo</label>
+      <label><input type="checkbox" data-a="b2">si tapan el sensor con la mano, el número baja</label>
+      <label><input type="checkbox" data-a="b3">con la linterna del celu, sube</label>
+    </div>
+    <div class="datos">
+      <h3>Los datos de su aparato</h3>
+      <p class="nota">Dejen la placa conectada un minuto. Mientras mide: tápenlo, destápenlo, acérquenlo a la ventana, iluminen con el celu.</p>
+      <textarea id="pegar" rows="5" placeholder="Acá caen las filas de la placa. Si no anda Conectar, copien las filas del monitor serie y péguenlas." aria-label="Las filas de la placa"></textarea>
+      <p class="res" id="graf-msg" hidden></p>
+      <div class="graf" id="graf" hidden></div>
+      <div class="acciones-a"><button type="button" class="revisar" id="subir">Subir los datos</button><span class="res" id="subir-res"></span></div>
+      <div class="analizar">
+        <p><b>Analicen el gráfico, en el equipo:</b></p>
+        <ul><li>¿Dónde se ve cuando taparon el sensor? ¿Y cuando lo iluminaron?</li><li>¿Cuál fue el número más bajo y el más alto? ¿Qué estaban haciendo en ese momento?</li><li>Si lo dejaran toda la noche en la huerta, ¿cómo se vería el gráfico?</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="paso-s" id="s2" aria-label="Paso 2">
+    <div class="ps-cab"><span class="ps-n">2</span><div><h2>Todos: sumamos humedad y un LED</h2><span class="tiempo">hasta las 9:05</span></div></div>
+    <p>Para explorar la tierra de la huerta: ¿cuánta agua tiene? ¿cambia con la luz? Busquen un sensor de humedad y un LED con su resistencia de 220 Ω.</p>
+    <div class="opciones dos" role="radiogroup" aria-label="El sensor de humedad">
+      <button type="button" class="op" data-tie="hq" role="radio" aria-checked="false"><span class="op-i">🌱</span><b>De horquilla</b><small>Dos patas de metal, con una plaquita aparte.</small></button>
+      <button type="button" class="op" data-tie="cp" role="radio" aria-checked="false"><span class="op-i">🌱</span><b>Capacitivo</b><small>Una sola pieza negra, no se oxida.</small></button>
+      <div class="op op-fija" aria-label="Y un LED, para todos"><span class="op-i">💡</span><b>+ un LED</b><small>Va con cualquiera de los dos: se prende cuando la tierra está seca.</small></div>
+    </div>
+    <div class="elegido" id="s2-elegido" hidden>
+      <div class="ps-g">
+        <div class="ps-esq">
+          <p><b>El sensor:</b> <code>VCC</code> a 5V, <code>GND</code> a GND y <code>AO</code> (o <code>AOUT</code>) a <code>A0</code>. <span id="s2-esq"></span></p>
+          <p><b>El LED:</b> la pata larga, con la resistencia de 220 Ω (rojo, rojo, marrón), al <code>pin 9</code>; la corta, a GND. Si no prende nunca, denlo vuelta.</p>
+          <p class="nota">El sensor de luz queda como estaba.</p>
+          <p><b>Anoten tres números</b> (los ven en la tabla):</p>
+          <div class="tabla-w"><table class="tabla"><tr><th>En el aire</th><th>Tierra seca</th><th>Tierra mojada</th></tr>
+            <tr><td><input class="cal" data-c="aire" inputmode="numeric" aria-label="Tierra: en el aire"></td><td><input class="cal" data-c="seca" inputmode="numeric" aria-label="Tierra seca"></td><td><input class="cal" data-c="mojada" inputmode="numeric" aria-label="Tierra mojada"></td></tr></table></div>
+          <div class="umbral"><span>El LED se prende si la tierra pasa de</span> <input id="umbral-t" inputmode="numeric" aria-label="Umbral de tierra"></div>
+          <p class="res" id="umbral-res" hidden></p>
+          <p class="rescate">🛟 Un número entre la seca y la mojada. Si no llegan a medir, usen 700.</p>
+        </div>
+        <div class="flujo"><div class="diag" data-diag="2"></div><details class="ver-cod"><summary>Ver el código comentado</summary><div class="codigo mini-c"><pre data-paso="2"></pre></div></details></div>
+      </div>
+      <div class="enviar-p"><button type="button" class="enviar" data-enviar="2">Enviar a la profe</button><div><p class="cod-eq" data-cod-eq="2"></p><small class="env-msg">La profe pasa por su mesa y lo carga. Después enchufan la placa en esta compu y tocan <b>Conectar</b>, abajo.</small></div></div>
+      <div class="anda"><b>Anda si…</b><label><input type="checkbox" data-a="s2a">con el sensor en el aire, el LED se prende; en tierra mojada, se apaga</label><label><input type="checkbox" data-a="s2b">el gráfico de arriba ahora tiene dos líneas: la luz y la tierra</label></div>
+      <p>Y suban los datos otra vez, con el botón de arriba.</p>
+    </div>
+  </section>
+
+  <section class="mundos-s" aria-label="El cierre">
+    <h2>🌍 Los cuatro aparatos <span class="tiempo">9:05, todos juntos</span></h2>
+    <p>Cada equipo cuenta su aparato en un minuto.</p>
+    <div class="mundos">
+      <div><b>¿Qué mide?</b><span>Qué pidieron a la mesa y qué bloques eligieron, y por qué.</span></div>
+      <div><b>¿Qué decide?</b><span>Sus umbrales, y qué hace cuando se cumple.</span></div>
+      <div><b>¿Qué descubrieron?</b><span>Algo que en Tinkercad no pasaba.</span></div>
+    </div>
+    <p>Y la pregunta de todos: <b>los que usaron horquilla y los que usaron capacitivo, ¿dan el mismo número en la misma tierra?</b> ¿Se puede usar el umbral de otro equipo?</p>
+    <textarea id="mundos" rows="4" placeholder="Lo que descubrimos hoy:" aria-label="Lo que descubrieron"></textarea>
+    <button class="revisar" type="button" id="mundos-ok">Guardar lo que descubrimos</button>
+    <p class="res ok" id="mundos-res" hidden>Guardado. Antes de desarmar: ¿qué quieren medir cuando vuelva la profe, el 11/11?</p>
+  </section>
+
+
+  <details class="libre">
+    <summary>¿Terminaron? Armen su propio aparato, bloque por bloque: buzzer, RGB, botón, dos LED…</summary>
+    <section class="armador-s" aria-label="El armador">
+    <div class="armador">
+      <div class="paleta" aria-label="Los bloques">
+        <p class="nota">Arrastrá un bloque al programa, o tocalo para sumarlo al final. El color dice qué hace: <span class="ley medir">mide</span> <span class="ley mostrar">muestra</span> <span class="ley decidir">decide</span> <span class="ley avisar">avisa</span> <span class="ley esperar">espera</span></p>
+        <div class="pal-lista" id="pal-base"></div>
+        <details class="mas"><summary>＋ Bloques de lo que pidieron a la mesa</summary><div class="pal-lista" id="pal-mesa"></div></details>
+      </div>
+      <div class="obra">
+        <div class="prog-cab"><b>Tu programa</b><span class="nota">se repite para siempre, de arriba para abajo</span></div>
+        <ol id="prog" class="prog" aria-label="Tu programa"></ol>
+        <p class="vacio" id="vacio">Arrastrá acá el primer bloque.</p>
+        <div class="acciones-a"><button class="revisar" type="button" id="revisar">Revisar</button><button class="pista-b" type="button" id="limpiar">Empezar de nuevo</button></div>
+        <div class="res" id="res" hidden></div>
+        <div class="enviar-p" id="profe" hidden><button type="button" class="enviar" data-enviar="libre">Enviar a la profe</button><div><p class="cod-eq" id="cod-eq"></p><small class="env-msg">La profe pasa por su mesa y lo carga. Después enchufan la placa en esta compu y tocan <b>Conectar</b>, abajo, para ver sus números.</small></div></div>
+        
+      </div>
+    </div>
+    <div class="diag diag-libre" id="diag-libre"></div>
+    <details class="ver-codigo">
+      <summary>El código que armaron, comentado</summary>
+      <div class="codigo"><button class="copiar" type="button" id="copiar-cod">Copiar</button><pre id="codigo"></pre></div>
+    </details>
+    </section>
+  </details>
+
+  <section class="falla" aria-label="Si no anda">
+    <div><b>¿No aparece nada en el monitor?</b>Revisá que el monitor esté en 9600, abajo a la derecha.</div>
+    <div><b>¿Los números saltan sin sentido?</b>Un cable está flojo o en otro pin. Revisá contra el dibujo. Si salta a 1021 de golpe, el sensor salió de la tierra o se aflojó un cable de la horquilla.</div>
+    <div><b>¿La L no se prende nunca?</b>Mirá el número en el monitor: ¿llega a pasar tu umbral?</div>
+  </section>
+</main>
+
+<div class="barra" role="region" aria-label="Tu placa">
+  <b>🔌 Tu placa</b>
+  <button type="button" id="placa-con">Conectar</button>
+  <button type="button" class="sec" id="placa-stop" hidden>Desconectar</button>
+  <span class="ult" id="placa-ult" hidden></span>
+  <span class="msg" id="placa-msg" aria-live="polite">Cuando la profe carga la placa, enchúfenla en esta compu y toquen Conectar.</span>
+  <span class="reloj" id="reloj"></span>
+</div>
+
+<script>
+function esCoh(){return document.body.classList.contains('modo-coh')}
+function ponerModo(m){
+  document.body.classList.toggle('modo-coh',m==='coh');
+  document.querySelectorAll('.modo button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.modo===m));
+  document.title=m==='coh'?'¿El sensor de luz puede ver un vuelo?':'Proyecto final · Explorando la realidad';
+  pintarValores();
+}
+document.querySelectorAll('.modo button').forEach(b=>b.addEventListener('click',()=>{
+  ponerModo(b.dataset.modo); history.replaceState(null,'',b.dataset.modo==='coh'?'#cohete':location.pathname);
+  registrar('entro','Entró al desafío');
+}));
+
+/* ===== El armador: bloques de código comentado que se arrastran ===== */
+const num=v=>{const n=parseFloat(String(v).replace(',','.'));return isNaN(n)?null:n};
+function pintarValores(){}
+const tildar=e=>{const x=document.querySelector(`.eslabon[data-e="${e}"]`);if(x)x.classList.add('hecho');const m=document.querySelector(`.mision[data-m="${e}"]`);if(m)m.classList.add('hecho')};
+const B={
+  lz:{g:'medir',n:'☀️ Sensor de luz',d:'Lee cuánta luz hay: más luz, número más alto.',v:'luz',loop:['// Mide la luz en A1: más luz, número más alto','int luz = analogRead(A1);']},
+  hq:{g:'medir',n:'🌱 Sensor de horquilla',d:'Lee qué tan seca está la tierra.',v:'tierra',loop:['// Mide la tierra con la horquilla en A0: más seca, número más alto','int tierra = analogRead(A0);']},
+  cp:{g:'medir',n:'🌱 Sensor capacitivo',d:'Igual que la horquilla, pero no se oxida.',v:'tierra',loop:['// Mide la tierra con el capacitivo en A0: más seca, número más alto','int tierra = analogRead(A0);']},
+  bt:{g:'medir',n:'🔘 Botón',d:'Se fija si alguien lo está apretando.',v:'boton',setup:['pinMode(2, INPUT_PULLUP);  // el botón: apretado da LOW'],loop:['// Se fija si apretaron el botón del pin 2','int boton = digitalRead(2);']},
+  mo:{g:'mostrar',n:'📟 Mostrar los números',d:'Muestra los números abajo, en Tu placa.'},
+  fi:{g:'mostrar',n:'📊 Guardar la fila (tabla)',d:'Escribe una fila de la tabla: el segundo y los números.'},
+  so:{g:'decidir',n:'Si está oscuro…',d:'Lo que pongas adentro pasa cuando hay poca luz.',caja:1,need:'luz',um:'L',cond:'luz < UL',com:'// Decide: si la luz baja del umbral, está oscuro'},
+  st:{g:'decidir',n:'Si la tierra está seca…',d:'Lo que pongas adentro pasa cuando la tierra está seca.',caja:1,need:'tierra',um:'T',cond:'tierra > UT',com:'// Decide: si la tierra pasa del umbral, está seca'},
+  sb:{g:'decidir',n:'Si apretan el botón…',d:'Lo que pongas adentro pasa mientras apretan el botón.',caja:1,need:'boton',cond:'boton == LOW',com:'// Decide: si el botón está apretado'},
+  L:{g:'avisar',n:'La L de la placa',d:'La lucecita que ya trae la placa.',setup:['pinMode(13, OUTPUT);  // la L de la placa'],on:['digitalWrite(13, HIGH);  // prende la L'],off:['digitalWrite(13, LOW);   // apaga la L']},
+  l9:{g:'avisar',n:'💡 LED (pin 9)',d:'Un LED conectado al pin 9.',setup:['pinMode(9, OUTPUT);   // el LED'],on:['digitalWrite(9, HIGH);   // prende el LED'],off:['digitalWrite(9, LOW);    // apaga el LED']},
+  l10:{g:'avisar',n:'💡 Otro LED (pin 10)',d:'Un segundo LED, en el pin 10.',setup:['pinMode(10, OUTPUT);  // el otro LED'],on:['digitalWrite(10, HIGH);  // prende el otro LED'],off:['digitalWrite(10, LOW);   // apaga el otro LED']},
+  dl:{g:'avisar',n:'💡💡 Dos LED',d:'Uno se prende cuando se cumple, el otro cuando no.',setup:['pinMode(9, OUTPUT);   // el LED de «se cumple»','pinMode(10, OUTPUT);  // el LED de «no se cumple»'],on:['digitalWrite(9, HIGH);   // prende el de «se cumple»','digitalWrite(10, LOW);'],off:['digitalWrite(9, LOW);','digitalWrite(10, HIGH);  // prende el de «no se cumple»']},
+  rgb:{g:'avisar',n:'🚦 RGB: rojo o verde',d:'Rojo cuando se cumple, verde cuando no.',setup:['pinMode(11, OUTPUT);  // RGB: el rojo','pinMode(12, OUTPUT);  // RGB: el verde'],on:['digitalWrite(11, HIGH);  // RGB en rojo','digitalWrite(12, LOW);'],off:['digitalWrite(11, LOW);   // RGB en verde','digitalWrite(12, HIGH);']},
+  bz:{g:'avisar',n:'🔊 Buzzer (pin 8)',d:'Suena cuando se cumple, y se calla cuando no.',on:['tone(8, 1000);  // suena el buzzer'],off:['noTone(8);      // se calla']},
+  e1:{g:'esperar',n:'Esperar 1 segundo',d:'Descansa 1 segundo y vuelve a empezar.',ms:1000},
+  e2:{g:'esperar',n:'Esperar 2 segundos',d:'Descansa 2 segundos y vuelve a empezar.',ms:2000},
+  e5:{g:'esperar',n:'Esperar 5 segundos',d:'Descansa 5 segundos y vuelve a empezar.',ms:5000}
+};
+let prog=[];               /* [{id, kids:[...]}] */
+const umb=()=>({L:num((document.getElementById('umbral-l')||{}).value),T:num((document.getElementById('umbral-t')||{}).value)});
+
+/* El código, con comentarios, a partir de los bloques */
+function generar(pr,U){
+  U=U||umb();
+  const plano=[];pr.forEach(x=>{plano.push(x);(x.kids||[]).forEach(k=>plano.push(k))});
+  const vars=[];plano.forEach(x=>{const v=B[x.id]&&B[x.id].v;if(v&&!vars.includes(v))vars.push(v)});
+  const st=['  Serial.begin(9600);  // abre la conversación con la compu'];
+  plano.forEach(x=>(B[x.id].setup||[]).forEach(l=>{if(!st.includes('  '+l))st.push('  '+l)}));
+  if(pr.some(x=>x.id==='fi'))st.push(`  Serial.println("segundos,${vars.join(',')}");  // los títulos de la tabla, una sola vez`);
+  const lp=[];
+  for(const x of pr){
+    const b=B[x.id]; if(!b) continue;
+    if(b.g==='medir'){lp.push('');b.loop.forEach(l=>lp.push('  '+l))}
+    else if(x.id==='mo'){lp.push('','  // Muestra los números en la compu (Monitor serie)');vars.forEach((v,i)=>{lp.push(i<vars.length-1?`  Serial.print(${v});`:`  Serial.println(${v});`);if(i<vars.length-1)lp.push('  Serial.print(",");')})}
+    else if(x.id==='fi'){lp.push('','  // Guarda una fila de la tabla: el segundo y lo que midió, separados por comas','  Serial.print(millis() / 1000);');vars.forEach((v,i)=>{lp.push('  Serial.print(",");');lp.push(i<vars.length-1?`  Serial.print(${v});`:`  Serial.println(${v});`)})}
+    else if(b.caja){const sinU=(b.um==='L'&&U.L==null)||(b.um==='T'&&U.T==null);const c=b.cond.replace('UL',U.L!=null?U.L:300).replace('UT',U.T!=null?U.T:700);lp.push('','  '+b.com+(sinU?' (umbral de prueba: cámbienlo por el suyo)':''),`  if (${c}) {`);(x.kids||[]).forEach(k=>(B[k.id].on||[]).forEach(l=>lp.push('    '+l)));lp.push('  } else {');(x.kids||[]).forEach(k=>(B[k.id].off||[]).forEach(l=>lp.push('    '+l)));lp.push('  }')}
+    else if(b.g==='avisar'){lp.push('','  // Este aviso está afuera de un Si: queda prendido siempre');(b.on||[]).forEach(l=>lp.push('  '+l))}
+    else if(b.g==='esperar'){lp.push('','  // Espera antes de volver a empezar',`  delay(${b.ms});`)}
+  }
+  return ['// Proyecto final · 3ro · '+new Date().toLocaleDateString('es-AR'),'// Armado con bloques en Tecnologías para el territorio','','void setup() {',...st,'}','','// Todo lo de loop se repite para siempre, de arriba para abajo','void loop() {',...lp,'}'].join('\n');
+}
+/* El código corto del equipo: los bloques en orden, y los umbrales */
+function codigo(pr,U){U=U||umb();let c=pr.map(x=>x.id+((x.kids&&x.kids.length)?'('+x.kids.map(k=>k.id).join('.')+')':(B[x.id].caja?'()':''))).join('.');
+  const usa=k=>pr.some(x=>B[x.id].um===k);if(usa('L')&&U.L!=null)c+='.L'+U.L;if(usa('T')&&U.T!=null)c+='.T'+U.T;return c}
+function leerCodigo(c){const pr=[],U={L:null,T:null};const re=/([A-Za-z0-9]+)(\(([^)]*)\))?/g;let m;
+  while((m=re.exec(c))){const id=m[1];if(/^L\d+$/.test(id)){U.L=+id.slice(1);continue}if(/^T\d+$/.test(id)){U.T=+id.slice(1);continue}
+    if(!B[id])continue;const it={id,kids:[]};if(m[3])m[3].split('.').filter(k=>B[k]&&B[k].g==='avisar').forEach(k=>it.kids.push({id:k}));pr.push(it)}
+  return {pr,U}}
+
+/* El diagrama de flujo del programa, armado a partir de los bloques */
+const PAL={L:['prende la L','apaga la L'],l9:['prende el LED','apaga el LED'],l10:['prende el otro LED','apaga el otro LED'],dl:['prende el LED 1','prende el LED 2'],rgb:['RGB en rojo','RGB en verde'],bz:['suena el buzzer','se calla']};
+const NOMV={luz:'la luz',tierra:'la tierra',boton:'el botón'};
+function diagrama(pr,U){
+  U=U||umb();const W=380,cx=W/2,bw=250,bh=38,g=22;let y=10,o='';
+  const esc=t=>String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  const flecha=(y1,y2,x)=>`<line x1="${x||cx}" y1="${y1}" x2="${x||cx}" y2="${y2-2}" class="fl" marker-end="url(#pta)"/>`;
+  const caja=(txt,cls,sub)=>{const h=sub?bh+14:bh;o+=`<rect x="${cx-bw/2}" y="${y}" width="${bw}" height="${h}" rx="10" class="${cls}"/><text x="${cx}" y="${y+(sub?17:bh/2+4)}" class="tx">${esc(txt)}</text>`+(sub?`<text x="${cx}" y="${y+33}" class="tx2">${esc(sub)}</text>`:'');y+=h};
+  const vars=[];pr.forEach(x=>{const v=B[x.id]&&B[x.id].v;if(v&&!vars.includes(v))vars.push(v)});
+  o+=`<rect x="${cx-90}" y="${y}" width="180" height="30" rx="15" class="d-ini"/><text x="${cx}" y="${y+19}" class="tx">Se prende la placa</text>`;y+=30;
+  o+=flecha(y,y+g);y+=g;
+  const prep=['abre la conversación con la compu'];pr.forEach(x=>{(x.kids||[]).forEach(k=>{const n=B[k.id].n.replace(/^[^A-Za-zÁÉÍÓÚ]+/,'');if(!prep.includes(n))prep.push(n)})});
+  caja('setup · prepara una sola vez','d-set',prep.length>1?'prepara: '+prep.slice(1).join(', '):prep[0]);
+  o+=flecha(y,y+g);y+=g;
+  const yLoop=y;
+  if(!pr.length){caja('(todavía no hay bloques)','d-esp')}
+  pr.forEach((x,i)=>{const b=B[x.id];
+    if(b.g==='medir')caja(b.n.replace(/^[^A-Za-zÁÉÍÓÚ]+/,'')+(x.id==='lz'?' · A1':x.id==='bt'?' · pin 2':' · A0'),'d-med',{lz:'mide la luz',hq:'mide la tierra',cp:'mide la tierra',bt:'se fija si está apretado'}[x.id]);
+    else if(x.id==='mo')caja('Muestra los números','d-mos',vars.map(v=>NOMV[v]).join(', '));
+    else if(x.id==='fi')caja('Guarda una fila de la tabla','d-mos','segundo, '+vars.map(v=>NOMV[v]).join(', '));
+    else if(b.caja){const c={so:`¿la luz < ${U.L??'___'}?`,st:`¿la tierra > ${U.T??'___'}?`,sb:'¿apretan el botón?'}[x.id];
+      const dh=64;o+=`<polygon points="${cx},${y} ${cx+120},${y+dh/2} ${cx},${y+dh} ${cx-120},${y+dh/2}" class="d-dec"/><text x="${cx}" y="${y+dh/2+4}" class="tx">${esc(c)}</text>`;
+      const yd=y+dh/2;y+=dh;
+      const si=(x.kids||[]).map(k=>PAL[k.id][0]).join(', ')||'(nada adentro)',no=(x.kids||[]).map(k=>PAL[k.id][1]).join(', ')||'—';
+      const sw=168,xl=cx-95,xr=cx+95,yb=y+26;
+      o+=`<path d="M${cx-120} ${yd} H${xl} V${yb-2}" class="fl" marker-end="url(#pta)"/><path d="M${cx+120} ${yd} H${xr} V${yb-2}" class="fl" marker-end="url(#pta)"/>`;
+      o+=`<text x="${cx-128}" y="${yd-6}" class="tsi" text-anchor="end">sí</text><text x="${cx+128}" y="${yd-6}" class="tno" text-anchor="start">no</text>`;
+      o+=`<rect x="${xl-sw/2}" y="${yb}" width="${sw}" height="${bh}" rx="10" class="d-avi"/><text x="${xl}" y="${yb+bh/2+4}" class="tx2 fuerte">${esc(si)}</text>`;
+      o+=`<rect x="${xr-sw/2}" y="${yb}" width="${sw}" height="${bh}" rx="10" class="d-avi no"/><text x="${xr}" y="${yb+bh/2+4}" class="tx2 fuerte">${esc(no)}</text>`;
+      const ym=yb+bh+16;o+=`<path d="M${xl} ${yb+bh} V${ym} H${cx}" class="fl"/><path d="M${xr} ${yb+bh} V${ym} H${cx}" class="fl"/>`;y=ym}
+    else if(b.g==='esperar')caja(b.n,'d-esp','descansa y vuelve a empezar');
+    else if(b.g==='avisar')caja(PAL[x.id][0]+' (siempre)','d-avi');
+    if(i<pr.length-1){o+=flecha(y,y+g);y+=g}});
+  y+=14;o+=`<path d="M${cx} ${y-14} V${y} H22 V${yLoop-10} H${cx-bw/2-6}" class="fl vuelta" marker-end="url(#pta)"/>`;
+  o+=`<text x="16" y="${(y+yLoop)/2}" class="tvu" transform="rotate(-90 16 ${(y+yLoop)/2})">vuelve a empezar · loop</text>`;
+  return `<svg viewBox="0 0 ${W} ${y+8}" role="img" aria-label="Diagrama de flujo del programa: ${esc(enPalabras(pr))}"><defs><marker id="pta" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="pta"/></marker></defs>${o}</svg>`;
+}
+
+/* El programa en palabras, para que lo lea cualquiera */
+function enPalabras(pr){return pr.map(x=>B[x.id].n.replace(/…$/,'')+(x.kids&&x.kids.length?' ('+x.kids.map(k=>B[k.id].n).join(' y ')+')':'')).join(' → ')}
+
+/* Revisar: qué pieza está completa y qué falta */
+function revisar(pr,U0){
+  const msgs=[],U=U0||umb(),ids=pr.map(x=>x.id),idx=id=>ids.indexOf(id);
+  const sens=pr.filter(x=>B[x.id].g==='medir'),tierras=pr.filter(x=>x.id==='hq'||x.id==='cp');
+  const mostrar=pr.filter(x=>x.id==='mo'||x.id==='fi'),cajas=pr.filter(x=>B[x.id].caja),esp=pr.filter(x=>B[x.id].g==='esperar');
+  const primerOtro=pr.findIndex(x=>B[x.id].g!=='medir');
+  if(!sens.length)msgs.push('Falta medir: ¿qué sensor tiene su aparato? La base es el sensor de luz.');
+  if(tierras.length>1)msgs.push('Tienen un solo sensor de tierra: dejen el que trae su kit, horquilla o capacitivo.');
+  if(pr.some((x,i)=>B[x.id].g==='medir'&&primerOtro>=0&&i>primerOtro))msgs.push('Primero se mide: los sensores van arriba de todo. Si no, decide o muestra con un número viejo.');
+  if(!mostrar.length)msgs.push('La placa mide pero no le cuenta a nadie: falta <i>Mostrar</i> o <i>Guardar la fila</i>.');
+  if(mostrar.length>1)msgs.push('<i>Mostrar</i> y <i>Guardar la fila</i> hacen lo mismo dos veces: dejen uno.');
+  if(!esp.length)msgs.push('Falta <i>Esperar</i>: sin eso mide miles de veces por segundo y no se llega a leer nada.');
+  if(esp.length>1)msgs.push('Hay dos <i>Esperar</i>: con uno alcanza.');
+  if(esp.length&&ids[ids.length-1]!==esp[0].id)msgs.push('<i>Esperar</i> va al final: primero hace todo, después descansa.');
+  cajas.forEach(x=>{const b=B[x.id];
+    if(!pr.some(y=>B[y.id].v===b.need))msgs.push(`«${b.n}» necesita el sensor que lo mide. Sumen ${b.need==='luz'?'el sensor de luz':b.need==='tierra'?'el sensor de tierra':'el botón'}.`);
+    if(!x.kids.length)msgs.push(`«${b.n}»: ¿qué hace cuando se cumple? Arrastren un aviso adentro.`);
+    if(b.um&&U[b.um]==null)msgs.push(`«${b.n}» necesita su umbral: lo eligen en «Antes de decidir».`)});
+  const sueltos=pr.filter(x=>B[x.id].g==='avisar');if(sueltos.length)msgs.push('Hay un aviso afuera de un Si: va a quedar prendido siempre. ¿Era eso? Arrástrenlo adentro de un Si.');
+  const usados={};cajas.forEach(x=>x.kids.forEach(k=>{usados[k.id]=(usados[k.id]||0)+1}));if(Object.values(usados).some(n=>n>1))msgs.push('El mismo aviso está en dos Si: uno lo prende y el otro lo apaga. Usen avisos distintos.');
+  const ok1=sens.length&&mostrar.length===1&&esp.length===1&&!msgs.some(m=>/Primero se mide|Esperar|un solo sensor|no le cuenta/.test(m));
+  const ok2=ok1&&cajas.length&&!msgs.length;
+  const ok3=ok2&&ids.includes('fi');
+  return {msgs,nivel:ok3?3:ok2?2:ok1?1:0};
+}
+
+/* Pintar la paleta, el programa y el código */
+const $prog=document.getElementById('prog');
+const PIDE=['hq','cp','bt','l9','l10','dl','rgb','bz'];
+function nuevoBloque(id,enLista){const el=document.createElement(enLista?'li':'button');el.className='bloque '+B[id].g;if(!enLista){el.type='button';el.innerHTML='<b>'+B[id].n+(PIDE.includes(id)?' <em class="pide">se pide</em>':'')+'</b><small>'+B[id].d+'</small>';el.draggable=true;el.dataset.b=id;
+  el.addEventListener('dragstart',e=>e.dataTransfer.setData('text/plain','n:'+id));el.addEventListener('click',()=>agregar(id))}return el}
+['lz','mo','so','L','e1','e2','e5','fi'].forEach(k=>document.getElementById('pal-base').appendChild(nuevoBloque(k)));
+['hq','cp','bt','st','sb','l9','l10','dl','rgb','bz'].forEach(k=>document.getElementById('pal-mesa').appendChild(nuevoBloque(k)));
+function agregar(id){const b=B[id];
+  if(b.g==='avisar'){const caja=[...prog].reverse().find(x=>B[x.id].caja);if(caja){caja.kids.push({id});return pintar()}}
+  const it={id,kids:[]};const iE=prog.findIndex(x=>B[x.id].g==='esperar');
+  if(b.g!=='esperar'&&iE>=0)prog.splice(iE,0,it);else prog.push(it);pintar()}
+function lista(path){return path.length?prog[path[0]].kids:prog}
+function sacar(path){const l=lista(path.slice(0,-1));return l.splice(path[path.length-1],1)[0]}
+function zona(ul,path){
+  ul.addEventListener('dragover',e=>{e.preventDefault();e.stopPropagation();ul.classList.add('sobre')});
+  ul.addEventListener('dragleave',()=>ul.classList.remove('sobre'));
+  ul.addEventListener('drop',e=>{e.preventDefault();e.stopPropagation();ul.classList.remove('sobre');
+    const d=e.dataTransfer.getData('text/plain');let it;
+    const hijos=[...ul.children].filter(c=>c.tagName==='LI');let pos=hijos.length;
+    for(let i=0;i<hijos.length;i++){const r=hijos[i].getBoundingClientRect();if(e.clientY<r.top+r.height/2){pos=i;break}}
+    if(d.startsWith('n:'))it={id:d.slice(2),kids:[]};
+    else if(d.startsWith('m:')){const from=d.slice(2).split(',').map(Number);
+      if(from.length===path.length+1&&from.slice(0,-1).join()===path.join()&&from[from.length-1]<pos)pos--;
+      if(path.length&&from.length===1&&from[0]<path[0])path=[path[0]-1];
+      it=sacar(from)}
+    if(!it)return;
+    const b=B[it.id];
+    if(path.length&&b.g!=='avisar'){prog.splice(path[0]+1,0,it);return pintar()}   /* adentro de un Si sólo van avisos */
+    lista(path).splice(pos,0,it);pintar()});
+}
+function pintar(){
+  $prog.innerHTML='';
+  const fila=(it,path)=>{const li=nuevoBloque(it.id,true);li.draggable=true;
+    li.addEventListener('dragstart',e=>{e.stopPropagation();e.dataTransfer.setData('text/plain','m:'+path.join(','))});
+    const f=document.createElement('div');f.className='fila-b';
+    f.innerHTML=`<span>${B[it.id].n}</span><button type="button" aria-label="Subir">↑</button><button type="button" aria-label="Bajar">↓</button><button type="button" aria-label="Sacar">✕</button>`;
+    const [up,dn,x]=f.querySelectorAll('button'),l=lista(path.slice(0,-1)),i=path[path.length-1];
+    up.onclick=()=>{if(i>0){[l[i-1],l[i]]=[l[i],l[i-1]];pintar()}};
+    dn.onclick=()=>{if(i<l.length-1){[l[i+1],l[i]]=[l[i],l[i+1]];pintar()}};
+    x.onclick=()=>{l.splice(i,1);pintar()};
+    li.appendChild(f);return li};
+  prog.forEach((it,i)=>{const li=fila(it,[i]);
+    if(B[it.id].caja){const ul=document.createElement('ol');ul.className='dentro';it.kids.forEach((k,j)=>ul.appendChild(fila(k,[i,j])));zona(ul,[i]);li.appendChild(ul)}
+    $prog.appendChild(li)});
+  document.getElementById('vacio').hidden=prog.length>0;
+  document.getElementById('codigo').textContent=generar(prog);
+  document.getElementById('diag-libre').innerHTML=prog.length?diagrama(prog):'';
+  document.getElementById('res').hidden=true;document.getElementById('profe').hidden=true;
+  try{localStorage.setItem('pps.proyecto-final.prog',JSON.stringify(prog))}catch(e){}
+}
+zona($prog,[]);
+try{const g=JSON.parse(localStorage.getItem('pps.proyecto-final.prog')||'null');if(Array.isArray(g))prog=g.filter(x=>B[x.id]).map(x=>({id:x.id,kids:(x.kids||[]).filter(k=>B[k.id])}))}catch(e){}
+pintar();
+document.getElementById('limpiar').addEventListener('click',()=>{if(prog.length&&confirm('¿Borrar el programa y empezar de nuevo?')){prog=[];pintar()}});
+let intentos=0;
+document.getElementById('revisar').addEventListener('click',()=>{
+  const r=revisar(prog),res=document.getElementById('res'),pf=document.getElementById('profe');
+  res.hidden=false;
+  const nom=['','la pieza 1 · Mide','la pieza 2 · Decide','la pieza 3 · Guarda'];
+  if(r.nivel)for(let k=1;k<=r.nivel;k++)tildar(String(k));
+  if(r.msgs.length){intentos++;res.className='res mal';res.innerHTML=(r.nivel?`Tienen ${nom[r.nivel]} completa. Para seguir:`:'Todavía no:')+'<ul>'+r.msgs.map(m=>'<li>'+m+'</li>').join('')+'</ul>'}
+  else{res.className='res ok';res.textContent=`¡Completo! Tienen ${nom[r.nivel]}.`+(r.nivel<3?' Cuando la prueben en la placa, sigan con la que viene.':' Es el aparato entero.')}
+  if(r.nivel){pf.hidden=false;document.getElementById('cod-eq').textContent=enPalabras(prog);
+    registrar('pieza'+r.nivel+'-'+codigo(prog),'Pieza '+r.nivel+' · armó el programa',codigo(prog)+'\n\n'+generar(prog),intentos)}
+});
+document.getElementById('copiar-cod').addEventListener('click',e=>copiarTexto(document.getElementById('codigo').textContent,e.target));
+function copiarTexto(t,b){const ok=()=>{b.textContent='Copiado';setTimeout(()=>b.textContent='Copiar',1500)};try{navigator.clipboard.writeText(t).then(ok,()=>{})}catch(_){}}
+
+/* Calibración: los números del equipo y sus umbrales */
+const cal={};
+document.querySelectorAll('.cal').forEach(i=>i.addEventListener('input',()=>{cal[i.dataset.c]=num(i.value);chequearUmbral()}));
+const umRes=document.getElementById('umbral-res');
+function chequearUmbral(){
+  const U=umb(),m=[];
+  if(U.L!=null&&cal.tapado!=null&&cal.aula!=null&&!(U.L>Math.min(cal.tapado,cal.aula)&&U.L<Math.max(cal.tapado,cal.aula)))m.push(`El umbral de luz tiene que quedar entre tapado (${cal.tapado}) y la luz del aula (${cal.aula}).`);
+  if(U.T!=null&&cal.mojada!=null&&cal.seca!=null&&!(U.T>Math.min(cal.mojada,cal.seca)&&U.T<Math.max(cal.mojada,cal.seca)))m.push(`El umbral de tierra tiene que quedar entre la mojada (${cal.mojada}) y la seca (${cal.seca}).`);
+  if(U.L==null&&U.T==null){umRes.hidden=true}else{umRes.hidden=false;umRes.className='res '+(m.length?'mal':'ok');umRes.innerHTML=m.length?m.join('<br>'):'Buenos umbrales: ya están en su programa.'}
+  if((U.L!=null||U.T!=null)&&!m.length)tildar('c');
+  document.getElementById('codigo').textContent=generar(prog);
+}
+['umbral-l','umbral-t'].forEach(id=>{const i=document.getElementById(id);if(!i)return;i.addEventListener('input',chequearUmbral);
+  i.addEventListener('change',()=>registrar('calib','Calibró y eligió sus umbrales',Object.entries(cal).map(([k,v])=>k+': '+v).join(' · ')+' · luz: '+document.getElementById('umbral-l').value+' · tierra: '+document.getElementById('umbral-t').value))});
+
+/* Los códigos de la base y de cada pieza de la mesa, en el kit */
+document.querySelectorAll('pre[data-cod]').forEach(pre=>{const {pr,U}=leerCodigo(pre.dataset.cod);pre.textContent=generar(pr,U).split('\n').slice(3).join('\n')});
+document.querySelectorAll('pre[data-blq]').forEach(pre=>{const b=B[pre.dataset.blq],l=[];
+  if(b.setup)l.push('// en setup:',...b.setup);if(b.loop)l.push('// en loop:',...b.loop);
+  if(b.on)l.push('// adentro de un Si, cuando se cumple:',...b.on,'// y cuando no:',...b.off);pre.textContent=l.join('\n')});
+
+/* Enviar a la placa: por el cable (si está conectada) y, siempre, al buzón de la profe */
+async function enviarPrograma(cod,b){
+  const msg=b.parentElement.querySelector('.env-msg');const {pr,U}=leerCodigo(cod);
+  if(SES){const t={id:'e'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),alumno:SES.nombre,anio:'3ro',fecha:SES.fecha,ts:new Date().toISOString(),
+    sala:'proyecto-final',salaNom:'Proyecto final · envío',modo:'practica',total:1,resueltos:1,sinAyuda:1,pistas:0,salteadas:0,seg:1,
+    envio:cod,programa:generar(pr,U),ejs:[{c:'Envió un programa a la placa',t:'desafio',q:cod,i:1,ok:true,ok1:true,p:0,s:false,sg:1}]};enviar(t)}
+  msg.innerHTML=SES?'✓ Le llegó a la profe. Esperen con la placa armada: pasa por su mesa y la carga. Después, enchúfenla acá y toquen <b>Conectar</b>.':'Primero escriban su nombre arriba de todo, así la profe sabe de quién es.';
+}
+document.addEventListener('click',e=>{const b=e.target.closest('.enviar');if(!b)return;const k=b.dataset.enviar;
+  const cod=k==='libre'?codigo(prog):codPaso(+k);if(cod)enviarPrograma(cod,b)});
+
+/* El camino guiado: luz (todos juntos) → humedad y un LED */
+const G={tie:null};
+function codPaso(n){const U=umb(),T=U.T!=null?'.T'+U.T:'.T700';
+  if(n===1)return 'lz.fi.e1';
+  if(n===2)return G.tie?`lz.${G.tie}.fi.st(l9).e1${T}`:'';}
+function pintarPasos(){[1,2].forEach(n=>{const c=codPaso(n),pre=document.querySelector(`pre[data-paso="${n}"]`),ce=document.querySelector(`[data-cod-eq="${n}"]`);
+  if(!pre)return;if(!c){pre.textContent='';return}const {pr,U}=leerCodigo(c);pre.textContent=generar(pr,U).split('\n').slice(3).join('\n');if(ce)ce.textContent=enPalabras(pr);const dg=document.querySelector(`[data-diag="${n}"]`);if(dg)dg.innerHTML=diagrama(pr,U)})}
+document.querySelectorAll('.op[data-tie]').forEach(b=>b.addEventListener('click',()=>{G.tie=b.dataset.tie;
+  document.querySelectorAll('.op[data-tie]').forEach(x=>x.setAttribute('aria-checked',x===b));
+  document.getElementById('s2-elegido').hidden=false;document.getElementById('s2-esq').textContent=G.tie==='hq'?'La horquilla va a su plaquita con los dos cables cortos; la pata DO no se usa.':'Se clava en la tierra hasta la línea, nunca la parte de arriba.';
+  pintarPasos();registrar('tierra-'+G.tie,'Paso 2 · eligió el sensor: '+B[G.tie].n)}));
+document.getElementById('umbral-t').addEventListener('input',pintarPasos);
+pintarPasos();
+
+/* Subir los datos: la tabla entera va a la planilla */
+document.getElementById('subir').addEventListener('click',()=>{const r=document.getElementById('subir-res'),t=document.getElementById('pegar').value.trim();
+  const filas=t.split(/\r?\n/).filter(l=>/^-?\d/.test(l));
+  if(filas.length<3){r.className='res mal';r.textContent='Todavía no hay datos: conecten la placa y esperen que caigan filas.';return}
+  if(!SES){r.className='res mal';r.textContent='Escriban su nombre arriba de todo, así los datos quedan con su nombre.';return}
+  enviar({id:'d'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),alumno:SES.nombre,anio:'3ro',fecha:SES.fecha,ts:new Date().toISOString(),
+    sala:'proyecto-final',salaNom:'Proyecto final · datos',modo:'practica',total:1,resueltos:1,sinAyuda:1,pistas:0,salteadas:0,seg:1,
+    ejs:[{c:'Subió los datos ('+filas.length+' filas)',t:'datos',q:t.slice(0,45000),i:1,ok:true,ok1:true,p:0,s:false,sg:1}]});
+  r.className='res ok';r.textContent='✓ Subidos: '+filas.length+' filas. Quedaron en la planilla de la profe.'});
+
+/* Para la profe: su pantalla, con #profe */
+(function(){
+  const EQ=[['Equipo 1','Dylan · Maxi · Fran · Santi'],['Estación 1','Joaco · Aryan · Lauti · Suri'],['Estación 2','Jaz · Ian'],['Estación 3','Martin · Pipis · Roman']];
+  const i=document.getElementById('pp-cod'),pre=document.getElementById('pp-prog'),res=document.getElementById('pt-res'),cont=document.getElementById('pt-equipos');
+  const LSK='pps.proyecto-final.profe';let mem={};try{mem=JSON.parse(localStorage.getItem(LSK)||'{}')}catch(e){}
+  let eq=null;
+  function pintarEq(){cont.innerHTML='';EQ.forEach(([n,q],k)=>{const b=document.createElement('button');b.type='button';b.className='pt-eq'+(eq===k?' on':'');
+    b.innerHTML=`<b>${n}</b><span>${q}</span><small>${mem[k]?'último: '+mem[k]:'todavía nada'}</small>`;b.onclick=()=>{eq=k;i.value=mem[k]||'';f();pintarEq();i.focus()};cont.appendChild(b)})}
+  function f(){const c=i.value.trim(),{pr,U}=leerCodigo(c);
+    if(!c){pre.textContent='';res.textContent='Esperando el código…';res.className='pt-res';return}
+    if(!pr.length){pre.textContent='';res.textContent='No reconozco ese código. Pediles que lo lean de nuevo, letra por letra.';res.className='pt-res mal';return}
+    const r=revisar(pr,U);pre.textContent=generar(pr,U);
+    const paso=pr.some(x=>x.id==='hq'||x.id==='cp')?'Paso 2':'Paso 1';res.className='pt-res '+(r.nivel?'ok':'mal');res.textContent=r.nivel?`✓ ${paso} · ${enPalabras(pr)}`:'Ojo: así como está no anda. '+r.msgs[0].replace(/<[^>]+>/g,'');
+    if(eq!=null){mem[eq]=c;try{localStorage.setItem(LSK,JSON.stringify(mem))}catch(e){}}}
+  i.addEventListener('input',()=>{f();pintarEq()});
+  const R={p:1,t:'hq'};
+  const tt=document.getElementById('pt-t');
+  function armar(){const T='.T'+(num(tt.value)??700);
+    i.value=R.p===1?'lz.fi.e1':`lz.${R.t}.fi.st(l9).e1${T}`;
+    document.querySelectorAll('.pt-rapido [data-si]').forEach(x=>x.hidden=!x.dataset.si.split(',').includes(String(R.p)));
+    document.querySelectorAll('.pt-rapido button').forEach(b=>b.classList.toggle('on',(b.dataset.p&&+b.dataset.p===R.p)||(b.dataset.t&&b.dataset.t===R.t)));
+    f();pintarEq()}
+  document.querySelectorAll('.pt-rapido button').forEach(b=>b.onclick=()=>{if(b.dataset.p)R.p=+b.dataset.p;if(b.dataset.t)R.t=b.dataset.t;armar()});
+  tt.addEventListener('input',armar);
+  document.querySelector('.pt-equipos').addEventListener('click',()=>setTimeout(()=>{if(!i.value)armar()},0));
+  document.getElementById('pp-copiar').addEventListener('click',e=>{const b=e.target,t=pre.textContent;if(!t)return;
+    try{navigator.clipboard.writeText(t).then(()=>{b.textContent='¡Copiado! Pegalo en el IDE';setTimeout(()=>b.textContent='Copiar para el IDE',2000)})}catch(_){}});
+  const ck=document.getElementById('pt-clave'),lista=document.getElementById('pt-lista'),est=document.getElementById('pt-ll-est');
+  try{ck.value=localStorage.getItem('pps.profe.clave')||''}catch(e){}
+  ck.addEventListener('change',()=>{try{localStorage.setItem('pps.profe.clave',ck.value)}catch(e){}traer()});
+  async function traer(){if(location.hash!=='#profe')return;if(!ck.value){est.textContent='Escribí la clave del buzón para ver lo que mandan.';return}
+    try{const r=await fetch(URL_BUZON+'?envios=1&k='+encodeURIComponent(ck.value),{cache:'no-store'});const t=await r.text();
+      if(t.startsWith('clave')){est.textContent='La clave no coincide con la del buzón.';return}
+      if(!t.startsWith('[')){est.textContent='El buzón todavía no tiene la parte de envíos: hay que actualizar el script.';return}
+      const a=JSON.parse(t);est.textContent='se actualiza solo · '+new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+      lista.innerHTML='';a.slice(0,12).forEach(x=>{const li=document.createElement('li');const h=new Date(x.t).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+        li.innerHTML=`<span class="h">${h}</span><b>${String(x.alumno).replace(/</g,'&lt;')}</b><code>${enPalabras(leerCodigo(String(x.codigo)).pr).replace(/</g,'&lt;')}</code><button type="button">Usar</button>`;
+        li.querySelector('button').onclick=()=>{i.value=x.codigo;document.querySelector('.pt-otro').open=true;f();window.scrollTo({top:document.getElementById('pp-copiar').offsetTop-120,behavior:'smooth'})};lista.appendChild(li)});
+      if(!a.length)lista.innerHTML='<li class="nota">Todavía no mandó nadie.</li>'}catch(e){est.textContent='No llego al buzón (¿hay internet?).'}}
+  setInterval(traer,8000);
+  function modo(){const pf=location.hash==='#profe';if(pf)setTimeout(traer,300);document.querySelector('.barra').hidden=pf;document.getElementById('profe-tool').hidden=!pf;document.querySelector('main').hidden=pf;
+    document.getElementById('quien').hidden=pf;if(pf){pintarEq();f()}}
+  window.addEventListener('hashchange',modo);modo();
+})();
+
+/* Destapar y pistas (lo que queda de los retos) */
+document.querySelectorAll('.linea button').forEach(b=>b.addEventListener('click',()=>{const s=b.nextElementSibling;s.hidden=!s.hidden;b.textContent=s.hidden?'¿Qué pasa?':'Ocultar'}));
+
+/* Las filas (de la placa o pegadas): gráfico con una línea por columna, y cuántos números distintos da cada sensor */
+const COLORES=['var(--violeta)','var(--inf)','var(--verde)'];
+(function(){
+  const ta=document.getElementById('pegar'), box=document.getElementById('graf'), msg=document.getElementById('graf-msg');
+  function dibujar(){
+    const filas=ta.value.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
+    const tit=filas.find(l=>/^[a-záéíóúñ]/i.test(l)), noms=tit?tit.split(',').slice(1):[];
+    const pts=filas.filter(l=>/^-?\d/.test(l)).map(l=>l.split(',').map(Number)).filter(r=>r.length>=2&&r.every(v=>!isNaN(v)));
+    if(pts.length<2){box.hidden=true;msg.hidden=!ta.value.trim();msg.className='res mal';msg.textContent='No encuentro filas como 0,812. ¿Están con la coma?';return}
+    const nc=Math.min(...pts.map(r=>r.length))-1, xs=pts.map(r=>r[0]);
+    const nom=k=>noms[k]||('columna '+(k+1));
+    const U=esCoh()?'ms':'s', dur=(Math.max(...xs)-Math.min(...xs))/(esCoh()?1000:1);
+    msg.hidden=false; msg.className='res';
+    msg.textContent=pts.length+' filas en '+dur.toFixed(1)+' segundos · '+[...Array(nc)].map((_,k)=>{const v=pts.map(r=>r[k+1]);return nom(k)+': '+new Set(v).size+' números distintos, de '+Math.min(...v)+' a '+Math.max(...v)}).join(' · ');
+    const W=640,H=240,L=16,R=16,T=16,B=36;
+    let x0=Math.min(...xs),x1=Math.max(...xs); if(x1===x0)x1=x0+1;
+    const X=v=>L+(v-x0)/(x1-x0)*(W-L-R);
+    let g=`<text x="${L}" y="${H-10}">${x0} ${U}</text><text x="${W-R}" y="${H-10}" text-anchor="end">${x1} ${U}</text>`;
+    for(let k=0;k<nc;k++){
+      const v=pts.map(r=>r[k+1]); let y0=Math.min(...v),y1=Math.max(...v); const pad=Math.max(1,(y1-y0)*.15); y0-=pad; y1+=pad;
+      const Y=w=>T+(y1-w)/(y1-y0)*(H-T-B), c=COLORES[k%3];
+      g+=`<path d="${pts.map((r,i)=>(i?'L':'M')+X(r[0]).toFixed(1)+' '+Y(r[k+1]).toFixed(1)).join(' ')}" fill="none" stroke="${c}" stroke-width="3" stroke-linejoin="round"/>`;
+      g+=`<text x="${L+4}" y="${T+14+k*16}" style="fill:${c}">${nom(k)}</text>`;
+    }
+    box.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Gráfico de las mediciones a lo largo del tiempo">${g}</svg>`;
+    box.hidden=false;
+    if(pts.length>=10)registrar('tabla','Pieza 3 · juntó su tabla',msg.textContent);
+  }
+  ta.addEventListener('input',dibujar);
+})();
+
+/* Tu placa: leerla por USB sin instalar nada (Web Serial: Chrome y Edge). Lo mismo que se probó en 4to el 15/10. */
+(function(){
+  const bc=document.getElementById('placa-con'), bs=document.getElementById('placa-stop'), msg=document.getElementById('placa-msg'),
+        ult=document.getElementById('placa-ult'), ta=document.getElementById('pegar');
+  if(!('serial' in navigator)){bc.disabled=true;msg.textContent='Este navegador no puede leer la placa: abrí la página en Chrome o Edge.';return}
+  let port=null, reader=null, cerrado=null;
+  async function parar(){
+    try{ if(reader) await reader.cancel(); }catch(_){}
+    try{ if(cerrado) await cerrado; }catch(_){}
+    try{ if(port) await port.close(); }catch(_){}
+    port=reader=cerrado=null; window.PLACA=null; bs.hidden=true; bc.hidden=false;
+  }
+  bc.addEventListener('click',async()=>{
+    try{ port=await navigator.serial.requestPort(); await port.open({baudRate:9600}); }
+    catch(e){ port=null; msg.textContent=e.name==='NotFoundError'?'No elegiste ninguna placa. Tocá Conectar y elegí la que dice USB o COM.':'No se pudo abrir la placa. ¿Está abierta en otro programa?'; return; }
+    bc.hidden=true; bs.hidden=false; msg.textContent='Conectada. Esperando los números…'; window.PLACA=port;
+    const dec=new TextDecoderStream(); cerrado=port.readable.pipeTo(dec.writable).catch(()=>{}); reader=dec.readable.getReader();
+    const lineas=[]; let buf='', titulo=null, n=0;
+    try{
+      while(true){
+        const {value,done}=await reader.read(); if(done) break;
+        buf+=value; let i;
+        while((i=buf.indexOf('\n'))>=0){
+          const l=buf.slice(0,i).trim(); buf=buf.slice(i+1); if(!l) continue;
+          if(l.startsWith('#')){ if(l.startsWith('#recibido')&&window.ESPERA_OK){window.ESPERA_OK.innerHTML='✓ ¡La placa recibió el programa! Ya lo está haciendo.';registrar('recibido-'+l.slice(10),'La placa recibió el programa',l.slice(10))} ult.hidden=false; ult.textContent=l.startsWith('#programa')?'tiene: '+l.slice(10):'✓ recibido'; continue; }
+          ult.hidden=false; ult.textContent=l; n++;
+          msg.textContent=n+' mediciones. En el recuadro, lo último que dijo la placa.';
+          if(n===3) registrar('placa','Conectó su placa');
+          /* a la tabla sólo van las filas con coma (pieza 3); si cambia el título, es otra pieza: se empieza de nuevo */
+          if(/^[a-záéíóúñ]/i.test(l)&&l.includes(',')){ if(l!==titulo){titulo=l;lineas.length=0} continue; }
+          if(/^-?\d/.test(l)&&l.includes(',')){
+            lineas.push(l); if(lineas.length>600) lineas.shift();
+            ta.value=(titulo?titulo+'\n':'')+lineas.join('\n'); ta.dispatchEvent(new Event('input'));
+          }
+        }
+      }
+    }catch(e){ msg.textContent='Se cortó la conexión. ¿Se desenchufó la placa? Enchufala y tocá Conectar.'; }
+    await parar();
+  });
+  bs.addEventListener('click',async()=>{ await parar(); msg.textContent='Desconectada. Ya la pueden llevar a la profe.'; });
+})();
+
+/* ---- registro: misma sesión y misma planilla que la app ---- */
+const URL_BUZON='https://script.google.com/macros/s/AKfycbzLxvvU5Nw5Zx1yKyeb9z7WB1b2AQD8x7FcPpFznLSr3K8kImnVx4dNrX1Z0WntVigUjg/exec';
+const K_SES='pps.sesion.v1', K_DAT='pps.datos.v1', K_HECHO='pps.proyecto-final.hecho.v1';
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}};
+const hoyISO=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+let SES=LS.get(K_SES,null);
+if(SES && SES.fecha!==hoyISO()) SES={...SES,fecha:hoyISO()};
+const T0=Date.now();
+function enviar(t){
+  return fetch(URL_BUZON,{method:'POST',mode:'no-cors',cache:'no-store',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(t)})
+    .then(()=>{const a=LS.get(K_DAT,[]);const x=a.find(y=>y.id===t.id);if(x){x.enviada=true;LS.set(K_DAT,a)}}).catch(()=>{});
+}
+function registrar(clave,concepto,detalle,pistas){
+  if(!SES) return;
+  const hechos=LS.get(K_HECHO,{}), k=SES.nombre+'|'+SES.fecha+'|'+(esCoh()?'coh:':'')+clave;
+  if(hechos[k]) return; hechos[k]=1; LS.set(K_HECHO,hechos);
+  const seg=Math.max(1,Math.round((Date.now()-T0)/1000));
+  const t={id:'t'+Date.now().toString(36)+Math.random().toString(36).slice(2,7),
+    alumno:SES.nombre, anio:SES.anio||'3ro', fecha:SES.fecha, ts:new Date().toISOString(),
+    sala:esCoh()?'proyecto-final-cohete':'proyecto-final', salaNom:esCoh()?'Proyecto final · ¿El sensor de luz puede ver un vuelo?':'Proyecto final · Explorando la realidad', modo:'practica',
+    total:1, resueltos:1, sinAyuda:pistas?0:1, pistas:pistas||0, salteadas:0, seg,
+    ejs:[{c:concepto,t:'desafio',q:detalle||'',i:1,ok:true,ok1:!pistas,p:pistas||0,s:false,sg:seg}]};
+  const a=LS.get(K_DAT,[]); a.push(t); LS.set(K_DAT,a);
+  enviar(t);
+}
+function pintarQuien(){
+  const q=document.getElementById('quien');
+  if(SES){ q.innerHTML=`Estás como <b>${SES.nombre.replace(/</g,'&lt;')}</b> · lo que hagas queda registrado.`; registrar('entro','Entró al desafío'); return; }
+  q.innerHTML=`<label for="qnom">Para que quede registrado, escribí tu nombre y apellido:</label><input id="qnom" autocomplete="name"><button type="button" id="qok">Listo</button>`;
+  document.getElementById('qok').addEventListener('click',()=>{
+    const n=document.getElementById('qnom').value.trim().replace(/\s+/g,' ');
+    if(n.length<3) return;
+    SES={nombre:n,anio:'3ro',fecha:hoyISO()}; LS.set(K_SES,SES); pintarQuien();
+  });
+}
+document.getElementById('mundos-ok').addEventListener('click',()=>{
+  const t=document.getElementById('mundos').value.trim(); if(!t) return;
+  registrar('mundos','Los cuatro mundos · lo que descubrieron',t);
+  document.getElementById('mundos-res').hidden=false;
+});
+/* El reloj de la clase: a qué hora tendrían que estar en cada pieza (miércoles 8:15 a 9:20) */
+(function(){
+  const PLAN=[[8*60+22,'la pieza 1 · Mide'],[8*60+35,'Antes de decidir'],[8*60+43,'la pieza 2 · Decide'],[8*60+55,'la pieza 3 · Guarda'],[9*60+5,'los cuatro mundos'],[9*60+15,'desarmar y guardar'],[9*60+20,null]];
+  const r=document.getElementById('reloj');
+  function tic(){
+    const d=new Date(), m=d.getHours()*60+d.getMinutes(), hh=d.getHours()+':'+String(d.getMinutes()).padStart(2,'0');
+    let ahora=null; for(let i=0;i<PLAN.length-1;i++) if(m>=PLAN[i][0]&&m<PLAN[i+1][0]) ahora=PLAN[i][1];
+    r.textContent=ahora?`🕗 ${hh} · ahora: ${ahora}`:'';
+  }
+  tic(); setInterval(tic,20000);
+})();
+/* El gráfico en vivo de la portada (adorno: no es la placa) */
+(function(){const l=document.getElementById('vivo-l'),n=document.getElementById('vivo-n');if(!l)return;
+  const quieto=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const v=[];let x=640,t=0;for(let k=0;k<40;k++){x=paso(x);v.push(x)}
+  function paso(y){t++;let d=(Math.random()-.5)*60;if(t%23===0)d=-280;if(t%23===4)d=260;return Math.round(Math.max(120,Math.min(980,y+d)))}
+  function dibujar(){const W=200,H=60;l.setAttribute('d',v.map((y,i)=>(i?'L':'M')+(i*W/(v.length-1)).toFixed(1)+' '+(H-4-(y-100)/900*(H-8)).toFixed(1)).join(' '));n.textContent=v[v.length-1]}
+  dibujar();if(quieto)return;setInterval(()=>{v.shift();v.push(paso(v[v.length-1]));dibujar()},450)})();
+ponerModo('est');
+pintarQuien();
+</script>
+</body>
+</html>

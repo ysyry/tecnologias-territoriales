@@ -53,6 +53,11 @@
  */
 
 var HOJA_TANDAS  = 'Tandas';
+var HOJA_ENVIOS  = 'Envíos';
+
+/* Clave para que sólo la profe pueda leer los programas que mandan (proyecto final).
+   La misma que se escribe una vez en la pantalla de la profe: proyecto-final.html#profe */
+var CLAVE_PROFE = 'cambiar-esta-clave';
 var HOJA_DETALLE = 'Detalle';
 
 /* ID de la planilla donde escribir. Es la parte larga de su URL:
@@ -74,6 +79,13 @@ function doPost(e) {
     ]);
 
     if (_yaEsta(hT, t.id)) return _ok('repetida');
+
+    /* Proyecto final: un programa que un equipo mandó a la placa. Va a su propia hoja. */
+    if (t.envio) {
+      var hE = _hoja(ss, HOJA_ENVIOS, ['Recibido','Alumno','Código','Programa','id']);
+      hE.appendRow([new Date(), t.alumno || '', t.envio, t.programa || '', t.id]);
+      return _ok('ok');
+    }
 
     var pct = t.total ? Math.round(t.sinAyuda / t.total * 100) : 0;
     hT.appendRow([
@@ -109,7 +121,19 @@ function doPost(e) {
 
 /* Para probar desde el navegador que quedó publicado:
    abrí la URL y tiene que decir "buzón activo". */
-function doGet() {
+function doGet(e) {
+  /* La pantalla de la profe pide los últimos programas enviados, con su clave. */
+  if (e && e.parameter && e.parameter.envios) {
+    if (e.parameter.k !== CLAVE_PROFE) return _ok('clave incorrecta');
+    var h = SpreadsheetApp.openById(ID_PLANILLA).getSheetByName(HOJA_ENVIOS);
+    var out = [];
+    if (h && h.getLastRow() > 1) {
+      var n = h.getLastRow() - 1, desde = Math.max(2, h.getLastRow() - 39);
+      var filas = h.getRange(desde, 1, h.getLastRow() - desde + 1, 5).getValues();
+      out = filas.map(function (f) { return { t: f[0], alumno: f[1], codigo: f[2], id: f[4] }; }).reverse();
+    }
+    return ContentService.createTextOutput(JSON.stringify(out)).setMimeType(ContentService.MimeType.JSON);
+  }
   return ContentService.createTextOutput('buzón activo');
 }
 
