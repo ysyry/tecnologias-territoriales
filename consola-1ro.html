@@ -191,7 +191,8 @@ textarea:focus-visible{outline:3px solid var(--inf);outline-offset:2px}
 const COLORES=['#E5413A','#2FB35E'];
 const NCOLOR=['roja','verde'];
 const PIN_LUZ=[3,4], PIN_BOTON=[8], PIN_BUZZER=12;
-const K='consola1ro.v2';
+// con #trucha se guarda aparte, así lo que arreglan no pisa su juego ni se pierde al recargar
+const K=location.hash==='#trucha'?'consola1ro.trucha.v1':'consola1ro.v2';
 
 // --- el programa ---
 // prog = {empezar:[...], siempre:[...], boton:{1:[...]}}
@@ -409,7 +410,8 @@ $('mandar').onclick=()=>{
 
 if(location.hash==='#trucha'){
   // la moneda de la profe: se abre siempre igual, y la pregunta es otra
-  prog=JSON.parse(JSON.stringify(EJEMPLOS.trucha.prog));$('nombre').value='La moneda';
+  let ya=null;try{ya=localStorage.getItem(K)}catch(e){}
+  if(ya)carga();else{prog=JSON.parse(JSON.stringify(EJEMPLOS.trucha.prog));$('nombre').value='La moneda'}
   const l=document.querySelector('label:has(#r-luz)');
   l.firstChild.textContent='¿Dónde estaba la trampa? ¿Cómo la arreglaron?';
   l.querySelector('span').textContent='Contalo con los bloques: cuál era y qué le cambiaron.';
