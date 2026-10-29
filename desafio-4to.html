@@ -330,8 +330,14 @@ body.hoy-placa #con-placa{border-top:2px solid var(--raya);padding-top:32px}
 .pl-consigna{border-left:6px solid var(--violeta);background:var(--hoja);border-radius:0 14px 14px 0;padding:14px 18px}
 .pl-consigna b{font-family:var(--f-titulo);font-size:1.2em;color:var(--tinta)}
 .pl-consigna p{margin:4px 0 0;color:var(--tinta)}
-.pl-trabajo{display:grid;grid-template-columns:minmax(0,.75fr) minmax(0,1.35fr) minmax(0,.95fr);gap:22px;align-items:start}
-.pl-pal,.pl-vivo{background:var(--hoja);border:1px solid var(--raya);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px;position:sticky;top:12px}
+.pl-trabajo{display:grid;grid-template-columns:minmax(0,.7fr) minmax(0,1.1fr) minmax(0,1.3fr);gap:22px;align-items:start}
+.pl-izq{display:flex;flex-direction:column;gap:16px}
+.pl-codigo{display:flex;flex-direction:column;gap:8px;position:sticky;top:12px}
+.pl-codigo p{margin:0}
+.pl-codigo .codigo{max-height:calc(100vh - 120px);overflow:auto;font-size:.74em}
+.pl-codigo pre{white-space:pre-wrap;padding-top:22px}
+body.hoy-placa main{max-width:1320px}
+.pl-pal,.pl-vivo{background:var(--hoja);border:1px solid var(--raya);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px}
 .pl-pal p,.pl-vivo p{margin:0}
 .pl-pal-l{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
 .pl-b{--c:var(--b-control);background:var(--c);color:#fff;border:0;border-radius:7px;font:700 .82em var(--f-cuerpo);padding:7px 12px;cursor:grab;text-align:left;user-select:none}
@@ -356,7 +362,6 @@ body.hoy-placa #con-placa{border-top:2px solid var(--raya);padding-top:32px}
 .pl-res p.ok{color:var(--verde)} .pl-res p.mal{color:var(--rojo)}
 .pl-res ul{margin:0;padding-left:1.2em;color:var(--tinta)}
 .pl-entrega{border:2px solid var(--verde);border-radius:12px;padding:14px 18px;margin-top:12px}
-.pl-obra details{margin-top:14px}
 .pl-num{display:flex;gap:22px;flex-wrap:wrap}
 .pl-num div{display:flex;flex-direction:column}
 .pl-num b{font:800 2.4em var(--f-titulo);color:var(--tinta);line-height:1}
@@ -366,9 +371,11 @@ body.hoy-placa #con-placa{border-top:2px solid var(--raya);padding-top:32px}
 .pl-tabla th{font-family:var(--f-mono);font-weight:500;font-size:.75em;color:var(--tenue)}
 .pl-tabla input{width:4.6em;font:500 1em var(--f-mono);border:1.5px solid var(--raya);border-radius:6px;padding:3px 6px;background:var(--papel);color:var(--tinta)}
 .pl-tabla button{font:700 .75em var(--f-cuerpo);background:transparent;color:var(--violeta);border:1.5px solid var(--violeta);border-radius:999px;padding:3px 8px;cursor:pointer;margin-top:4px}
+.pl-cierre{display:flex;flex-direction:column;gap:12px;border:2px solid var(--violeta);border-radius:16px;padding:20px 22px;background:var(--hoja)}
+.pl-cierre h2{margin:0}
 .pl-anteriores{color:var(--tenue);font-size:.85em;margin:0}
 .pl-anteriores a{color:var(--tenue)}
-@media (max-width:1150px){.pl-trabajo{grid-template-columns:minmax(0,.8fr) minmax(0,1.3fr)}.pl-vivo{grid-column:1/-1;position:static}}
+@media (max-width:1150px){.pl-trabajo{grid-template-columns:minmax(0,.8fr) minmax(0,1.3fr)}.pl-codigo{grid-column:1/-1;position:static}}
 @media (max-width:800px){.pl-datos,.pl-trabajo,.pl-pasos{grid-template-columns:1fr}.pl-sens{grid-template-columns:1fr 1fr}.pl-pal{position:static}}
 </style>
 </head>
@@ -1237,10 +1244,20 @@ void loop() {
       <div class="pl-consigna"><b id="pl-c-tit"></b><p id="pl-c-txt"></p></div>
 
       <div class="pl-trabajo">
+        <div class="pl-izq">
         <div class="pl-pal" aria-label="Los bloques">
           <div class="rot">Los bloques</div>
           <p class="nota">Tocá uno para sumarlo, o arrastralo al lugar.</p>
           <div id="pl-paleta" class="pl-pal-l"></div>
+        </div>
+        <div class="pl-vivo">
+          <div class="rot">Su placa</div>
+          <p class="nota">Cuando la profe carga su código, enchufen la placa en esta compu y toquen Conectar (Chrome o Edge).</p>
+          <div class="acciones"><button type="button" class="prim" id="pl-conectar">Conectar</button><button type="button" class="sec" id="pl-parar" hidden>Desconectar</button></div>
+          <span class="nota" id="pl-msg" aria-live="polite"></span>
+          <div class="pl-num" id="pl-num" hidden></div>
+          <table class="pl-tabla" id="pl-tabla"></table>
+        </div>
         </div>
         <div class="pl-obra">
           <div class="pl-siempre">por siempre</div>
@@ -1255,19 +1272,23 @@ void loop() {
               <li id="pl-despues"></li>
             </ol>
           </div>
-          <details class="lenguaje en-reto">
-            <summary>El código que arma su programa</summary>
-            <div class="len-cuerpo"><div class="codigo"><button class="copiar" type="button" data-cod="pl-cod">Copiar</button><pre id="pl-cod"></pre></div></div>
-          </details>
         </div>
-        <div class="pl-vivo">
-          <div class="rot">Su placa</div>
-          <p class="nota">Cuando la profe carga su código, enchufen la placa en esta compu y toquen Conectar (Chrome o Edge).</p>
-          <div class="acciones"><button type="button" class="prim" id="pl-conectar">Conectar</button><button type="button" class="sec" id="pl-parar" hidden>Desconectar</button></div>
-          <span class="nota" id="pl-msg" aria-live="polite"></span>
-          <div class="pl-num" id="pl-num" hidden></div>
-          <table class="pl-tabla" id="pl-tabla"></table>
+        <div class="pl-codigo">
+          <div class="rot">El código de Arduino</div>
+          <p class="nota">Se escribe solo mientras encastran bloques. Las líneas con <span class="dice">//</span> explican qué hace cada parte.</p>
+          <div class="codigo"><button class="copiar" type="button" data-cod="pl-cod">Copiar</button><pre id="pl-cod"></pre></div>
         </div>
+      </div>
+      <div class="pl-cierre">
+        <div class="rot">Para cerrar · cuando terminan con la placa</div>
+        <h2>Su aparato, en su página</h2>
+        <ol class="pasitos">
+          <li>Saquen una <b>foto del aparato armado</b> y pásenla a esta compu.</li>
+          <li>Toquen <button type="button" class="prim" id="pl-a-pagina">Sumarlo a mi página</button>: se agrega al final de su página un pedazo con sus datos y la decisión que armaron.</li>
+          <li>Ahí mismo, con <b>🖼️ Sumar una imagen de mi compu</b>, suban la foto y péguenla donde dice <span class="dice">&lt;!-- la foto --&gt;</span>.</li>
+          <li>Completen la última línea con algo que les pasó midiendo. Por ejemplo: ¿el número cambió como esperaban?</li>
+        </ol>
+        <details class="lenguaje en-reto"><summary>Lo que se suma a su página</summary><div class="len-cuerpo"><div class="codigo"><button class="copiar" type="button" data-cod="pl-html">Copiar</button><pre id="pl-html"></pre></div></div></details>
       </div>
     </div>
 
@@ -2199,7 +2220,7 @@ h1 { color: green; }
     let h='<tr><th>Prueben</th>'+S.vars.map(x=>`<th>${esc(x.v)}</th>`).join('')+'</tr>';
     S.sit.forEach((s,j)=>{h+=`<tr><td>${esc(s)}</td>`+S.vars.map((x,i)=>`<td><input inputmode="decimal" data-k="${j}-${i}" value="${esc(M[j+'-'+i]??'')}" aria-label="${esc(s+': '+x.v)}"><br><button type="button" data-anotar="${j}-${i}"${conectada?'':' hidden'}>Anotar</button></td>`).join('')+'</tr>'});
     const t=$('pl-tabla'); t.innerHTML=h;
-    t.querySelectorAll('input').forEach(i=>i.addEventListener('input',()=>{const m=medidas();m[i.dataset.k]=i.value.trim();LS.set(K_MED+sen,m);
+    t.querySelectorAll('input').forEach(i=>i.addEventListener('input',()=>{const m=medidas();m[i.dataset.k]=i.value.trim();LS.set(K_MED+sen,m);codigo();
       if(S.vars.every((x,k)=>val(0,k)!=null&&val(1,k)!=null)) registrar('placa-mide-'+sen,'Placa · anotó lo que mide su sensor',S.n+': '+S.sit.map((s,j)=>s+' '+S.vars.map((x,k)=>val(j,k)).join('/')).join(' · '))}));
     t.querySelectorAll('[data-anotar]').forEach(b=>b.addEventListener('click',()=>{const vi=+b.dataset.anotar.split('-')[1];if(ultimo[vi]==null)return;
       const i=t.querySelector(`input[data-k="${b.dataset.anotar}"]`);i.value=ultimo[vi];i.dispatchEvent(new Event('input'))}));
@@ -2357,7 +2378,23 @@ h1 { color: green; }
       if(path.length&&it.id!=='led'){prog.splice(path[0]+1,0,it);return pintar()}   /* adentro de un si sólo va el LED */
       lista(path).splice(pos,0,it);pintar()});
   }
-  function codigo(){$('pl-cod').textContent=generar(prog,$('pl-grupo').value.trim());LS.set(K_PROG+sen,prog);$('pl-res').hidden=true;$('pl-entrega').hidden=true}
+  /* el cierre: un pedazo de HTML con sus datos, para su página del reto 5 */
+  function paraLaPagina(){
+    const S=SENS[sen], que={cap:'la humedad de la tierra con un sensor capacitivo',hq:'la humedad de la tierra con un sensor de horquilla',dht:'la temperatura y la humedad del aire con un DHT11',luz:'cuánta luz hay con un sensor de luz'}[sen];
+    const caja=prog.find(x=>B[x.id].caja), v=caja&&S.vars[caja.v||0];
+    const dec=caja&&num(caja.a)!=null?(B[caja.id].op==='entre'?`si ${v.n} está entre ${num(caja.a)} y ${num(caja.b)}, prende el LED. Si no, lo apaga.`:`si ${v.n} es ${B[caja.id].op==='>'?'mayor':'menor'} que ${num(caja.a)}, prende el LED. Si no, lo apaga.`):'Por ahora sólo mide: todavía no decide nada.';
+    const fil=S.sit.map((s,j)=>`      <tr><td>${esc(s)}</td>${S.vars.map((x,i)=>`<td>${val(j,i)??'…'}</td>`).join('')}</tr>`).join('\n');
+    return `\n  <section>\n    <h2>Nuestro aparato</h2>\n    <!-- la foto -->\n    <p>Mide ${que}, y lo muestra en la compu.</p>\n    <table>\n      <tr><th>Probamos</th>${S.vars.map(x=>'<th>'+esc(x.v)+'</th>').join('')}</tr>\n${fil}\n    </table>\n    <p>Decide así: ${dec}</p>\n    <p>Lo que nos pasó midiendo: …</p>\n  </section>\n`;
+  }
+  $('pl-a-pagina').addEventListener('click',()=>{
+    const r=$('r7'), ta=$('ed-cod'); if(!sen||!r||!ta) return;
+    const d=r.querySelector('.destapar'); if(r.classList.contains('tapado')&&d) d.click();
+    const h=paraLaPagina(), i=ta.value.lastIndexOf('</body>');
+    ta.value=i>=0?ta.value.slice(0,i)+h+ta.value.slice(i):ta.value+h; ta.dispatchEvent(new Event('input',{bubbles:true}));
+    r.scrollIntoView({behavior:'smooth',block:'start'});
+    registrar('placa-pagina-'+sen,'Placa · sumó su aparato a su página',SENS[sen].n);
+  });
+  function codigo(){$('pl-html').textContent=paraLaPagina();$('pl-cod').textContent=generar(prog,$('pl-grupo').value.trim());LS.set(K_PROG+sen,prog);$('pl-res').hidden=true;$('pl-entrega').hidden=true}
   function pintar(){
     $prog.innerHTML='';
     const fila=(it,path)=>{const b=B[it.id],li=document.createElement('li');li.className=b.g;li.draggable=true;
