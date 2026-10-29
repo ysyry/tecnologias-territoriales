@@ -194,7 +194,7 @@ main.sin-nombre .esquema{display:none}
 .ed-b{display:inline-flex;flex-wrap:wrap;align-items:center;gap:6px;align-self:flex-start;color:#fff;font-weight:700;font-size:.85em;padding:6px 8px 6px 12px;border-radius:7px}
 .ed-b.salida{background:var(--b-salida)} .ed-b.control{background:var(--b-control)}
 .ed-b select,.ed-b input{background:#fff;color:#1b1b1b;border:0;border-radius:999px;padding:2px 8px;font:700 1em var(--f-cuerpo)}
-.ed-b input{width:4.6em}
+.ed-b input{width:4.6em} .ed-b input.txt{width:11em}
 .ed-b .x{background:rgba(0,0,0,.22);color:#fff;border:0;border-radius:999px;width:26px;height:26px;cursor:pointer;padding:0}
 .ed-sino{color:var(--tenue);font-weight:700;font-size:.85em;margin-left:18px}
 .ed-add{align-self:flex-start;border:2px dashed var(--raya);background:none;color:var(--tenue);border-radius:8px;padding:3px 12px;cursor:pointer;font:700 .82em var(--f-cuerpo)}
@@ -926,7 +926,7 @@ main.sin-nombre .esquema{display:none}
       <h3>Armá el programa que mide · Envío 1</h3>
       <p>Adentro de <b>siempre</b>: <b>escribir el número del sensor</b> y <b>esperar 1 segundo</b>.
       Tocá <b>+ agregar</b>.</p>
-      <div class="ed" id="ed1" data-pal="imprimir,esperar,prender,apagar"></div>
+      <div class="ed" id="ed1" data-pal="imprimir,texto,prender,apagar,esperar,sisolo,si,repetir"></div>
       <p class="nota" id="ed1-m" aria-live="polite"></p>
       <div class="envio" id="env1" hidden>
         <div class="fila-c"><button type="button" class="copiar" data-ed="ed1">Copiar el código</button><span class="nota copiado"></span></div>
@@ -958,7 +958,7 @@ main.sin-nombre .esquema{display:none}
       <h3>Armá la maceta que avisa · Envío 2</h3>
       <p>Adentro de <b>siempre</b>: <b>si el sensor…</b> → <b>prender el LED</b>; <b>si no</b> →
       <b>apagar el LED</b>. El signo y el número los elegís con tus números del paso 4.</p>
-      <div class="ed" id="ed2" data-pal="si,prender,apagar,esperar,imprimir"></div>
+      <div class="ed" id="ed2" data-pal="imprimir,texto,prender,apagar,esperar,sisolo,si,repetir"></div>
       <div class="probar" id="probar">
         <label for="pr-hum">Probalo: mové el agua</label>
         <input id="pr-hum" type="range" min="0" max="100" value="0">
@@ -1159,7 +1159,10 @@ const PF_BLQ={
   esperar:{c:'control', txt:'esperar', nuevo:()=>({t:'esperar',n:1})},
   prender:{c:'salida', txt:'prender el LED', nuevo:()=>({t:'prender'})},
   apagar:{c:'salida', txt:'apagar el LED', nuevo:()=>({t:'apagar'})},
-  si:{c:'control', txt:'si el sensor… si no…', nuevo:()=>({t:'si',op:'<',n:500,si:[],no:[]})}};
+  texto:{c:'salida', txt:'escribir un texto', nuevo:()=>({t:'texto',s:'Tengo sed'})},
+  sisolo:{c:'control', txt:'si el sensor…', nuevo:()=>({t:'sisolo',op:'<',n:500,si:[]})},
+  si:{c:'control', txt:'si el sensor… si no…', nuevo:()=>({t:'si',op:'<',n:500,si:[],no:[]})},
+  repetir:{c:'control', txt:'repetir… veces', nuevo:()=>({t:'repetir',n:3,si:[]})}};
 const PF_ED={ed1:{prog:[],destino:null}, ed2:{prog:[],destino:null}};
 const mk=(tag,cls,txt)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e};
 function pfDatos(){return SES?(lee(K_NUMS,{})[SES.nombre]||{}):{}}
@@ -1199,7 +1202,10 @@ function pfPaso(id,p,lista,idx){
     case 'esperar': li.append(mk('span',null,'esperar'),num('n',0.1,30,0.1),mk('span',null,'segundos'));break;
     case 'prender': li.append(mk('span',null,'prender el LED'));break;
     case 'apagar': li.append(mk('span',null,'apagar el LED'));break;
-    case 'si':{const s=mk('select');s.setAttribute('aria-label','signo');
+    case 'texto':{const i=mk('input','txt');i.type='text';i.maxLength=40;i.value=p.s;i.setAttribute('aria-label','texto');
+      i.onchange=()=>{p.s=i.value;cambia()};li.append(mk('span',null,'escribir'),i);break}
+    case 'repetir': li.append(mk('span',null,'repetir'),num('n',1,50,1),mk('span',null,'veces'));break;
+    case 'sisolo': case 'si':{const s=mk('select');s.setAttribute('aria-label','signo');
       [['<','es menor que'],['>','es mayor que']].forEach(([v,tx])=>{const o=mk('option',null,v+'  '+tx);o.value=v;s.append(o)});
       s.value=p.op;s.onchange=()=>{p.op=s.value;cambia()};
       li.append(mk('span',null,'si el sensor'),s,num('n',0,1023,1));break}
@@ -1207,7 +1213,8 @@ function pfPaso(id,p,lista,idx){
   const x=mk('button','x','✕');x.type='button';x.setAttribute('aria-label','Sacar este bloque');
   x.onclick=()=>{lista.splice(idx,1);cambia()};li.append(x);
   caja.append(li);
-  if(p.si) caja.append(pfLista(id,p.si,'ed-l sub'),mk('div','ed-sino','si no'),pfLista(id,p.no,'ed-l sub'));
+  if(p.si) caja.append(pfLista(id,p.si,'ed-l sub'));
+  if(p.no) caja.append(mk('div','ed-sino','si no'),pfLista(id,p.no,'ed-l sub'));
   return caja;
 }
 function pfLista(id,lista,cls){
@@ -1235,13 +1242,16 @@ function pfCorrer(lista,v,st){
   for(const p of lista){
     if(p.t==='prender')st.led=true; else if(p.t==='apagar')st.led=false;
     else if(p.t==='imprimir')st.imp=true; else if(p.t==='esperar')st.esp+=p.n;
+    else if(p.t==='texto')st.txt=true;
     else if(p.t==='si')pfCorrer((p.op==='<'?v<p.n:v>p.n)?p.si:p.no,v,st);
+    else if(p.t==='sisolo'){if(p.op==='<'?v<p.n:v>p.n)pfCorrer(p.si,v,st)}
+    else if(p.t==='repetir')for(let i=0;i<Math.min(p.n,50);i++)pfCorrer(p.si,v,st);
   }
   return st;
 }
 /* El LED después de una vuelta, empiece prendido o apagado. */
 const pfLed=(prog,v)=>[true,false].map(led=>pfCorrer(prog,v,{led,imp:false,esp:0}).led);
-const pfTiene=(l,t)=>l.some(p=>p.t===t||(p.si&&(pfTiene(p.si,t)||pfTiene(p.no,t))));
+const pfTiene=(l,t)=>l.some(p=>p.t===t||(p.si&&pfTiene(p.si,t))||(p.no&&pfTiene(p.no,t)));
 function pfMostrar(n,ok){
   const l=document.querySelector(`.logre[data-juego="pf${n===1?3:5}"]`), env=document.getElementById('env'+n);
   env.hidden=!ok;
@@ -1260,13 +1270,13 @@ function pfRevisa2(){
   const P=PF_ED.ed2.prog, m=document.getElementById('ed2-m'), N=pfNums(), $=id=>document.getElementById(id);
   let msg='', ok=false;
   if(!N) msg='Para probarlo hacen falta tus dos números de la maceta (paso 4).';
-  else if(!pfTiene(P,'si')) msg='La maceta tiene que decidir: le falta el bloque «si el sensor…».';
+  else if(!pfTiene(P,'si')&&!pfTiene(P,'sisolo')) msg='La maceta tiene que decidir: le falta un bloque «si el sensor…».';
   else{
     const [a1,a2]=pfLed(P,N.s), [b1,b2]=pfLed(P,N.m), seco=a1&&a2, moj=!b1&&!b2;
     if(seco&&moj){msg='✔ Con la tierra seca se prende el LED, y con la tierra mojada se apaga.';ok=true}
     else if(!a1&&!a2&&b1&&b2) msg='Está al revés: el LED se prende con la tierra mojada. ¿Qué signo va, con tus números?';
     else if(!seco) msg=`Con la tierra seca (${N.s}) el LED no se prende siempre. ¿El umbral está entre tu seco y tu mojado? ¿Hay algo que lo prenda en el «si»?`;
-    else msg=`Con la tierra mojada (${N.m}) el LED no se apaga. ¿Qué le falta al «si no»?`;
+    else msg=`Con la tierra mojada (${N.m}) el LED no se apaga. ¿Dónde se apaga en tu programa?`;
   }
   m.textContent=msg; m.classList.toggle('ok',ok); pfMostrar(2,ok); pfProbar();
 }
@@ -1291,10 +1301,13 @@ function pfCodigo(prog){
       case 'prender': return `${s}digitalWrite(13, HIGH);   // prender el LED\n`;
       case 'apagar': return `${s}digitalWrite(13, LOW);    // apagar el LED\n`;
       case 'si': return `${s}if (analogRead(A0) ${p.op} ${p.n}) {\n${c_l(p.si,ind+2)}${s}} else {\n${c_l(p.no,ind+2)}${s}}\n`;
+      case 'sisolo': return `${s}if (analogRead(A0) ${p.op} ${p.n}) {\n${c_l(p.si,ind+2)}${s}}\n`;
+      case 'repetir': return `${s}for (int i = 0; i < ${p.n}; i++) {   // repetir ${p.n} veces\n${c_l(p.si,ind+2)}${s}}\n`;
+      case 'texto': return `${s}Serial.println("${String(p.s).replace(/[\\"]/g,'').replace(/[\r\n]+/g,' ')}");   // escribir un texto\n`;
     }};
   const sen=PF_SENS[pfDatos().sensor];
   let c=`// equipo: ${SES?String(SES.nombre).replace(/[\r\n]+/g,' '):''}\n// La maceta de 2do: sensor${sen?' '+sen.n:''} en A0 · LED en 13\n\nvoid setup() {\n`;
-  if(pfTiene(prog,'imprimir')) c+=`  Serial.begin(9600);\n`;
+  if(pfTiene(prog,'imprimir')||pfTiene(prog,'texto')) c+=`  Serial.begin(9600);\n`;
   c+=`  pinMode(13, OUTPUT);\n}\n\nvoid loop() {\n  // siempre, una y otra vez\n${c_l(prog,2)}}\n`;
   return c;
 }
