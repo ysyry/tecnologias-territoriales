@@ -290,6 +290,65 @@ p.est,p.coh{margin:0}
 .flujo-img>span{align-self:center;font:800 1.4em var(--f-titulo);color:var(--violeta)}
 .mini-graf{display:block;height:46px;border-radius:6px;background:#fff linear-gradient(to bottom right,transparent 48%,var(--violeta) 49%,var(--violeta) 53%,transparent 54%)}
 @media (max-width:640px){.flujo-img>span{transform:rotate(90deg);margin:0 auto}}
+/* retos 10 y 11: con la placa en la mano. Cada grupo con su sensor, un LED, y el programa armado con bloques */
+.pl-intro{display:flex;flex-direction:column;gap:14px}
+.pl-intro p{margin:0}
+.pl-sens{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.pl-sens button{display:flex;flex-direction:column;gap:4px;align-items:flex-start;text-align:left;font:inherit;background:var(--hoja);border:2px solid var(--raya);border-radius:14px;padding:14px 16px;cursor:pointer;color:var(--tinta)}
+.pl-sens button span{font-size:1.6em;line-height:1.1}
+.pl-sens button b{font-size:.9em}
+.pl-sens button small{color:var(--tenue);font-size:.75em}
+.pl-sens button[aria-pressed="true"]{border-color:var(--violeta);background:var(--inf-w)}
+.pl-sens button:focus-visible{outline:3px solid var(--violeta);outline-offset:2px}
+.pl-falta{border:1.5px dashed var(--raya);border-radius:12px;padding:14px 18px;color:var(--tenue);margin:0}
+.pl-con{display:grid;grid-template-columns:minmax(0,260px) minmax(0,1fr);gap:22px;align-items:start}
+.pl-con svg{width:100%;display:block}
+.pl-con p{margin:0}
+.pl-vivo{border:2px solid var(--violeta);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:14px}
+.pl-vivo p{margin:0}
+.pl-num{display:flex;gap:28px;flex-wrap:wrap}
+.pl-num div{display:flex;flex-direction:column}
+.pl-num b{font:800 2.6em var(--f-titulo);color:var(--tinta);line-height:1}
+.pl-num small{font-family:var(--f-mono);font-size:.7em;color:var(--tenue)}
+.pl-tabla{border-collapse:collapse;font-size:.9em}
+.pl-tabla th,.pl-tabla td{border-bottom:1px solid var(--raya);padding:8px 12px;text-align:left;color:var(--tinta)}
+.pl-tabla th{font-family:var(--f-mono);font-weight:500;font-size:.75em;color:var(--tenue)}
+.pl-tabla input{width:5.5em;font:500 1em var(--f-mono);border:1.5px solid var(--raya);border-radius:6px;padding:4px 8px;background:var(--hoja);color:var(--tinta)}
+.pl-tabla button{font:700 .75em var(--f-cuerpo);background:transparent;color:var(--violeta);border:1.5px solid var(--violeta);border-radius:999px;padding:4px 10px;cursor:pointer;margin-left:6px}
+.pl-arm{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.3fr);gap:24px;align-items:start}
+.pl-pal{display:flex;flex-direction:column;gap:8px;background:var(--hoja);border:1px solid var(--raya);border-radius:16px;padding:16px;position:sticky;top:12px}
+.pl-pal p{margin:0 0 4px}
+.pl-b{--c:var(--violeta);display:flex;flex-direction:column;gap:2px;width:100%;font:700 .8em var(--f-cuerpo);color:var(--tinta);background:var(--papel);border:2px solid var(--c);border-left-width:8px;border-radius:10px;padding:9px 12px;cursor:grab;user-select:none;text-align:left}
+.pl-b small{font-weight:500;color:var(--tenue);font-size:.9em}
+.pl-b:focus-visible{outline:3px solid var(--violeta);outline-offset:2px}
+.pl-b.medir,.pl-ley.medir,.pl-prog li.medir{--c:var(--verde)} .pl-b.mostrar,.pl-ley.mostrar,.pl-prog li.mostrar{--c:var(--violeta)} .pl-b.decidir,.pl-ley.decidir,.pl-prog li.decidir{--c:var(--inf)} .pl-b.avisar,.pl-ley.avisar,.pl-prog li.avisar{--c:#C77A1E} .pl-b.esperar,.pl-ley.esperar,.pl-prog li.esperar{--c:var(--tenue)}
+.pl-ley{display:inline-block;font-family:var(--f-mono);font-size:.8em;border-left:6px solid var(--c);padding:0 6px;margin:2px 2px 0 0;color:var(--tinta)}
+.pl-obra{display:flex;flex-direction:column;gap:12px}
+.pl-obra label.pl-grupo{display:flex;flex-direction:column;gap:6px;font-weight:700;color:var(--tinta);font-size:.9em}
+.pl-obra label.pl-grupo input{font:500 1em var(--f-cuerpo);border:1.5px solid var(--raya);border-radius:8px;padding:8px 10px;background:var(--hoja);color:var(--tinta)}
+.pl-prog,.pl-dentro{list-style:none;margin:0;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:64px;border:2px dashed var(--raya);border-radius:14px;background:var(--hoja)}
+.pl-prog.sobre,.pl-dentro.sobre{border-color:var(--violeta);background:var(--inf-w)}
+.pl-prog li{--c:var(--violeta);background:var(--papel);border:2px solid var(--c);border-left-width:8px;border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:6px;cursor:grab}
+.pl-fila{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.pl-fila>span{flex:1;font-weight:700;color:var(--tinta);font-size:.85em;min-width:8em}
+.pl-fila>button{font:700 .75em var(--f-cuerpo);background:transparent;border:1px solid var(--raya);border-radius:6px;padding:2px 8px;cursor:pointer;color:var(--tenue)}
+.pl-cond{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:.85em;color:var(--tinta)}
+.pl-cond select,.pl-cond input{font:500 1em var(--f-mono);border:1.5px solid var(--raya);border-radius:6px;padding:3px 6px;background:var(--hoja);color:var(--tinta)}
+.pl-cond input{width:5em}
+.pl-dentro{min-height:44px;margin-left:10px;padding:8px}
+.pl-dentro:empty::before{content:"soltá acá adentro el LED";color:var(--tenue);font-size:.75em}
+.pl-vacio{margin:-4px 0 0;color:var(--tenue);font-size:.85em}
+.pl-res{display:flex;flex-direction:column;gap:6px}
+.pl-res p{margin:0;font-weight:700}
+.pl-res p.ok{color:var(--verde)} .pl-res p.mal{color:var(--rojo)}
+.pl-res ul{margin:0;padding-left:1.2em;color:var(--tinta)}
+.pl-res li.ojo{color:var(--tenue)}
+.pl-entrega{border:2px solid var(--verde);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.pl-entrega p{margin:0}
+.pl-tarea{font:800 1.25em var(--f-titulo);color:var(--tinta)}
+@media (max-width:900px){.pl-sens{grid-template-columns:1fr 1fr}.pl-con,.pl-arm{grid-template-columns:1fr}.pl-pal{position:static}}
+.pl-hoy{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--violeta);color:var(--hoja);border-radius:14px;padding:16px 22px;text-decoration:none;font-weight:700}
+.pl-hoy small{font-weight:500;opacity:.85}
 </style>
 </head>
 <body>
@@ -318,6 +377,8 @@ p.est,p.coh{margin:0}
       <p class="nota ciclo-n">El ciclo completo de un dato, de la tierra a la pantalla de alguien. En el primer cuatrimestre trabajaron <b>el análisis</b>: datos que había juntado otro, en Pandalyze. Ahora el ciclo arranca antes, porque <b>los datos los produce su aparato</b>.</p>
     </div>
   </header>
+
+  <a class="pl-hoy" href="#con-placa">🔌 Hoy trabajamos con la placa: retos 10 y 11 <small>armando el programa con bloques →</small></a>
 
   <section class="pasos" aria-label="Los tres pasos">
     <div class="paso">
@@ -1123,6 +1184,95 @@ void loop() {
         </div>
       </div>
     </div>
+  </section>
+
+  <section class="retos" id="con-placa" aria-label="Con la placa en la mano">
+    <div class="pl-intro">
+      <h2>Con la placa en la mano</h2>
+      <p>Cada grupo tiene <b>una placa, un sensor y un LED</b>. El LED: pata larga → resistencia de 220 Ω → <b>pin 13</b>; pata corta → <b>GND</b>.</p>
+      <div class="rot">¿Qué sensor les tocó?</div>
+      <div class="pl-sens" id="pl-sens" role="group" aria-label="El sensor del grupo"></div>
+    </div>
+
+    <div class="reto tapado" id="r10">
+      <div class="nivel">10</div>
+      <div class="cuerpo">
+        <div class="rot">Con la placa · ¿qué números da?</div>
+        <h3>Antes de que el aparato decida, hay que saber qué números da su sensor. Pruébenlo en dos situaciones distintas y anoten cuánto marca.</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <div class="formula" hidden>
+          <p class="pl-falta" data-pl-sin>Primero elijan arriba qué sensor les tocó.</p>
+          <div data-pl-con hidden>
+            <div class="pl-con">
+              <div id="pl-esq"></div>
+              <div class="explica">
+                <div class="rot">Los cables del sensor</div>
+                <p id="pl-esq-txt"></p>
+                <p class="nota">La placa ya viene con un programa que sólo mide. Enchúfenla por USB en esta compu.</p>
+              </div>
+            </div>
+          </div>
+          <div class="pl-vivo" data-pl-con hidden>
+            <p><b>Toquen Conectar y elijan la placa</b> (la que dice USB o COM). Anda en Chrome o Edge, sin instalar nada.</p>
+            <div class="acciones"><button type="button" class="prim" id="pl-conectar">Conectar la placa</button><button type="button" class="sec" id="pl-parar" hidden>Desconectar</button><span class="nota" id="pl-msg" aria-live="polite"></span></div>
+            <div class="pl-num" id="pl-num" hidden></div>
+            <table class="pl-tabla" id="pl-tabla"></table>
+            <p class="nota">Si no conecta, la profe les dice los números desde su compu y los escriben a mano.</p>
+          </div>
+          <button class="pista-b" type="button">Pista</button>
+          <div class="pista" hidden><b>¿El número no cambia nada?</b> Miren que el cable del medio (la señal) esté en el pin del dibujo. <b>¿Marca 0 todo el tiempo?</b> Falta el cable de 5V. <b>¿Marca 1023 todo el tiempo?</b> Falta el de GND, o el sensor está suelto.<br><br><b>DHT11:</b> mide lento, una vez por segundo. Si aparece <b>nan</b>, no le llega la señal: revisen el cable del pin 2.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reto tapado" id="r11">
+      <div class="nivel">11</div>
+      <div class="cuerpo">
+        <div class="rot">Con la placa · que decida sola</div>
+        <h3>Armen el programa con bloques: que mida, que decida con un <i>Si</i> y que prenda el LED. El código se escribe solo.</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <div class="formula" hidden>
+          <p class="pl-falta" data-pl-sin>Primero elijan arriba qué sensor les tocó.</p>
+          <div class="pl-arm" data-pl-con hidden>
+            <div class="pl-pal" aria-label="Los bloques">
+              <p class="nota">Arrastrá un bloque al programa, o tocalo para sumarlo. El color dice qué hace: <span class="pl-ley medir">mide</span> <span class="pl-ley mostrar">muestra</span> <span class="pl-ley decidir">decide</span> <span class="pl-ley avisar">avisa</span> <span class="pl-ley esperar">espera</span></p>
+              <div id="pl-paleta" style="display:flex;flex-direction:column;gap:8px"></div>
+            </div>
+            <div class="pl-obra">
+              <label class="pl-grupo">Quiénes son (va arriba del código, para la entrega)<input id="pl-grupo" autocomplete="off" placeholder="Nombre y apellido de cada uno"></label>
+              <b style="font-family:var(--f-titulo);font-size:1.2em;color:var(--tinta)">Su programa <span class="nota" style="font-family:var(--f-cuerpo);font-size:.7em;font-weight:500">se repite para siempre, de arriba para abajo</span></b>
+              <ol class="pl-prog" id="pl-prog" aria-label="Su programa"></ol>
+              <p class="pl-vacio" id="pl-vacio">Arrastrá acá el primer bloque.</p>
+              <div class="acciones"><button type="button" class="prim" id="pl-revisar">Revisar</button><button type="button" class="sec" id="pl-limpiar">Empezar de nuevo</button></div>
+              <div class="pl-res" id="pl-res" hidden></div>
+            </div>
+          </div>
+          <details class="lenguaje en-reto" data-pl-con hidden>
+            <summary>El código que va armando su programa</summary>
+            <div class="len-cuerpo"><div class="codigo"><button class="copiar" type="button" data-cod="pl-cod">Copiar</button><pre id="pl-cod"></pre></div></div>
+          </details>
+          <div class="pl-entrega" id="pl-entrega" hidden>
+            <div class="rot">¡Listo! A entregarlo</div>
+            <ol class="pasitos">
+              <li>Toquen <button type="button" class="prim" id="pl-bajar">Bajar el código</button> y se baja el archivo <span class="dice" id="pl-archivo"></span>.</li>
+              <li>En Classroom, abran la tarea <span class="pl-tarea" id="pl-tarea"></span> y súbanlo ahí: <b>Agregar o crear → Archivo</b>. Uno por grupo.</li>
+              <li>La profe lo carga en su placa. Cuando vuelve, prueben: ¿el LED se prende cuando ustedes querían?</li>
+            </ol>
+            <p class="nota">¿No se bajó? Copien el código (arriba, «El código que va armando su programa») y péguenlo en un comentario privado de la misma tarea.</p>
+          </div>
+          <button class="pista-b" type="button">Pista</button>
+          <div class="pista" hidden><b>El orden importa:</b> primero se mide, después se muestra y se decide, y al final se espera. Si decide antes de medir, decide con un número viejo.<br><br><b>¿Qué número poner en el Si?</b> Miren la tabla del reto 10: uno entre los dos que anotaron. Si con más luz el número sube, «oscuro» es <b>menor que</b>; si baja, es <b>mayor que</b>.<br><br><b>¿Dos condiciones?</b> El bloque «está entre» las junta con <span class="dice">&amp;&amp;</span>: se tienen que cumplir las dos.</div>
+        </div>
+      </div>
+    </div>
+
+    <details class="lenguaje en-reto" data-pl-con hidden>
+      <summary>Para la profe: el programa que sólo mide (cargarlo antes, en cada placa)</summary>
+      <div class="len-cuerpo">
+        <p>Es el del reto 10, para el sensor elegido arriba. Se carga con el IDE de Arduino; después cerrá el monitor serie, si no la página no puede leer la placa. <b>DHT11:</b> hace falta la biblioteca <b>DHT sensor library</b> de Adafruit (Herramientas → Administrar bibliotecas).</p>
+        <div class="codigo"><button class="copiar" type="button" data-cod="pl-cod-medir">Copiar</button><pre id="pl-cod-medir"></pre></div>
+      </div>
+    </details>
   </section>
 
   <section class="falla" aria-label="Si no anda">
@@ -1974,6 +2124,278 @@ h1 { color: green; }
       if(!p.hidden&&typeof registrar==='function') registrar('bugpista'+(i+1),'Reto 6 · pidió la pista del error '+(i+1),'',1)});
     pintar();
   });
+})();
+
+/* ---- retos 10 y 11 · con la placa en la mano: un sensor por grupo, un LED, el programa armado con bloques ---- */
+(function(){
+  const TAREA_CLASSROOM='Mi sensor en la placa';   /* el nombre de la tarea, igual que en Classroom */
+  const SENS={
+    cap:{ic:'🌱',n:'Sensor capacitivo de humedad',c:'la humedad de la tierra',pins:[['VCC','5V'],['GND','GND'],['AOUT','A0']],
+      vars:[{v:'tierra',n:'la tierra',t:'int',lee:'analogRead(A0)',com:'Mide la tierra con el sensor capacitivo, en A0'}],sit:['En el aire','Clavado en tierra mojada']},
+    hq:{ic:'🍴',n:'Sensor de horquilla',c:'la humedad de la tierra',pins:[['VCC','5V'],['GND','GND'],['A0','A0']],
+      vars:[{v:'tierra',n:'la tierra',t:'int',lee:'analogRead(A0)',com:'Mide la tierra con la horquilla, en A0'}],sit:['En el aire','Clavada en tierra mojada']},
+    dht:{ic:'🌡️',n:'DHT11',c:'temperatura y humedad del aire',pins:[['+','5V'],['OUT','pin 2'],['−','GND']],
+      vars:[{v:'temperatura',n:'la temperatura',t:'float',lee:'dht.readTemperature()',com:'Mide la temperatura (en grados) con el DHT11'},
+            {v:'humedadAire',n:'la humedad del aire',t:'float',lee:'dht.readHumidity()',com:'Mide la humedad del aire (en %) con el DHT11'}],
+      sit:['Quieto en la mesa','Después de echarle el aliento']},
+    luz:{ic:'☀️',n:'Sensor de luz',c:'cuánta luz hay',pins:[['VCC','5V'],['GND','GND'],['AO','A0']],
+      vars:[{v:'luz',n:'la luz',t:'int',lee:'analogRead(A0)',com:'Mide la luz con el sensor, en A0'}],sit:['Con la luz del aula','Tapado con la mano']}
+  };
+  const K_SEN='pps.desafio4to.placa.sensor', K_MED='pps.desafio4to.placa.medidas.', K_PROG='pps.desafio4to.placa.prog.', K_GRU='pps.desafio4to.placa.grupo';
+  let sen=LS.get(K_SEN,null); if(!SENS[sen]) sen=null;
+  const esc=t=>String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  const num=v=>{const n=parseFloat(String(v).replace(',','.'));return isNaN(n)?null:n};
+
+  /* los bloques: los de medir cambian según el sensor del grupo */
+  function bloques(){
+    const S=SENS[sen], B={};
+    S.vars.forEach((x,i)=>{B['m'+i]={g:'medir',n:S.ic+' Medir '+x.n,d:'Lee el sensor y guarda el número en «'+x.v+'».',vi:i}});
+    Object.assign(B,{
+      mo:{g:'mostrar',n:'📟 Mostrar los números',d:'Los manda a la compu, para verlos en el reto 10.'},
+      si:{g:'decidir',n:'Si … es mayor que …',d:'Lo de adentro pasa cuando el número supera al tuyo.',caja:1,op:'>'},
+      sm:{g:'decidir',n:'Si … es menor que …',d:'Lo de adentro pasa cuando el número queda abajo del tuyo.',caja:1,op:'<'},
+      se:{g:'decidir',n:'Si … está entre … y …',d:'Dos condiciones juntas: las dos se tienen que cumplir.',caja:1,op:'entre'},
+      led:{g:'avisar',n:'💡 Prender el LED',d:'Va adentro de un Si. Cuando no se cumple, se apaga solo.'},
+      e1:{g:'esperar',n:'Esperar 1 segundo',d:'Descansa y vuelve a empezar.',ms:1000},
+      e2:{g:'esperar',n:'Esperar 2 segundos',d:'Descansa y vuelve a empezar.',ms:2000}});
+    return B;
+  }
+  let B={}, prog=[];
+
+  /* el esquema: tres cables del sensor a la placa */
+  function esquema(){
+    const S=SENS[sen], X={'5V':40,'GND':220}, col={'5V':'var(--rojo)','GND':'var(--negro)'};
+    const pins=S.pins.map(([p,d],i)=>({p,d,x:100+i*30,to:X[d]||130,c:col[d]||'var(--verde)'}));
+    let g=`<rect x="80" y="6" width="100" height="30" rx="6" fill="var(--violeta)"/>`;
+    pins.forEach(q=>{g+=`<text x="${q.x}" y="26" text-anchor="middle" font-family="DM Mono,monospace" font-size="10" fill="#fff">${esc(q.p)}</text>
+      <line x1="${q.x}" y1="36" x2="${q.x}" y2="56" stroke="var(--tenue)" stroke-width="3"/>
+      <path d="M${q.x} 56 C${q.x} 92 ${q.to} 92 ${q.to} 128" fill="none" stroke="${q.c}" stroke-width="5" stroke-linecap="round"/>
+      <text x="${q.to}" y="146" text-anchor="middle" font-family="DM Mono,monospace" font-size="14" font-weight="500" fill="var(--tinta)">${esc(q.d)}</text>`});
+    document.getElementById('pl-esq').innerHTML=`<svg viewBox="0 0 260 150" role="img" aria-label="${esc(S.pins.map(([p,d])=>p+' va a '+d).join(', '))}">${g}</svg>`;
+    document.getElementById('pl-esq-txt').innerHTML=S.pins.map(([p,d])=>`<span class="dice">${esc(p)}</span> → <b>${esc(d)}</b>`).join(' · ')+'. Las letras están escritas en el sensor, al lado de cada pata.'+(sen==='dht'?' El DHT11 no va a A0: usa el pin digital 2.':'');
+  }
+
+  /* reto 10: la tabla con las dos situaciones */
+  const medidas=()=>LS.get(K_MED+sen,{});
+  function tabla(){
+    const S=SENS[sen], M=medidas();
+    let h='<tr><th>Situación</th>'+S.vars.map(x=>`<th>${esc(x.v)}</th>`).join('')+'</tr>';
+    S.sit.forEach((s,j)=>{h+=`<tr><td>${esc(s)}</td>`+S.vars.map((x,i)=>`<td><input inputmode="decimal" data-k="${j}-${i}" value="${esc(M[j+'-'+i]??'')}" aria-label="${esc(s+': '+x.v)}"><button type="button" data-anotar="${j}-${i}" hidden>Anotar</button></td>`).join('')+'</tr>'});
+    const t=document.getElementById('pl-tabla'); t.innerHTML=h;
+    t.querySelectorAll('input').forEach(i=>i.addEventListener('input',()=>{const m=medidas();m[i.dataset.k]=i.value.trim();LS.set(K_MED+sen,m);mideListo()}));
+    t.querySelectorAll('[data-anotar]').forEach(b=>b.addEventListener('click',()=>{const vi=+b.dataset.anotar.split('-')[1];if(ultimo[vi]==null)return;
+      const i=t.querySelector(`input[data-k="${b.dataset.anotar}"]`);i.value=ultimo[vi];i.dispatchEvent(new Event('input'))}));
+    anotarVisible();
+  }
+  function mideListo(){const S=SENS[sen],M=medidas();
+    if(S.vars.every((x,i)=>num(M['0-'+i])!=null&&num(M['1-'+i])!=null))
+      registrar('placa-mide-'+sen,'Reto 10 · anotó lo que mide su sensor',S.n+': '+S.sit.map((s,j)=>s+' '+S.vars.map((x,i)=>M[j+'-'+i]).join('/')).join(' · '))}
+  function rango(vi){const M=medidas(),a=num(M['0-'+vi]),b=num(M['1-'+vi]);return a==null||b==null?null:[Math.min(a,b),Math.max(a,b),a,b]}
+
+  /* reto 10: leer la placa por USB (Web Serial, Chrome y Edge) */
+  let ultimo=[], conectada=false;
+  const anotarVisible=()=>document.querySelectorAll('#pl-tabla [data-anotar]').forEach(b=>b.hidden=!conectada);
+  (function(){
+    const bc=document.getElementById('pl-conectar'), bs=document.getElementById('pl-parar'), msg=document.getElementById('pl-msg'), box=document.getElementById('pl-num');
+    if(!('serial' in navigator)){bc.disabled=true;msg.textContent='Este navegador no puede leer la placa: abran la página en Chrome o Edge.';return}
+    let port=null, reader=null, cerrado=null;
+    async function parar(){
+      try{if(reader)await reader.cancel()}catch(_){} try{if(cerrado)await cerrado}catch(_){} try{if(port)await port.close()}catch(_){}
+      port=reader=cerrado=null; bs.hidden=true; bc.hidden=false; conectada=false; anotarVisible();
+    }
+    bc.addEventListener('click',async()=>{
+      if(!sen) return;
+      try{port=await navigator.serial.requestPort();await port.open({baudRate:9600})}
+      catch(e){port=null;msg.textContent=e.name==='NotFoundError'?'No eligieron ninguna placa. Toquen Conectar y elijan la que dice USB o COM.':'No se pudo abrir la placa. Si el monitor serie del IDE de Arduino está abierto en esta compu, ciérrenlo y prueben de nuevo.';return}
+      bc.hidden=true; bs.hidden=false; conectada=true; anotarVisible(); msg.textContent='Conectada. Esperando los números…';
+      const dec=new TextDecoderStream(); cerrado=port.readable.pipeTo(dec.writable).catch(()=>{}); reader=dec.readable.getReader();
+      let buf='', n=0;
+      try{
+        while(true){
+          const {value,done}=await reader.read(); if(done) break;
+          buf+=value; let i;
+          while((i=buf.indexOf('\n'))>=0){
+            const l=buf.slice(0,i).trim(); buf=buf.slice(i+1); if(!l) continue;
+            if(/nan/i.test(l)){msg.textContent='El DHT11 no responde (dice nan): revisen el cable del pin 2.';continue}
+            if(!/^-?\d/.test(l)) continue;
+            ultimo=l.split(',').map(num); n++;
+            const S=SENS[sen];
+            box.hidden=false; box.innerHTML=S.vars.map((x,k)=>ultimo[k]==null?'':`<div><b>${ultimo[k]}</b><small>${esc(x.v)} · ahora</small></div>`).join('');
+            msg.textContent=n+' mediciones. Prueben las dos situaciones y toquen Anotar en cada una.';
+            if(n===5) registrar('placa-con','Reto 10 · conectó la placa');
+          }
+        }
+      }catch(e){msg.textContent='Se cortó la conexión. ¿Se desenchufó la placa? Vuelvan a tocar Conectar.'}
+      await parar();
+    });
+    bs.addEventListener('click',async()=>{await parar();msg.textContent='Desconectada.'});
+  })();
+
+  /* reto 11: el código, con comentarios, a partir de los bloques */
+  function generar(pr,o){
+    o=o||{}; const S=SENS[sen], hoy=new Date().toLocaleDateString('es-AR');
+    const usaLed=pr.some(x=>x.id==='led'||(x.kids||[]).some(k=>k.id==='led'));
+    const medidos=[]; pr.forEach(x=>{const b=B[x.id];if(b&&b.g==='medir'&&!medidos.includes(b.vi))medidos.push(b.vi)}); medidos.sort();
+    const L=['// '+(o.titulo||'Mi sensor en la placa')+' · 4to · '+hoy];
+    if(o.grupo) L.push('// Grupo: '+o.grupo);
+    L.push('// Sensor: '+S.n+' · LED en el pin 13');
+    if(!o.titulo) S.vars.forEach((x,i)=>{const r=rango(i);if(r)L.push(`// ${x.v}: ${S.sit[0].toLowerCase()} marcó ${r[2]}; ${S.sit[1].toLowerCase()}, ${r[3]}`)});
+    L.push('');
+    if(sen==='dht') L.push('#include <DHT.h>     // la biblioteca que sabe hablar con el DHT11','DHT dht(2, DHT11);   // el DHT11 está en el pin 2','');
+    L.push('void setup() {        // pasa UNA vez, al prender la placa','  Serial.begin(9600);  // abre la conversación con la compu');
+    if(sen==='dht') L.push('  dht.begin();         // arranca el DHT11');
+    if(usaLed) L.push('  pinMode(13, OUTPUT); // el pin 13 MANDA corriente: ahí está el LED');
+    if(medidos.length&&pr.some(x=>x.id==='mo')) L.push(`  Serial.println("${medidos.map(i=>S.vars[i].v).join(',')}");  // los títulos, una sola vez`);
+    L.push('}','','void loop() {         // se repite para siempre, de arriba para abajo');
+    for(const x of pr){
+      const b=B[x.id]; if(!b) continue;
+      if(b.g==='medir'){const v=S.vars[b.vi];L.push('','  // '+v.com,`  ${v.t} ${v.v} = ${v.lee};`)}
+      else if(x.id==='mo'){L.push('','  // Muestra los números en la compu');medidos.forEach((i,k)=>{const v=S.vars[i].v;if(k<medidos.length-1)L.push(`  Serial.print(${v});`,'  Serial.print(",");');else L.push(`  Serial.println(${v});`)})}
+      else if(b.caja){
+        const v=S.vars[x.v||0]||S.vars[0], a=num(x.a)??'___', c=num(x.b)??'___';
+        const cond=b.op==='entre'?`${v.v} > ${a} && ${v.v} < ${c}`:`${v.v} ${b.op} ${a}`;
+        const preg=b.op==='entre'?`¿${v.n} está entre ${a} y ${c}?`:`¿${v.n} es ${b.op==='>'?'mayor':'menor'} que ${a}?`;
+        L.push('','  // Decide: '+preg,`  if (${cond}) {`);
+        const led=(x.kids||[]).some(k=>k.id==='led');
+        L.push(led?'    digitalWrite(13, HIGH);  // se cumple: prende el LED':'    // (acá adentro falta el LED)','  } else {',led?'    digitalWrite(13, LOW);   // no se cumple: lo apaga':'','  }');
+        if(!led) L.splice(L.length-2,1);
+      }
+      else if(x.id==='led') L.push('','  // Este LED está afuera de un Si: queda prendido siempre','  digitalWrite(13, HIGH);');
+      else if(b.g==='esperar') L.push('','  // Espera antes de volver a empezar',`  delay(${b.ms});`);
+    }
+    L.push('}');
+    return L.join('\n');
+  }
+  function enPalabras(pr){return pr.map(x=>{const b=B[x.id];if(!b)return'';if(!b.caja)return b.n;
+    const v=(SENS[sen].vars[x.v||0]||{}).v;return b.op==='entre'?`Si ${v} entre ${x.a} y ${x.b}`:`Si ${v} ${b.op} ${x.a}`+((x.kids||[]).length?' (LED)':'')}).join(' → ')}
+
+  /* reto 11: qué está completo y qué falta. Los «ojo» avisan pero no frenan */
+  function revisar(){
+    const msgs=[], ojos=[], S=SENS[sen], ids=prog.map(x=>x.id);
+    const med=prog.filter(x=>B[x.id].g==='medir'), cajas=prog.filter(x=>B[x.id].caja), esp=prog.filter(x=>B[x.id].g==='esperar');
+    const primerOtro=prog.findIndex(x=>B[x.id].g!=='medir');
+    if(!document.getElementById('pl-grupo').value.trim()) msgs.push('Escriban quiénes son, arriba del programa: va en el código que entregan.');
+    if(!med.length) msgs.push('Falta medir: sin eso el aparato no sabe nada de afuera.');
+    if(prog.some((x,i)=>B[x.id].g==='medir'&&primerOtro>=0&&i>primerOtro)) msgs.push('Primero se mide: los bloques de medir van arriba de todo. Si no, decide con un número viejo.');
+    if(new Set(med.map(x=>x.id)).size<med.length) msgs.push('Miden dos veces lo mismo: con una alcanza.');
+    if(!ids.includes('mo')) msgs.push('Falta <i>Mostrar los números</i>: sin eso no pueden ver qué está midiendo.');
+    if(!cajas.length) msgs.push('Falta decidir: sumen un bloque <i>Si</i>.');
+    if(cajas.length>1) msgs.push('Tienen un solo LED: con un <i>Si</i> alcanza. Si quieren dos condiciones, usen «está entre».');
+    cajas.forEach(x=>{const b=B[x.id], v=S.vars[x.v||0];
+      if(!med.some(m=>B[m.id].vi===(x.v||0))) msgs.push(`El <i>Si</i> pregunta por ${v.n}, pero el programa no la mide. Sumen «${S.ic} Medir ${v.n}».`);
+      if(!(x.kids||[]).length) msgs.push('¿Qué pasa cuando se cumple? Arrastren el LED adentro del <i>Si</i>.');
+      const a=num(x.a), c=num(x.b);
+      if(a==null||(b.op==='entre'&&c==null)) msgs.push('Al <i>Si</i> le falta el número: escríbanlo en el bloque.');
+      else if(b.op==='entre'&&a>=c) msgs.push(`«Entre ${a} y ${c}»: el primero tiene que ser el más chico. Así no se cumple nunca.`);
+      else{const r=rango(x.v||0);
+        if(!r) ojos.push('Todavía no anotaron qué marca su sensor (reto 10): el número del <i>Si</i> va a ojo.');
+        else{const [lo,hi]=r, nunca=b.op==='>'?a>=hi:b.op==='<'?a<=lo:(c<=lo||a>=hi), siempre=b.op==='>'?a<lo:b.op==='<'?a>hi:(a<lo&&c>hi);
+          if(nunca) ojos.push(`Ojo: midieron entre ${lo} y ${hi}. Con ${b.op==='entre'?a+' y '+c:a}, en lo que probaron el LED no se prende nunca.`);
+          else if(siempre) ojos.push(`Ojo: midieron entre ${lo} y ${hi}. Con ${b.op==='entre'?a+' y '+c:a}, el LED queda prendido en las dos situaciones.`)}}});
+    if(prog.some(x=>x.id==='led')) msgs.push('Hay un LED afuera del <i>Si</i>: va a quedar prendido siempre. Arrástrenlo adentro.');
+    if(!esp.length) msgs.push('Falta <i>Esperar</i>: sin eso mide miles de veces por segundo.'+(sen==='dht'?' Y el DHT11 necesita al menos un segundo entre medición y medición.':''));
+    if(esp.length>1) msgs.push('Hay dos <i>Esperar</i>: con uno alcanza.');
+    if(esp.length&&ids[ids.length-1]!==esp[0].id) msgs.push('<i>Esperar</i> va al final: primero hace todo, después descansa.');
+    return {msgs,ojos};
+  }
+
+  /* pintar la paleta, el programa y el código */
+  const $prog=document.getElementById('pl-prog');
+  function nuevo(id){const el=document.createElement('button');el.type='button';el.className='pl-b '+B[id].g;el.draggable=true;
+    el.innerHTML='<b>'+esc(B[id].n)+'</b><small>'+esc(B[id].d)+'</small>';
+    el.addEventListener('dragstart',e=>e.dataTransfer.setData('text/plain','n:'+id));el.addEventListener('click',()=>agregar(id));return el}
+  function paleta(){const p=document.getElementById('pl-paleta');p.innerHTML='';Object.keys(B).forEach(k=>p.appendChild(nuevo(k)))}
+  const item=id=>({id,kids:[],v:0,a:'',b:''});
+  function agregar(id){
+    if(id==='led'){const caja=[...prog].reverse().find(x=>B[x.id].caja);if(caja){if(!caja.kids.length)caja.kids.push(item(id));return pintar()}}
+    const it=item(id), iE=prog.findIndex(x=>B[x.id].g==='esperar');
+    if(B[id].g!=='esperar'&&iE>=0)prog.splice(iE,0,it);else prog.push(it);pintar()}
+  const lista=path=>path.length?prog[path[0]].kids:prog;
+  const sacar=path=>lista(path.slice(0,-1)).splice(path[path.length-1],1)[0];
+  function zona(ul,path){
+    ul.addEventListener('dragover',e=>{e.preventDefault();e.stopPropagation();ul.classList.add('sobre')});
+    ul.addEventListener('dragleave',()=>ul.classList.remove('sobre'));
+    ul.addEventListener('drop',e=>{e.preventDefault();e.stopPropagation();ul.classList.remove('sobre');
+      const d=e.dataTransfer.getData('text/plain');let it;
+      const hijos=[...ul.children].filter(c=>c.tagName==='LI');let pos=hijos.length;
+      for(let i=0;i<hijos.length;i++){const r=hijos[i].getBoundingClientRect();if(e.clientY<r.top+r.height/2){pos=i;break}}
+      if(d.startsWith('n:'))it=item(d.slice(2));
+      else if(d.startsWith('m:')){const from=d.slice(2).split(',').map(Number);
+        if(from.length===path.length+1&&from.slice(0,-1).join()===path.join()&&from[from.length-1]<pos)pos--;
+        if(path.length&&from.length===1&&from[0]<path[0])path=[path[0]-1];
+        it=sacar(from)}
+      if(!it||!B[it.id])return;
+      if(path.length&&it.id!=='led'){prog.splice(path[0]+1,0,it);return pintar()}   /* adentro de un Si sólo va el LED */
+      lista(path).splice(pos,0,it);pintar()});
+  }
+  function codigo(){document.getElementById('pl-cod').textContent=generar(prog,{grupo:document.getElementById('pl-grupo').value.trim()});
+    LS.set(K_PROG+sen,prog);document.getElementById('pl-res').hidden=true;document.getElementById('pl-entrega').hidden=true}
+  function pintar(){
+    $prog.innerHTML='';
+    const fila=(it,path)=>{const b=B[it.id],li=document.createElement('li');li.className=b.g;li.draggable=true;
+      li.addEventListener('dragstart',e=>{e.stopPropagation();e.dataTransfer.setData('text/plain','m:'+path.join(','))});
+      const f=document.createElement('div');f.className='pl-fila';
+      f.innerHTML=`<span>${esc(b.caja?'Si…':b.n)}</span><button type="button" aria-label="Subir">↑</button><button type="button" aria-label="Bajar">↓</button><button type="button" aria-label="Sacar">✕</button>`;
+      const [up,dn,x]=f.querySelectorAll('button'),l=lista(path.slice(0,-1)),i=path[path.length-1];
+      up.onclick=()=>{if(i>0){[l[i-1],l[i]]=[l[i],l[i-1]];pintar()}};
+      dn.onclick=()=>{if(i<l.length-1){[l[i+1],l[i]]=[l[i],l[i+1]];pintar()}};
+      x.onclick=()=>{l.splice(i,1);pintar()};
+      li.appendChild(f);
+      if(b.caja){
+        const S=SENS[sen], c=document.createElement('div');c.className='pl-cond';
+        const sel=S.vars.length>1?`<select aria-label="Qué número mira">${S.vars.map((v,k)=>`<option value="${k}"${k===(it.v||0)?' selected':''}>${esc(v.v)}</option>`).join('')}</select>`:`<span class="dice">${esc(S.vars[0].v)}</span>`;
+        c.innerHTML=b.op==='entre'?`${sel} está entre <input inputmode="decimal" data-f="a" value="${esc(it.a)}" aria-label="El número más chico"> y <input inputmode="decimal" data-f="b" value="${esc(it.b)}" aria-label="El número más grande">`
+          :`${sel} es ${b.op==='>'?'mayor':'menor'} que <input inputmode="decimal" data-f="a" value="${esc(it.a)}" aria-label="El número del Si">`;
+        c.querySelectorAll('input,select').forEach(el=>{
+          el.addEventListener('pointerdown',e=>{e.stopPropagation();li.draggable=false});
+          el.addEventListener('blur',()=>{li.draggable=true});
+          el.addEventListener(el.tagName==='SELECT'?'change':'input',()=>{if(el.tagName==='SELECT')it.v=+el.value;else it[el.dataset.f]=el.value.trim();codigo()})});
+        li.appendChild(c);
+        const ul=document.createElement('ol');ul.className='pl-dentro';(it.kids||[]).forEach((k,j)=>ul.appendChild(fila(k,[path[0],j])));zona(ul,[path[0]]);li.appendChild(ul);
+      }
+      return li};
+    prog.forEach((it,i)=>$prog.appendChild(fila(it,[i])));
+    document.getElementById('pl-vacio').hidden=prog.length>0;
+    codigo();
+  }
+  zona($prog,[]);
+  const gru=document.getElementById('pl-grupo'); gru.value=LS.get(K_GRU,''); gru.addEventListener('input',()=>{LS.set(K_GRU,gru.value);codigo()});
+  document.getElementById('pl-limpiar').addEventListener('click',()=>{if(prog.length&&confirm('¿Borrar el programa y empezar de nuevo?')){prog=[];pintar()}});
+  document.getElementById('pl-revisar').addEventListener('click',()=>{
+    const {msgs,ojos}=revisar(), res=document.getElementById('pl-res'), ent=document.getElementById('pl-entrega');
+    res.hidden=false;
+    res.innerHTML=(msgs.length?`<p class="mal">Todavía no. Les falta:</p><ul>${msgs.map(m=>'<li>'+m+'</li>').join('')}</ul>`:'<p class="ok">¡Está completo! El aparato mide, decide y avisa solo.</p>')+(ojos.length?`<ul>${ojos.map(m=>'<li class="ojo">'+m+'</li>').join('')}</ul>`:'');
+    ent.hidden=msgs.length>0;
+    if(!msgs.length){document.getElementById('pl-cod').textContent=generar(prog,{grupo:gru.value.trim()});
+      registrar('placa-decide-'+sen,'Reto 11 · armó el programa de la placa',SENS[sen].n+' · '+enPalabras(prog))}
+  });
+  const archivo=()=>('placa_'+sen+'_'+gru.value.normalize('NFD').replace(/[̀-ͯ]/g,'').split(/[\s,;]+/).filter(Boolean).slice(0,3).join('_')).replace(/[^A-Za-z0-9_]/g,'').slice(0,40)+'.ino';
+  document.getElementById('pl-tarea').textContent='«'+TAREA_CLASSROOM+'»';
+  document.getElementById('pl-bajar').addEventListener('click',()=>{
+    const u=URL.createObjectURL(new Blob([generar(prog,{grupo:gru.value.trim()})+'\n'],{type:'text/plain;charset=utf-8'})),a=document.createElement('a');
+    a.href=u;a.download=archivo();document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000);
+    registrar('placa-bajo-'+sen,'Reto 11 · bajó el código para Classroom',a.download);
+  });
+
+  /* elegir el sensor del grupo */
+  function elegir(s,tocado){
+    sen=s; LS.set(K_SEN,s); B=bloques();
+    document.querySelectorAll('#pl-sens button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.s===s));
+    document.querySelectorAll('#con-placa [data-pl-sin]').forEach(e=>e.hidden=true);
+    document.querySelectorAll('#con-placa [data-pl-con]').forEach(e=>e.hidden=false);
+    esquema(); tabla(); paleta();
+    document.getElementById('pl-archivo').textContent=archivo();
+    const g=LS.get(K_PROG+s,[]); prog=Array.isArray(g)?g.filter(x=>B[x.id]).map(x=>({...item(x.id),...x,kids:(x.kids||[]).filter(k=>k.id==='led')})):[];
+    pintar();
+    const S=SENS[s], solo=[...S.vars.map((x,i)=>item('m'+i)),item('mo'),item('e1')];
+    document.getElementById('pl-cod-medir').textContent=generar(solo,{titulo:'Sólo mide · '+S.n});
+    if(tocado) registrar('placa-sensor-'+s,'Eligió el sensor de la placa',S.n);
+  }
+  const ps=document.getElementById('pl-sens');
+  Object.entries(SENS).forEach(([k,S])=>{const b=document.createElement('button');b.type='button';b.dataset.s=k;b.setAttribute('aria-pressed','false');
+    b.innerHTML=`<span>${S.ic}</span><b>${esc(S.n)}</b><small>mide ${esc(S.c)}</small>`;b.addEventListener('click',()=>elegir(k,true));ps.appendChild(b)});
+  gru.addEventListener('input',()=>{if(sen)document.getElementById('pl-archivo').textContent=archivo()});
+  if(sen) elegir(sen,false);
 })();
 </script>
 </body>
