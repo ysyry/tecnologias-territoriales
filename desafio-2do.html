@@ -892,22 +892,30 @@ main.sin-nombre .esquema{display:none}
     <div class="nivel">2</div>
     <div class="cuerpo">
       <h3>Conectá el LED</h3>
-      <svg class="esq-pf" viewBox="0 0 520 210" role="img" aria-label="El LED entra directo en la placa: la pata larga en el pin 13 y la pata corta en el GND que está al lado.">
+      <svg class="esq-pf" viewBox="0 0 520 250" role="img" aria-label="La pata larga del LED va al pin 13. La pata corta va a una resistencia de 220 ohm, y la otra punta de la resistencia va al GND que está al lado del 13.">
         <rect x="20" y="40" width="480" height="50" rx="6" fill="#1B7FA6"/>
         <g font-family="DM Mono,monospace" font-size="15" text-anchor="middle" fill="var(--tinta)">
           <text x="75" y="28">AREF</text><text x="155" y="28" font-weight="700">GND</text><text x="235" y="28" font-weight="700">13</text><text x="315" y="28">12</text><text x="395" y="28">11</text><text x="465" y="28">10</text></g>
         <g fill="#0B3B4E"><rect x="67" y="57" width="16" height="16"/><rect x="307" y="57" width="16" height="16"/><rect x="387" y="57" width="16" height="16"/><rect x="457" y="57" width="16" height="16"/></g>
         <g fill="#FFD84A"><rect x="147" y="57" width="16" height="16"/><rect x="227" y="57" width="16" height="16"/></g>
-        <line x1="155" y1="65" x2="182" y2="150" stroke="var(--tenue)" stroke-width="4"/>
-        <line x1="235" y1="65" x2="208" y2="150" stroke="var(--tenue)" stroke-width="4"/>
-        <path d="M172 152v26a23 23 0 0 0 46 0v-26z" fill="#E5413A" stroke="var(--tinta)" stroke-width="2"/>
-        <rect x="168" y="146" width="54" height="8" rx="2" fill="#B8302A"/>
-        <text x="100" y="125" font-family="Manrope,sans-serif" font-size="14" fill="var(--tinta)" text-anchor="end">pata corta</text>
-        <text x="100" y="143" font-family="Manrope,sans-serif" font-size="14" fill="var(--tenue)" text-anchor="end">→ GND</text>
-        <text x="270" y="125" font-family="Manrope,sans-serif" font-size="14" fill="var(--tinta)">pata larga</text>
-        <text x="270" y="143" font-family="Manrope,sans-serif" font-size="14" fill="var(--tenue)">→ pin 13</text>
+        <line x1="155" y1="65" x2="155" y2="150" stroke="var(--tenue)" stroke-width="4"/>
+        <rect x="145" y="98" width="20" height="44" rx="8" fill="#E8D3A6" stroke="var(--tinta)" stroke-width="1.5"/>
+        <g fill="none" stroke-width="4"><line x1="145" y1="108" x2="165" y2="108" stroke="#D93B30"/><line x1="145" y1="117" x2="165" y2="117" stroke="#D93B30"/><line x1="145" y1="126" x2="165" y2="126" stroke="#7A4A1E"/></g>
+        <line x1="155" y1="150" x2="182" y2="185" stroke="var(--tenue)" stroke-width="4"/>
+        <circle cx="157" cy="152" r="7" fill="none" stroke="var(--inf)" stroke-width="2.5"/>
+        <line x1="235" y1="65" x2="208" y2="185" stroke="var(--tenue)" stroke-width="4"/>
+        <rect x="168" y="181" width="54" height="8" rx="2" fill="#B8302A"/>
+        <path d="M172 189v20a23 23 0 0 0 46 0v-20z" fill="#E5413A" stroke="var(--tinta)" stroke-width="2"/>
+        <text x="130" y="116" font-family="Manrope,sans-serif" font-size="14" fill="var(--tinta)" text-anchor="end">resistencia</text>
+        <text x="130" y="134" font-family="Manrope,sans-serif" font-size="14" fill="var(--tenue)" text-anchor="end">220 Ω</text>
+        <text x="140" y="170" font-family="Manrope,sans-serif" font-size="14" fill="var(--tinta)" text-anchor="end">pata corta</text>
+        <text x="140" y="188" font-family="Manrope,sans-serif" font-size="14" fill="var(--tenue)" text-anchor="end">retorcida</text>
+        <text x="245" y="150" font-family="Manrope,sans-serif" font-size="14" fill="var(--tinta)">pata larga</text>
+        <text x="245" y="168" font-family="Manrope,sans-serif" font-size="14" fill="var(--tenue)">→ pin 13</text>
       </svg>
-      <p class="nota">Entra directo en la placa, en la fila de arriba: el 13 y el GND están pegados.</p>
+      <p class="nota">La <b>pata larga</b> va directo al <b>13</b>. La <b>pata corta</b> se retuerce con una
+      punta de la <b>resistencia</b>, y la otra punta de la resistencia va al <b>GND</b> de al lado del 13.
+      Sin la resistencia, al LED le llega demasiada corriente y se puede quemar.</p>
       <button type="button" class="logre" data-juego="pf2" data-nom="Conectó el LED">✔ Conectado</button>
     </div>
   </div>
