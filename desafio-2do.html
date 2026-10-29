@@ -164,13 +164,17 @@ main.sin-nombre .esquema{display:none}
 .campo input.texto{width:min(78vw,340px);font-size:1.1em;text-align:left;text-transform:uppercase;letter-spacing:.06em}
 .campo input.ok{border-color:var(--verde)} .campo input.mal{border-color:var(--rojo)}
 /* Proyecto final: el sensor que le tocó al equipo, el envío por Classroom y el signo. */
-.sensores{display:grid;grid-template-columns:repeat(2,minmax(0,220px));gap:14px}
-@media(max-width:520px){.sensores{grid-template-columns:repeat(2,minmax(0,1fr))}}
-.sensor{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;
-  font:inherit;color:var(--tinta);background:var(--hoja);border:2px solid var(--raya);padding:14px;cursor:pointer}
-.sensor svg{width:80px}
-.sensor small{color:var(--tenue);font-size:.78em}
-.sensor.elegido{border-color:var(--violeta);background:var(--inf-w)}
+.pf-paso{border-top:2px solid var(--raya);padding-top:24px;display:grid;
+  grid-template-columns:auto minmax(0,1fr);gap:8px 22px;align-items:start}
+@media(max-width:620px){.pf-paso{grid-template-columns:1fr}}
+.pf-paso .nivel{font-family:var(--f-titulo);font-weight:800;font-size:1.7em;line-height:1.1;color:var(--inf)}
+.pf-paso h3{font-family:var(--f-titulo);font-weight:600;font-size:1.35em;line-height:1.2;color:var(--tinta);margin:0;text-wrap:balance}
+.pf-paso .cuerpo{display:flex;flex-direction:column;gap:14px;min-width:0}
+.pf-paso .cuerpo p{margin:0}
+.esq-pf{max-width:520px} .esq-pf.off{display:none}
+.sensores{display:flex;gap:8px;flex-wrap:wrap}
+.sensor{font:700 .85em var(--f-cuerpo);color:var(--tinta);background:none;border:1.5px solid var(--raya);border-radius:999px;padding:7px 16px;cursor:pointer}
+.sensor.elegido{background:var(--violeta);border-color:var(--violeta);color:#fff}
 .envio{background:var(--hoja);border:1px solid var(--raya);border-left:4px solid var(--violeta);
   padding:16px;display:flex;flex-direction:column;gap:10px}
 .linea{font:500 1.1em var(--f-mono);color:var(--violeta);background:var(--papel);
@@ -840,98 +844,112 @@ main.sin-nombre .esquema{display:none}
   <div class="parte" id="proyecto-final">
     <div class="rot">Proyecto final</div>
     <h2>La maceta, en la placa</h2>
-    <p>Ahora el sensor va clavado en la tierra de una maceta y el programa corre en un Arduino.
-    Lo armás con bloques acá mismo, se lo mandás a la profe por Classroom y ella lo carga en
-    la placa. Son <b>dos envíos</b>: primero para ver qué números da tu sensor, y después para
-    que la maceta avise.</p>
+    <p>Conectás, armás con bloques y le mandás el código a la profe por Classroom. Paso por paso.</p>
   </div>
 
-  <div class="reto tapado" id="pf1">
-    <div class="nivel">15</div>
+  <div class="pf-paso" id="pf1">
+    <div class="nivel">1</div>
     <div class="cuerpo">
-      <div class="rot">Reto 15</div>
-      <h3>Tu sensor y tus cables</h3>
-      <button type="button" class="destapar">Empezar</button>
-      <p>Hay dos tipos de sensor de humedad. Cada equipo usa uno. <b>¿Cuál les tocó?</b></p>
-      <div class="sensores">
-        <button type="button" class="sensor" data-s="cap">
-          <svg viewBox="0 0 120 150" aria-hidden="true">
-            <path d="M40 10h40v80l-20 50-20-50z" fill="var(--raya)" stroke="var(--tinta)" stroke-width="2"/>
-            <rect x="46" y="20" width="28" height="22" fill="var(--hoja)" stroke="var(--tinta)" stroke-width="1.5"/>
-            <line x1="40" y1="70" x2="80" y2="70" stroke="var(--tenue)" stroke-width="2" stroke-dasharray="4 3"/>
-          </svg>
-          <b>Capacitivo</b><small>una sola pala, sin metal a la vista</small>
-        </button>
-        <button type="button" class="sensor" data-s="hor">
-          <svg viewBox="0 0 120 150" aria-hidden="true">
-            <path d="M30 10h60v30H76v80l-6 20-6-20V40h-8v80l-6 20-6-20V40H30z" fill="var(--raya)" stroke="var(--tinta)" stroke-width="2"/>
-            <line x1="47" y1="50" x2="47" y2="118" stroke="var(--tierra)" stroke-width="3"/>
-            <line x1="73" y1="50" x2="73" y2="118" stroke="var(--tierra)" stroke-width="3"/>
-          </svg>
-          <b>De horquilla</b><small>dos patas de metal y una plaquita aparte</small>
-        </button>
+      <h3>Conectá el sensor</h3>
+      <div class="sensores" role="group" aria-label="¿Qué sensor tienen?">
+        <button type="button" class="sensor" data-s="cap">Capacitivo</button>
+        <button type="button" class="sensor" data-s="hor">De horquilla</button>
       </div>
-      <div id="pf-cables"></div>
-      <button type="button" class="logre" data-juego="pf1" data-nom="Armó la maceta con su sensor y el LED" data-espera="1" hidden>✔ ¡Armado!</button>
+      <svg class="esq-pf" id="esq-cap" viewBox="0 0 520 220" role="img" aria-label="Sensor capacitivo: VCC a 5V, GND a GND, AOUT a A0.">
+        <rect x="10" y="20" width="170" height="180" rx="10" fill="#1B7FA6"/>
+        <text x="30" y="190" font-family="Manrope,sans-serif" font-weight="700" font-size="16" fill="#fff">Arduino</text>
+        <g font-family="DM Mono,monospace" font-size="16" fill="#fff" text-anchor="end"><text x="160" y="65">5V</text><text x="160" y="115">GND</text><text x="160" y="165">A0</text></g>
+        <g fill="#0B3B4E"><rect x="168" y="52" width="16" height="16"/><rect x="168" y="102" width="16" height="16"/><rect x="168" y="152" width="16" height="16"/></g>
+        <line x1="184" y1="60" x2="330" y2="60" stroke="#D93B30" stroke-width="5"/>
+        <line x1="184" y1="110" x2="330" y2="110" stroke="var(--tinta)" stroke-width="5"/>
+        <line x1="184" y1="160" x2="330" y2="160" stroke="#E5A800" stroke-width="5"/>
+        <path d="M330 35h110l70 90-70 90H330z" fill="var(--raya)" stroke="var(--tinta)" stroke-width="2"/>
+        <g font-family="DM Mono,monospace" font-size="16" fill="var(--tinta)"><text x="342" y="65">VCC</text><text x="342" y="115">GND</text><text x="342" y="165">AOUT</text></g>
+        <text x="225" y="50" font-family="Manrope,sans-serif" font-size="13" fill="var(--tenue)">3 cables</text>
+      </svg>
+      <svg class="esq-pf off" id="esq-hor" viewBox="0 0 520 220" role="img" aria-label="Sensor de horquilla: VCC de la plaquita a 5V, GND a GND, AO a A0, y la horquilla a la plaquita con dos cables.">
+        <rect x="10" y="20" width="170" height="180" rx="10" fill="#1B7FA6"/>
+        <text x="30" y="190" font-family="Manrope,sans-serif" font-weight="700" font-size="16" fill="#fff">Arduino</text>
+        <g font-family="DM Mono,monospace" font-size="16" fill="#fff" text-anchor="end"><text x="160" y="65">5V</text><text x="160" y="115">GND</text><text x="160" y="165">A0</text></g>
+        <g fill="#0B3B4E"><rect x="168" y="52" width="16" height="16"/><rect x="168" y="102" width="16" height="16"/><rect x="168" y="152" width="16" height="16"/></g>
+        <line x1="184" y1="60" x2="300" y2="60" stroke="#D93B30" stroke-width="5"/>
+        <line x1="184" y1="110" x2="300" y2="110" stroke="var(--tinta)" stroke-width="5"/>
+        <line x1="184" y1="160" x2="300" y2="160" stroke="#E5A800" stroke-width="5"/>
+        <rect x="300" y="35" width="90" height="175" rx="6" fill="#2F5FA8"/>
+        <g font-family="DM Mono,monospace" font-size="15" fill="#fff"><text x="310" y="65">VCC</text><text x="310" y="115">GND</text><text x="310" y="165">AO</text><text x="310" y="200" opacity=".55">DO</text></g>
+        <text x="345" y="28" text-anchor="middle" font-family="Manrope,sans-serif" font-size="13" fill="var(--tenue)">plaquita</text>
+        <line x1="390" y1="85" x2="440" y2="70" stroke="var(--tenue)" stroke-width="4"/>
+        <line x1="390" y1="125" x2="470" y2="70" stroke="var(--tenue)" stroke-width="4"/>
+        <path d="M425 55h60v20h-8v120l-7 20-7-20V75h-16v120l-7 20-7-20V75h-8z" fill="var(--raya)" stroke="var(--tinta)" stroke-width="2"/>
+        <text x="455" y="45" text-anchor="middle" font-family="Manrope,sans-serif" font-size="13" fill="var(--tenue)">horquilla</text>
+      </svg>
+      <p class="nota" id="pf-nota-s"></p>
+      <button type="button" class="logre" data-juego="pf1" data-nom="Conectó el sensor">✔ Conectado</button>
     </div>
   </div>
 
-  <div class="reto tapado" id="pf2">
-    <div class="nivel">16</div>
+  <div class="pf-paso" id="pf2">
+    <div class="nivel">2</div>
     <div class="cuerpo">
-      <div class="rot">Reto 16 · Envío 1</div>
-      <h3>Que el sensor diga su número</h3>
-      <button type="button" class="destapar">Empezar</button>
-      <p>Armá el programa con bloques: <b>una y otra vez</b>, que escriba el número que lee el
-      sensor y espere un segundo. Tocá <b>+ agregar</b> donde quieras poner un bloque; los números
-      se cambian tocándolos.</p>
+      <h3>Conectá el LED</h3>
+      <svg class="esq-pf" viewBox="0 0 520 210" role="img" aria-label="El LED entra directo en la placa: la pata larga en el pin 13 y la pata corta en el GND que está al lado.">
+        <rect x="20" y="40" width="480" height="50" rx="6" fill="#1B7FA6"/>
+        <g font-family="DM Mono,monospace" font-size="15" text-anchor="middle" fill="var(--tinta)">
+          <text x="75" y="28">AREF</text><text x="155" y="28" font-weight="700">GND</text><text x="235" y="28" font-weight="700">13</text><text x="315" y="28">12</text><text x="395" y="28">11</text><text x="465" y="28">10</text></g>
+        <g fill="#0B3B4E"><rect x="67" y="57" width="16" height="16"/><rect x="307" y="57" width="16" height="16"/><rect x="387" y="57" width="16" height="16"/><rect x="457" y="57" width="16" height="16"/></g>
+        <g fill="#FFD84A"><rect x="147" y="57" width="16" height="16"/><rect x="227" y="57" width="16" height="16"/></g>
+        <line x1="155" y1="65" x2="182" y2="150" stroke="var(--tenue)" stroke-width="4"/>
+        <line x1="235" y1="65" x2="208" y2="150" stroke="var(--tenue)" stroke-width="4"/>
+        <path d="M172 152v26a23 23 0 0 0 46 0v-26z" fill="#E5413A" stroke="var(--tinta)" stroke-width="2"/>
+        <rect x="168" y="146" width="54" height="8" rx="2" fill="#B8302A"/>
+        <text x="100" y="125" font-family="Manrope,sans-serif" font-size="14" fill="var(--tinta)" text-anchor="end">pata corta</text>
+        <text x="100" y="143" font-family="Manrope,sans-serif" font-size="14" fill="var(--tenue)" text-anchor="end">→ GND</text>
+        <text x="270" y="125" font-family="Manrope,sans-serif" font-size="14" fill="var(--tinta)">pata larga</text>
+        <text x="270" y="143" font-family="Manrope,sans-serif" font-size="14" fill="var(--tenue)">→ pin 13</text>
+      </svg>
+      <p class="nota">Entra directo en la placa, en la fila de arriba: el 13 y el GND están pegados.</p>
+      <button type="button" class="logre" data-juego="pf2" data-nom="Conectó el LED">✔ Conectado</button>
+    </div>
+  </div>
+
+  <div class="pf-paso" id="pf3">
+    <div class="nivel">3</div>
+    <div class="cuerpo">
+      <h3>Armá el programa que mide · Envío 1</h3>
+      <p>Adentro de <b>siempre</b>: <b>escribir el número del sensor</b> y <b>esperar 1 segundo</b>.
+      Tocá <b>+ agregar</b>.</p>
       <div class="ed" id="ed1" data-pal="imprimir,esperar,prender,apagar"></div>
       <p class="nota" id="ed1-m" aria-live="polite"></p>
       <div class="envio" id="env1" hidden>
-        <div class="rot">Mandárselo a la profe</div>
-        <ol class="pasos-led">
-          <li>Tocá <b>Copiar el código</b>.</li>
-          <li>En Classroom abrí <b>Maceta · código 1</b> y pegá con <b>Ctrl + V</b>.</li>
-        </ol>
         <div class="fila-c"><button type="button" class="copiar" data-ed="ed1">Copiar el código</button><span class="nota copiado"></span></div>
+        <p class="nota">Pegalo en Classroom, en <b>Maceta · código 1</b>, y avisale a la profe.</p>
         <details><summary>Ver el código para la placa</summary><pre class="codigo" id="ed1-c"></pre></details>
       </div>
-      <button type="button" class="pista-b">Pista</button>
-      <div class="pista" hidden>Son dos bloques. ¿Cuál escribe el número? ¿Y cuál hace que no salgan
-      mil números por segundo?</div>
-      <button type="button" class="logre" data-juego="pf2" data-nom="Armó con bloques el programa que escribe el número" data-espera="1" hidden>✔ ¡Lo mandamos!</button>
+      <button type="button" class="logre" data-juego="pf3" data-nom="Armó con bloques el programa que mide" hidden>✔ ¡Lo mandamos!</button>
     </div>
   </div>
 
-  <div class="reto tapado" id="pf3">
-    <div class="nivel">17</div>
+  <div class="pf-paso" id="pf4">
+    <div class="nivel">4</div>
     <div class="cuerpo">
-      <div class="rot">Reto 17</div>
-      <h3>Seco y mojado, en tu maceta</h3>
-      <button type="button" class="destapar">Empezar</button>
-      <p>Cuando la profe cargue tu código, el número aparece en su compu, en el <b>monitor serie</b>.
-      Anotá dos:</p>
-      <ul class="pasos-led">
-        <li><b>Seco:</b> el sensor en tierra seca, o en el aire.</li>
-        <li><b>Mojado:</b> el sensor en tierra recién regada.</li>
-      </ul>
+      <h3>Anotá seco y mojado</h3>
+      <p>Cuando la profe lo cargue, el número sale en su compu. Anotá dos: el sensor en <b>tierra
+      seca</b> (o en el aire) y en <b>tierra regada</b>.</p>
       <div class="campos">
-        <label class="campo"><span>Seco, en la maceta</span><input id="pseco" type="number" inputmode="numeric" placeholder="?"></label>
-        <label class="campo"><span>Mojado, en la maceta</span><input id="pmoj" type="number" inputmode="numeric" placeholder="?"></label>
+        <label class="campo"><span>Seco</span><input id="pseco" type="number" inputmode="numeric" placeholder="?"></label>
+        <label class="campo"><span>Mojado</span><input id="pmoj" type="number" inputmode="numeric" placeholder="?"></label>
       </div>
       <p class="pf-dir" id="pf-dir" aria-live="polite"></p>
-      <button type="button" class="logre" data-juego="pf3" data-nom="Midió seco y mojado en la maceta" data-espera="1" hidden>✔ ¡Los tenemos!</button>
+      <button type="button" class="logre" data-juego="pf4" data-nom="Midió seco y mojado en la maceta" hidden>✔ ¡Los tenemos!</button>
     </div>
   </div>
 
-  <div class="reto tapado" id="pf4">
-    <div class="nivel">18</div>
+  <div class="pf-paso" id="pf5">
+    <div class="nivel">5</div>
     <div class="cuerpo">
-      <div class="rot">Reto 18 · Envío 2</div>
-      <h3>La maceta avisa</h3>
-      <button type="button" class="destapar">Empezar</button>
-      <p>Cuando la tierra tiene sed, se prende el LED; cuando está bien, se apaga. Armalo con
-      bloques y con <b>tus números de la maceta</b>: el signo y el umbral los elegís vos.</p>
+      <h3>Armá la maceta que avisa · Envío 2</h3>
+      <p>Adentro de <b>siempre</b>: <b>si el sensor…</b> → <b>prender el LED</b>; <b>si no</b> →
+      <b>apagar el LED</b>. El signo y el número los elegís con tus números del paso 4.</p>
       <div class="ed" id="ed2" data-pal="si,prender,apagar,esperar,imprimir"></div>
       <div class="probar" id="probar">
         <label for="pr-hum">Probalo: mové el agua</label>
@@ -941,33 +959,20 @@ main.sin-nombre .esquema{display:none}
       </div>
       <p class="nota" id="ed2-m" aria-live="polite"></p>
       <div class="envio" id="env2" hidden>
-        <div class="rot">Mandárselo a la profe</div>
-        <ol class="pasos-led">
-          <li>Tocá <b>Copiar el código</b>.</li>
-          <li>En Classroom abrí <b>Maceta · código 2</b> y pegá con <b>Ctrl + V</b>.</li>
-          <li>Cuando esté cargado, regá la maceta y mirá el LED.</li>
-        </ol>
         <div class="fila-c"><button type="button" class="copiar" data-ed="ed2">Copiar el código</button><span class="nota copiado"></span></div>
+        <p class="nota">Pegalo en Classroom, en <b>Maceta · código 2</b>. Cuando esté cargado, regá la maceta y mirá el LED.</p>
         <details><summary>Ver el código para la placa</summary><pre class="codigo" id="ed2-c"></pre></details>
       </div>
-      <button type="button" class="pista-b">Pista</button>
-      <div class="pista" hidden>Empezá con el bloque <b>si el sensor…</b>. Mirá tus dos números del
-      reto 17: cuando la tierra está seca, ¿el sensor da un número más <b>alto</b> o más <b>bajo</b>
-      que cuando está mojada? El LED se prende del lado del seco.<br><br>El umbral va <b>entre</b>
-      tu seco y tu mojado.</div>
-      <button type="button" class="logre" data-juego="pf4" data-nom="La maceta avisa con el LED cuando tiene sed" data-espera="1" hidden>✔ ¡Me anda!</button>
+      <button type="button" class="logre" data-juego="pf5" data-nom="La maceta avisa con el LED cuando tiene sed" hidden>✔ ¡Me anda!</button>
     </div>
   </div>
 
-  <div class="reto tapado" id="pf5">
-    <div class="nivel">19</div>
+  <div class="pf-paso" id="pf6">
+    <div class="nivel">6</div>
     <div class="cuerpo">
-      <div class="rot">Reto 19 · Para cerrar</div>
-      <h3>Mismo programa, distinto sensor</h3>
-      <button type="button" class="destapar">Empezar</button>
-      <p>En el pizarrón, una fila por equipo: <b>sensor · seco · mojado · umbral</b>.</p>
-      <p><b>¿Por qué el capacitivo y el de horquilla dan números tan distintos en la misma tierra?</b></p>
-      <button type="button" class="logre" data-juego="pf5" data-nom="Comparó los sensores con los otros equipos" hidden>✔ ¡Entendido!</button>
+      <h3>Para cerrar</h3>
+      <p>En el pizarrón, una fila por equipo: <b>sensor · seco · mojado · umbral</b>.
+      ¿Por qué el capacitivo y el de horquilla dan números tan distintos en la misma tierra?</p>
     </div>
   </div>
 
@@ -1155,19 +1160,11 @@ function pfGuardar(k,v){
   const t=lee(K_NUMS,{}), n=t[SES.nombre]||{}; n[k]=v; t[SES.nombre]=n; guarda(K_NUMS,t);
 }
 function pfPintar(sensor){
-  const $=id=>document.getElementById(id), n=pfDatos();
-  document.querySelectorAll('.sensor').forEach(b=>b.classList.toggle('elegido',b.dataset.s===sensor));
-  const S=PF_SENS[sensor], l1=document.querySelector('.logre[data-juego="pf1"]');
-  if(!S){$('pf-cables').innerHTML='';}
-  else{
-    $('pf-cables').innerHTML=`<p>Así se conecta el sensor <b>${S.n}</b> y el LED:</p>
-      <div class="esq-tabla"><table><tr><th>Cable</th><th>Va a</th></tr>`+
-      S.filas.concat([['LED · pata larga','pin 13'],['LED · pata corta','GND, el que está al lado del 13']])
-        .map(([a,b])=>`<tr><td>${a}</td><td><b>${b}</b></td></tr>`).join('')+`</table></div>
-      <p class="nota">El LED entra directo en la placa: el pin 13 y ese GND están uno al lado del otro.</p>`+
-      (sensor==='hor'?`<p class="nota">Por hoy la plaquita va a 5V. Si la maceta se queda armada midiendo, se pasa al pin 7 (reto 7).</p>`:'');
-    if(!l1.disabled&&!$('pf1').classList.contains('tapado')) l1.hidden=false;
-  }
+  const $=id=>document.getElementById(id), n=pfDatos(), s=sensor||'cap';
+  document.querySelectorAll('.sensor').forEach(b=>b.classList.toggle('elegido',b.dataset.s===s));
+  $('esq-cap').classList.toggle('off',s!=='cap'); $('esq-hor').classList.toggle('off',s!=='hor');
+  $('pf-nota-s').textContent=s==='hor'?'La horquilla va a la plaquita con dos cables, en cualquier orden. El DO no se usa.':
+    'Los tres cables van directo del sensor a la placa: 5V y GND en la fila de abajo, A0 al lado.';
   ['ed1','ed2'].forEach(id=>{PF_ED[id].prog=Array.isArray(n[id])?n[id]:[];PF_ED[id].destino=null});
   pfDir(); pfDibujar('ed1'); pfDibujar('ed2');
 }
@@ -1176,11 +1173,10 @@ function pfNums(){
   return Number.isFinite(s)&&Number.isFinite(m)&&s!==m?{s,m}:null;
 }
 function pfDir(){
-  const el=document.getElementById('pf-dir'), N=pfNums(), l=document.querySelector('.logre[data-juego="pf3"]');
+  const el=document.getElementById('pf-dir'), N=pfNums(), l=document.querySelector('.logre[data-juego="pf4"]');
   if(!N){el.textContent='';return}
-  el.innerHTML=`En tu maceta, el número <b>${N.m<N.s?'baja':'sube'}</b> cuando se moja.`+
-    `<br><span class="nota">¿Es lo que esperabas?</span>`;
-  if(!l.disabled&&!document.getElementById('pf3').classList.contains('tapado')) l.hidden=false;
+  el.innerHTML=`En tu maceta, el número <b>${N.m<N.s?'baja':'sube'}</b> cuando se moja.`;
+  if(!l.disabled) l.hidden=false;
 }
 
 /* El editor: «+ agregar» abre la paleta en ese lugar; los números y el signo se tocan. */
@@ -1239,9 +1235,9 @@ function pfCorrer(lista,v,st){
 const pfLed=(prog,v)=>[true,false].map(led=>pfCorrer(prog,v,{led,imp:false,esp:0}).led);
 const pfTiene=(l,t)=>l.some(p=>p.t===t||(p.si&&(pfTiene(p.si,t)||pfTiene(p.no,t))));
 function pfMostrar(n,ok){
-  const l=document.querySelector(`.logre[data-juego="pf${n===1?2:4}"]`), env=document.getElementById('env'+n);
+  const l=document.querySelector(`.logre[data-juego="pf${n===1?3:5}"]`), env=document.getElementById('env'+n);
   env.hidden=!ok;
-  if(ok&&!l.disabled&&!document.getElementById(n===1?'pf2':'pf4').classList.contains('tapado')) l.hidden=false;
+  if(ok&&!l.disabled) l.hidden=false;
 }
 function pfRevisa1(){
   const P=PF_ED.ed1.prog, m=document.getElementById('ed1-m'), st=pfCorrer(P,500,{led:false,imp:false,esp:0});
@@ -1255,7 +1251,7 @@ function pfRevisa1(){
 function pfRevisa2(){
   const P=PF_ED.ed2.prog, m=document.getElementById('ed2-m'), N=pfNums(), $=id=>document.getElementById(id);
   let msg='', ok=false;
-  if(!N) msg='Para probarlo hacen falta tus dos números de la maceta (reto 17).';
+  if(!N) msg='Para probarlo hacen falta tus dos números de la maceta (paso 4).';
   else if(!pfTiene(P,'si')) msg='La maceta tiene que decidir: le falta el bloque «si el sensor…».';
   else{
     const [a1,a2]=pfLed(P,N.s), [b1,b2]=pfLed(P,N.m), seco=a1&&a2, moj=!b1&&!b2;
@@ -1303,9 +1299,6 @@ document.querySelectorAll('.copiar').forEach(b=>b.addEventListener('click',async
 document.querySelectorAll('.sensor').forEach(b=>b.addEventListener('click',()=>{
   pfGuardar('sensor',b.dataset.s); pfPintar(b.dataset.s)}));
 ['pseco','pmoj'].forEach(c=>document.getElementById(c).addEventListener('input',()=>{pfDir();pfRevisa2()}));
-/* Si ya estaba hecho, el «✔» aparece apenas se destapa el reto. */
-document.querySelectorAll('[id^="pf"] .destapar').forEach(d=>d.addEventListener('click',()=>setTimeout(()=>{
-  if(SES) pfPintar(pfDatos().sensor)})));
 
 /* Lo que el equipo ya anotó hoy queda marcado, aunque recargue la página. */
 function pintarHechos(){
@@ -1328,7 +1321,7 @@ function registrar(b){
     const v=k=>document.getElementById(k).value, sen=(lee(K_NUMS,{})[SES.nombre]||{}).sensor;
     if(sen)extra.push('sensor='+PF_SENS[sen].n); if(v('pseco'))extra.push('maceta_seco='+v('pseco'));
     if(v('pmoj'))extra.push('maceta_mojado='+v('pmoj'));
-    const si=(PF_ED.ed2.prog||[]).find(x=>x.t==='si'); if(id==='pf4'&&si)extra.push('maceta_umbral='+si.op+si.n);
+    const si=(PF_ED.ed2.prog||[]).find(x=>x.t==='si'); if(id==='pf5'&&si)extra.push('maceta_umbral='+si.op+si.n);
   }else{
   if(s)extra.push('seco='+s); if(m)extra.push('mojado='+m); if(u)extra.push('umbral='+u); if(ah)extra.push('ahogo='+ah);
   }
