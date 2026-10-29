@@ -163,6 +163,24 @@ main.sin-nombre .esquema{display:none}
 .cifrado.claro{color:var(--tinta)}
 .campo input.texto{width:min(78vw,340px);font-size:1.1em;text-align:left;text-transform:uppercase;letter-spacing:.06em}
 .campo input.ok{border-color:var(--verde)} .campo input.mal{border-color:var(--rojo)}
+/* Proyecto final: el sensor que le tocó al equipo, el envío por Classroom y el signo. */
+.sensores{display:grid;grid-template-columns:repeat(2,minmax(0,220px));gap:14px}
+@media(max-width:520px){.sensores{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.sensor{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;
+  font:inherit;color:var(--tinta);background:var(--hoja);border:2px solid var(--raya);padding:14px;cursor:pointer}
+.sensor svg{width:80px}
+.sensor small{color:var(--tenue);font-size:.78em}
+.sensor.elegido{border-color:var(--violeta);background:var(--inf-w)}
+.envio{background:var(--hoja);border:1px solid var(--raya);border-left:4px solid var(--violeta);
+  padding:16px;display:flex;flex-direction:column;gap:10px}
+.linea{font:500 1.1em var(--f-mono);color:var(--violeta);background:var(--papel);
+  border:1px dashed var(--raya);padding:8px 12px;align-self:flex-start;overflow-wrap:anywhere}
+.cmp{font:800 1.1em var(--f-mono);width:2em;background:#ffffff;color:var(--b-mate);border:2px solid transparent;
+  border-radius:999px;cursor:pointer;padding:0}
+.cmp.si{border-color:#1b1b1b;background:#1b1b1b;color:#fff}
+.cmp.no{text-decoration:line-through;opacity:.5}
+.pf-dir{margin:0;font-weight:700;color:var(--tinta)}
+#pf-cmp-m.ok{color:var(--verde);font-weight:700}
 </style>
 </head>
 <body>
@@ -796,6 +814,155 @@ main.sin-nombre .esquema{display:none}
     </div>
   </div>
 
+  <div class="parte" id="proyecto-final">
+    <div class="rot">Proyecto final</div>
+    <h2>La maceta, en la placa</h2>
+    <p>Ahora el sensor va clavado en la tierra de una maceta y el programa corre en un Arduino.
+    Lo armás con bloques en Tinkercad, se lo mandás a la profe por Classroom y ella lo carga en
+    la placa. Son <b>dos envíos</b>: primero para ver qué números da tu sensor, y después para
+    que la maceta avise.</p>
+  </div>
+
+  <div class="reto tapado" id="pf1">
+    <div class="nivel">15</div>
+    <div class="cuerpo">
+      <div class="rot">Reto 15</div>
+      <h3>Tu sensor y tus cables</h3>
+      <button type="button" class="destapar">Empezar</button>
+      <p>Hay dos tipos de sensor de humedad. Cada equipo usa uno. <b>¿Cuál les tocó?</b></p>
+      <div class="sensores">
+        <button type="button" class="sensor" data-s="cap">
+          <svg viewBox="0 0 120 150" aria-hidden="true">
+            <path d="M40 10h40v80l-20 50-20-50z" fill="var(--raya)" stroke="var(--tinta)" stroke-width="2"/>
+            <rect x="46" y="20" width="28" height="22" fill="var(--hoja)" stroke="var(--tinta)" stroke-width="1.5"/>
+            <line x1="40" y1="70" x2="80" y2="70" stroke="var(--tenue)" stroke-width="2" stroke-dasharray="4 3"/>
+          </svg>
+          <b>Capacitivo</b><small>una sola pala, sin metal a la vista</small>
+        </button>
+        <button type="button" class="sensor" data-s="hor">
+          <svg viewBox="0 0 120 150" aria-hidden="true">
+            <path d="M30 10h60v30H76v80l-6 20-6-20V40h-8v80l-6 20-6-20V40H30z" fill="var(--raya)" stroke="var(--tinta)" stroke-width="2"/>
+            <line x1="47" y1="50" x2="47" y2="118" stroke="var(--tierra)" stroke-width="3"/>
+            <line x1="73" y1="50" x2="73" y2="118" stroke="var(--tierra)" stroke-width="3"/>
+          </svg>
+          <b>De horquilla</b><small>dos patas de metal y una plaquita aparte</small>
+        </button>
+      </div>
+      <div id="pf-cables"></div>
+      <button type="button" class="logre" data-juego="pf1" data-nom="Armó la maceta con su sensor y el LED" data-espera="1" hidden>✔ ¡Armado!</button>
+    </div>
+  </div>
+
+  <div class="reto tapado" id="pf2">
+    <div class="nivel">16</div>
+    <div class="cuerpo">
+      <div class="rot">Reto 16 · Envío 1</div>
+      <h3>Que el sensor diga su número</h3>
+      <button type="button" class="destapar">Empezar</button>
+      <p>Es el programa del reto 1. Armalo con bloques en Tinkercad y probalo con el simulador.</p>
+<div class="prog" aria-label="Programa: siempre, imprimir en monitor en serie leer pin analógico A0, esperar 1 segundo">
+  <div class="blk control">siempre</div>
+  <div class="dentro">
+    <div class="blk salida">imprimir en monitor en serie <span class="in entrada">leer pin analógico <span class="h">A0</span></span></div>
+    <div class="blk control">esperar <span class="h">1</span> segundos</div>
+  </div>
+</div>
+      <div class="envio">
+        <div class="rot">Mandárselo a la profe</div>
+        <ol class="pasos-led">
+          <li>En Tinkercad, arriba del código, cambiá <b>Bloques</b> por <b>Bloques + texto</b>.
+          A la derecha aparece el mismo programa, escrito.</li>
+          <li>Hacé clic en el texto, apretá <b>Ctrl + A</b> y después <b>Ctrl + C</b>.</li>
+          <li>En Classroom abrí <b>Maceta · código 1</b> y pegá con <b>Ctrl + V</b>.</li>
+          <li>Arriba de todo, en la primera línea, escribí esto:</li>
+        </ol>
+        <code class="linea pf-eq">// equipo: …</code>
+        <p class="nota">Sin esa línea la profe no sabe de quién es el código.</p>
+      </div>
+      <button type="button" class="pista-b">Pista</button>
+      <div class="pista" hidden>¿No aparece el texto? Buscá el menú que dice <b>Bloques</b>, arriba a la
+      izquierda del código. Tiene tres opciones: elegí la del medio.</div>
+      <button type="button" class="logre" data-juego="pf2" data-nom="Mandó el código 1 por Classroom" hidden>✔ ¡Lo mandamos!</button>
+    </div>
+  </div>
+
+  <div class="reto tapado" id="pf3">
+    <div class="nivel">17</div>
+    <div class="cuerpo">
+      <div class="rot">Reto 17</div>
+      <h3>Seco y mojado, en tu maceta</h3>
+      <button type="button" class="destapar">Empezar</button>
+      <p>Cuando la profe cargue tu código, el número aparece en su compu, en el <b>monitor serie</b>.
+      Anotá dos:</p>
+      <ul class="pasos-led">
+        <li><b>Seco:</b> el sensor en tierra seca, o en el aire.</li>
+        <li><b>Mojado:</b> el sensor en tierra recién regada.</li>
+      </ul>
+      <div class="campos">
+        <label class="campo"><span>Seco, en la maceta</span><input id="pseco" type="number" inputmode="numeric" placeholder="?"></label>
+        <label class="campo"><span>Mojado, en la maceta</span><input id="pmoj" type="number" inputmode="numeric" placeholder="?"></label>
+      </div>
+      <p class="pf-dir" id="pf-dir" aria-live="polite"></p>
+      <button type="button" class="logre" data-juego="pf3" data-nom="Midió seco y mojado en la maceta" data-espera="1" hidden>✔ ¡Los tenemos!</button>
+    </div>
+  </div>
+
+  <div class="reto tapado" id="pf4">
+    <div class="nivel">18</div>
+    <div class="cuerpo">
+      <div class="rot">Reto 18 · Envío 2</div>
+      <h3>La maceta avisa</h3>
+      <button type="button" class="destapar">Empezar</button>
+      <p>Cuando la tierra tiene sed, se prende el LED. Elegí <b>tu umbral</b> y el signo que va en la
+      comparación, con <b>tus números de la maceta</b>, no los de Tinkercad.</p>
+      <div class="campos">
+        <label class="campo"><span>Tu umbral</span><input id="pumb" type="number" inputmode="numeric" placeholder="?"></label>
+      </div>
+<div class="prog" aria-label="Programa: siempre, si leer pin analógico A0 comparado con tu umbral entonces definir pin 13 en ALTA, si no definir pin 13 en BAJA, esperar 1 segundo">
+  <div class="blk control">siempre</div>
+  <div class="dentro">
+    <div class="blk control">si <span class="in mate"><span class="in entrada">leer pin analógico <span class="h">A0</span></span>
+      <button type="button" class="cmp" data-op="<" aria-label="menor que">&lt;</button><button type="button" class="cmp" data-op=">" aria-label="mayor que">&gt;</button>
+      <span class="h n-pumb">tu umbral</span></span> entonces</div>
+    <div class="dentro">
+      <div class="blk salida">definir pin <span class="h">13</span> en <span class="h">ALTA</span></div>
+    </div>
+    <div class="sino">si no</div>
+    <div class="dentro">
+      <div class="blk salida">definir pin <span class="h">13</span> en <span class="h">BAJA</span></div>
+    </div>
+    <div class="blk control">esperar <span class="h">1</span> segundos</div>
+  </div>
+</div>
+      <p class="nota" id="pf-cmp-m">Tocá el signo que va.</p>
+      <div class="envio">
+        <div class="rot">Mandárselo a la profe</div>
+        <p class="nota">Igual que el envío 1, pero en <b>Maceta · código 2</b>. Con la primera línea:</p>
+        <code class="linea pf-eq">// equipo: …</code>
+        <p class="nota">Cuando esté cargado, regá la maceta y mirá el LED.</p>
+      </div>
+      <p class="nota pf-hor" hidden><b>Si tu maceta se queda armada midiendo:</b> el sensor de horquilla
+      se oxida si tiene corriente todo el día. Volvé al <b>reto 7</b> y pasá el cable VCC de la plaquita al <b>pin 7</b>.</p>
+      <button type="button" class="pista-b">Pista</button>
+      <div class="pista" hidden>Mirá tus dos números del reto 17. Cuando la tierra está seca, ¿el sensor da
+      un número más <b>alto</b> o más <b>bajo</b> que cuando está mojada? El LED tiene que prenderse del
+      lado del seco.<br><br>El umbral va <b>entre</b> tu seco y tu mojado.</div>
+      <button type="button" class="logre" data-juego="pf4" data-nom="La maceta avisa con el LED cuando tiene sed" data-espera="1" hidden>✔ ¡Me anda!</button>
+    </div>
+  </div>
+
+  <div class="reto tapado" id="pf5">
+    <div class="nivel">19</div>
+    <div class="cuerpo">
+      <div class="rot">Reto 19 · Para cerrar</div>
+      <h3>Mismo programa, distinto sensor</h3>
+      <button type="button" class="destapar">Empezar</button>
+      <p>En el pizarrón, una fila por equipo: <b>sensor · seco · mojado · umbral</b>.</p>
+      <p><b>¿Por qué el capacitivo y el de horquilla dan números tan distintos en la misma tierra?</b></p>
+      <button type="button" class="logre" data-juego="pf5" data-nom="Comparó los sensores con los otros equipos" hidden>✔ ¡Entendido!</button>
+    </div>
+  </div>
+
 </section>
 </main>
 <script>
@@ -859,7 +1026,7 @@ function mostrarQuien(){
 }
 /* Los números del equipo (seco, mojado, sed, ahogo) quedan guardados por nombre, así la
    segunda parte los encuentra aunque sea otro día. */
-const K_NUMS='pps.desafio2do.nums.v1', CAMPOS=['seco','mojado','sed','ahoga'];
+const K_NUMS='pps.desafio2do.nums.v1', CAMPOS=['seco','mojado','sed','ahoga','pseco','pmoj','pumb'];
 function traerNumeros(){
   const n=(lee(K_NUMS,{})[SES.nombre])||{};
   CAMPOS.forEach(c=>{const el=document.getElementById(c);
@@ -867,6 +1034,7 @@ function traerNumeros(){
   document.getElementById('seco').dispatchEvent(new Event('input'));
   pintarNumeros();
   armarPorc();
+  pfPintar(n.sensor);
 }
 CAMPOS.forEach(c=>document.getElementById(c).addEventListener('input',()=>{
   if(!SES) return;
@@ -957,6 +1125,87 @@ document.querySelectorAll('.clasif').forEach(c=>{
   regla(); prueba();
 })();
 
+/* ---- Proyecto final: el sensor del equipo arma la tabla de cables; los números de la
+   maceta deciden qué signo va en la comparación (en algunos sensores el número baja con
+   el agua) y entre qué valores tiene que caer el umbral. ---- */
+const PF_SENS={
+  cap:{n:'capacitivo', filas:[['Sensor · VCC','5V'],['Sensor · GND','GND'],['Sensor · AOUT','A0']]},
+  hor:{n:'de horquilla', filas:[['Horquilla','a la plaquita, los dos cables en cualquier orden'],
+    ['Plaquita · VCC','5V'],['Plaquita · GND','GND'],['Plaquita · AO','A0'],['Plaquita · DO','no se usa']]}};
+let PF_OP=null;
+function pfGuardar(k,v){
+  if(!SES) return;
+  const t=lee(K_NUMS,{}), n=t[SES.nombre]||{}; n[k]=v; t[SES.nombre]=n; guarda(K_NUMS,t);
+}
+function pfPintar(sensor){
+  const $=id=>document.getElementById(id);
+  document.querySelectorAll('.pf-eq').forEach(e=>e.textContent='// equipo: '+(SES?SES.nombre:'…'));
+  document.querySelectorAll('.sensor').forEach(b=>b.classList.toggle('elegido',b.dataset.s===sensor));
+  document.querySelector('.pf-hor').hidden=sensor!=='hor';
+  const S=PF_SENS[sensor], l1=document.querySelector('.logre[data-juego="pf1"]');
+  if(!S){$('pf-cables').innerHTML='';}
+  else{
+    $('pf-cables').innerHTML=`<p>Así se conecta el sensor <b>${S.n}</b> y el LED:</p>
+      <div class="esq-tabla"><table><tr><th>Cable</th><th>Va a</th></tr>`+
+      S.filas.concat([['LED · pata larga','pin 13'],['LED · pata corta','GND, el que está al lado del 13']])
+        .map(([a,b])=>`<tr><td>${a}</td><td><b>${b}</b></td></tr>`).join('')+`</table></div>
+      <p class="nota">El LED entra directo en la placa: el pin 13 y ese GND están uno al lado del otro.</p>`+
+      (sensor==='hor'?`<p class="nota">Por hoy la plaquita va a 5V. Si la maceta se queda armada midiendo, se pasa al pin 7 (reto 7).</p>`:'');
+    if(!l1.disabled&&!document.getElementById('pf1').classList.contains('tapado')) l1.hidden=false;
+  }
+  pfDir(); pfCheck();
+}
+function pfNums(){
+  const s=parseInt(document.getElementById('pseco').value,10), m=parseInt(document.getElementById('pmoj').value,10);
+  return Number.isFinite(s)&&Number.isFinite(m)&&s!==m?{s,m}:null;
+}
+function pfDir(){
+  const el=document.getElementById('pf-dir'), N=pfNums(), l=document.querySelector('.logre[data-juego="pf3"]');
+  if(!N){el.textContent='';return}
+  const ts=parseInt(document.getElementById('seco').value,10), tm=parseInt(document.getElementById('mojado').value,10);
+  el.innerHTML=`En tu maceta, el número <b>${N.m<N.s?'baja':'sube'}</b> cuando se moja.`+
+    (Number.isFinite(ts)&&Number.isFinite(tm)?` En Tinkercad anotaste seco <b>${ts}</b> y mojado <b>${tm}</b>.`:'')+
+    `<br><span class="nota">¿Te sirve el umbral que elegiste en Tinkercad?</span>`;
+  if(!l.disabled&&!document.getElementById('pf3').classList.contains('tapado')) l.hidden=false;
+}
+function pfCheck(){
+  const m=document.getElementById('pf-cmp-m'), N=pfNums(), l=document.querySelector('.logre[data-juego="pf4"]'),
+        uv=document.getElementById('pumb').value.trim(), u=parseInt(uv,10);
+  document.querySelectorAll('.n-pumb').forEach(e=>e.textContent=uv||'tu umbral');
+  m.classList.remove('ok');
+  if(!N){m.textContent='Para elegir hacen falta tus dos números de la maceta (reto 17).';return}
+  const bien=N.s>N.m?'>':'<';
+  document.querySelectorAll('.cmp').forEach(b=>{b.classList.toggle('si',b.dataset.op===PF_OP&&PF_OP===bien);
+    b.classList.toggle('no',b.dataset.op===PF_OP&&PF_OP!==bien)});
+  if(!PF_OP){m.textContent='Tocá el signo que va.';return}
+  if(PF_OP!==bien){m.textContent='Con ese signo, el LED se prende cuando la tierra está mojada. Mirá tus números del reto 17.';return}
+  if(!Number.isFinite(u)){m.textContent='El signo está bien. Ahora, tu umbral.';return}
+  if(u<=Math.min(N.s,N.m)||u>=Math.max(N.s,N.m)){m.textContent=`Tu umbral tiene que estar entre ${Math.min(N.s,N.m)} y ${Math.max(N.s,N.m)}.`;return}
+  m.textContent=`✔ El LED se prende cuando el sensor pasa de ${u}: la tierra tiene sed.`; m.classList.add('ok');
+  if(!l.disabled&&!document.getElementById('pf4').classList.contains('tapado')) l.hidden=false;
+}
+document.querySelectorAll('.sensor').forEach(b=>b.addEventListener('click',()=>{
+  pfGuardar('sensor',b.dataset.s); pfPintar(b.dataset.s)}));
+document.querySelectorAll('.cmp').forEach(b=>b.addEventListener('click',()=>{
+  PF_OP=b.dataset.op; pfCheck();
+  if(b.classList.contains('no')) PISTAS.pf4=(PISTAS.pf4||0)+1;
+}));
+['pseco','pmoj'].forEach(c=>document.getElementById(c).addEventListener('input',()=>{pfDir();pfCheck()}));
+document.getElementById('pumb').addEventListener('input',pfCheck);
+/* Si los números ya estaban guardados, el «✔» aparece apenas se destapa el reto. */
+document.querySelectorAll('[id^="pf"] .destapar').forEach(d=>d.addEventListener('click',()=>setTimeout(()=>{
+  if(SES) pfPintar((lee(K_NUMS,{})[SES.nombre]||{}).sensor)})));
+
+/* Lo que el equipo ya anotó hoy queda marcado, aunque recargue la página. */
+function pintarHechos(){
+  const h=(lee(K_HECHOS,{})[SES.nombre+'|'+SES.fecha])||[];
+  document.querySelectorAll('.logre').forEach(b=>{
+    if(!b.dataset.txt) b.dataset.txt=b.textContent;
+    const ya=h.includes(b.dataset.juego);
+    b.disabled=ya; b.textContent=ya?'✔ Anotado':b.dataset.txt;
+    if(ya) b.hidden=false;
+  });
+}
 const T0={}, PISTAS={};
 function registrar(b){
   const id=b.dataset.juego, seg=T0[id]?Math.max(1,Math.round((Date.now()-T0[id])/1000)):0, p=PISTAS[id]||0;
@@ -964,7 +1213,13 @@ function registrar(b){
   const s=document.getElementById('seco').value, m=document.getElementById('mojado').value,
         u=document.getElementById('sed').value;
   const ah=document.getElementById('ahoga').value;
+  if(id.startsWith('pf')){
+    const v=k=>document.getElementById(k).value, sen=(lee(K_NUMS,{})[SES.nombre]||{}).sensor;
+    if(sen)extra.push('sensor='+PF_SENS[sen].n); if(v('pseco'))extra.push('maceta_seco='+v('pseco'));
+    if(v('pmoj'))extra.push('maceta_mojado='+v('pmoj')); if(v('pumb'))extra.push('maceta_umbral='+v('pumb'));
+  }else{
   if(s)extra.push('seco='+s); if(m)extra.push('mojado='+m); if(u)extra.push('umbral='+u); if(ah)extra.push('ahogo='+ah);
+  }
   const t={id:'d'+Date.now().toString(36)+Math.random().toString(36).slice(2,7),
     alumno:SES.nombre, anio:'2do', fecha:SES.fecha, ts:new Date().toISOString(),
     sala:'desafio2do', salaNom:'Desafío del día · cuántas cosas dice el sensor', modo:'practica',
