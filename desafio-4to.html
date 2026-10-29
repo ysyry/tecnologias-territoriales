@@ -373,6 +373,18 @@ body.hoy-placa main{max-width:1320px}
 .pl-tabla button{font:700 .75em var(--f-cuerpo);background:transparent;color:var(--violeta);border:1.5px solid var(--violeta);border-radius:999px;padding:3px 8px;cursor:pointer;margin-top:4px}
 .pl-cierre{display:flex;flex-direction:column;gap:12px;border:2px solid var(--violeta);border-radius:16px;padding:20px 22px;background:var(--hoja)}
 .pl-cierre h2{margin:0}
+.pl-cierre p{margin:0}
+.pl-previa{background:#fff;color:#222;border:1.5px solid var(--raya);border-radius:10px;padding:14px 18px;font-family:Georgia,serif;max-width:640px}
+.pl-previa h2{font:700 1.3em Georgia,serif;color:#222;margin:0 0 6px}
+.pl-previa p{margin:6px 0}
+.pl-previa table{border-collapse:collapse;margin:6px 0}
+.pl-previa td,.pl-previa th{border:1px solid #bbb;padding:3px 10px;text-align:left}
+.pl-previa .foto{color:#888;font-style:italic}
+.pl-tags{font-size:.85em;line-height:2}
+.pl-mis{margin:6px 0 0;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:6px;color:var(--tinta)}
+.pl-mis li::before{content:"○ ";color:var(--tenue)}
+.pl-mis li.ok{color:var(--verde)}
+.pl-mis li.ok::before{content:"✓ ";color:var(--verde)}
 .pl-anteriores{color:var(--tenue);font-size:.85em;margin:0}
 .pl-anteriores a{color:var(--tenue)}
 @media (max-width:1150px){.pl-trabajo{grid-template-columns:minmax(0,.8fr) minmax(0,1.3fr)}.pl-codigo{grid-column:1/-1;position:static}}
@@ -1280,15 +1292,15 @@ void loop() {
         </div>
       </div>
       <div class="pl-cierre">
-        <div class="rot">Para cerrar · cuando terminan con la placa</div>
-        <h2>Su aparato, en su página</h2>
-        <ol class="pasitos">
-          <li>Saquen una <b>foto del aparato armado</b> y pásenla a esta compu.</li>
-          <li>Toquen <button type="button" class="prim" id="pl-a-pagina">Sumarlo a mi página</button>: se agrega al final de su página un pedazo con sus datos y la decisión que armaron.</li>
-          <li>Ahí mismo, con <b>🖼️ Sumar una imagen de mi compu</b>, suban la foto y péguenla donde dice <span class="dice">&lt;!-- la foto --&gt;</span>.</li>
-          <li>Completen la última línea con algo que les pasó midiendo. Por ejemplo: ¿el número cambió como esperaban?</li>
-        </ol>
-        <details class="lenguaje en-reto"><summary>Lo que se suma a su página</summary><div class="len-cuerpo"><div class="codigo"><button class="copiar" type="button" data-cod="pl-html">Copiar</button><pre id="pl-html"></pre></div></div></details>
+        <div class="rot">Último · cuando terminan con la placa</div>
+        <h2>Muestren su aparato en su página web</h2>
+        <p>En su página (la del reto 5), escriban una parte nueva con lo que hicieron hoy. La idea es que quede más o menos así:</p>
+        <div class="pl-previa" id="pl-previa"></div>
+        <div class="pl-tags"><span class="dice">&lt;h2&gt;</span> título · <span class="dice">&lt;p&gt;</span> párrafo · <span class="dice">&lt;table&gt; &lt;tr&gt; &lt;th&gt; &lt;td&gt;</span> tabla, fila, título de columna, celda · <span class="dice">&lt;img src="…" alt="…"&gt;</span> foto</div>
+        <div class="misiones"><div class="rot">Se tildan solas mientras escriben</div><ol class="pl-mis" id="pl-mis"></ol></div>
+        <p><button type="button" class="prim" id="pl-a-pagina">Ir a mi página</button></p>
+        <p class="nota">¿La foto? Súmenla con <b>🖼️ Sumar una imagen de mi compu</b>, abajo del editor: les copia el <span class="dice">&lt;img&gt;</span> para pegar.</p>
+      </div>
       </div>
     </div>
 
@@ -2384,17 +2396,27 @@ h1 { color: green; }
     const caja=prog.find(x=>B[x.id].caja), v=caja&&S.vars[caja.v||0];
     const dec=caja&&num(caja.a)!=null?(B[caja.id].op==='entre'?`si ${v.n} está entre ${num(caja.a)} y ${num(caja.b)}, prende el LED. Si no, lo apaga.`:`si ${v.n} es ${B[caja.id].op==='>'?'mayor':'menor'} que ${num(caja.a)}, prende el LED. Si no, lo apaga.`):'Por ahora sólo mide: todavía no decide nada.';
     const fil=S.sit.map((s,j)=>`      <tr><td>${esc(s)}</td>${S.vars.map((x,i)=>`<td>${val(j,i)??'…'}</td>`).join('')}</tr>`).join('\n');
-    return `\n  <section>\n    <h2>Nuestro aparato</h2>\n    <!-- la foto -->\n    <p>Mide ${que}, y lo muestra en la compu.</p>\n    <table>\n      <tr><th>Probamos</th>${S.vars.map(x=>'<th>'+esc(x.v)+'</th>').join('')}</tr>\n${fil}\n    </table>\n    <p>Decide así: ${dec}</p>\n    <p>Lo que nos pasó midiendo: …</p>\n  </section>\n`;
+    return `\n  <section>\n    <h2>Nuestro aparato</h2>\n    <p class="foto">(Acá va la foto del aparato)</p>\n    <p>Mide ${que}, y lo muestra en la compu.</p>\n    <table>\n      <tr><th>Probamos</th>${S.vars.map(x=>'<th>'+esc(x.v)+'</th>').join('')}</tr>\n${fil}\n    </table>\n    <p>Decide así: ${dec}</p>\n    <p>Lo que nos pasó midiendo: …</p>\n  </section>\n`;
   }
   $('pl-a-pagina').addEventListener('click',()=>{
-    const r=$('r7'), ta=$('ed-cod'); if(!sen||!r||!ta) return;
-    const d=r.querySelector('.destapar'); if(r.classList.contains('tapado')&&d) d.click();
-    const h=paraLaPagina(), i=ta.value.lastIndexOf('</body>');
-    ta.value=i>=0?ta.value.slice(0,i)+h+ta.value.slice(i):ta.value+h; ta.dispatchEvent(new Event('input',{bubbles:true}));
+    const r=$('r7'); if(!r) return; const d=r.querySelector('.destapar'); if(r.classList.contains('tapado')&&d) d.click();
     r.scrollIntoView({behavior:'smooth',block:'start'});
-    registrar('placa-pagina-'+sen,'Placa · sumó su aparato a su página',SENS[sen].n);
   });
-  function codigo(){$('pl-html').textContent=paraLaPagina();$('pl-cod').textContent=generar(prog,$('pl-grupo').value.trim());LS.set(K_PROG+sen,prog);$('pl-res').hidden=true;$('pl-entrega').hidden=true}
+  /* las misiones del cierre: miran lo que escriben en su página */
+  function misiones(){
+    const ta=$('ed-cod'); if(!sen||!ta) return; const c=ta.value.toLowerCase(), S=SENS[sen];
+    const nums=[]; S.vars.forEach((x,i)=>[0,1].forEach(j=>{const v=val(j,i);if(v!=null)nums.push(String(v))}));
+    const caja=prog.find(x=>B[x.id].caja), um=caja&&num(caja.a);
+    const imgs=(c.match(/<img[^>]*src\s*=\s*["']([^"']+)/g)||[]).filter(t=>!/grafico/.test(t));
+    const M=[['Un título <h2> para su aparato',/<h2[^>]*>[^<]*\S[^<]*<\/h2>/.test(c)&&c.split('<h2').length>1],
+      ['Una tabla con sus dos números'+(nums.length?' ('+nums.join(', ')+')':''),/<table/.test(c)&&/<td/.test(c)&&(nums.length?nums.every(n=>c.includes('>'+n+'<')||c.includes('> '+n)):true)],
+      ['Un párrafo que cuenta cómo decide'+(um!=null?' (con su '+um+')':''),um!=null?new RegExp('<p[^>]*>[^<]*\\b'+String(um).replace('.','\\.')+'\\b').test(c):/<p[^>]*>[^<]*\bsi\b/.test(c)],
+      ['Una foto del aparato, con su alt',imgs.some(t=>true)&&/<img[^>]*alt\s*=\s*["'][^"']+/.test(c)]];
+    $('pl-mis').innerHTML=M.map(([t,ok])=>`<li class="${ok?'ok':''}">${esc(t)}</li>`).join('');
+    if(M.every(m=>m[1])) registrar('placa-pagina-'+sen,'Placa · escribió su aparato en su página',SENS[sen].n);
+  }
+  { const ta=$('ed-cod'); if(ta) ta.addEventListener('input',misiones); }
+  function codigo(){$('pl-previa').innerHTML=paraLaPagina();misiones();$('pl-cod').textContent=generar(prog,$('pl-grupo').value.trim());LS.set(K_PROG+sen,prog);$('pl-res').hidden=true;$('pl-entrega').hidden=true}
   function pintar(){
     $prog.innerHTML='';
     const fila=(it,path)=>{const b=B[it.id],li=document.createElement('li');li.className=b.g;li.draggable=true;
