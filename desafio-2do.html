@@ -175,12 +175,35 @@ main.sin-nombre .esquema{display:none}
   padding:16px;display:flex;flex-direction:column;gap:10px}
 .linea{font:500 1.1em var(--f-mono);color:var(--violeta);background:var(--papel);
   border:1px dashed var(--raya);padding:8px 12px;align-self:flex-start;overflow-wrap:anywhere}
-.cmp{font:800 1.1em var(--f-mono);width:2em;background:#ffffff;color:var(--b-mate);border:2px solid transparent;
-  border-radius:999px;cursor:pointer;padding:0}
-.cmp.si{border-color:#1b1b1b;background:#1b1b1b;color:#fff}
-.cmp.no{text-decoration:line-through;opacity:.5}
 .pf-dir{margin:0;font-weight:700;color:var(--tinta)}
-#pf-cmp-m.ok{color:var(--verde);font-weight:700}
+.nota.ok{color:var(--verde);font-weight:700}
+.fila-c{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.copiar{font:700 .85em var(--f-cuerpo);background:var(--violeta);color:#fff;border:0;border-radius:999px;padding:9px 18px;cursor:pointer}
+.codigo{font:.8em/1.45 var(--f-mono);background:var(--papel);border:1px solid var(--raya);padding:12px;overflow-x:auto;color:var(--tinta);margin:8px 0 0}
+.envio summary{cursor:pointer;color:var(--violeta);font-weight:700;font-size:.85em}
+/* El creador de bloques, como en la consola de 1ro: tocar, no arrastrar. */
+.ed{background:var(--hoja);border:1px solid var(--raya);padding:16px;min-width:0}
+.ed-cab{display:inline-block;background:var(--b-control);color:#fff;font-weight:700;font-size:.88em;padding:8px 14px;border-radius:12px 12px 12px 0}
+.ed-l{margin-left:14px;border-left:10px solid var(--b-control);padding:6px 0 6px 8px;display:flex;flex-direction:column;gap:5px;border-radius:0 0 0 8px}
+.ed-l.sub{margin-left:18px;border-left-width:8px}
+.ed-caja{display:flex;flex-direction:column;gap:5px;align-self:flex-start;max-width:100%}
+.ed-b{display:inline-flex;flex-wrap:wrap;align-items:center;gap:6px;align-self:flex-start;color:#fff;font-weight:700;font-size:.85em;padding:6px 8px 6px 12px;border-radius:7px}
+.ed-b.salida{background:var(--b-salida)} .ed-b.control{background:var(--b-control)}
+.ed-b select,.ed-b input{background:#fff;color:#1b1b1b;border:0;border-radius:999px;padding:2px 8px;font:700 1em var(--f-cuerpo)}
+.ed-b input{width:4.6em}
+.ed-b .x{background:rgba(0,0,0,.22);color:#fff;border:0;border-radius:999px;width:26px;height:26px;cursor:pointer;padding:0}
+.ed-sino{color:var(--tenue);font-weight:700;font-size:.85em;margin-left:18px}
+.ed-add{align-self:flex-start;border:2px dashed var(--raya);background:none;color:var(--tenue);border-radius:8px;padding:3px 12px;cursor:pointer;font:700 .82em var(--f-cuerpo)}
+.ed-add.activo,.ed-add:hover{border-color:var(--violeta);color:var(--violeta)}
+.ed-pal{display:flex;flex-wrap:wrap;gap:6px;padding:8px;border:2px solid var(--violeta);border-radius:10px;background:var(--papel)}
+.ed-pal button{border:0;color:#fff;font:700 .8em var(--f-cuerpo);padding:6px 10px;border-radius:7px;cursor:pointer}
+.ed-pal .salida{background:var(--b-salida)} .ed-pal .control{background:var(--b-control)}
+.probar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--hoja);border:1px solid var(--raya);padding:12px 16px}
+.probar label{font-weight:700;color:var(--tinta);font-size:.9em}
+.probar input{flex:1 1 180px;accent-color:var(--agua)}
+.pr-num{font:500 1.6em var(--f-mono);color:var(--violeta);min-width:3ch}
+.pr-led{width:28px;height:28px;border-radius:50%;background:var(--raya);border:2px solid var(--tenue)}
+.pr-led.on{background:var(--rojo);box-shadow:0 0 14px var(--rojo)}
 </style>
 </head>
 <body>
@@ -818,7 +841,7 @@ main.sin-nombre .esquema{display:none}
     <div class="rot">Proyecto final</div>
     <h2>La maceta, en la placa</h2>
     <p>Ahora el sensor va clavado en la tierra de una maceta y el programa corre en un Arduino.
-    Lo armás con bloques en Tinkercad, se lo mandás a la profe por Classroom y ella lo carga en
+    Lo armás con bloques acá mismo, se lo mandás a la profe por Classroom y ella lo carga en
     la placa. Son <b>dos envíos</b>: primero para ver qué números da tu sensor, y después para
     que la maceta avise.</p>
   </div>
@@ -859,30 +882,24 @@ main.sin-nombre .esquema{display:none}
       <div class="rot">Reto 16 · Envío 1</div>
       <h3>Que el sensor diga su número</h3>
       <button type="button" class="destapar">Empezar</button>
-      <p>Es el programa del reto 1. Armalo con bloques en Tinkercad y probalo con el simulador.</p>
-<div class="prog" aria-label="Programa: siempre, imprimir en monitor en serie leer pin analógico A0, esperar 1 segundo">
-  <div class="blk control">siempre</div>
-  <div class="dentro">
-    <div class="blk salida">imprimir en monitor en serie <span class="in entrada">leer pin analógico <span class="h">A0</span></span></div>
-    <div class="blk control">esperar <span class="h">1</span> segundos</div>
-  </div>
-</div>
-      <div class="envio">
+      <p>Armá el programa con bloques: <b>una y otra vez</b>, que escriba el número que lee el
+      sensor y espere un segundo. Tocá <b>+ agregar</b> donde quieras poner un bloque; los números
+      se cambian tocándolos.</p>
+      <div class="ed" id="ed1" data-pal="imprimir,esperar,prender,apagar"></div>
+      <p class="nota" id="ed1-m" aria-live="polite"></p>
+      <div class="envio" id="env1" hidden>
         <div class="rot">Mandárselo a la profe</div>
         <ol class="pasos-led">
-          <li>En Tinkercad, arriba del código, cambiá <b>Bloques</b> por <b>Bloques + texto</b>.
-          A la derecha aparece el mismo programa, escrito.</li>
-          <li>Hacé clic en el texto, apretá <b>Ctrl + A</b> y después <b>Ctrl + C</b>.</li>
+          <li>Tocá <b>Copiar el código</b>.</li>
           <li>En Classroom abrí <b>Maceta · código 1</b> y pegá con <b>Ctrl + V</b>.</li>
-          <li>Arriba de todo, en la primera línea, escribí esto:</li>
         </ol>
-        <code class="linea pf-eq">// equipo: …</code>
-        <p class="nota">Sin esa línea la profe no sabe de quién es el código.</p>
+        <div class="fila-c"><button type="button" class="copiar" data-ed="ed1">Copiar el código</button><span class="nota copiado"></span></div>
+        <details><summary>Ver el código para la placa</summary><pre class="codigo" id="ed1-c"></pre></details>
       </div>
       <button type="button" class="pista-b">Pista</button>
-      <div class="pista" hidden>¿No aparece el texto? Buscá el menú que dice <b>Bloques</b>, arriba a la
-      izquierda del código. Tiene tres opciones: elegí la del medio.</div>
-      <button type="button" class="logre" data-juego="pf2" data-nom="Mandó el código 1 por Classroom" hidden>✔ ¡Lo mandamos!</button>
+      <div class="pista" hidden>Son dos bloques. ¿Cuál escribe el número? ¿Y cuál hace que no salgan
+      mil números por segundo?</div>
+      <button type="button" class="logre" data-juego="pf2" data-nom="Armó con bloques el programa que escribe el número" data-espera="1" hidden>✔ ¡Lo mandamos!</button>
     </div>
   </div>
 
@@ -913,40 +930,31 @@ main.sin-nombre .esquema{display:none}
       <div class="rot">Reto 18 · Envío 2</div>
       <h3>La maceta avisa</h3>
       <button type="button" class="destapar">Empezar</button>
-      <p>Cuando la tierra tiene sed, se prende el LED. Elegí <b>tu umbral</b> y el signo que va en la
-      comparación, con <b>tus números de la maceta</b>, no los de Tinkercad.</p>
-      <div class="campos">
-        <label class="campo"><span>Tu umbral</span><input id="pumb" type="number" inputmode="numeric" placeholder="?"></label>
+      <p>Cuando la tierra tiene sed, se prende el LED; cuando está bien, se apaga. Armalo con
+      bloques y con <b>tus números de la maceta</b>: el signo y el umbral los elegís vos.</p>
+      <div class="ed" id="ed2" data-pal="si,prender,apagar,esperar,imprimir"></div>
+      <div class="probar" id="probar">
+        <label for="pr-hum">Probalo: mové el agua</label>
+        <input id="pr-hum" type="range" min="0" max="100" value="0">
+        <span class="pr-num" id="pr-num">—</span>
+        <span class="pr-led" id="pr-led" title="el LED"></span>
       </div>
-<div class="prog" aria-label="Programa: siempre, si leer pin analógico A0 comparado con tu umbral entonces definir pin 13 en ALTA, si no definir pin 13 en BAJA, esperar 1 segundo">
-  <div class="blk control">siempre</div>
-  <div class="dentro">
-    <div class="blk control">si <span class="in mate"><span class="in entrada">leer pin analógico <span class="h">A0</span></span>
-      <button type="button" class="cmp" data-op="<" aria-label="menor que">&lt;</button><button type="button" class="cmp" data-op=">" aria-label="mayor que">&gt;</button>
-      <span class="h n-pumb">tu umbral</span></span> entonces</div>
-    <div class="dentro">
-      <div class="blk salida">definir pin <span class="h">13</span> en <span class="h">ALTA</span></div>
-    </div>
-    <div class="sino">si no</div>
-    <div class="dentro">
-      <div class="blk salida">definir pin <span class="h">13</span> en <span class="h">BAJA</span></div>
-    </div>
-    <div class="blk control">esperar <span class="h">1</span> segundos</div>
-  </div>
-</div>
-      <p class="nota" id="pf-cmp-m">Tocá el signo que va.</p>
-      <div class="envio">
+      <p class="nota" id="ed2-m" aria-live="polite"></p>
+      <div class="envio" id="env2" hidden>
         <div class="rot">Mandárselo a la profe</div>
-        <p class="nota">Igual que el envío 1, pero en <b>Maceta · código 2</b>. Con la primera línea:</p>
-        <code class="linea pf-eq">// equipo: …</code>
-        <p class="nota">Cuando esté cargado, regá la maceta y mirá el LED.</p>
+        <ol class="pasos-led">
+          <li>Tocá <b>Copiar el código</b>.</li>
+          <li>En Classroom abrí <b>Maceta · código 2</b> y pegá con <b>Ctrl + V</b>.</li>
+          <li>Cuando esté cargado, regá la maceta y mirá el LED.</li>
+        </ol>
+        <div class="fila-c"><button type="button" class="copiar" data-ed="ed2">Copiar el código</button><span class="nota copiado"></span></div>
+        <details><summary>Ver el código para la placa</summary><pre class="codigo" id="ed2-c"></pre></details>
       </div>
-      <p class="nota pf-hor" hidden><b>Si tu maceta se queda armada midiendo:</b> el sensor de horquilla
-      se oxida si tiene corriente todo el día. Volvé al <b>reto 7</b> y pasá el cable VCC de la plaquita al <b>pin 7</b>.</p>
       <button type="button" class="pista-b">Pista</button>
-      <div class="pista" hidden>Mirá tus dos números del reto 17. Cuando la tierra está seca, ¿el sensor da
-      un número más <b>alto</b> o más <b>bajo</b> que cuando está mojada? El LED tiene que prenderse del
-      lado del seco.<br><br>El umbral va <b>entre</b> tu seco y tu mojado.</div>
+      <div class="pista" hidden>Empezá con el bloque <b>si el sensor…</b>. Mirá tus dos números del
+      reto 17: cuando la tierra está seca, ¿el sensor da un número más <b>alto</b> o más <b>bajo</b>
+      que cuando está mojada? El LED se prende del lado del seco.<br><br>El umbral va <b>entre</b>
+      tu seco y tu mojado.</div>
       <button type="button" class="logre" data-juego="pf4" data-nom="La maceta avisa con el LED cuando tiene sed" data-espera="1" hidden>✔ ¡Me anda!</button>
     </div>
   </div>
@@ -1026,7 +1034,7 @@ function mostrarQuien(){
 }
 /* Los números del equipo (seco, mojado, sed, ahogo) quedan guardados por nombre, así la
    segunda parte los encuentra aunque sea otro día. */
-const K_NUMS='pps.desafio2do.nums.v1', CAMPOS=['seco','mojado','sed','ahoga','pseco','pmoj','pumb'];
+const K_NUMS='pps.desafio2do.nums.v1', CAMPOS=['seco','mojado','sed','ahoga','pseco','pmoj'];
 function traerNumeros(){
   const n=(lee(K_NUMS,{})[SES.nombre])||{};
   CAMPOS.forEach(c=>{const el=document.getElementById(c);
@@ -1125,23 +1133,30 @@ document.querySelectorAll('.clasif').forEach(c=>{
   regla(); prueba();
 })();
 
-/* ---- Proyecto final: el sensor del equipo arma la tabla de cables; los números de la
-   maceta deciden qué signo va en la comparación (en algunos sensores el número baja con
-   el agua) y entre qué valores tiene que caer el umbral. ---- */
+/* ---- Proyecto final: el sensor del equipo arma la tabla de cables, y los dos programas
+   se arman tocando bloques, como en la consola de 1ro. Cada programa se prueba con los
+   números de la maceta (en algunos sensores el número baja con el agua) y la página
+   escribe el código para la placa, que se copia a Classroom. ---- */
 const PF_SENS={
   cap:{n:'capacitivo', filas:[['Sensor · VCC','5V'],['Sensor · GND','GND'],['Sensor · AOUT','A0']]},
   hor:{n:'de horquilla', filas:[['Horquilla','a la plaquita, los dos cables en cualquier orden'],
     ['Plaquita · VCC','5V'],['Plaquita · GND','GND'],['Plaquita · AO','A0'],['Plaquita · DO','no se usa']]}};
-let PF_OP=null;
+const PF_BLQ={
+  imprimir:{c:'salida', txt:'escribir el número del sensor', nuevo:()=>({t:'imprimir'})},
+  esperar:{c:'control', txt:'esperar', nuevo:()=>({t:'esperar',n:1})},
+  prender:{c:'salida', txt:'prender el LED', nuevo:()=>({t:'prender'})},
+  apagar:{c:'salida', txt:'apagar el LED', nuevo:()=>({t:'apagar'})},
+  si:{c:'control', txt:'si el sensor… si no…', nuevo:()=>({t:'si',op:'<',n:500,si:[],no:[]})}};
+const PF_ED={ed1:{prog:[],destino:null}, ed2:{prog:[],destino:null}};
+const mk=(tag,cls,txt)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e};
+function pfDatos(){return SES?(lee(K_NUMS,{})[SES.nombre]||{}):{}}
 function pfGuardar(k,v){
   if(!SES) return;
   const t=lee(K_NUMS,{}), n=t[SES.nombre]||{}; n[k]=v; t[SES.nombre]=n; guarda(K_NUMS,t);
 }
 function pfPintar(sensor){
-  const $=id=>document.getElementById(id);
-  document.querySelectorAll('.pf-eq').forEach(e=>e.textContent='// equipo: '+(SES?SES.nombre:'…'));
+  const $=id=>document.getElementById(id), n=pfDatos();
   document.querySelectorAll('.sensor').forEach(b=>b.classList.toggle('elegido',b.dataset.s===sensor));
-  document.querySelector('.pf-hor').hidden=sensor!=='hor';
   const S=PF_SENS[sensor], l1=document.querySelector('.logre[data-juego="pf1"]');
   if(!S){$('pf-cables').innerHTML='';}
   else{
@@ -1151,9 +1166,10 @@ function pfPintar(sensor){
         .map(([a,b])=>`<tr><td>${a}</td><td><b>${b}</b></td></tr>`).join('')+`</table></div>
       <p class="nota">El LED entra directo en la placa: el pin 13 y ese GND están uno al lado del otro.</p>`+
       (sensor==='hor'?`<p class="nota">Por hoy la plaquita va a 5V. Si la maceta se queda armada midiendo, se pasa al pin 7 (reto 7).</p>`:'');
-    if(!l1.disabled&&!document.getElementById('pf1').classList.contains('tapado')) l1.hidden=false;
+    if(!l1.disabled&&!$('pf1').classList.contains('tapado')) l1.hidden=false;
   }
-  pfDir(); pfCheck();
+  ['ed1','ed2'].forEach(id=>{PF_ED[id].prog=Array.isArray(n[id])?n[id]:[];PF_ED[id].destino=null});
+  pfDir(); pfDibujar('ed1'); pfDibujar('ed2');
 }
 function pfNums(){
   const s=parseInt(document.getElementById('pseco').value,10), m=parseInt(document.getElementById('pmoj').value,10);
@@ -1162,39 +1178,134 @@ function pfNums(){
 function pfDir(){
   const el=document.getElementById('pf-dir'), N=pfNums(), l=document.querySelector('.logre[data-juego="pf3"]');
   if(!N){el.textContent='';return}
-  const ts=parseInt(document.getElementById('seco').value,10), tm=parseInt(document.getElementById('mojado').value,10);
   el.innerHTML=`En tu maceta, el número <b>${N.m<N.s?'baja':'sube'}</b> cuando se moja.`+
-    (Number.isFinite(ts)&&Number.isFinite(tm)?` En Tinkercad anotaste seco <b>${ts}</b> y mojado <b>${tm}</b>.`:'')+
-    `<br><span class="nota">¿Te sirve el umbral que elegiste en Tinkercad?</span>`;
+    `<br><span class="nota">¿Es lo que esperabas?</span>`;
   if(!l.disabled&&!document.getElementById('pf3').classList.contains('tapado')) l.hidden=false;
 }
-function pfCheck(){
-  const m=document.getElementById('pf-cmp-m'), N=pfNums(), l=document.querySelector('.logre[data-juego="pf4"]'),
-        uv=document.getElementById('pumb').value.trim(), u=parseInt(uv,10);
-  document.querySelectorAll('.n-pumb').forEach(e=>e.textContent=uv||'tu umbral');
-  m.classList.remove('ok');
-  if(!N){m.textContent='Para elegir hacen falta tus dos números de la maceta (reto 17).';return}
-  const bien=N.s>N.m?'>':'<';
-  document.querySelectorAll('.cmp').forEach(b=>{b.classList.toggle('si',b.dataset.op===PF_OP&&PF_OP===bien);
-    b.classList.toggle('no',b.dataset.op===PF_OP&&PF_OP!==bien)});
-  if(!PF_OP){m.textContent='Tocá el signo que va.';return}
-  if(PF_OP!==bien){m.textContent='Con ese signo, el LED se prende cuando la tierra está mojada. Mirá tus números del reto 17.';return}
-  if(!Number.isFinite(u)){m.textContent='El signo está bien. Ahora, tu umbral.';return}
-  if(u<=Math.min(N.s,N.m)||u>=Math.max(N.s,N.m)){m.textContent=`Tu umbral tiene que estar entre ${Math.min(N.s,N.m)} y ${Math.max(N.s,N.m)}.`;return}
-  m.textContent=`✔ El LED se prende cuando el sensor pasa de ${u}: la tierra tiene sed.`; m.classList.add('ok');
-  if(!l.disabled&&!document.getElementById('pf4').classList.contains('tapado')) l.hidden=false;
+
+/* El editor: «+ agregar» abre la paleta en ese lugar; los números y el signo se tocan. */
+function pfPaso(id,p,lista,idx){
+  const E=PF_ED[id], b=PF_BLQ[p.t], caja=mk('div','ed-caja'), li=mk('div','ed-b '+b.c);
+  const cambia=()=>pfCambio(id);
+  const num=(k,min,max,paso)=>{const i=mk('input');i.type='number';i.min=min;i.max=max;i.step=paso;i.value=p[k];
+    i.setAttribute('aria-label','número');
+    i.onchange=()=>{let v=parseFloat(i.value);if(isNaN(v))v=min;v=Math.max(min,Math.min(max,v));p[k]=v;i.value=v;cambia()};return i};
+  switch(p.t){
+    case 'imprimir': li.append(mk('span',null,'escribir el número del sensor'));break;
+    case 'esperar': li.append(mk('span',null,'esperar'),num('n',0.1,30,0.1),mk('span',null,'segundos'));break;
+    case 'prender': li.append(mk('span',null,'prender el LED'));break;
+    case 'apagar': li.append(mk('span',null,'apagar el LED'));break;
+    case 'si':{const s=mk('select');s.setAttribute('aria-label','signo');
+      [['<','es menor que'],['>','es mayor que']].forEach(([v,tx])=>{const o=mk('option',null,v+'  '+tx);o.value=v;s.append(o)});
+      s.value=p.op;s.onchange=()=>{p.op=s.value;cambia()};
+      li.append(mk('span',null,'si el sensor'),s,num('n',0,1023,1));break}
+  }
+  const x=mk('button','x','✕');x.type='button';x.setAttribute('aria-label','Sacar este bloque');
+  x.onclick=()=>{lista.splice(idx,1);cambia()};li.append(x);
+  caja.append(li);
+  if(p.si) caja.append(pfLista(id,p.si,'ed-l sub'),mk('div','ed-sino','si no'),pfLista(id,p.no,'ed-l sub'));
+  return caja;
 }
+function pfLista(id,lista,cls){
+  const E=PF_ED[id], d=mk('div',cls);
+  lista.forEach((p,i)=>d.append(pfPaso(id,p,lista,i)));
+  const a=mk('button','ed-add'+(E.destino===lista?' activo':''),'+ agregar');a.type='button';
+  a.onclick=()=>{E.destino=E.destino===lista?null:lista;pfDibujar(id)};
+  d.append(a);
+  if(E.destino===lista){const pal=mk('div','ed-pal');
+    document.getElementById(id).dataset.pal.split(',').forEach(k=>{const b=PF_BLQ[k],bt=mk('button',b.c,b.txt);bt.type='button';
+      bt.onclick=()=>{lista.push(b.nuevo());E.destino=null;pfCambio(id)};pal.append(bt)});
+    d.append(pal)}
+  return d;
+}
+function pfCambio(id){pfGuardar(id,PF_ED[id].prog);pfDibujar(id)}
+function pfDibujar(id){
+  const E=PF_ED[id], R=document.getElementById(id); R.innerHTML='';
+  const c=mk('div','ed-cab','siempre, una y otra vez'); R.append(c,pfLista(id,E.prog,'ed-l'));
+  document.getElementById(id+'-c').textContent=pfCodigo(E.prog);
+  id==='ed1'?pfRevisa1():pfRevisa2();
+}
+
+/* Correr el programa una vuelta con una lectura dada: qué escribe, qué hace el LED. */
+function pfCorrer(lista,v,st){
+  for(const p of lista){
+    if(p.t==='prender')st.led=true; else if(p.t==='apagar')st.led=false;
+    else if(p.t==='imprimir')st.imp=true; else if(p.t==='esperar')st.esp+=p.n;
+    else if(p.t==='si')pfCorrer((p.op==='<'?v<p.n:v>p.n)?p.si:p.no,v,st);
+  }
+  return st;
+}
+/* El LED después de una vuelta, empiece prendido o apagado. */
+const pfLed=(prog,v)=>[true,false].map(led=>pfCorrer(prog,v,{led,imp:false,esp:0}).led);
+const pfTiene=(l,t)=>l.some(p=>p.t===t||(p.si&&(pfTiene(p.si,t)||pfTiene(p.no,t))));
+function pfMostrar(n,ok){
+  const l=document.querySelector(`.logre[data-juego="pf${n===1?2:4}"]`), env=document.getElementById('env'+n);
+  env.hidden=!ok;
+  if(ok&&!l.disabled&&!document.getElementById(n===1?'pf2':'pf4').classList.contains('tapado')) l.hidden=false;
+}
+function pfRevisa1(){
+  const P=PF_ED.ed1.prog, m=document.getElementById('ed1-m'), st=pfCorrer(P,500,{led:false,imp:false,esp:0});
+  let msg='', ok=false;
+  if(!P.length) msg='Todavía está vacío.';
+  else if(!st.imp) msg='Le falta escribir el número: si no, la profe no ve nada.';
+  else if(!st.esp) msg='Escribe el número, pero sin esperar: van a salir cientos por segundo y no se llega a leer ninguno.';
+  else {msg='✔ Escribe el número y espera. Ya se lo podés mandar a la profe.'; ok=true}
+  m.textContent=msg; m.classList.toggle('ok',ok); pfMostrar(1,ok);
+}
+function pfRevisa2(){
+  const P=PF_ED.ed2.prog, m=document.getElementById('ed2-m'), N=pfNums(), $=id=>document.getElementById(id);
+  let msg='', ok=false;
+  if(!N) msg='Para probarlo hacen falta tus dos números de la maceta (reto 17).';
+  else if(!pfTiene(P,'si')) msg='La maceta tiene que decidir: le falta el bloque «si el sensor…».';
+  else{
+    const [a1,a2]=pfLed(P,N.s), [b1,b2]=pfLed(P,N.m), seco=a1&&a2, moj=!b1&&!b2;
+    if(seco&&moj){msg='✔ Con la tierra seca se prende el LED, y con la tierra mojada se apaga.';ok=true}
+    else if(!a1&&!a2&&b1&&b2) msg='Está al revés: el LED se prende con la tierra mojada. ¿Qué signo va, con tus números?';
+    else if(!seco) msg=`Con la tierra seca (${N.s}) el LED no se prende siempre. ¿El umbral está entre tu seco y tu mojado? ¿Hay algo que lo prenda en el «si»?`;
+    else msg=`Con la tierra mojada (${N.m}) el LED no se apaga. ¿Qué le falta al «si no»?`;
+  }
+  m.textContent=msg; m.classList.toggle('ok',ok); pfMostrar(2,ok); pfProbar();
+}
+function pfProbar(){
+  const N=pfNums(), h=document.getElementById('pr-hum'), num=document.getElementById('pr-num'), led=document.getElementById('pr-led');
+  document.getElementById('probar').hidden=!N;
+  if(!N) return;
+  const v=Math.round(N.s+(N.m-N.s)*h.value/100);
+  /* El LED arranca como quedó en la vuelta anterior. */
+  pfProbar.led=pfCorrer(PF_ED.ed2.prog,v,{led:!!pfProbar.led,imp:false,esp:0}).led;
+  num.textContent=v; led.classList.toggle('on',pfProbar.led);
+}
+document.getElementById('pr-hum').addEventListener('input',pfProbar);
+
+/* El código para la placa: el sensor en A0, el LED en 13. */
+function pfCodigo(prog){
+  const c_l=(l,ind)=>l.map(p=>c_p(p,ind)).join('');
+  const c_p=(p,ind)=>{const s=' '.repeat(ind);
+    switch(p.t){
+      case 'imprimir': return `${s}Serial.println(analogRead(A0));   // escribir el número del sensor\n`;
+      case 'esperar': return `${s}delay(${Math.round(p.n*1000)});   // esperar ${p.n} s\n`;
+      case 'prender': return `${s}digitalWrite(13, HIGH);   // prender el LED\n`;
+      case 'apagar': return `${s}digitalWrite(13, LOW);    // apagar el LED\n`;
+      case 'si': return `${s}if (analogRead(A0) ${p.op} ${p.n}) {\n${c_l(p.si,ind+2)}${s}} else {\n${c_l(p.no,ind+2)}${s}}\n`;
+    }};
+  const sen=PF_SENS[pfDatos().sensor];
+  let c=`// equipo: ${SES?String(SES.nombre).replace(/[\r\n]+/g,' '):''}\n// La maceta de 2do: sensor${sen?' '+sen.n:''} en A0 · LED en 13\n\nvoid setup() {\n`;
+  if(pfTiene(prog,'imprimir')) c+=`  Serial.begin(9600);\n`;
+  c+=`  pinMode(13, OUTPUT);\n}\n\nvoid loop() {\n  // siempre, una y otra vez\n${c_l(prog,2)}}\n`;
+  return c;
+}
+document.querySelectorAll('.copiar').forEach(b=>b.addEventListener('click',async()=>{
+  const m=b.parentNode.querySelector('.copiado');
+  try{await navigator.clipboard.writeText(pfCodigo(PF_ED[b.dataset.ed].prog));m.textContent='¡Copiado! Ahora pegalo en Classroom.'}
+  catch(e){m.textContent='Abrí «Ver el código», seleccionalo y apretá Ctrl + C.'}
+}));
+
 document.querySelectorAll('.sensor').forEach(b=>b.addEventListener('click',()=>{
   pfGuardar('sensor',b.dataset.s); pfPintar(b.dataset.s)}));
-document.querySelectorAll('.cmp').forEach(b=>b.addEventListener('click',()=>{
-  PF_OP=b.dataset.op; pfCheck();
-  if(b.classList.contains('no')) PISTAS.pf4=(PISTAS.pf4||0)+1;
-}));
-['pseco','pmoj'].forEach(c=>document.getElementById(c).addEventListener('input',()=>{pfDir();pfCheck()}));
-document.getElementById('pumb').addEventListener('input',pfCheck);
-/* Si los números ya estaban guardados, el «✔» aparece apenas se destapa el reto. */
+['pseco','pmoj'].forEach(c=>document.getElementById(c).addEventListener('input',()=>{pfDir();pfRevisa2()}));
+/* Si ya estaba hecho, el «✔» aparece apenas se destapa el reto. */
 document.querySelectorAll('[id^="pf"] .destapar').forEach(d=>d.addEventListener('click',()=>setTimeout(()=>{
-  if(SES) pfPintar((lee(K_NUMS,{})[SES.nombre]||{}).sensor)})));
+  if(SES) pfPintar(pfDatos().sensor)})));
 
 /* Lo que el equipo ya anotó hoy queda marcado, aunque recargue la página. */
 function pintarHechos(){
@@ -1216,7 +1327,8 @@ function registrar(b){
   if(id.startsWith('pf')){
     const v=k=>document.getElementById(k).value, sen=(lee(K_NUMS,{})[SES.nombre]||{}).sensor;
     if(sen)extra.push('sensor='+PF_SENS[sen].n); if(v('pseco'))extra.push('maceta_seco='+v('pseco'));
-    if(v('pmoj'))extra.push('maceta_mojado='+v('pmoj')); if(v('pumb'))extra.push('maceta_umbral='+v('pumb'));
+    if(v('pmoj'))extra.push('maceta_mojado='+v('pmoj'));
+    const si=(PF_ED.ed2.prog||[]).find(x=>x.t==='si'); if(id==='pf4'&&si)extra.push('maceta_umbral='+si.op+si.n);
   }else{
   if(s)extra.push('seco='+s); if(m)extra.push('mojado='+m); if(u)extra.push('umbral='+u); if(ah)extra.push('ahogo='+ah);
   }
