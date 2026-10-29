@@ -292,10 +292,18 @@ p.est,p.coh{margin:0}
 @media (max-width:640px){.flujo-img>span{transform:rotate(90deg);margin:0 auto}}
 /* Con la placa: tres pasos para toda la clase. Bloques encastrados con los colores de la consola de 1ro.
    Al entrar se ve sólo esto; lo de Tinkercad queda en #anteriores */
-body.hoy-placa main>*:not(#con-placa){display:none!important}
+/* hoy: primero la página web (retos 5, 6 y 9), después la placa. Lo de Tinkercad queda en #anteriores */
+body.hoy-placa main>header .ciclo-w,body.hoy-placa .ciclo-ley,body.hoy-placa .ciclo-n,body.hoy-placa .pasos,body.hoy-placa section[aria-label="El código"],body.hoy-placa main>details.lenguaje,body.hoy-placa .falla,
+body.hoy-placa #r1,body.hoy-placa #r3,body.hoy-placa #r3r,body.hoy-placa #r4e,body.hoy-placa #r5,body.hoy-placa #r6e,body.hoy-placa #r6r,body.hoy-placa #r7l,body.hoy-placa .separa{display:none!important}
+body:not(.hoy-placa) .pl-agenda{display:none}
+.pl-agenda{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.pl-agenda a{display:flex;flex-direction:column;gap:2px;background:var(--hoja);border:2px solid var(--violeta);border-radius:14px;padding:14px 18px;text-decoration:none;color:var(--tinta)}
+.pl-agenda small{font-family:var(--f-mono);font-size:.7em;color:var(--tenue)}
+.pl-agenda b{font-family:var(--f-titulo);font-size:1.15em}
+@media (max-width:700px){.pl-agenda{grid-template-columns:1fr}}
 body:not(.hoy-placa) #con-placa{display:none}
 .pl{--b-salida:#3E7FD9;--b-control:#E8930C;--b-entrada:#8A5BE6;--b-sensor:#0F9A9A;display:flex;flex-direction:column;gap:24px}
-body.hoy-placa main{max-width:1440px}
+body.hoy-placa #con-placa{border-top:2px solid var(--raya);padding-top:32px}
 .pl-cab h1{margin-top:.15em}
 .pl-datos{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2.4fr);gap:20px;align-items:end}
 .pl-grupo{display:flex;flex-direction:column;gap:6px;font-weight:700;color:var(--tinta);font-size:.85em}
@@ -390,6 +398,11 @@ body.hoy-placa main{max-width:1440px}
       <p class="nota ciclo-n">El ciclo completo de un dato, de la tierra a la pantalla de alguien. En el primer cuatrimestre trabajaron <b>el análisis</b>: datos que había juntado otro, en Pandalyze. Ahora el ciclo arranca antes, porque <b>los datos los produce su aparato</b>.</p>
     </div>
   </header>
+
+  <nav class="pl-agenda" aria-label="La clase de hoy">
+    <a href="#r7"><small>9:40 a 10:20</small><b>1 · Tunear su página</b><span>Los retos 5, 6 y 9: que sume cosas y que decida sola.</span></a>
+    <a href="#con-placa"><small>10:20 al final</small><b>2 · Con la placa</b><span>Su sensor, un LED y el programa con bloques.</span></a>
+  </nav>
 
   <section class="pasos" aria-label="Los tres pasos">
     <div class="paso">
@@ -2139,7 +2152,7 @@ h1 { color: green; }
   const PASOS=[
     {t:'Que mida y lo muestre',s:'medir · mostrar · esperar',bl:['mo','e1','e2']},
     {t:'Que decida y avise',s:'un Si y el LED',bl:['si','sm','led']},
-    {t:'Dos condiciones',s:'está entre … y …',bl:['se']}];
+    {t:'Dos condiciones',s:'si les da el tiempo',bl:['se']}];
   const K_SEN='pps.desafio4to.placa.sensor', K_MED='pps.desafio4to.placa.medidas.', K_PROG='pps.desafio4to.placa.prog.', K_GRU='pps.desafio4to.placa.grupo', K_PASO='pps.desafio4to.placa.paso', K_HECHOS='pps.desafio4to.placa.hechos.';
   let sen=LS.get(K_SEN,null); if(!SENS[sen]) sen=null;
   let paso=LS.get(K_PASO,1); if(![1,2,3].includes(paso)) paso=1;
