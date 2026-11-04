@@ -192,7 +192,6 @@ textarea{width:100%;font:500 .9em var(--f-cuerpo);color:var(--tinta);background:
     <div class="preg">
       <p class="q">Conocimiento · Con este gráfico, ¿qué decidirías para la huerta?</p>
       <textarea id="conoc" rows="2" placeholder="Por ejemplo: qué plantarías ahí, cuándo regarías, dónde pondrías el sensor…"></textarea>
-      <div class="fila"><button type="button" id="conocb">Mandar</button><span class="res" id="conocr"></span></div>
     </div>
   </section>
 
@@ -294,7 +293,7 @@ textarea{width:100%;font:500 .9em var(--f-cuerpo);color:var(--tinta);background:
     <p class="q" style="font-weight:700;color:var(--tinta)">¿Quién de la Villa los podría usar, y para qué?</p>
     <textarea id="quienusa" rows="2" placeholder="Una persona o un lugar concreto, y para qué le servirían."></textarea>
     <div class="fila"><button type="button" class="mandar" id="mandar">Mandar a la profe</button><span class="res" id="mandarr"></span></div>
-    <p class="nota">Cuando mandes esto, marcá la tarea como entregada en Classroom. Lo demás que hiciste en la página ya le llegó a la profe.</p>
+    <p class="nota">Con este botón le llega todo lo que hicieron en la página. Después marquen la tarea como entregada en Classroom.</p>
   </section>
 </main>
 
@@ -311,23 +310,38 @@ function enviar(t){
   return fetch(URL_BUZON,{method:'POST',mode:'no-cors',cache:'no-store',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(t)})
     .then(()=>{const a=LS.get(K_DAT,[]);const x=a.find(y=>y.id===t.id);if(x){x.enviada=true;LS.set(K_DAT,a)}}).catch(()=>{});
 }
-function registrar(clave,concepto,detalle,ok,repetible){
-  if(!SES) return;
-  const hechos=LS.get(K_HECHO,{}), k=SES.nombre+'|'+SES.fecha+'|'+clave;
-  if(hechos[k] && !repetible) return; hechos[k]=1; LS.set(K_HECHO,hechos);
-  const seg=Math.max(1,Math.round((Date.now()-T0)/1000)), bien=ok!==false;
-  const t={id:'t'+Date.now().toString(36)+Math.random().toString(36).slice(2,7),
-    alumno:SES.nombre, anio:SES.anio||'3ro', fecha:SES.fecha, ts:new Date().toISOString(),
+/* Para corregir fácil: nada se manda mientras trabajan. Se anota el PRIMER intento de cada
+   pregunta y, al tocar «Mandar a la profe», va todo junto: una fila por pareja en «Tandas»
+   (el % sin ayuda es lo autocorregido) y una fila por respuesta en «Detalle». */
+const R={};
+const anotar=(k,v)=>{ if(!(k in R)) R[k]=v; };
+function registrar(){}
+function mandarTodo(){
+  const seg=Math.max(1,Math.round((Date.now()-T0)/1000)), ejs=[];
+  const nTar=TARJ.length, tarBien=TARJ.filter((t,i)=>R['tarj'+i]===true).length;
+  const auto=(c,k,bien)=>{const x=R[k]; ejs.push({c,t:'auto',q:x?x.txt:'(no respondió)',i:1,ok:!!(x&&x.ok),ok1:!!(x&&x.ok),p:0,s:!x,sg:0});};
+  const abierta=(c,txt)=>ejs.push({c,t:'texto',q:txt||'(vacío)',i:1,ok:!!txt,ok1:!!txt,p:0,s:!txt,sg:0});
+  ejs.push({c:'Tarjetas dato / información / conocimiento',t:'auto',q:tarBien+' de '+nTar+' al primer intento',i:1,ok:tarBien>=4,ok1:tarBien===nTar,p:0,s:false,sg:0});
+  auto('Leer un dato: la luz a las 12:00 (925)','d12');
+  auto('Información: a qué hora se va el sol (15:00)','p4');
+  abierta('La baja de las 11 (sin respuesta única)',R.p5&&R.p5.txt);
+  abierta('Su conocimiento: qué decidirían para la huerta',document.getElementById('conoc').value.trim());
+  auto('Caso 1 · OpenStreetMap','c1');
+  abierta('Caso 2 · el tractor: ¿de quién es?',R.c2&&R.c2.txt);
+  auto('Caso 3 · Sensor.Community','c3');
+  auto('Caso 4 · el sensor regalado','c4');
+  abierta('Entrega · qué hacemos con los datos',R.dec&&R.dec.txt);
+  abierta('Entrega · quién de la Villa los usaría',document.getElementById('quienusa').value.trim());
+  const autos=ejs.filter(x=>x.t==='auto');
+  enviar({id:'t'+Date.now().toString(36)+Math.random().toString(36).slice(2,7),
+    alumno:SES.nombre, anio:'3ro', fecha:SES.fecha, ts:new Date().toISOString(),
     sala:'dato-conocimiento', salaNom:'Tarea · ¿Quién puede saber lo que sabemos de la huerta?', modo:'practica',
-    total:1, resueltos:bien?1:0, sinAyuda:bien?1:0, pistas:0, salteadas:0, seg,
-    ejs:[{c:concepto,t:'desafio',q:detalle||'',i:1,ok:bien,ok1:bien,p:0,s:false,sg:seg}]};
-  const a=LS.get(K_DAT,[]); a.push(t); LS.set(K_DAT,a);
-  enviar(t);
+    total:autos.length, resueltos:autos.filter(x=>x.ok).length, sinAyuda:autos.filter(x=>x.ok1).length, pistas:0, salteadas:ejs.filter(x=>x.s).length, seg, ejs});
 }
 function pintarQuien(){
   const q=document.getElementById('quien');
-  if(SES){ q.innerHTML=`Estás como <b>${SES.nombre.replace(/</g,'&lt;')}</b> · lo que hagas le llega a la profe.`; registrar('entro','Entró a la tarea'); return; }
-  q.innerHTML=`<label for="qnom">Para que le llegue a la profe, escribí los nombres de la pareja:</label><input id="qnom" autocomplete="name"><button type="button" id="qok">Listo</button>`;
+  if(SES){ q.innerHTML=`Estás como <b>${SES.nombre.replace(/</g,'&lt;')}</b> · cuando terminen, lo mandan desde abajo de todo.`; return; }
+  q.innerHTML=`<label for="qnom">Escriban los nombres de la pareja:</label><input id="qnom" autocomplete="name"><button type="button" id="qok">Listo</button>`;
   document.getElementById('qok').addEventListener('click',()=>{
     const n=document.getElementById('qnom').value.trim().replace(/\s+/g,' ');
     if(n.length<3) return;
@@ -343,9 +357,9 @@ function armarPreg(g){
   bs.forEach((b,i)=>b.addEventListener('click',()=>{
     const txt=b.textContent.trim();
     if(ok<0){ bs.forEach(x=>x.classList.remove('elegido')); b.classList.add('elegido'); if(exp) exp.hidden=false;
-      g.dataset.elegido=txt; if(id!=='dec') registrar(id+'-'+i,'Pregunta '+id+' · eligió «'+txt+'»','',true); return; }
-    if(i===ok){ b.classList.add('ok'); if(exp) exp.hidden=false; registrar(id,'Pregunta '+id+' · bien'); }
-    else { b.classList.add('no'); registrar(id+'-mal'+i,'Pregunta '+id+' · probó «'+txt+'»','',false); }
+      g.dataset.elegido=txt; R[id]={txt}; return; }
+    if(i===ok){ b.classList.add('ok'); if(exp) exp.hidden=false; anotar(id,{ok:true,txt}); }
+    else { b.classList.add('no'); anotar(id,{ok:false,txt}); }
   }));
 }
 document.querySelectorAll('.preg[data-p]').forEach(armarPreg);
@@ -372,6 +386,7 @@ const TARJ=[
     const bs=[...d.querySelectorAll('button')], exp=d.querySelector('.exp');
     bs.forEach((b,j)=>b.addEventListener('click',()=>{
       if(d.classList.contains('bien')) return;
+      anotar('tarj'+i,j===ok);
       if(j===ok){ b.classList.add('ok'); d.classList.add('bien'); exp.textContent=por; exp.hidden=false; bien++; pintarCuenta();
         if(bien===TARJ.length) registrar('tarjetas','Parte 1 · clasificó las seis tarjetas'); }
       else { b.classList.add('no'); registrar('tarj'+i+'-'+j,'Parte 1 · tarjeta «'+txt.slice(0,40)+'» como '+TIPOS[j],'',false); }
@@ -399,16 +414,10 @@ const HORA=i=>{const m=300+i*30;return Math.floor(m/60)+':'+(m%60?'30':'00')};
 document.getElementById('d12b').addEventListener('click',()=>{
   const v=document.getElementById('d12').value.trim(), r=document.getElementById('d12r');
   if(v==='') return;
+  anotar('d12',{ok:+v===925,txt:v});
   if(+v===925){ r.className='res ok'; r.textContent='✓ 925. Eso es un dato: un número leído del gráfico.'; registrar('d12','Parte 2 · leyó el dato de las 12:00'); }
   else { r.className='res mal'; r.textContent='Buscá las 12:00 abajo, subí hasta el punto y mirá a qué altura queda. Si no se ve, abrí «Ver la tabla».'; registrar('d12-mal'+v,'Parte 2 · dato de las 12:00: puso '+v,'',false); }
 });
-document.getElementById('conocb').addEventListener('click',()=>{
-  const t=document.getElementById('conoc').value.trim(), r=document.getElementById('conocr');
-  if(t.length<5){ r.className='res mal'; r.textContent='Escribí algo cortito primero.'; return; }
-  if(!SES){ r.className='res mal'; r.textContent='Escribí los nombres arriba de todo.'; pedirNombre(); return; }
-  registrar('conoc','Parte 2 · su conocimiento',t.slice(0,600),true,true); r.className='res ok'; r.textContent='✓ Mandado.';
-});
-
 /* ---- casos ---- */
 document.querySelectorAll('.caso').forEach(c=>c.querySelector('.destapar').addEventListener('click',e=>{
   c.classList.remove('tapado'); e.currentTarget.hidden=true; c.querySelector('.dentro').hidden=false;
@@ -420,9 +429,10 @@ document.getElementById('mandar').addEventListener('click',()=>{
   const dec=document.querySelector('[data-p="dec"]').dataset.elegido, q=document.getElementById('quienusa').value.trim(), r=document.getElementById('mandarr');
   if(!dec){ r.className='res mal'; r.textContent='Elegí primero qué hacemos con los datos.'; return; }
   if(q.length<3){ r.className='res mal'; r.textContent='Contá quién los podría usar.'; return; }
-  if(!SES){ r.className='res mal'; r.textContent='Escribí los nombres arriba de todo.'; pedirNombre(); return; }
-  registrar('entrega','Entrega · '+dec,q.slice(0,600),true,true);
-  r.className='res ok'; r.textContent='✓ Le llegó a la profe. Ahora marcá la tarea como entregada en Classroom.';
+  if(document.getElementById('conoc').value.trim().length<5){ r.className='res mal'; r.textContent='Falta lo de la parte 2: qué decidirían para la huerta.'; document.getElementById('conoc').focus(); return; }
+  if(!SES){ r.className='res mal'; r.textContent='Escriban los nombres arriba de todo.'; pedirNombre(); return; }
+  mandarTodo();
+  r.className='res ok'; r.textContent='✓ Le llegó a la profe. Ahora marquen la tarea como entregada en Classroom.';
 });
 </script>
 </body>
