@@ -112,6 +112,12 @@ textarea{width:100%;font:500 .9em var(--f-cuerpo);color:var(--tinta);background:
 .ejtabla{background:var(--hoja);border:1px solid var(--raya);border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:14px}
 .ejtabla .tabla{font-size:.9em}
 .ejtabla .tabla td:last-child{color:var(--violeta);font-weight:500}
+.codigo{background:#1E1934;color:#EDE8FA;border-radius:10px;padding:16px 18px;overflow-x:auto;font-family:var(--f-mono);font-size:.8em;line-height:1.6}
+.codigo pre{margin:0}
+.codigo .c{color:#9E93C4}
+.opc-cod code{background:none;padding:0;color:inherit;font-size:1em}
+input.n.largo{width:12em}
+.preg h3{margin-bottom:2px}
 </style>
 </head>
 <body>
@@ -195,9 +201,48 @@ textarea{width:100%;font:500 .9em var(--f-cuerpo);color:var(--tinta);background:
     </div>
   </section>
 
+  <!-- CÓDIGO -->
+  <section class="parte" aria-labelledby="tc">
+    <div class="num">Parte 3 · En el código</div>
+    <h2 id="tc">¿Dónde está todo esto en el programa del aparato?</h2>
+    <p>Todo lo que vimos hasta ahora también pasa adentro del código que vamos a cargar en la placa. Veamos tres pedacitos.</p>
+
+    <div class="preg">
+      <h3>1 · El código le pone contexto al dato</h3>
+      <p>El sensor solo da un número. Es el programa el que lo anota junto con el minuto y el cantero, separados por comas, para que quede una fila de la tabla:</p>
+      <div class="codigo"><pre>int luz = analogRead(A1);   <span class="c">// lee la luz: un dato</span>
+Serial.print(minuto);       <span class="c">// escribe el minuto del día</span>
+Serial.print(",fondo,");    <span class="c">// escribe el cantero, entre comas</span>
+Serial.println(luz);        <span class="c">// escribe la luz y pasa a la fila siguiente</span></pre></div>
+      <p class="q">Si <code>minuto</code> vale 840 y el sensor lee 873, ¿qué fila escribe el programa?</p>
+      <div class="fila"><input class="n largo" id="k1" aria-label="La fila que escribe el programa" placeholder="…"><button type="button" id="k1b">Revisar</button><span class="res" id="k1r"></span></div>
+    </div>
+
+    <div class="preg" data-p="k2" data-ok="0">
+      <h3>2 · El conocimiento se vuelve una regla</h3>
+      <p>Imaginemos que, mirando muchos días, aprendimos que cuando la luz baja de 500, el cantero quedó a la sombra. Ese conocimiento lo podemos escribir en el código, para que el aparato prenda un LED cuando pasa:</p>
+      <p class="q">¿Cuál de estos <code>if</code> prende el LED cuando el cantero queda a la sombra?</p>
+      <div class="opc opc-cod"><button type="button"><code>if (luz &lt; 500)</code></button><button type="button"><code>if (luz &gt; 500)</code></button><button type="button"><code>if (luz == 500)</code></button></div>
+      <p class="exp" hidden><code>luz &lt; 500</code> quiere decir «la luz es menor que 500». Con <code>&gt;</code> se prendería con sol, y con <code>==</code> solo cuando marca justo 500, que casi nunca pasa.</p>
+    </div>
+
+    <div class="preg" data-p="k3" data-ok="1">
+      <h3>3 · Dos sensores para saber más</h3>
+      <p>¿Se acuerdan de la baja de las 11? Con dos sensores, uno en el cantero del fondo y otro en el de adelante, el programa puede distinguir solo una nube de otra cosa. <code>&amp;&amp;</code> quiere decir «y»: se tienen que cumplir las dos cosas.</p>
+      <div class="codigo"><pre>if (luzFondo &lt; 500 &amp;&amp; luzAdelante &lt; 500) {
+  Serial.println("nube");             <span class="c">// bajaron los dos</span>
+} else if (luzFondo &lt; 500) {
+  Serial.println("revisar el fondo"); <span class="c">// bajó solo uno</span>
+}</pre></div>
+      <p class="q">A las 11, <code>luzFondo</code> vale 470 y <code>luzAdelante</code> vale 900. ¿Qué escribe?</p>
+      <div class="opc"><button type="button">nube</button><button type="button">revisar el fondo</button><button type="button">No escribe nada</button></div>
+      <p class="exp" hidden>Escribe «revisar el fondo». Para «nube» tienen que estar los dos por debajo de 500, y el de adelante está en 900. Entonces bajó solo el del fondo: algo lo tapó o falló. El aparato llegó a esa conclusión solo, comparando dos datos.</p>
+    </div>
+  </section>
+
   <!-- 4 · LIBRES O PRIVATIVOS -->
   <section class="parte" aria-labelledby="t4">
-    <div class="num">Parte 3 · Teoría</div>
+    <div class="num">Parte 4 · Teoría</div>
     <h2 id="t4">¿De quién son los datos?</h2>
     <p>Para sacar conclusiones, primero hay que poder ver los datos. Con los de nuestra huerta es fácil, porque los juntamos nosotros. Pero muchos datos que se juntan en el mundo tienen un dueño, y el dueño decide quién los puede usar. Hay dos formas de manejarlos:</p>
     <div class="vs">
@@ -210,7 +255,7 @@ textarea{width:100%;font:500 .9em var(--f-cuerpo);color:var(--tinta);background:
   </section>
 
   <section class="parte" aria-labelledby="t5">
-    <div class="num">Parte 4 · Casos</div>
+    <div class="num">Parte 5 · Casos</div>
     <h2 id="t5">Siete casos</h2>
     <p>Los primeros seis pasaron; el último es inventado. Ábranlos de a uno, lean y respondan la pregunta de cada uno.</p>
 
@@ -341,7 +386,7 @@ textarea{width:100%;font:500 .9em var(--f-cuerpo);color:var(--tinta);background:
 
   <!-- 6 · DECIDEN -->
   <section class="entrega" aria-labelledby="t6">
-    <div class="num" style="font-family:var(--f-mono);font-size:.75em;letter-spacing:.14em;text-transform:uppercase;color:var(--inf)">Parte 5 · Para entregar</div>
+    <div class="num" style="font-family:var(--f-mono);font-size:.75em;letter-spacing:.14em;text-transform:uppercase;color:var(--inf)">Parte 6 · Para entregar</div>
     <h2 id="t6">Los datos de nuestra huerta</h2>
     <p>El 11/11 vamos a usar el aparato para juntar datos de la huerta: la luz y la humedad de la tierra. Ustedes deciden: ¿qué hacemos con esos datos?</p>
     <div class="preg" data-p="dec" data-ok="-1" style="border-top:0;padding-top:0">
@@ -380,6 +425,9 @@ function mandarTodo(){
   ejs.push({c:'Tarjetas dato / información / conocimiento',t:'auto',q:tarBien+' de '+nTar+' al primer intento',i:1,ok:tarBien>=4,ok1:tarBien===nTar,p:0,s:false,sg:0});
   auto('Leer un dato: la luz a las 12:00 (925)','d12');
   auto('Información: a qué hora se va el sol (15:00)','p4');
+  auto('Código 1 · la fila que escribe (840,fondo,873)','k1');
+  auto('Código 2 · el if de la sombra (luz < 500)','k2');
+  auto('Código 3 · dos sensores con && (revisar el fondo)','k3');
   abierta('La baja de las 11 (sin respuesta única)',R.p5&&R.p5.txt);
   abierta('Su conocimiento: qué decidirían para la huerta',document.getElementById('conoc').value.trim());
   auto('Caso 1 · OpenStreetMap','c1');
@@ -477,6 +525,15 @@ document.getElementById('d12b').addEventListener('click',()=>{
   if(+v===925){ r.className='res ok'; r.textContent='✓ 925. Eso es un dato: un número leído del gráfico.'; registrar('d12','Parte 2 · leyó el dato de las 12:00'); }
   else { r.className='res mal'; r.textContent='Buscá las 12:00 abajo, subí hasta el punto y mirá a qué altura queda. Si no se ve, abrí «Ver la tabla».'; registrar('d12-mal'+v,'Parte 2 · dato de las 12:00: puso '+v,'',false); }
 });
+document.getElementById('k1b').addEventListener('click',()=>{
+  const v=document.getElementById('k1').value.replace(/\s+/g,''), r=document.getElementById('k1r');
+  if(v==='') return;
+  const bien=v.toLowerCase()==='840,fondo,873';
+  anotar('k1',{ok:bien,txt:document.getElementById('k1').value.trim()});
+  if(bien){ r.className='res ok'; r.textContent='✓ Esa es la fila: el dato (873) con su contexto. Ya es información.'; }
+  else { r.className='res mal'; r.textContent='Seguí las tres líneas de print en orden: primero el minuto, después «,fondo,» y al final la luz. Todo pegado.'; }
+});
+
 /* ---- casos ---- */
 document.querySelectorAll('.caso').forEach(c=>c.querySelector('.destapar').addEventListener('click',e=>{
   c.classList.remove('tapado'); e.currentTarget.hidden=true; c.querySelector('.dentro').hidden=false;
