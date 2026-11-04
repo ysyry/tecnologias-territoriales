@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dibujar con código · 1ro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Manrope:wght@500;700&family=DM+Mono:wght@400;500&display=swap">
+<style>
+/* Dibujar con código (1ro): un pincel que obedece un programa sobre una cuadrícula de 8×8.
+   Cada dibujo tiene un modelo; cuando el programa lo dibuja igual, la página lo da por hecho.
+   El último es libre: se diseña tocando cuadraditos y después se programa.
+   Pensado para quien trabaja mejor dibujando; abierto a todo el curso. Se entrega al buzón. */
+:root{
+  --papel:#F3F1F7; --hoja:#FCFBFE; --raya:#DAD4E6;
+  --tinta:#161226; --texto:#3B3350; --tenue:#5F5779;
+  --violeta:#5B3FA8; --inf:#9A3A80; --inf-w:rgba(154,58,128,.10);
+  --rojo:#C8352E; --verde:#2E8B57;
+  --b-mov:#3E7FD9; --b-pin:#E8930C; --b-col:#C94BB8; --b-rep:#3B9E4C;
+  --f-titulo:"Bricolage Grotesque",Georgia,serif;
+  --f-cuerpo:Manrope,system-ui,sans-serif;
+  --f-mono:"DM Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root{
+  --papel:#0E0C18; --hoja:#1B1830; --raya:#332D50;
+  --tinta:#F6F3FF; --texto:#D6D0E8; --tenue:#ABA3C4;
+  --violeta:#B197EE; --inf:#E88BCB; --inf-w:rgba(232,139,203,.14);
+  --rojo:#F07068; --verde:#5CC98C; color-scheme:dark}}
+*{box-sizing:border-box}
+body{background:var(--papel);color:var(--texto);font-family:var(--f-cuerpo);font-size:clamp(16px,1.3vw,18px);line-height:1.5;margin:0}
+main{max-width:1380px;margin:0 auto;padding:clamp(24px,4vw,44px) 16px 80px;display:flex;flex-direction:column;gap:24px}
+[hidden]{display:none!important}
+.rot{font-family:var(--f-mono);font-size:.72em;letter-spacing:.14em;text-transform:uppercase;color:var(--inf)}
+h1{font-family:var(--f-titulo);font-weight:800;color:var(--tinta);font-size:clamp(40px,6vw,72px);line-height:1;letter-spacing:-.02em;margin:.2em 0 0}
+.bajada{font-size:1.12em;max-width:42em;margin:.5em 0 0}
+h2{font-family:var(--f-titulo);font-weight:600;color:var(--tinta);font-size:clamp(21px,2.2vw,28px);line-height:1.1;margin:0 0 10px}
+button,select,input{font:inherit}
+.fila{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{border:2px solid var(--violeta);background:var(--hoja);color:var(--violeta);font-weight:700;border-radius:999px;padding:8px 18px;cursor:pointer}
+.btn.lleno{background:var(--violeta);color:var(--hoja)}
+.btn:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--inf);outline-offset:2px}
+input[type=text]{border:2px solid var(--raya);background:var(--hoja);color:var(--tinta);border-radius:10px;padding:8px 12px;min-width:0}
+.panel{background:var(--hoja);border:1px solid var(--raya);border-radius:18px;padding:20px;min-width:0}
+.ayuda{font-size:.9em;color:var(--tenue)}
+.estado{font-weight:700;color:var(--tinta);min-height:1.5em}
+a{color:var(--violeta)}
+
+/* los dibujos para elegir */
+.dibujos{display:flex;flex-wrap:wrap;gap:12px}
+.dib{border:2px solid var(--raya);background:var(--hoja);border-radius:14px;padding:10px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--tinta);font-weight:700;min-width:110px}
+.dib[aria-pressed="true"]{border-color:var(--violeta);background:var(--inf-w)}
+.dib.hecho{border-color:var(--verde)}
+.dib .ok{color:var(--verde)}
+
+/* las tres columnas */
+.trabajo{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:22px;align-items:start}
+@media (max-width:1100px){.trabajo{grid-template-columns:1fr 1fr}.col-prog{grid-column:1 / -1;order:3}}
+@media (max-width:700px){.trabajo{grid-template-columns:1fr}}
+
+/* la cuadrícula */
+.grilla{display:grid;grid-template-columns:repeat(8,var(--t));grid-template-rows:repeat(8,var(--t));gap:2px;background:var(--raya);border:2px solid var(--raya);border-radius:6px;width:max-content;position:relative}
+.grilla .c{background:#fff;position:relative}
+.grilla.grande{--t:44px} .grilla.chica{--t:32px} .grilla.mini{--t:10px;gap:1px;border-width:1px}
+@media (max-width:420px){.grilla.grande{--t:36px}}
+.grilla.editable .c{cursor:pointer}
+.c.falta::after{content:"";position:absolute;inset:30%;border-radius:50%;background:var(--rojo)}
+.c.sobra::after{content:"✕";position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-weight:800;text-shadow:0 0 3px #000}
+.pincel{position:absolute;top:0;left:0;width:var(--t);height:var(--t);border:4px solid var(--violeta);border-radius:6px;pointer-events:none;transition:transform .12s;box-shadow:0 0 0 2px #fff}
+.colores{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.colores button{width:38px;height:38px;border-radius:50%;border:3px solid var(--raya);cursor:pointer}
+.colores button[aria-pressed="true"]{border-color:var(--tinta);box-shadow:0 0 0 3px var(--hoja) inset}
+
+/* el programa */
+.lista{display:flex;flex-direction:column;gap:6px;padding:8px;border:2px dashed var(--raya);border-radius:12px;min-height:54px}
+.lista.destino{border-color:var(--violeta);border-style:solid;background:var(--inf-w)}
+.blk{display:inline-flex;align-items:center;gap:8px;color:#fff;font-weight:700;padding:6px 8px 6px 12px;border-radius:8px;align-self:flex-start}
+.blk.mov{background:var(--b-mov)} .blk.pin{background:var(--b-pin)} .blk.col{background:var(--b-col)} .blk.rep{background:var(--b-rep)}
+.blk .fl{font-size:1.4em;line-height:1}
+.blk .x{background:rgba(0,0,0,.25);color:#fff;border:0;border-radius:999px;width:26px;height:26px;cursor:pointer;padding:0}
+.blk input{width:3.4em;border:0;border-radius:999px;padding:2px 8px;font-weight:700;text-align:center}
+.blk .muestra{width:20px;height:20px;border-radius:50%;border:2px solid #fff}
+.rep-caja{display:flex;flex-direction:column;gap:4px;align-self:stretch}
+.rep-caja>.lista{margin-left:16px;border-left:8px solid var(--b-rep)}
+.activo{outline:3px solid #FFD84A;outline-offset:2px}
+.paleta{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.paleta button{border:0;color:#fff;font-weight:700;border-radius:10px;padding:8px 14px;cursor:pointer;min-width:52px}
+.paleta .mov{background:var(--b-mov);font-size:1.5em;line-height:1;padding:6px 14px}
+.paleta .pin{background:var(--b-pin)} .paleta .col{background:var(--b-col)} .paleta .rep{background:var(--b-rep)}
+.res{font-weight:700;min-height:1.4em;margin-top:10px}
+.res.bien{color:var(--verde)} .res.mal{color:var(--rojo)}
+.marcador{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.marcador span{border:2px solid var(--raya);border-radius:999px;padding:3px 12px;font-weight:700;font-size:.9em}
+.marcador span.si{border-color:var(--verde);color:var(--verde)}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="rot">1ro · Informática · dibujar con código</div>
+    <h1>Dibujar con código</h1>
+    <p class="bajada">En la consola, el programa decidía qué luz se prendía y cuándo. Acá el programa maneja un <b>pincel</b>: lo mueve por una cuadrícula y pinta cuadraditos. A la izquierda está el dibujo que hay que lograr. Armen el programa con los bloques, toquen <b>▶ Dibujar</b> y miren si salió igual.</p>
+    <div class="fila" style="margin-top:14px;justify-content:space-between">
+      <label class="fila" style="font-weight:700;color:var(--tinta)">Lo hace <input type="text" id="autores" placeholder="Tu nombre" maxlength="60" style="min-width:240px"></label>
+      <button class="btn" id="nuevo" type="button">¿Es otra persona? Empezar de cero</button>
+    </div>
+  </header>
+
+  <section class="panel">
+    <h2>Elegí el dibujo</h2>
+    <div class="dibujos" id="dibujos"></div>
+  </section>
+
+  <div class="trabajo">
+    <section class="panel">
+      <h2 id="m-titulo">El modelo</h2>
+      <p class="ayuda" id="m-ayuda" style="margin-top:0"></p>
+      <div class="grilla chica" id="modelo"></div>
+      <div class="colores" id="m-colores" hidden></div>
+      <div class="fila" style="margin-top:10px" id="m-borrar" hidden><button class="btn" id="borrar-modelo">Borrar el diseño</button></div>
+    </section>
+
+    <section class="panel col-prog">
+      <h2>El programa</h2>
+      <p class="ayuda" style="margin-top:0">El pincel arranca <b>arriba a la izquierda</b>, pintando de <b>negro</b>. Tocá un bloque de abajo para agregarlo. Lo que ponés adentro de un «repetir» se hace varias veces.</p>
+      <div id="programa"></div>
+      <div class="paleta" id="paleta"></div>
+      <div class="fila" style="margin-top:12px"><button class="btn" id="limpiar">Borrar el programa</button></div>
+    </section>
+
+    <section class="panel">
+      <h2>Tu dibujo</h2>
+      <div class="grilla grande" id="lienzo"></div>
+      <div class="fila" style="margin-top:12px">
+        <button class="btn lleno" id="dibujar">▶ Dibujar</button>
+        <button class="btn" id="dif">Ver diferencias</button>
+      </div>
+      <p class="res" id="res"></p>
+    </section>
+  </div>
+
+  <section class="panel">
+    <h2>Entregar</h2>
+    <div class="marcador" id="marcador"></div>
+    <div class="fila"><button class="btn lleno" id="entregar">Entregar</button><span class="estado" id="entregado"></span></div>
+    <p class="ayuda">Le llegan a la profe los dibujos que te salieron y tu diseño. Podés entregar aunque no estén todos, y volver a entregar después.</p>
+    <p class="ayuda"><a href="consola-1ro.html#repaso">← Volver al repaso de la consola</a></p>
+  </section>
+</main>
+
+<script>
+const $=id=>document.getElementById(id);
+const el=(tag,cls,txt)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e};
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const copia=o=>JSON.parse(JSON.stringify(o));
+const N=8;
+const COL={negro:'#1d1a26',rojo:'#E5413A',verde:'#2FB35E',azul:'#3E7FD9',amarillo:'#F5C518',marron:'#8B5A2B'};
+const NOMCOL={negro:'negro',rojo:'rojo',verde:'verde',azul:'azul',amarillo:'amarillo',marron:'marrón'};
+
+// los dibujos: cada fila es un texto; . vacío, n negro, v verde, m marrón, r rojo, a azul, y amarillo
+const LETRA={n:'negro',v:'verde',m:'marron',r:'rojo',a:'azul',y:'amarillo'};
+const DIB=[
+  {id:'linea',n:'La línea',f:['nnnn....','........','........','........','........','........','........','........'],
+   a:'Cuatro cuadraditos negros, uno al lado del otro.'},
+  {id:'larga',n:'La línea larga',f:['........','........','........','nnnnnnnn','........','........','........','........'],
+   a:'Ocho cuadraditos. Probá con el bloque «repetir».'},
+  {id:'escalera',n:'La escalera',f:['n.......','.n......','..n.....','...n....','....n...','.....n..','........','........'],
+   a:'Pintar, moverse a la derecha, bajar… y otra vez.'},
+  {id:'marco',n:'El marco',f:['nnnnn...','n...n...','n...n...','n...n...','nnnnn...','........','........','........'],
+   a:'Cuatro lados iguales. ¿Cuántos «repetir»?'},
+  {id:'pino',n:'El pino',f:['...v....','..vvv...','.vvvvv..','vvvvvvv.','...m....','...m....','........','........'],
+   a:'Usá el bloque «color» para cambiar de verde a marrón.'},
+  {id:'libre',n:'Tu dibujo',libre:true,
+   a:'Primero diseñá tu dibujo tocando los cuadraditos (elegí el color abajo). Después hacé el programa que lo dibuje.'},
+];
+const POR_ID=Object.fromEntries(DIB.map(d=>[d.id,d]));
+const filas=f=>f.map(r=>[...r].map(ch=>LETRA[ch]||null));
+
+// el estado se guarda en la compu
+const K='dibujo1ro.v1';
+const E=LS.get(K,{actual:'linea',d:{},inicio:0});
+const est=id=>E.d[id]=E.d[id]||{prog:[],i:0,ok:false,ok1:false,diseno:null};
+const guarda=()=>LS.set(K,E);
+let destino=null, verDif=false, corriendo=0;
+
+function modeloDe(d){if(!d.libre)return filas(d.f);const s=est(d.id);return s.diseno||Array.from({length:N},()=>Array(N).fill(null))}
+
+// --- dibujar una cuadrícula ---
+function pintarGrilla(G,m,cls,onTap){
+  G.innerHTML='';G.className='grilla '+cls+(onTap?' editable':'');
+  m.forEach((fila,y)=>fila.forEach((c,x)=>{const d=el('div','c');if(c)d.style.background=COL[c];
+    if(onTap){d.setAttribute('role','button');d.tabIndex=0;d.setAttribute('aria-label','fila '+(y+1)+', columna '+(x+1));
+      d.onclick=()=>onTap(x,y);d.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onTap(x,y)}}}
+    G.append(d)}));
+}
+
+// --- elegir el dibujo ---
+function cartas(){
+  const C=$('dibujos');C.innerHTML='';
+  DIB.forEach(d=>{const s=est(d.id),b=el('button','dib'+(s.ok?' hecho':''));b.type='button';
+    b.setAttribute('aria-pressed',E.actual===d.id?'true':'false');
+    const g=el('div');pintarGrilla(g,modeloDe(d),'mini');b.append(g,el('span',null,d.n));
+    if(s.ok)b.append(el('span','ok','✓'));
+    b.onclick=()=>{E.actual=d.id;destino=null;verDif=false;guarda();todo()};C.append(b)});
+  const M=$('marcador');M.innerHTML='';
+  DIB.forEach(d=>{const ok=est(d.id).ok;M.append(el('span',ok?'si':'',(ok?'✓ ':'')+d.n))});
+}
+
+// --- el modelo (en el libre, se diseña tocando) ---
+let colorDiseno='negro';
+function modelo(){
+  const d=POR_ID[E.actual],s=est(d.id);
+  $('m-titulo').textContent=d.libre?'Tu diseño':'El modelo: '+d.n;
+  $('m-ayuda').textContent=d.a;
+  $('m-colores').hidden=$('m-borrar').hidden=!d.libre;
+  if(d.libre){
+    if(!s.diseno)s.diseno=modeloDe(d);
+    pintarGrilla($('modelo'),s.diseno,'chica',(x,y)=>{s.diseno[y][x]=s.diseno[y][x]===colorDiseno?null:colorDiseno;s.ok=false;guarda();modelo();cartas()});
+    const C=$('m-colores');C.innerHTML='';
+    Object.keys(COL).forEach(c=>{const b=el('button');b.type='button';b.style.background=COL[c];b.title=NOMCOL[c];b.setAttribute('aria-label',NOMCOL[c]);
+      b.setAttribute('aria-pressed',c===colorDiseno?'true':'false');b.onclick=()=>{colorDiseno=c;modelo()};C.append(b)});
+  }else pintarGrilla($('modelo'),modeloDe(d),'chica');
+}
+
+// --- los bloques ---
+const FLECHA={der:'→',izq:'←',arr:'↑',aba:'↓'};
+const NOMDIR={der:'a la derecha',izq:'a la izquierda',arr:'arriba',aba:'abajo'};
+const PALETA=[
+  {c:'mov',txt:'→',aria:'mover a la derecha',nuevo:()=>({t:'mov',d:'der'})},
+  {c:'mov',txt:'←',aria:'mover a la izquierda',nuevo:()=>({t:'mov',d:'izq'})},
+  {c:'mov',txt:'↓',aria:'mover abajo',nuevo:()=>({t:'mov',d:'aba'})},
+  {c:'mov',txt:'↑',aria:'mover arriba',nuevo:()=>({t:'mov',d:'arr'})},
+  {c:'pin',txt:'🖌 pintar',aria:'pintar',nuevo:()=>({t:'pin'})},
+  {c:'col',txt:'color',aria:'cambiar el color',nuevo:()=>({t:'col',c:'verde'})},
+  {c:'rep',txt:'repetir',aria:'repetir',nuevo:()=>({t:'rep',n:3,cuerpo:[]})},
+];
+function prog(){return est(E.actual).prog}
+function cambio(){const s=est(E.actual);if(s.ok&&!POR_ID[E.actual].libre){}guarda();editor()}
+function dibujarLista(lista,raiz){
+  const L=el('div','lista'+(destino===lista||(destino===null&&raiz)?' destino':''));
+  L.onclick=e=>{e.stopPropagation();if(e.target.closest('.blk'))return;const nuevo=raiz?null:lista;if(destino!==nuevo){destino=nuevo;editor()}};
+  if(!lista.length)L.append(el('span','ayuda',raiz?'Todavía vacío: tocá un bloque de abajo.':'Tocá acá y después un bloque, para meterlo adentro.'));
+  lista.forEach((p,i)=>{
+    const b=el('div','blk '+(p.t==='mov'?'mov':p.t==='pin'?'pin':p.t==='col'?'col':'rep'));b.dataset.id=p._id=p._id||Math.random().toString(36).slice(2);
+    if(p.t==='mov'){b.append(el('span','fl',FLECHA[p.d]));b.title='mover '+NOMDIR[p.d]}
+    if(p.t==='pin')b.append(el('span',null,'🖌 pintar'));
+    if(p.t==='col'){b.append(el('span',null,'color'));const sel=el('select');Object.keys(COL).forEach(c=>{const o=el('option',null,NOMCOL[c]);o.value=c;sel.append(o)});sel.value=p.c;
+      sel.style.cssText='border:0;border-radius:999px;padding:2px 8px;font-weight:700';
+      const m=el('span','muestra');m.style.background=COL[p.c];sel.onchange=()=>{p.c=sel.value;cambio()};b.append(m,sel)}
+    if(p.t==='rep'){b.append(el('span',null,'repetir'));const n=el('input');n.type='number';n.min=1;n.max=20;n.value=p.n;
+      n.onchange=()=>{let v=parseInt(n.value)||1;v=Math.max(1,Math.min(20,v));p.n=v;cambio()};b.append(n,el('span',null,'veces'))}
+    const x=el('button','x','✕');x.type='button';x.setAttribute('aria-label','Sacar este bloque');
+    x.onclick=()=>{if(p.cuerpo&&destino&&contiene(p,destino))destino=null;lista.splice(i,1);cambio()};b.append(x);
+    if(p.t==='rep'){const caja=el('div','rep-caja');caja.append(b,dibujarLista(p.cuerpo,false));L.append(caja)}else L.append(b);
+  });
+  return L;
+}
+function contiene(p,l){return p.cuerpo===l||p.cuerpo.some(q=>q.cuerpo&&contiene(q,l))}
+function editor(){
+  const P=$('programa');P.innerHTML='';P.append(dibujarLista(prog(),true));
+  if(destino)P.append(el('p','ayuda','Los bloques nuevos entran adentro del «repetir» marcado. Para salir, tocá el borde de afuera.'));
+}
+function paleta(){
+  const P=$('paleta');P.innerHTML='';
+  PALETA.forEach(b=>{const x=el('button',b.c,b.txt);x.type='button';x.setAttribute('aria-label',b.aria);
+    x.onclick=()=>{const n=b.nuevo();(destino||prog()).push(n);if(n.cuerpo)destino=n.cuerpo;cambio()};P.append(x)});
+}
+
+// --- correr el programa ---
+function pasos(lista,out){for(const p of lista){if(out.length>3000)return out;if(p.t==='rep')for(let k=0;k<p.n;k++)pasos(p.cuerpo,out);else out.push(p)}return out}
+function resultado(lista){
+  const g=Array.from({length:N},()=>Array(N).fill(null));let x=0,y=0,c='negro',fuera=false;const tr=[];
+  for(const p of pasos(lista,[])){
+    if(p.t==='mov'){const nx=x+(p.d==='der')-(p.d==='izq'),ny=y+(p.d==='aba')-(p.d==='arr');
+      if(nx<0||ny<0||nx>=N||ny>=N)fuera=true;else{x=nx;y=ny}}
+    if(p.t==='pin')g[y][x]=c;
+    if(p.t==='col')c=p.c;
+    tr.push({p,x,y,g:g.map(r=>r.slice())});
+  }
+  return {g,tr,fuera};
+}
+function comparar(a,b){let falta=0,sobra=0;for(let y=0;y<N;y++)for(let x=0;x<N;x++){if(a[y][x]!==b[y][x]){if(a[y][x])falta++;if(b[y][x])sobra++}}return {falta,sobra,igual:!falta&&!sobra}}
+function lienzo(g,px,py){
+  const G=$('lienzo');pintarGrilla(G,g,'grande');
+  if(verDif){const m=modeloDe(POR_ID[E.actual]);[...G.children].forEach((c,i)=>{const x=i%N,y=Math.floor(i/N);
+    if(m[y][x]!==g[y][x]){if(m[y][x]&&!g[y][x])c.classList.add('falta');else c.classList.add('sobra')}})}
+  const p=el('div','pincel');p.style.transform=`translate(calc((var(--t) + 2px) * ${px}),calc((var(--t) + 2px) * ${py}))`;G.append(p);
+}
+const dormir=ms=>new Promise(r=>setTimeout(r,ms));
+$('dibujar').onclick=async()=>{
+  const d=POR_ID[E.actual],s=est(d.id),id=corriendo=Date.now();verDif=false;
+  if(!E.inicio){E.inicio=Date.now()}
+  const r=resultado(s.prog);$('res').textContent='';$('res').className='res';
+  if(!r.tr.length){$('res').textContent='El programa está vacío.';return}
+  const vel=Math.max(40,Math.min(220,4000/r.tr.length));
+  for(const t of r.tr){if(id!==corriendo)return;lienzo(t.g,t.x,t.y);
+    const b=document.querySelector(`.blk[data-id="${t.p._id}"]`);if(b){b.classList.add('activo');setTimeout(()=>b.classList.remove('activo'),vel)}
+    await dormir(vel)}
+  const m=modeloDe(d),c=comparar(m,r.g);
+  if(d.libre&&!m.some(f=>f.some(Boolean))){$('res').textContent='Primero diseñá tu dibujo a la izquierda, tocando los cuadraditos.';return}
+  if(!s.ok){s.i++;s.ok=c.igual;s.ok1=c.igual&&s.i===1}else if(!c.igual)s.ok=false;
+  s.res=r.g;guarda();cartas();
+  const R=$('res');
+  if(c.igual){R.className='res bien';R.textContent='✓ ¡Salió igual al modelo!'+(d.libre?' Tu diseño está programado.':'')}
+  else{R.className='res mal';const partes=[];
+    if(c.falta)partes.push(c.falta===1?'falta 1 cuadradito':'faltan '+c.falta+' cuadraditos');
+    if(c.sobra)partes.push(c.sobra===1?'sobra 1':'sobran '+c.sobra);
+    R.textContent='Todavía no: '+partes.join(' y ')+'.'+(r.fuera?' El pincel se quiso salir de la cuadrícula.':'')+' Tocá «Ver diferencias».'}
+};
+$('dif').onclick=()=>{verDif=!verDif;const r=resultado(prog());const last=r.tr[r.tr.length-1]||{x:0,y:0};lienzo(r.g,last.x,last.y);
+  $('dif').textContent=verDif?'Ocultar diferencias':'Ver diferencias';
+  if(verDif&&!$('res').textContent)$('res').textContent='● falta pintar · ✕ está de más o con otro color'};
+$('limpiar').onclick=()=>{if(!prog().length||!confirm('¿Borrar todo el programa?'))return;est(E.actual).prog=[];destino=null;guarda();editor();lienzo(Array.from({length:N},()=>Array(N).fill(null)),0,0)};
+$('borrar-modelo').onclick=()=>{if(!confirm('¿Borrar tu diseño?'))return;const s=est('libre');s.diseno=null;s.ok=false;guarda();modelo();cartas()};
+
+function todo(){
+  cartas();modelo();editor();
+  const s=est(E.actual);const r=resultado(s.prog);const last=r.tr[r.tr.length-1]||{x:0,y:0};
+  lienzo(r.g,last.x,last.y);
+  $('res').className='res'+(s.ok?' bien':'');$('res').textContent=s.ok?'✓ Este ya te salió.':'';
+  $('dif').textContent='Ver diferencias';
+}
+
+// --- entregar: va al buzón, como el resto de la app ---
+const EN_AULA=location.protocol==='http:';
+const URL_BUZON=EN_AULA?'/buzon':'https://script.google.com/macros/s/AKfycbzLxvvU5Nw5Zx1yKyeb9z7WB1b2AQD8x7FcPpFznLSr3K8kImnVx4dNrX1Z0WntVigUjg/exec';
+const K_DAT='pps.datos.v1';
+const hoy=()=>{const d=new Date(),z=n=>String(n).padStart(2,'0');return `${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())}`};
+const nuevoId=l=>l+Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const INI={negro:'n',verde:'v',marron:'m',rojo:'r',azul:'a',amarillo:'y'};
+const aTexto=g=>g?g.map(f=>f.map(c=>c?INI[c]:'.').join('')).join(' / '):'';
+function progTexto(l){return l.map(p=>p.t==='mov'?FLECHA[p.d]:p.t==='pin'?'pintar':p.t==='col'?'color '+NOMCOL[p.c]:'repetir '+p.n+' ['+progTexto(p.cuerpo)+']').join(', ')}
+$('autores').value=LS.get('dibujo1ro.autores','');
+$('autores').oninput=()=>LS.set('dibujo1ro.autores',$('autores').value);
+$('entregar').onclick=async()=>{
+  const quien=$('autores').value.trim();
+  if(quien.length<3){$('entregado').textContent='Escribí tu nombre arriba de todo.';$('autores').focus();$('autores').scrollIntoView({behavior:'smooth',block:'center'});return}
+  if($('entregar').disabled)return;$('entregar').disabled=true;setTimeout(()=>{$('entregar').disabled=false},8000);
+  const ejs=DIB.map(d=>{const s=est(d.id);
+    const q=(d.libre?'Diseño: '+aTexto(s.diseno)+' · ':'')+(s.prog.length?'Programa: '+progTexto(s.prog):'(no lo hizo)');
+    return {c:'Dibujo · '+d.n,t:d.libre?'diseño':'dibujo',q,i:s.i,ok:s.ok,ok1:s.ok1,p:0,s:!s.i,sg:0}});
+  const t={id:nuevoId('c'),alumno:quien,anio:'1ro',fecha:hoy(),ts:new Date().toISOString(),sala:'dibujo1ro',salaNom:'Dibujar con código',modo:'practica',
+    total:DIB.length,resueltos:DIB.filter(d=>est(d.id).ok).length,sinAyuda:DIB.filter(d=>est(d.id).ok1).length,pistas:0,
+    salteadas:DIB.filter(d=>!est(d.id).i).length,seg:E.inicio?Math.round((Date.now()-E.inicio)/1000):0,ejs};
+  const a=LS.get(K_DAT,[]);(Array.isArray(a)?a:[]).push(t);LS.set(K_DAT,a);
+  try{await fetch(URL_BUZON,{method:'POST',mode:'no-cors',cache:'no-store',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(t)});
+    $('entregado').textContent=`✓ Entregado: ${t.resueltos} de ${DIB.length} dibujos.`}
+  catch(e){$('entregado').textContent='No hay internet. Probá de nuevo en un rato.'}
+};
+$('nuevo').onclick=()=>{if(!confirm('¿Empezar de cero? Se borra lo que hizo la persona anterior en esta compu (lo entregado no se pierde).'))return;
+  for(const k of [K,'dibujo1ro.autores'])try{localStorage.removeItem(k)}catch(e){}location.reload()};
+
+paleta();todo();
+</script>
+</body>
+</html>
