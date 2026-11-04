@@ -349,8 +349,7 @@ textarea{width:100%;font:500 .9em var(--f-cuerpo);color:var(--tinta);background:
     </div>
     <p class="q" style="font-weight:700;color:var(--tinta)">¿Quién de la Villa los podría usar, y para qué?</p>
     <textarea id="quienusa" rows="2" placeholder="Una persona o un lugar concreto, y para qué le servirían."></textarea>
-    <div class="fila"><button type="button" class="mandar" id="mandar">Mandar a la profe</button><span class="res" id="mandarr"></span></div>
-    <p class="nota">Con este botón le llega todo lo que hicieron en la página. Después marquen la tarea como entregada en Classroom.</p>
+    <div class="fila"><button type="button" class="mandar" id="mandar">Mandar respuestas</button><span class="res" id="mandarr"></span></div>
   </section>
 </main>
 
@@ -368,7 +367,7 @@ function enviar(t){
     .then(()=>{const a=LS.get(K_DAT,[]);const x=a.find(y=>y.id===t.id);if(x){x.enviada=true;LS.set(K_DAT,a)}}).catch(()=>{});
 }
 /* Para corregir fácil: nada se manda mientras trabajan. Se anota el PRIMER intento de cada
-   pregunta y, al tocar «Mandar a la profe», va todo junto: una fila por pareja en «Tandas»
+   pregunta y, al tocar «Mandar respuestas», va todo junto: una fila por pareja en «Tandas»
    (el % sin ayuda es lo autocorregido) y una fila por respuesta en «Detalle». */
 const R={};
 const anotar=(k,v)=>{ if(!(k in R)) R[k]=v; };
@@ -492,7 +491,7 @@ document.getElementById('mandar').addEventListener('click',()=>{
   if(document.getElementById('conoc').value.trim().length<5){ r.className='res mal'; r.textContent='Falta lo de la parte 2: qué decidirían para la huerta.'; document.getElementById('conoc').focus(); return; }
   if(!SES){ r.className='res mal'; r.textContent='Escriban los nombres arriba de todo.'; pedirNombre(); return; }
   mandarTodo();
-  r.className='res ok'; r.textContent='✓ Le llegó a la profe. Ahora marquen la tarea como entregada en Classroom.';
+  r.className='res ok'; r.textContent='✓ Respuestas mandadas.';
 });
 </script>
 </body>
