@@ -274,6 +274,8 @@ table.esq th{color:var(--tinta)}
 .paso-a-paso{border:3px solid var(--violeta);border-radius:16px;padding:14px 18px;display:flex;flex-direction:column;gap:12px;align-items:flex-start;margin-top:8px}
 .paso-a-paso .txt{margin:0;font-size:1.2em}
 .mini-dice{display:inline-block;background:#8A5BE6;color:#fff;border-radius:8px;padding:2px 10px;font-weight:700}
+.paso.bloq{opacity:.35;cursor:not-allowed}
+.res.grande-ok{font-size:1.4em}
 </style>
 </head>
 <body>
@@ -359,7 +361,7 @@ table.esq th{color:var(--tinta)}
     </div>
     <p id="d-consigna" style="margin-top:8px"></p>
     <div class="revisar" id="d-comprobar" hidden>
-      <div class="fila"><button class="btn lleno" id="comprobar">Comprobar</button><span class="ayuda">La página lo prueba y te dice si quedó bien.</span></div>
+      <div class="fila"><button class="btn lleno grande" id="comprobar">Siguiente →</button><span class="ayuda">Si quedó bien, pasás al siguiente. Si no, te dice qué falta.</span></div>
       <div id="comprobado"></div>
     </div>
   </section>
@@ -850,10 +852,10 @@ const EJ=[
    prog:{boton:[P('prender',{l:2}),P('esperar',{n:2}),P('apagar',{l:1})]},ok:2},
   {id:'e5',t:'La moneda trucha',arma:'r-trucha',
    fichas:[['moneda','Tendría que',`salir mitad ${PT('v')} y mitad ${PT('r')}`],['trampa','Pero',`sale mucho ${PT('r')}`]],
-   txt:'<b>Abajo</b> está el programa. Probalo con <b>Encender</b> y el botón, buscá la trampa y arreglala. Después tocá <b>Comprobar</b>.'},
+   txt:'<b>Abajo</b> está el programa. Probalo con <b>Encender</b> y el botón, buscá la trampa y arreglala. Cuando la arregles, tocá <b>Siguiente</b>: la página la prueba.'},
   {id:'e6',t:'Extra: el semáforo roto',arma:'r-semaforo',extra:true,
    fichas:[['semaforo','Tendría que',`3 segundos ${PT('v')} y 3 segundos ${PT('r')}`],['trampa','Pero',`la ${PT('r')} casi no se ve`]],
-   txt:'<b>Abajo</b> está el programa. Arreglalo y tocá <b>Comprobar</b>.'},
+   txt:'<b>Abajo</b> está el programa. Arreglalo y tocá <b>Siguiente</b>.'},
 ];
 // --- las pantallas de repaso: contexto y algo para probar antes de los ejercicios ---
 Object.assign(ICO,{
@@ -1013,12 +1015,14 @@ function mostrarComprobado(id){
   C.append(el('p','res mal','Todavía no:'));
   const ul=el('ul');s.msg.slice(0,3).forEach(m=>ul.append(el('li',null,m)));C.append(ul);
 }
-$('comprobar').onclick=()=>{
-  if(!actual||!ARMA[actual.id])return;empezo();
+function comprobarArma(){
+  if(!actual||!ARMA[actual.id])return false;empezo();
   const s=est(ARMA[actual.id]);const r=actual.id==='r-trucha'?revisarMoneda(prog):revisarSemaforo(prog);
   if(!s.ok){s.i++;s.ok=!r.mal.length;s.ok1=s.ok&&s.i===1}
-  s.msg=r.mal;s.info=r.info;s.prog=copia(prog);guardaEnc();mostrarComprobado(actual.id);renderEnc();
-};
+  s.msg=r.mal;s.info=r.info;s.prog=copia(prog);guardaEnc();mostrarComprobado(actual.id);
+  return s.ok;
+}
+$('comprobar').onclick=()=>seguir(true);
 
 // un programa dibujado con bloques que se tocan (para señalar el error)
 function txtPaso(p){
@@ -1048,11 +1052,12 @@ function progTocable(e,s){
 function renderEnc(){
   const R=$('enc-ejs');R.innerHTML='';
   if(ENC.paso==null)ENC.paso=0;
+  if(!(ENC.max>=ENC.paso))ENC.max=ENC.paso;
   const fin=ENC.paso>=EJ.length;let num=0;
   // la barra de pasos: un camino en tres partes, cada una con su nombre
   const B=$('pasos');B.innerHTML='';let grupo=null;
   const boton=(i,cls,cont,tit)=>{const b=el('button','paso '+cls+(i===ENC.paso?' actual':''));b.type='button';b.title=tit;b.setAttribute('aria-label',tit);
-    if(typeof cont==='string')b.textContent=cont;else b.append(cont);b.onclick=()=>irA(i);return b};
+    if(typeof cont==='string')b.textContent=cont;else b.append(cont);b.onclick=()=>irA(i);if(i>(ENC.max||0)){b.disabled=true;b.classList.add('bloq')}return b};
   EJ.forEach((e,i)=>{
     if(e.rep){grupo=el('div','grupo');const g=el('div','gpasos');grupo.append(el('div','gtit',e.t),g);B.append(grupo);
       g.append(boton(i,'rep','Repaso','Repaso: '+e.t));return}
@@ -1100,22 +1105,34 @@ function renderEnc(){
         if(s.marcar&&!s.ok&&s.sel[k]!==it.ok&&s.sel[k]===j)b.classList.add('mala');
         b.onclick=()=>{empezo();s.sel[k]=j;s.marcar=false;s.aviso='';guardaEnc();renderEnc()};o.append(b)});
       w.append(o);T.append(w)});c.append(T)}
-    if(!s.ok){const b=el('button','btn lleno grande','Comprobar');b.style.marginTop='16px';
-      b.onclick=()=>{
-        if(items.some((_,k)=>s.sel[k]==null)){s.aviso=e.senala?'Tocá un bloque.':'Te falta contestar alguno.';renderEnc();return}
-        s.i++;const mal=items.filter((it,k)=>s.sel[k]!==it.ok).length;
-        s.ok=!mal;s.ok1=s.ok&&s.i===1;s.marcar=!s.ok;if(!s.ok)s.p++;
-        s.aviso=s.ok?'':e.senala?'Ese no es. Probá con otro.':(mal===1?'Hay 1 mal: está en rojo.':'Hay '+mal+' mal: están en rojo.');
-        guardaEnc();renderEnc()};
-      c.append(b)}
     c.append(el('p','res '+(s.ok?'bien':'mal'),s.ok?'✓ ¡Bien!':s.aviso||''));
   }
   const nav=el('div','fila nav');
   if(ENC.paso>0){const a=el('button','btn','← Atrás');a.onclick=()=>irA(ENC.paso-1);nav.append(a)}
-  const sig=el('button','btn'+(s.ok?' lleno grande':''),ENC.paso===EJ.length-1?'Terminar':'Siguiente →');sig.onclick=()=>irA(ENC.paso+1);nav.append(sig);
+  const der=el('div','fila');
+  if(!s.ok&&(s.i>=3||e.extra)){const sal=el('button','btn','Seguir igual →');sal.onclick=()=>irA(ENC.paso+1);der.append(sal)}
+  const sig=el('button','btn lleno grande',ENC.paso===EJ.length-1?'Terminar':'Siguiente →');sig.onclick=()=>seguir(false);der.append(sig);nav.append(der);
   c.append(nav);R.append(c);
 }
-function irA(i){ENC.paso=Math.max(0,Math.min(EJ.length,i));guardaEnc();renderEnc();document.getElementById('pasos').scrollIntoView({behavior:'smooth'})}
+// Siguiente: si está bien, avanza; si no, corrige y se queda
+function seguir(desdeAbajo){
+  const e=EJ[ENC.paso];if(!e||e.rep){irA(ENC.paso+1);return}
+  const s=est(e.id);
+  if(s.ok){irA(ENC.paso+1);return}
+  if(e.arma){
+    if(comprobarArma()){renderEnc();festejo(()=>irA(ENC.paso+1))}
+    else{renderEnc();$('comprobado').scrollIntoView({behavior:'smooth',block:'center'})}
+    return}
+  const items=e.senala?[{ok:e.ok}]:e.items;
+  if(items.some((_,k)=>s.sel[k]==null)){s.aviso=e.senala?'Tocá un bloque primero.':'Te falta contestar alguno.';renderEnc();return}
+  empezo();s.i++;const mal=items.filter((it,k)=>s.sel[k]!==it.ok).length;
+  s.ok=!mal;s.ok1=s.ok&&s.i===1;s.marcar=!s.ok;if(!s.ok)s.p++;
+  s.aviso=s.ok?'':e.senala?'Ese no es. Probá con otro.':(mal===1?'Hay 1 mal: está en rojo.':'Hay '+mal+' mal: están en rojo.');
+  guardaEnc();renderEnc();
+  if(s.ok)festejo(()=>irA(ENC.paso+1));
+}
+function festejo(luego){const r=document.querySelector('#enc-ejs .res');if(r){r.className='res bien grande-ok';r.textContent='✓ ¡Bien!'}setTimeout(luego,900)}
+function irA(i){ENC.paso=Math.max(0,Math.min(EJ.length,i));ENC.max=Math.max(ENC.max||0,ENC.paso);guardaEnc();renderEnc();document.getElementById('pasos').scrollIntoView({behavior:'smooth'})}
 $('enc-autores').value=LS.get('consola1ro.autores','');
 $('enc-autores').oninput=()=>{$('autores').value=$('enc-autores').value;$('autores').oninput()};
 $('autores').addEventListener('input',()=>{$('enc-autores').value=$('autores').value});
