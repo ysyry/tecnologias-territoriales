@@ -224,7 +224,9 @@ table.esq th{color:var(--tinta)}
   .pasos{flex-wrap:nowrap;overflow-x:auto;gap:8px;padding-bottom:6px;scroll-snap-type:x proximity}
   .grupo{flex:none;padding:6px 8px 8px}
   .gtit{font-size:.6em;white-space:nowrap}
-  .paso{width:40px;height:40px} .paso.rep{height:40px;padding:0 12px}
+  .paso{width:40px;height:40px} .lineas{display:flex;flex-direction:column;gap:10px;margin:6px 0 4px}
+.linea-rep{display:flex;align-items:center;gap:14px;background:var(--inf-w);border-radius:14px;padding:10px 16px;font-size:1.12em;color:var(--tinta);max-width:44em}
+.paso.rep{height:40px;padding:0 12px}
 }
 .paso.rep{width:auto;height:46px;border-radius:999px;padding:0 16px;border-style:solid;font-size:.95em}
 .repaso .txt{max-width:46em;line-height:1.6}
@@ -868,12 +870,12 @@ function miniConsola(){
   c.append(placa,cab,pro);
   return {c,r,v,z,b};
 }
+function lineas(tit,items){const d=el('div','lineas');if(tit)d.append(el('p','txt',tit));items.forEach(([ic,h])=>{const r=el('div','linea-rep'),t=el('span');t.innerHTML=h;r.append(ico(ic,'grande'),t);d.append(r)});return d}
 const espera=ms=>new Promise(r=>setTimeout(r,ms));
 function bloques(lista){const d=el('div','evento'),cab=el('div','cab','cuando aprieto el botón'),l=el('div','lista');lista.forEach(([c,t])=>l.append(el('div','linea '+c,t)));d.append(cab,l);d.style.marginBottom='0';return d}
 const REPASOS={
   hw(c){
-    const p=el('p','txt');p.innerHTML='¿Se acuerdan de la consola? Es la placa Arduino con un botón, dos luces y un buzzer conectados con cables. Todo eso se puede tocar: es el <b>hardware</b>. Pero la placa sola no hace nada. Para que sea un juego, le cargamos un programa: las instrucciones que le dicen qué hacer. Eso es el <b>software</b>.';
-    c.append(p);
+    c.append(lineas('La consola tiene dos partes:',[['chip','<b>Hardware</b>: lo que se toca. La placa, los cables, el botón, las luces.'],['codigo','<b>Software</b>: el programa. Le dice a la placa qué hacer.']]));
     const g=el('div','rep-grid'),m=miniConsola(),izq=el('div','rep-col');
     izq.append(el('div','rot','Hardware · se toca'),m.c);
     const der=el('div','rep-col');der.append(el('div','rot','Software · los programas'));
@@ -905,10 +907,9 @@ const REPASOS={
     pinta();q.append(o,res);c.append(q);
   },
   es(c){
-    const p=el('p','txt');p.innerHTML='Para que la consola haga algo, primero se tiene que <b>enterar</b>: que apretaste el botón, o que tapaste el sensor. Esas son las <b>entradas</b>. Después, el programa <b>decide</b> qué hacer. Y al final la consola <b>hace</b> algo: prende una luz o suena. Esas son las <b>salidas</b>.';
-    c.append(p);
+    c.append(el('p','txt','La consola trabaja en tres pasos:'));
     const f=el('div','flujo');
-    const cajas=[['entrada','Se entera','Entrada: el botón'],['codigo','Decide','El programa'],['salida','Hace','Salida: la luz']].map(([ic,t,s])=>{const k=el('div','fpaso');k.append(ico(ic,'grande'),el('b',null,t),el('span',null,s));return k});
+    const cajas=[['entrada','1. Se entera','Por las entradas: el botón, el sensor'],['codigo','2. Decide','El programa'],['salida','3. Hace algo','Con las salidas: las luces, el buzzer']].map(([ic,t,s])=>{const k=el('div','fpaso');k.append(ico(ic,'grande'),el('b',null,t),el('span',null,s));return k});
     const m=miniConsola();
     f.append(cajas[0],el('span','fflecha','→'),cajas[1],el('span','fflecha','→'),cajas[2]);
     const g=el('div','rep-grid');const iz=el('div','rep-col');iz.append(el('div','rot','Probalo'),m.c);const de=el('div','rep-col');de.append(el('div','rot','Lo que pasa adentro'),f);
@@ -922,10 +923,10 @@ const REPASOS={
     c.append(msj);
   },
   bug(c){
-    const p=el('p','txt');p.innerHTML='A veces armamos un programa y no hace lo que queríamos. Ese error se llama <b>bug</b>, que en inglés quiere decir «bicho». Le dicen así porque hace muchos años una polilla se metió adentro de una computadora y la hizo fallar.';
-    c.append(p);
+    c.append(lineas('',[['bug','Un <b>bug</b> es un error en el programa: hace algo que no queríamos.'],['idea','Se llama así («bicho», en inglés) porque una vez una polilla se metió en una computadora y la hizo fallar.']]));
+    c.append(el('p','txt','Para encontrar un bug:'));
     const f=el('div','flujo');
-    [['objetivo','1. ¿Qué tendría que pasar?'],['ojo','2. ¿Qué pasa?'],['lupa','3. Leé el programa paso por paso, hasta encontrar dónde se separan']]
+    [['objetivo','1. ¿Qué tendría que pasar?'],['ojo','2. ¿Qué pasa?'],['lupa','3. Leé el programa paso por paso']]
       .forEach(([ic,t],i)=>{if(i)f.append(el('span','fflecha','→'));const k=el('div','fpaso on');k.append(ico(ic,'grande'),el('span',null,t));f.append(k)});
     c.append(f);
     const d=el('p','desafio');d.innerHTML='Así lo vamos a hacer en los próximos pasos: primero uno para leer, y después la moneda trucha, que hace trampa.';
