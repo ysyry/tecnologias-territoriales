@@ -276,6 +276,9 @@ table.esq th{color:var(--tinta)}
 .mini-dice{display:inline-block;background:#8A5BE6;color:#fff;border-radius:8px;padding:2px 10px;font-weight:700}
 .paso.bloq{opacity:.35;cursor:not-allowed}
 .res.grande-ok{font-size:1.4em}
+.quiere .qp.activa{border-color:#FFD84A;outline:3px solid #FFD84A}
+.paso-a-paso .qp{background:var(--papel);border:2px solid var(--raya);border-radius:8px;padding:2px 10px;font-weight:700;color:var(--tinta);display:inline-block}
+.paso-a-paso .txt{line-height:2}
 </style>
 </head>
 <body>
@@ -944,25 +947,28 @@ const REPASOS={
       .forEach(([ic,t],i)=>{if(i)f.append(el('span','fflecha','→'));const k=el('div','fpaso on');k.append(ico(ic,'grande'),el('span',null,t));f.append(k)});
     c.append(f);
     // el detective: el programa avanza de a un bloque y ellos dicen dónde está el bug
-    const d=el('p','desafio');d.innerHTML='<b>Desafío:</b> este programa <b>tendría que</b> prender la roja, esperar 1 segundo y apagarla.<br>1. Tocá <b>Empezar</b>: el programa avanza de a un paso.<br>2. En cada paso, fijate si hace lo que tendría que hacer.<br>3. Cuando encuentres el error, tocá <b>¡Acá está el bug!</b>';
+    const d=el('p','desafio');d.innerHTML='<b>Desafío:</b> encontrá el bug de este programa.<br>1. Tocá <b>Empezar</b>: el programa avanza de a un paso.<br>2. En cada paso, compará lo que <b>dice el programa</b> con lo que <b>tendría que</b> hacer.<br>3. Cuando no sean lo mismo, tocá <b>¡No! Acá está el bug</b>.';
     c.append(d);
     const st=est('r3'),PR=[['salida','prender luz roja'],['control','esperar 10 segundos'],['salida','apagar luz roja']];
     const g=el('div','rep-grid'),m=miniConsola(),iz=el('div','rep-col'),de=el('div','rep-col');
     const ev=el('div','evento'),cab=el('div','cab','cuando aprieto el botón'),li=el('div','lista');li.style.alignItems='flex-start';
     const bl=PR.map(([cl,t])=>{const x=el('div','linea '+cl,t);li.append(x);return x});ev.append(cab,li);ev.style.marginBottom='0';
-    iz.append(el('div','rot','La consola'),m.c);de.append(el('div','rot','El programa'),ev);g.append(iz,de);c.append(g);
+    const TQ=['prender la roja','esperar 1 segundo','apagar la roja'];
+    const qu=el('div','quiere');qu.append(el('b',null,'Tendría que:'));
+    const pq=TQ.map((t,i)=>{if(i)qu.append(el('span','fl','→'));const x=el('span','qp',t);qu.append(x);return x});
+    iz.append(el('div','rot','La consola'),m.c);de.append(qu,el('div','rot','Lo que dice el programa'),ev);g.append(iz,de);c.append(g);
     const caja=el('div','paso-a-paso'),tx=el('p','txt'),bots=el('div','fila');caja.append(tx,bots);c.append(caja);
     let k=-1;
     const EFECTO=[()=>m.r.classList.add('on'),()=>{},()=>m.r.classList.remove('on')];
-    const QUE=['Prendió la luz roja.','Se quedó esperando… 10 segundos.','Apagó la luz roja.'];
-    const NO=['No, ese va bien: tenía que prender la roja, y la prendió.','','No, ese va bien: tenía que apagar la roja, y la apagó.'];
-    const pinta=(extra,cls)=>{bl.forEach((x,i)=>x.classList.toggle('activa',i===k));bots.innerHTML='';
+    
+    const NO=['Mirá de nuevo: el programa dice «prender luz roja» y tendría que «prender la roja». Es lo mismo.','','Mirá de nuevo: el programa dice «apagar luz roja» y tendría que «apagar la roja». Es lo mismo.'];
+    const pinta=(extra,cls)=>{bl.forEach((x,i)=>x.classList.toggle('activa',i===k));pq.forEach((x,i)=>x.classList.toggle('activa',i===k));bots.innerHTML='';
       if(st.ok){tx.innerHTML='<span class="res bien">✓ ¡Lo encontraste!</span> Tenía que esperar <b>1 segundo</b> y el programa dice <b>10</b>. Ese es el bug.';
         const r=el('button','btn','Ver de nuevo');r.onclick=()=>{k=-1;m.r.classList.remove('on');st.ok=st.ok;tx.textContent='';empezar()};bots.append(r);return}
       if(k<0){tx.textContent='';const e=el('button','btn lleno grande','▶ Empezar');e.onclick=empezar;bots.append(e);return}
-      tx.innerHTML='<b>Paso '+(k+1)+':</b> '+QUE[k]+' ¿Va bien hasta acá?'+(extra?'<br><span class="res '+(cls||'mal')+'">'+extra+'</span>':'');
-      const si=el('button','btn','Sí, sigue →'),bug=el('button','btn lleno','¡Acá está el bug!');
-      si.onclick=()=>{if(k===1){st.i++;st.p++;guardaEnc();pinta('Mirá bien: tenía que esperar 1 segundo. ¿Cuánto dice el programa?');return}
+      tx.innerHTML='<b>Paso '+(k+1)+'.</b> El programa dice: <span class="mini-dice">'+PR[k][1]+'</span><br>Tendría que: <span class="qp">'+TQ[k]+'</span><br><b>¿Es lo mismo?</b>'+(extra?'<br><span class="res '+(cls||'mal')+'">'+extra+'</span>':'');
+      const si=el('button','btn','Sí, es lo mismo →'),bug=el('button','btn lleno','¡No! Acá está el bug');
+      si.onclick=()=>{if(k===1){st.i++;st.p++;guardaEnc();pinta('Mirá de nuevo los dos: ¿10 segundos es lo mismo que 1 segundo?');return}
         if(k<2){k++;EFECTO[k]();pinta()}else{k=-1;m.r.classList.remove('on');pinta('Llegaste al final sin encontrarlo. Probá de nuevo.')}};
       bug.onclick=()=>{empezo();st.i++;if(k===1){st.ok=true;st.ok1=st.i===1;st.sel[0]=1}else{st.sel[0]=k}guardaEnc();
         if(st.ok)pinta();else pinta(NO[k])};
