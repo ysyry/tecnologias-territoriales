@@ -1049,7 +1049,7 @@ function renderEnc(){
   const gf=el('div','grupo');gf.append(el('div','gtit','Al final'));const gp=el('div','gpasos');
   const fb=boton(EJ.length,'rep fin',el('span',null,'Entregar'),'Entregar');fb.prepend(ico('bandera','chico'));gp.append(fb);gf.append(gp);B.append(gf);
   $('entrega').hidden=!fin;
-  const filaNombre=$('enc-autores').closest('.fila').parentElement.querySelector(':scope > .fila')||$('enc-autores').closest('.fila');
+  const filaNombre=$('enc-autores').closest('.fila').parentElement;
   filaNombre.hidden=!nombreOk($('enc-autores').value);
   if(!nombreOk($('enc-autores').value)){
     document.querySelector('.consigna').hidden=document.querySelector('.trabajo').hidden=true;$('entrega').hidden=true;B.hidden=true;
