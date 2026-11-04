@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>¿Quién puede saber lo que sabemos de la huerta?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Manrope:wght@500;700&family=DM+Mono:wght@400;500&display=swap">
+<style>
+[hidden]{display:none!important}
+/* 3ro, 04/11 (la profe no está): del dato al conocimiento, y datos libres o privativos. Mismo armado que temperatura.html. */
+:root{
+  --papel:#F3F1F7; --hoja:#FCFBFE; --raya:#DAD4E6;
+  --tinta:#161226; --texto:#3B3350; --tenue:#5F5779;
+  --violeta:#5B3FA8; --inf:#9A3A80; --inf-w:rgba(154,58,128,.10);
+  --rojo:#C8352E; --verde:#2E8B57; --sol:#C98A0B;
+  --f-titulo:"Bricolage Grotesque",Georgia,serif;
+  --f-cuerpo:Manrope,system-ui,sans-serif;
+  --f-mono:"DM Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --papel:#0E0C18; --hoja:#1B1830; --raya:#332D50;
+  --tinta:#F6F3FF; --texto:#D6D0E8; --tenue:#ABA3C4;
+  --violeta:#B197EE; --inf:#E88BCB; --inf-w:rgba(232,139,203,.14);
+  --rojo:#F07068; --verde:#5CC98C; --sol:#F2C14E;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --papel:#0E0C18; --hoja:#1B1830; --raya:#332D50;
+  --tinta:#F6F3FF; --texto:#D6D0E8; --tenue:#ABA3C4;
+  --violeta:#B197EE; --inf:#E88BCB; --inf-w:rgba(232,139,203,.14);
+  --rojo:#F07068; --verde:#5CC98C; --sol:#F2C14E;
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--papel);color:var(--texto);font-family:var(--f-cuerpo);font-size:clamp(17px,1.6vw,22px);line-height:1.5;margin:0}
+main{max-width:1100px;margin:0 auto;padding:clamp(28px,5vw,64px) 20px 80px;display:flex;flex-direction:column;gap:clamp(48px,7vw,88px)}
+.rot{font-family:var(--f-mono);font-size:.7em;letter-spacing:.14em;text-transform:uppercase;color:var(--inf)}
+h1{font-family:var(--f-titulo);font-weight:800;color:var(--tinta);font-size:clamp(40px,6.4vw,84px);line-height:1;letter-spacing:-.02em;margin:.25em 0 0;text-wrap:balance}
+.bajada{font-size:1.25em;max-width:34em;margin:.6em 0 0;text-wrap:balance}
+h2{font-family:var(--f-titulo);font-weight:600;color:var(--tinta);font-size:clamp(28px,3.4vw,42px);line-height:1.1;margin:0;text-wrap:balance}
+h3{font-family:var(--f-titulo);font-weight:600;color:var(--tinta);font-size:1.3em;line-height:1.2;margin:0;text-wrap:balance}
+p{margin:0}
+code{font-family:var(--f-mono);font-size:.85em;background:var(--inf-w);border-radius:5px;padding:0 .3em;color:var(--tinta)}
+.parte{display:flex;flex-direction:column;gap:24px}
+.parte>.num{font-family:var(--f-mono);font-size:.75em;letter-spacing:.14em;text-transform:uppercase;color:var(--inf)}
+.nota{color:var(--tenue);font-size:.9em}
+.explica{background:var(--hoja);border:1px solid var(--raya);border-radius:12px;padding:22px 24px;display:flex;flex-direction:column;gap:14px}
+.escalera{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.esc{background:var(--hoja);border:1px solid var(--raya);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:8px}
+.esc:nth-child(2){margin-top:22px}.esc:nth-child(3){margin-top:44px}
+.esc b{font-family:var(--f-titulo);font-size:1.25em;color:var(--violeta)}
+.esc .ej{font-family:var(--f-mono);font-size:.85em;color:var(--tinta);background:var(--inf-w);border-radius:8px;padding:10px 12px}
+.esc small{color:var(--tenue)}
+@media (max-width:760px){.escalera{grid-template-columns:1fr}.esc:nth-child(n){margin-top:0}}
+.preg{display:flex;flex-direction:column;gap:12px;border-top:2px solid var(--raya);padding-top:22px}
+.preg>p.q{font-weight:700;color:var(--tinta)}
+.opc{display:flex;gap:10px;flex-wrap:wrap}
+.opc button{font:700 .85em var(--f-cuerpo);border-radius:999px;padding:10px 18px;cursor:pointer;border:1.5px solid var(--violeta);background:transparent;color:var(--violeta)}
+.opc button.ok{background:var(--verde);border-color:var(--verde);color:var(--hoja)}
+.opc button.no{border-color:var(--rojo);color:var(--rojo);text-decoration:line-through}
+.opc button.elegido{background:var(--violeta);color:var(--hoja)}
+button:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid var(--violeta);outline-offset:2px}
+.exp{background:var(--inf-w);border-radius:10px;padding:14px 18px;color:var(--tinta);font-size:.92em}
+.tarjetas{display:flex;flex-direction:column;gap:12px}
+.tarj{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 18px;align-items:center;background:var(--hoja);border:1.5px solid var(--raya);border-radius:12px;padding:14px 18px}
+.tarj .txt{color:var(--tinta);font-weight:600}
+.tarj .opc button{padding:7px 14px;font-size:.75em}
+.tarj.bien{border-color:var(--verde)}
+.tarj .exp{grid-column:1/-1}
+@media (max-width:760px){.tarj{grid-template-columns:1fr}}
+.cuenta{font-family:var(--f-mono);font-size:.85em;color:var(--tenue)}
+.graf{background:var(--hoja);border:1px solid var(--raya);border-radius:12px;padding:16px}
+.graf svg{width:100%;height:auto;display:block}
+.graf svg text{font-family:var(--f-mono);font-size:12px;fill:var(--tenue)}
+details{border:1.5px solid var(--raya);border-radius:12px;background:var(--hoja)}
+details summary{cursor:pointer;padding:12px 18px;font-weight:700;color:var(--violeta)}
+.tabla-w{overflow-x:auto;padding:0 18px 18px}
+.tabla{border-collapse:collapse;font-variant-numeric:tabular-nums;font-family:var(--f-mono);font-size:.8em}
+.tabla th,.tabla td{border:1px solid var(--raya);padding:4px 12px;text-align:center}
+.tabla th{color:var(--tinta)}
+input.n{width:5.5em;font:500 1em var(--f-mono);text-align:center;color:var(--tinta);background:var(--hoja);border:1.5px solid var(--raya);border-radius:8px;padding:6px}
+.fila{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.fila button,.mandar{font:700 .85em var(--f-cuerpo);background:var(--violeta);color:var(--hoja);border:0;border-radius:999px;padding:10px 20px;cursor:pointer}
+.res{font-weight:700;color:var(--tinta)}
+.res.ok{color:var(--verde)} .res.mal{color:var(--rojo)}
+textarea{width:100%;font:500 .9em var(--f-cuerpo);color:var(--tinta);background:var(--hoja);border:1.5px solid var(--raya);border-radius:10px;padding:14px;resize:vertical}
+.vs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.vs>div{background:var(--hoja);border:1px solid var(--raya);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:8px}
+.vs b{font-family:var(--f-titulo);font-size:1.2em}
+.vs .libre b{color:var(--verde)} .vs .priv b{color:var(--rojo)}
+.vs ul{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:4px}
+@media (max-width:760px){.vs{grid-template-columns:1fr}}
+.caso{border-top:2px solid var(--raya);padding-top:26px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px 24px;align-items:start}
+.caso .ic{font-size:2em;line-height:1}
+.caso .cuerpo{display:flex;flex-direction:column;gap:16px;min-width:0}
+.caso.tapado h3{color:transparent;background:var(--raya);border-radius:6px;user-select:none}
+.destapar{align-self:flex-start;font:700 .8em var(--f-cuerpo);border-radius:999px;padding:10px 22px;cursor:pointer;background:var(--violeta);color:var(--hoja);border:0}
+@media (prefers-reduced-motion:no-preference){.caso:not(.tapado) h3{animation:ap .35s ease-out}@keyframes ap{from{opacity:0;transform:translateY(6px)}}}
+.fuente{font-size:.78em;color:var(--tenue)}
+.fuente a{color:var(--violeta)}
+.entrega{border:2px solid var(--violeta);border-radius:14px;padding:24px;display:flex;flex-direction:column;gap:16px;background:var(--hoja)}
+.quien{max-width:1100px;margin:12px auto 0;padding:0 20px;font-size:.8em;color:var(--tenue);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.quien b{color:var(--tinta)}
+.quien input{font:inherit;color:var(--tinta);background:var(--hoja);border:1.5px solid var(--raya);border-radius:8px;padding:8px 10px;min-width:0}
+.quien button{font:700 1em var(--f-cuerpo);background:var(--violeta);color:var(--hoja);border:0;border-radius:999px;padding:8px 16px;cursor:pointer}
+.intro{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:28px}
+.intro>div{background:var(--hoja);border:1px solid var(--raya);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:10px}
+.intro .ic{font-size:1.8em;line-height:1}
+@media (max-width:760px){.intro{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<a href="./" style="display:inline-block;margin:16px 20px 0;font:600 15px Manrope,system-ui,sans-serif;color:var(--violeta);text-decoration:none">← Volver a Tecnologías para el territorio</a>
+<div id="quien" class="quien"></div>
+<main>
+  <header>
+    <div class="rot">3ro · proyecto final · en parejas, sin la profe</div>
+    <h1>¿Quién puede saber lo que sabemos de la huerta?</h1>
+    <div class="intro">
+      <div><span class="ic" aria-hidden="true">🌱</span><p>En el proyecto final estamos armando un aparato para la huerta de la escuela. Mide la <b>luz</b> que le llega a un cantero y la <b>humedad</b> de la tierra.</p></div>
+      <div><span class="ic" aria-hidden="true">📋</span><p><b>Imaginemos</b> que ya está terminado y lo dejamos midiendo un día entero. Vamos a tener cientos de números.</p></div>
+      <div><span class="ic" aria-hidden="true">🤔</span><p>Hoy vemos dos cosas: cómo pasar de esos números a algo que nos sirva para decidir, y <b>de quién son</b> esos datos.</p></div>
+    </div>
+  </header>
+
+  <!-- 2 · DATO, INFORMACIÓN, CONOCIMIENTO -->
+  <section class="parte" aria-labelledby="t2">
+    <div class="num">Parte 1 · Teoría</div>
+    <h2 id="t2">Dato, información y conocimiento</h2>
+    <p>No es lo mismo tener un número que saber algo. Miren cómo cambia en estos tres pasos, con un ejemplo de la huerta:</p>
+    <div class="escalera">
+      <div class="esc"><b>Dato</b><span class="ej">873</span><small>Es un número suelto. Si alguien les dice «873», no saben qué es: ¿873 qué? ¿Dónde? ¿Cuándo?</small></div>
+      <div class="esc"><b>Información</b><span class="ej">A las 14 h, el sensor de luz del cantero del fondo marcó 873.</span><small>Es el mismo dato, pero ahora sabemos qué se midió, dónde y cuándo. Ya se entiende.</small></div>
+      <div class="esc"><b>Conocimiento</b><span class="ej">El cantero del fondo se queda sin sol a las 15 h: ahí no conviene poner tomates.</span><small>Para llegar acá hay que juntar muchas mediciones, compararlas y sacar una conclusión que nos sirva para <b>decidir</b> algo.</small></div>
+    </div>
+    <p class="nota">En la planilla del aparato, cada columna le pone contexto al número (la hora, el cantero, la luz). Pero la conclusión no la escribe el aparato: la sacamos nosotros, mirando los datos y haciéndonos preguntas.</p>
+
+    <h3>Ahora ustedes: ¿cada frase es un dato, información o conocimiento?</h3>
+    <div class="tarjetas" id="tarjetas"></div>
+    <p class="cuenta" id="cuenta"></p>
+  </section>
+
+  <!-- 3 · UN DÍA EN LA HUERTA -->
+  <section class="parte" aria-labelledby="t3">
+    <div class="num">Parte 2 · Con datos</div>
+    <h2 id="t3">Un día de luz en la huerta</h2>
+    <p>Imaginen que dejamos el aparato un día entero en el cantero del fondo de la huerta, midiendo la luz cada media hora. Este gráfico muestra lo que mediría. Cuanto más alto el número, más luz le llega a la planta.</p>
+    <p class="nota">Estos datos son de ejemplo. Los nuestros los vamos a juntar con el aparato el 11/11.</p>
+    <div class="graf" id="graf"></div>
+    <details><summary>Ver la tabla</summary><div class="tabla-w" id="tabla"></div></details>
+
+    <div class="preg">
+      <p class="q">Dato · ¿Cuánto marcó el sensor a las 12:00?</p>
+      <div class="fila"><input class="n" id="d12" inputmode="numeric" aria-label="Lo que marcó a las 12:00"><button type="button" id="d12b">Revisar</button><span class="res" id="d12r"></span></div>
+    </div>
+    <div class="preg" data-p="p4" data-ok="1">
+      <p class="q">Información · ¿A qué hora deja de darle el sol directo al cantero?</p>
+      <div class="opc"><button type="button">A las 11:00</button><button type="button">A las 15:00</button><button type="button">A las 21:00</button></div>
+      <p class="exp" hidden>A las 15:00. Ahí la luz baja de golpe y no vuelve a subir, porque el sol queda tapado por algo, como los árboles o una pared. Todavía es de día, por eso recién llega cerca de 0 a la noche.</p>
+    </div>
+    <div class="preg" data-p="p5" data-ok="-1">
+      <p class="q">A las 11:00 la luz bajó y a las 11:30 volvió a subir. ¿Qué pasó?</p>
+      <div class="opc"><button type="button">Pasó una nube</button><button type="button">Alguien tapó el sensor</button><button type="button">Falló un cable</button></div>
+      <p class="exp" hidden>Puede ser cualquiera de las tres, y mirando solo el gráfico no hay forma de saberlo. Para saberlo hace falta que alguien haya estado ahí y lo haya anotado, o tener otro dato para comparar, por ejemplo si el sensor de otro cantero también bajó a esa hora. Por eso, cuando se mide, conviene anotar también lo que pasa alrededor.</p>
+    </div>
+    <div class="preg">
+      <p class="q">Conocimiento · Con este gráfico, ¿qué decidirías para la huerta?</p>
+      <textarea id="conoc" rows="2" placeholder="Por ejemplo: qué plantarías ahí, cuándo regarías, dónde pondrías el sensor…"></textarea>
+      <div class="fila"><button type="button" id="conocb">Mandar</button><span class="res" id="conocr"></span></div>
+    </div>
+  </section>
+
+  <!-- 4 · LIBRES O PRIVATIVOS -->
+  <section class="parte" aria-labelledby="t4">
+    <div class="num">Parte 3 · Teoría</div>
+    <h2 id="t4">¿De quién son los datos?</h2>
+    <p>Para sacar conclusiones, primero hay que poder ver los datos. Con los de nuestra huerta es fácil, porque los juntamos nosotros. Pero muchos datos que se juntan en el mundo tienen un dueño, y el dueño decide quién los puede usar. Hay dos formas de manejarlos:</p>
+    <div class="vs">
+      <div class="libre"><b>Datos libres (abiertos)</b>
+        <ul><li>Cualquiera los puede ver, bajar y usar.</li><li>Se pueden copiar, mejorar y volver a compartir.</li><li>Una <b>licencia</b> lo dice por escrito.</li><li>Si el que los juntó desaparece, los datos siguen.</li></ul></div>
+      <div class="priv"><b>Datos privativos</b>
+        <ul><li>Tienen dueño, y el dueño decide quién entra.</li><li>A veces se ven, pero no se pueden bajar ni copiar.</li><li>Pueden cobrar por usarlos, o cambiar las reglas.</li><li>Si el dueño cierra, los datos se van con él.</li></ul></div>
+    </div>
+    <p class="nota">Pasa lo mismo que con el software libre: que algo sea gratis no quiere decir que sea libre. Una app puede ser gratis y aun así no dejarte bajar ni usar tus propios datos.</p>
+  </section>
+
+  <section class="parte" aria-labelledby="t5">
+    <div class="num">Parte 4 · Casos</div>
+    <h2 id="t5">Cuatro casos</h2>
+    <p>Ábranlos de a uno, lean y respondan la pregunta de cada uno.</p>
+
+    <div class="caso tapado">
+      <div class="ic" aria-hidden="true">🗺️</div>
+      <div class="cuerpo">
+        <h3>OpenStreetMap y Google Maps</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <div class="dentro" hidden>
+          <p>En mayo mapearon la escuela con HOT en <b>OpenStreetMap</b>: un mapa hecho por voluntarios, con licencia libre. Cualquiera puede bajar todas las calles y usarlas. <b>Google Maps</b> se ve muy bien, pero sus datos son de Google: se pueden mirar en la app, no bajar ni copiar para hacer otra cosa.</p>
+          <div class="preg" data-p="c1" data-ok="0">
+            <p class="q">Después de un terremoto, una organización necesita el mapa de calles de un barrio para repartir ayuda, y lo tiene que cargar en sus propios teléfonos. ¿Cuál puede usar sin pedir permiso?</p>
+            <div class="opc"><button type="button">OpenStreetMap</button><button type="button">Google Maps</button><button type="button">Los dos</button></div>
+            <p class="exp" hidden>OpenStreetMap. Es justo lo que hace HOT: después de terremotos y huracanes, miles de voluntarios mapean en pocos días y esos datos los usa cualquiera que esté ayudando. Por eso vinieron a la escuela.</p>
+          </div>
+          <p class="fuente">Más: <a href="https://www.hotosm.org/" target="_blank" rel="noopener">hotosm.org</a></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="caso tapado">
+      <div class="ic" aria-hidden="true">🚜</div>
+      <div class="cuerpo">
+        <h3>El tractor que no te deja arreglarlo</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <div class="dentro" hidden>
+          <p>Los tractores nuevos de <b>John Deere</b> tienen computadoras adentro, con el programa cerrado. Durante años, los productores de Estados Unidos no podían arreglar su propio tractor: tenían que llamar al servicio técnico de la marca, aunque supieran qué estaba roto. En 2025 el gobierno de Estados Unidos le hizo juicio a la empresa por eso. El reclamo de los productores se llama <b>derecho a reparar</b>.</p>
+          <div class="preg" data-p="c2" data-ok="-1">
+            <p class="q">El productor pagó el tractor. ¿De quién es, entonces?</p>
+            <div class="opc"><button type="button">Del productor</button><button type="button">De la empresa</button><button type="button">Un poco de cada uno</button></div>
+            <p class="exp" hidden>No hay una sola respuesta, y por eso hubo un juicio. El tractor lo pagó el productor, pero el programa que lo hace funcionar, y los datos que junta del campo, los controla la empresa. Cuando una máquina tiene el software cerrado, el que la compra no puede hacer con ella todo lo que quiere.</p>
+          </div>
+          <p class="fuente">Más: <a href="https://www.ftc.gov/news-events/news/press-releases/2025/01/ftc-states-sue-deere-co-protect-farmers-unfair-corporate-tactics-high-repair-costs" target="_blank" rel="noopener">la demanda de la FTC (en inglés)</a></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="caso tapado">
+      <div class="ic" aria-hidden="true">🌫️</div>
+      <div class="cuerpo">
+        <h3>Vecinos que miden el aire</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <div class="dentro" hidden>
+          <p><b>Sensor.Community</b> empezó en una ciudad de Alemania: vecinos que querían saber qué tan sucio estaba el aire de su calle. Se armaron un sensor casero (una placa, como la de ustedes, y un sensor de polvo) y subieron los datos a un mapa abierto. Hoy hay miles de sensores en muchos países, y cualquiera puede bajar los datos.</p>
+          <div class="preg" data-p="c3" data-ok="2">
+            <p class="q">¿Para qué les sirvió que los datos fueran abiertos?</p>
+            <div class="opc"><button type="button">Para venderlos</button><button type="button">Para que nadie los vea</button><button type="button">Para poder comparar barrios y reclamar con pruebas</button></div>
+            <p class="exp" hidden>Como los datos son públicos, un barrio puede mostrar que su aire está más contaminado que el de otro, y cualquiera puede revisar que sea cierto. Se parece a lo que hicimos en mayo con el mapa: medir y mapear sirve para que un problema se vea.</p>
+          </div>
+          <p class="fuente">Más: <a href="https://sensor.community/es/" target="_blank" rel="noopener">sensor.community</a></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="caso tapado">
+      <div class="ic" aria-hidden="true">🌱</div>
+      <div class="cuerpo">
+        <h3>Imaginate: el sensor regalado</h3>
+        <button class="destapar" type="button">Destapar</button>
+        <div class="dentro" hidden>
+          <p>Este caso es inventado, pero pasa seguido. Una empresa le regala a la escuela un sensor de riego. Mide la tierra y manda los datos a la nube de la empresa. Para verlos hay que usar su app. Dos años después, la empresa cierra la app.</p>
+          <div class="preg" data-p="c4" data-ok="1">
+            <p class="q">¿Qué le queda a la escuela?</p>
+            <div class="opc"><button type="button">Todos los datos de los dos años</button><button type="button">Un sensor que no sirve y ningún dato</button><button type="button">La app, que sigue andando sola</button></div>
+            <p class="exp" hidden>Un sensor que ya no sirve y ningún dato. Compárenlo con el aparato que estamos armando: el código lo tenemos nosotros, Arduino es libre y los datos quedan en una planilla de la escuela. Aunque cierre una empresa, nuestro aparato sigue midiendo y los datos siguen siendo nuestros.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 · DECIDEN -->
+  <section class="entrega" aria-labelledby="t6">
+    <div class="num" style="font-family:var(--f-mono);font-size:.75em;letter-spacing:.14em;text-transform:uppercase;color:var(--inf)">Parte 5 · Para entregar</div>
+    <h2 id="t6">Los datos de nuestra huerta</h2>
+    <p>El 11/11 vamos a usar el aparato para juntar datos de la huerta: la luz y la humedad de la tierra. Ustedes deciden: ¿qué hacemos con esos datos?</p>
+    <div class="preg" data-p="dec" data-ok="-1" style="border-top:0;padding-top:0">
+      <div class="opc"><button type="button">Los publicamos libres, para cualquiera</button><button type="button">Solo para la escuela</button><button type="button">No los compartimos</button></div>
+    </div>
+    <p class="q" style="font-weight:700;color:var(--tinta)">¿Quién de la Villa los podría usar, y para qué?</p>
+    <textarea id="quienusa" rows="2" placeholder="Una persona o un lugar concreto, y para qué le servirían."></textarea>
+    <div class="fila"><button type="button" class="mandar" id="mandar">Mandar a la profe</button><span class="res" id="mandarr"></span></div>
+    <p class="nota">Cuando mandes esto, marcá la tarea como entregada en Classroom. Lo demás que hiciste en la página ya le llegó a la profe.</p>
+  </section>
+</main>
+
+<script>
+/* ---- registro: misma sesión y misma planilla que la app ---- */
+const URL_BUZON='https://script.google.com/macros/s/AKfycbzLxvvU5Nw5Zx1yKyeb9z7WB1b2AQD8x7FcPpFznLSr3K8kImnVx4dNrX1Z0WntVigUjg/exec';
+const K_SES='pps.sesion.v1', K_DAT='pps.datos.v1', K_HECHO='pps.datoconoc.hecho.v1';
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}};
+const hoyISO=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
+let SES=LS.get(K_SES,null);
+if(SES && SES.fecha!==hoyISO()) SES={...SES,fecha:hoyISO()};
+const T0=Date.now();
+function enviar(t){
+  return fetch(URL_BUZON,{method:'POST',mode:'no-cors',cache:'no-store',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(t)})
+    .then(()=>{const a=LS.get(K_DAT,[]);const x=a.find(y=>y.id===t.id);if(x){x.enviada=true;LS.set(K_DAT,a)}}).catch(()=>{});
+}
+function registrar(clave,concepto,detalle,ok,repetible){
+  if(!SES) return;
+  const hechos=LS.get(K_HECHO,{}), k=SES.nombre+'|'+SES.fecha+'|'+clave;
+  if(hechos[k] && !repetible) return; hechos[k]=1; LS.set(K_HECHO,hechos);
+  const seg=Math.max(1,Math.round((Date.now()-T0)/1000)), bien=ok!==false;
+  const t={id:'t'+Date.now().toString(36)+Math.random().toString(36).slice(2,7),
+    alumno:SES.nombre, anio:SES.anio||'3ro', fecha:SES.fecha, ts:new Date().toISOString(),
+    sala:'dato-conocimiento', salaNom:'Tarea · ¿Quién puede saber lo que sabemos de la huerta?', modo:'practica',
+    total:1, resueltos:bien?1:0, sinAyuda:bien?1:0, pistas:0, salteadas:0, seg,
+    ejs:[{c:concepto,t:'desafio',q:detalle||'',i:1,ok:bien,ok1:bien,p:0,s:false,sg:seg}]};
+  const a=LS.get(K_DAT,[]); a.push(t); LS.set(K_DAT,a);
+  enviar(t);
+}
+function pintarQuien(){
+  const q=document.getElementById('quien');
+  if(SES){ q.innerHTML=`Estás como <b>${SES.nombre.replace(/</g,'&lt;')}</b> · lo que hagas le llega a la profe.`; registrar('entro','Entró a la tarea'); return; }
+  q.innerHTML=`<label for="qnom">Para que le llegue a la profe, escribí los nombres de la pareja:</label><input id="qnom" autocomplete="name"><button type="button" id="qok">Listo</button>`;
+  document.getElementById('qok').addEventListener('click',()=>{
+    const n=document.getElementById('qnom').value.trim().replace(/\s+/g,' ');
+    if(n.length<3) return;
+    SES={nombre:n,anio:'3ro',fecha:hoyISO()}; LS.set(K_SES,SES); pintarQuien();
+  });
+}
+pintarQuien();
+const pedirNombre=()=>{const i=document.getElementById('qnom'); if(i){i.focus(); i.scrollIntoView({block:'center'}); return true} return false};
+
+/* ---- preguntas de opción: data-ok = índice correcto, -1 = no hay una correcta ---- */
+function armarPreg(g){
+  const id=g.dataset.p, ok=+g.dataset.ok, bs=[...g.querySelectorAll('.opc button')], exp=g.querySelector('.exp');
+  bs.forEach((b,i)=>b.addEventListener('click',()=>{
+    const txt=b.textContent.trim();
+    if(ok<0){ bs.forEach(x=>x.classList.remove('elegido')); b.classList.add('elegido'); if(exp) exp.hidden=false;
+      g.dataset.elegido=txt; if(id!=='dec') registrar(id+'-'+i,'Pregunta '+id+' · eligió «'+txt+'»','',true); return; }
+    if(i===ok){ b.classList.add('ok'); if(exp) exp.hidden=false; registrar(id,'Pregunta '+id+' · bien'); }
+    else { b.classList.add('no'); registrar(id+'-mal'+i,'Pregunta '+id+' · probó «'+txt+'»','',false); }
+  }));
+}
+document.querySelectorAll('.preg[data-p]').forEach(armarPreg);
+
+/* ---- tarjetas: dato, información o conocimiento ---- */
+const TIPOS=['Dato','Información','Conocimiento'];
+const TARJ=[
+  ['41',0,'Un número solo. ¿41 qué?'],
+  ['El martes a las 21 h, el sensor de luz de la estación 2 marcó 41.',1,'Tiene qué, dónde y cuándo: es información.'],
+  ['Los días nublados la luz baja a la mitad, así que la tierra se seca más despacio: esos días conviene regar menos.',2,'Compara muchos días y sirve para decidir: es conocimiento.'],
+  ['14:30',0,'Una hora suelta, sin decir qué pasó: es un dato.'],
+  ['El 3 de noviembre a las 7 h, en la huerta de la escuela, el termómetro marcó 2 °C.',1,'Dice qué, dónde y cuándo: es información.'],
+  ['Comparando varios años, en la huerta hubo heladas hasta mediados de noviembre: conviene esperar para plantar los tomates.',2,'Sale de comparar muchos datos y sirve para decidir: es conocimiento.'],
+];
+(function(){
+  const cont=document.getElementById('tarjetas'), cuenta=document.getElementById('cuenta');
+  const orden=TARJ.map((t,i)=>i).sort(()=>Math.random()-.5);
+  let bien=0;
+  const pintarCuenta=()=>{cuenta.textContent=bien+' de '+TARJ.length+' bien'+(bien===TARJ.length?' · ¡listo!':'')};
+  orden.forEach(i=>{
+    const [txt,ok,por]=TARJ[i], d=document.createElement('div'); d.className='tarj';
+    d.innerHTML=`<div class="txt"></div><div class="opc">${TIPOS.map(t=>`<button type="button">${t}</button>`).join('')}</div><p class="exp" hidden></p>`;
+    d.querySelector('.txt').textContent=txt;
+    const bs=[...d.querySelectorAll('button')], exp=d.querySelector('.exp');
+    bs.forEach((b,j)=>b.addEventListener('click',()=>{
+      if(d.classList.contains('bien')) return;
+      if(j===ok){ b.classList.add('ok'); d.classList.add('bien'); exp.textContent=por; exp.hidden=false; bien++; pintarCuenta();
+        if(bien===TARJ.length) registrar('tarjetas','Parte 1 · clasificó las seis tarjetas'); }
+      else { b.classList.add('no'); registrar('tarj'+i+'-'+j,'Parte 1 · tarjeta «'+txt.slice(0,40)+'» como '+TIPOS[j],'',false); }
+    }));
+    cont.appendChild(d);
+  });
+  pintarCuenta();
+})();
+
+/* ---- el día de luz (datos de ejemplo, cada media hora de 5:00 a 22:00) ---- */
+const LUZ=[18,20,45,110,190,280,390,520,640,760,850,900,470,880,925,940,945,938,930,910,520,410,395,380,360,340,310,270,230,180,130,80,40,22,18];
+const HORA=i=>{const m=300+i*30;return Math.floor(m/60)+':'+(m%60?'30':'00')};
+(function(){
+  const W=680,H=280,L=48,R=14,T=14,B=34, n=LUZ.length;
+  const X=i=>L+i/(n-1)*(W-L-R), Y=v=>T+(1023-v)/1023*(H-T-B);
+  let g='';
+  for(const v of [0,256,512,768,1023]) g+=`<line x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--raya)"/><text x="${L-8}" y="${Y(v)+4}" text-anchor="end">${v}</text>`;
+  for(let i=0;i<n;i+=4) g+=`<text x="${X(i)}" y="${H-10}" text-anchor="middle">${HORA(i)}</text>`;
+  g+=`<path d="${LUZ.map((v,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(v).toFixed(1)).join(' ')}" fill="none" stroke="var(--sol)" stroke-width="3" stroke-linejoin="round"/>`;
+  LUZ.forEach((v,i)=>g+=`<circle cx="${X(i).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="3.5" fill="var(--sol)"><title>${HORA(i)} · ${v}</title></circle>`);
+  document.getElementById('graf').innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Gráfico de la luz durante el día: sube desde las 6, queda alta de 10 a 14:30 con una baja a las 11, cae de golpe a las 15 y baja hasta casi 0 a las 22">${g}</svg>`;
+  let t='<table class="tabla"><tr><th>Hora</th>'+LUZ.map((v,i)=>`<th>${HORA(i)}</th>`).join('')+'</tr><tr><th>Luz</th>'+LUZ.map(v=>`<td>${v}</td>`).join('')+'</tr></table>';
+  document.getElementById('tabla').innerHTML=t;
+})();
+document.getElementById('d12b').addEventListener('click',()=>{
+  const v=document.getElementById('d12').value.trim(), r=document.getElementById('d12r');
+  if(v==='') return;
+  if(+v===925){ r.className='res ok'; r.textContent='✓ 925. Eso es un dato: un número leído del gráfico.'; registrar('d12','Parte 2 · leyó el dato de las 12:00'); }
+  else { r.className='res mal'; r.textContent='Buscá las 12:00 abajo, subí hasta el punto y mirá a qué altura queda. Si no se ve, abrí «Ver la tabla».'; registrar('d12-mal'+v,'Parte 2 · dato de las 12:00: puso '+v,'',false); }
+});
+document.getElementById('conocb').addEventListener('click',()=>{
+  const t=document.getElementById('conoc').value.trim(), r=document.getElementById('conocr');
+  if(t.length<5){ r.className='res mal'; r.textContent='Escribí algo cortito primero.'; return; }
+  if(!SES){ r.className='res mal'; r.textContent='Escribí los nombres arriba de todo.'; pedirNombre(); return; }
+  registrar('conoc','Parte 2 · su conocimiento',t.slice(0,600),true,true); r.className='res ok'; r.textContent='✓ Mandado.';
+});
+
+/* ---- casos ---- */
+document.querySelectorAll('.caso').forEach(c=>c.querySelector('.destapar').addEventListener('click',e=>{
+  c.classList.remove('tapado'); e.currentTarget.hidden=true; c.querySelector('.dentro').hidden=false;
+  registrar('caso-'+c.querySelector('h3').textContent.slice(0,20),'Parte 4 · abrió «'+c.querySelector('h3').textContent+'»');
+}));
+
+/* ---- entrega ---- */
+document.getElementById('mandar').addEventListener('click',()=>{
+  const dec=document.querySelector('[data-p="dec"]').dataset.elegido, q=document.getElementById('quienusa').value.trim(), r=document.getElementById('mandarr');
+  if(!dec){ r.className='res mal'; r.textContent='Elegí primero qué hacemos con los datos.'; return; }
+  if(q.length<3){ r.className='res mal'; r.textContent='Contá quién los podría usar.'; return; }
+  if(!SES){ r.className='res mal'; r.textContent='Escribí los nombres arriba de todo.'; pedirNombre(); return; }
+  registrar('entrega','Entrega · '+dec,q.slice(0,600),true,true);
+  r.className='res ok'; r.textContent='✓ Le llegó a la profe. Ahora marcá la tarea como entregada en Classroom.';
+});
+</script>
+</body>
+</html>
