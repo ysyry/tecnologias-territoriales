@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>La consola de 1ro</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Manrope:wght@500;700&family=DM+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Manrope:wght@500;700&family=DM+Mono:wght@400;500&family=Noto+Color+Emoji&display=swap">
 <style>
 /* La consola de 1ro: cada pareja elige un juego para cambiar, un programa con errores para
    arreglar o arma el suyo, tocando bloques (sin arrastrar, sin Tinkercad). Al lado, el diagrama
@@ -20,7 +20,7 @@
   --b-salida:#3E7FD9; --b-control:#E8930C; --b-mate:#3B9E4C; --b-entrada:#8A5BE6; --b-var:#C94BB8; --b-sensor:#0F9A9A;
   --caja:#2A2440;
   --f-titulo:"Bricolage Grotesque",Georgia,serif;
-  --f-cuerpo:Manrope,system-ui,sans-serif;
+  --f-cuerpo:Manrope,system-ui,sans-serif,"Noto Color Emoji";
   --f-mono:"DM Mono",ui-monospace,monospace;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
@@ -173,6 +173,65 @@ table.esq th{color:var(--tinta)}
 .marcador span{border:2px solid var(--raya);border-radius:999px;padding:3px 12px;font-weight:700;font-size:.9em}
 .marcador span.si{border-color:var(--verde);color:var(--verde)}
 
+
+/* el repaso paso a paso */
+.pasos{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.paso{width:52px;height:52px;border-radius:50%;border:3px solid var(--raya);background:var(--hoja);color:var(--tinta);font-weight:800;font-size:1.2em;cursor:pointer}
+.paso.actual{border-color:var(--violeta);background:var(--violeta);color:var(--hoja);transform:scale(1.12)}
+.paso.ok{border-color:var(--verde);color:var(--verde)}
+.paso.ok.actual{background:var(--verde);color:#fff}
+.ej h2{font-size:clamp(26px,3vw,36px)}
+.fichas{display:flex;flex-wrap:wrap;gap:14px;margin:6px 0 18px}
+.ficha{display:flex;align-items:center;gap:10px;background:var(--inf-w);border-radius:14px;padding:10px 18px;font-size:1.15em}
+.ficha b{color:var(--tinta);font-family:var(--f-titulo);font-size:1.15em}
+.fic{font-size:1.9em;line-height:1}
+.quiere{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:1.15em;margin-bottom:10px}
+.quiere .qp{background:var(--papel);border:2px solid var(--raya);border-radius:10px;padding:4px 12px;font-weight:700;color:var(--tinta)}
+.quiere .fl{color:var(--tenue);font-weight:800}
+.txt{font-size:1.15em;color:var(--tinta);margin:6px 0}
+.filas{display:flex;flex-direction:column;gap:10px}
+.fila-it{display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:12px;align-items:center;border-bottom:1px solid var(--raya);padding-bottom:10px}
+.fila-it .q{font-size:1.15em;font-weight:700;color:var(--tinta)}
+.fila-it .fic{white-space:nowrap;font-size:1.6em}
+.ej .linea{font-size:1.05em;padding:10px 16px}
+@media (max-width:700px){.fila-it{grid-template-columns:52px 1fr}.fila-it .opc{grid-column:1 / -1}}
+.opc button{font-size:1.05em;padding:10px 16px}
+.opc button.mala{border-color:var(--rojo);background:rgba(200,53,46,.12)}
+.ico{display:inline-flex;flex:none;color:var(--tinta)}
+.ico svg{width:100%;height:100%}
+.ico.grande{width:44px;height:44px} .ico.item{width:52px;height:52px} .ico.chico{width:24px;height:24px}
+.opc button{display:inline-flex;align-items:center;gap:8px}
+.paso .ico.chico{color:inherit}
+.pt{display:inline-block;width:.8em;height:.8em;border-radius:50%;vertical-align:-.05em;margin:0 .25em 0 .1em}
+.pt.v{background:var(--verde)} .pt.r{background:var(--rojo)} .pt.o{background:var(--tenue)}
+.ficha span{color:var(--texto)}
+.paso.rep{width:42px;height:42px;border-style:dashed}
+.repaso .txt{max-width:46em;line-height:1.6}
+.rep-grid{display:grid;grid-template-columns:minmax(220px,300px) minmax(0,1fr);gap:22px;margin:18px 0;align-items:start}
+@media (max-width:760px){.rep-grid{grid-template-columns:1fr}}
+.rep-col{display:flex;flex-direction:column;gap:10px}
+.mini{background:#2A2440;border-radius:20px;padding:18px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.mini-luces{display:flex;gap:26px}
+.mluz{width:64px;height:64px;border-radius:50%;background:var(--c);opacity:.2;transition:opacity .08s,box-shadow .08s}
+.mluz.on{opacity:1;box-shadow:0 0 22px 6px var(--c)}
+.mini-buzz{color:#cfc8e6;font-family:var(--f-mono);font-size:.8em}
+.mini-buzz.suena{color:#FFD84A}
+.mini-boton{width:76px;height:76px;border-radius:50%;border:0;background:radial-gradient(circle at 35% 30%,#fff6,#0000 55%),#8d86a6;box-shadow:0 6px 0 #4b4566;cursor:pointer}
+.mini-boton:active{transform:translateY(5px);box-shadow:0 1px 0 #4b4566}
+.mini .etq{color:#cfc8e6}
+.rep-prog{border:2px solid var(--raya);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.rep-prog.cargado{border-color:var(--violeta);background:var(--inf-w)}
+.rep-prog b{color:var(--tinta)}
+.mini-prog{display:flex;flex-direction:column;gap:4px}
+.flujo{display:flex;flex-wrap:wrap;align-items:stretch;gap:10px;margin:14px 0}
+.fpaso{flex:1 1 150px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;border:2px solid var(--raya);border-radius:14px;padding:14px;opacity:.45;transition:opacity .2s,border-color .2s}
+.fpaso.on{opacity:1;border-color:var(--violeta)}
+.fpaso b{color:var(--tinta);font-family:var(--f-titulo);font-size:1.15em}
+.fflecha{align-self:center;font-size:1.6em;color:var(--tenue);font-weight:800}
+.desafio{background:var(--papel);border-left:5px solid var(--inf);border-radius:10px;padding:10px 14px;font-size:1.08em;color:var(--tinta)}
+.btn.grande{font-size:1.15em;padding:12px 26px}
+.nav{margin-top:22px;justify-content:space-between}
+
 /* la pantalla de la profe */
 .envio{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--raya)}
 .envio b{color:var(--tinta)}
@@ -215,14 +274,12 @@ table.esq th{color:var(--tinta)}
   <!-- el repaso: sólo con #repaso -->
   <div id="encargo" hidden style="display:flex;flex-direction:column;gap:22px">
     <section class="panel historia">
-      <div class="rot">Repaso · para entregar</div>
-      <h2>🔁 Repaso de la consola</h2>
-      <p>La semana pasada armaron sus juegos en esta página, me los mandaron y yo los cargué en la consola del curso. Algunos llegaron a probarlos. La consola era siempre la misma: el mismo botón, las mismas dos luces, el mismo buzzer. Lo que cambiaba de un juego a otro era el programa.</p>
-      <p>Hoy repasamos tres cosas que aparecieron con la consola: <b>hardware y software</b>, <b>entradas y salidas</b>, y <b>los bugs</b>, que son los errores de los programas. Cada parte empieza con un repaso cortito y sigue con ejercicios. La página les dice si está bien.</p>
-      <p>Trabajan de a dos. Al final de la página tocan <b>Entregar</b>, aunque no hayan terminado todo.</p>
-      <div class="fila" style="margin-top:8px;justify-content:space-between"><label class="fila" style="font-weight:700;color:var(--tinta)">Lo hacen <input type="text" id="enc-autores" placeholder="Los dos nombres" maxlength="60" style="min-width:260px"></label><button class="btn" id="enc-nuevo" type="button">¿Son otra pareja? Empezar de cero</button></div>
+      <h2>Repaso de la consola</h2>
+      <p>La semana pasada armaron juegos para la consola. Hoy repasamos lo que aprendimos, de a un paso.</p>
+      <div class="fila" style="margin-top:10px;justify-content:space-between"><label class="fila" style="font-weight:700;color:var(--tinta)">Sus nombres <input type="text" id="enc-autores" placeholder="Los dos nombres" maxlength="60" style="min-width:240px"></label><button class="btn" id="enc-nuevo" type="button">¿Otra pareja? Empezar de cero</button></div>
     </section>
-    <div class="ejs" id="enc-ejs"></div>
+    <nav class="pasos" id="pasos" aria-label="Los pasos"></nav>
+    <div id="enc-ejs"></div>
   </div>
 
   <section class="panel consigna">
@@ -232,7 +289,7 @@ table.esq th{color:var(--tinta)}
     </div>
     <p id="d-consigna" style="margin-top:8px"></p>
     <div class="revisar" id="d-comprobar" hidden>
-      <div class="fila"><button class="btn lleno" id="comprobar">✔ Comprobar</button><span class="ayuda">La página prueba el programa y les dice si quedó arreglado.</span></div>
+      <div class="fila"><button class="btn lleno" id="comprobar">Comprobar</button><span class="ayuda">La página lo prueba y te dice si quedó bien.</span></div>
       <div id="comprobado"></div>
     </div>
   </section>
@@ -287,15 +344,11 @@ table.esq th{color:var(--tinta)}
   </div>
 
   <section class="panel" id="entrega" hidden>
-    <h2>Entregar el repaso</h2>
+    <h2>Entregar</h2>
     <div class="marcador" id="marcador"></div>
-    <label class="preg" style="margin-top:6px">Si quieren, una pregunta más: ¿cómo se dieron cuenta de dónde estaba la trampa de la moneda?<span>No es obligatoria.</span><textarea id="enc-extra" style="min-height:60px"></textarea></label>
-    <div class="fila" style="margin-top:12px">
-      <button class="btn lleno" id="entregar">Entregar</button>
-      <span class="estado" id="entregado"></span>
-    </div>
-    <p class="ayuda">Me llega lo que hicieron, aunque no esté todo. Si después resuelven más, pueden volver a entregar.</p>
-    <p class="ayuda">¿Terminaron todo? Pueden seguir en <a href="dibujo-1ro.html">🎨 Dibujar con código</a>.</p>
+    <label class="preg" style="margin-top:6px">Si quieren: ¿cómo encontraron la trampa de la moneda?<textarea id="enc-extra" style="min-height:60px"></textarea></label>
+    <div class="fila" style="margin-top:12px"><button class="btn lleno grande" id="entregar">Entregar</button><span class="estado" id="entregado"></span></div>
+    <p class="ayuda">Me llega aunque no esté todo. ¿Terminaron? Sigan con <a href="dibujo-1ro.html">Dibujar con código</a>.</p>
   </section>
 
 </main>
@@ -375,10 +428,10 @@ const D=[
 // los dos del repaso que se arreglan con bloques (g:'enc' no sale en las cartas)
 D.push(
   {id:'r-trucha',g:'enc',ic:'🎭',n:'La moneda trucha',d:'',
-   c:'Tendría que ser una moneda justa: cada vez que apretás el botón, sale verde o roja, más o menos mitad y mitad. Pero la roja sale demasiadas veces. Jueguen muchas veces en la consola de la pantalla, busquen la trampa en el programa y arréglenla. Después toquen «Comprobar».',
+   c:'Tendría que salir mitad verde y mitad roja, pero sale mucho roja. Buscá la trampa en el programa y arreglala.',
    q:'',qa:'',prog:D.find(x=>x.id==='trucha').prog,bien:MONEDA_JUSTA},
   {id:'r-semaforo',g:'enc',ic:'🚦',n:'El semáforo roto',d:'',
-   c:'Tendría que quedarse 3 segundos en verde y 3 en rojo, una y otra vez. Pero la roja casi no se ve. Comparen el programa con el diagrama, arréglenlo y toquen «Comprobar».',
+   c:'Tendría que estar 3 segundos en verde y 3 en rojo. Pero la roja casi no se ve. Arreglalo.',
    q:'',qa:'',prog:D.find(x=>x.id==='semaforo').prog,bien:SEMAFORO}
 );
 const POR_ID=Object.fromEntries(D.map(d=>[d.id,d]));
@@ -405,7 +458,7 @@ function abrir(d,p){
   $('respuesta').value=LS.get(kResp(d.id),'');
   $('mandado').textContent='';
   const enc=d.g==='enc'&&d.id!=='_profe';
-  $('d-comprobar').hidden=!enc;$('para-consola').hidden=enc;
+  $('d-comprobar').hidden=!enc;$('para-consola').hidden=enc;$('autores').parentElement.hidden=enc;$('d-titulo').parentElement.hidden=$('d-consigna').hidden=enc;
   if(enc)mostrarComprobado(d.id);
   cartas();dibujar();
 }
@@ -667,39 +720,141 @@ $('traer').onclick=async()=>{
 // --- el repaso (#repaso) ---
 // Tres partes, cada una con su repaso y sus ejercicios, que se corrigen solos.
 // Los dos de bloques se comprueban corriendo el programa «en el papel».
+// --- los símbolos del repaso: dibujados acá, todos con el mismo trazo ---
+const R_='var(--rojo)',V_='var(--verde)',AC='var(--inf)',AM='#E8A80C';
+const SVG=(c)=>`<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${c}</svg>`;
+const ICO={
+  chip:SVG(`<rect x="13" y="13" width="22" height="22" rx="3"/><rect x="19.5" y="19.5" width="9" height="9" rx="1.5" fill="${AC}" stroke="none"/><path d="M19 7v6M24 7v6M29 7v6M19 35v6M24 35v6M29 35v6M7 19h6M7 24h6M7 29h6M35 19h6M35 24h6M35 29h6"/>`),
+  codigo:SVG(`<rect x="5" y="8" width="38" height="32" rx="4"/><path d="M5 15h38"/><path d="M18 22l-5 5 5 5M30 22l5 5-5 5"/><path d="M26.5 21l-5 12" stroke="${AC}"/>`),
+  entrada:SVG(`<rect x="22" y="9" width="21" height="30" rx="4"/><path d="M4 24h26M24 18l6 6-6 6" stroke="${AC}"/>`),
+  salida:SVG(`<rect x="5" y="9" width="21" height="30" rx="4"/><path d="M18 24h26M38 18l6 6-6 6" stroke="${AC}"/>`),
+  celuRoto:SVG(`<rect x="14" y="4" width="20" height="40" rx="4"/><path d="M21 39h6"/><path d="M19 11l7 6-5 5 7 7-4 4" stroke="${R_}"/>`),
+  appCierra:SVG(`<rect x="11" y="4" width="20" height="40" rx="4"/><rect x="15" y="11" width="12" height="12" rx="2.5"/><circle cx="33" cy="32" r="9" fill="${R_}" stroke="none"/><path d="M29.5 28.5l7 7M36.5 28.5l-7 7" stroke="#fff"/>`),
+  compuApagada:SVG(`<rect x="5" y="7" width="38" height="26" rx="3"/><path d="M24 33v6M15 41h18"/><path d="M19.5 15.5a7 7 0 1 0 9 0M24 12.5v7" stroke="${AC}"/>`),
+  juego:SVG(`<path d="M15 15h18a10 10 0 0 1 0 20c-3 0-5-2-6-4h-6c-1 2-3 4-6 4a10 10 0 0 1 0-20z"/><path d="M12 25h7M15.5 21.5v7"/><circle cx="31" cy="23" r="1.8" fill="${R_}" stroke="none"/><circle cx="35" cy="27" r="1.8" fill="${V_}" stroke="none"/>`),
+  mouseCortado:SVG(`<rect x="15" y="20" width="18" height="25" rx="9"/><path d="M24 20v8"/><path d="M24 20v-4M24 10c0-4-3-6-8-6"/><path d="M20 14l8-2" stroke="${R_}"/>`),
+  boton:SVG(`<rect x="7" y="28" width="34" height="11" rx="3"/><path d="M13 28a11 9 0 0 1 22 0z" fill="${AC}" stroke="${AC}"/>`),
+  sensor:SVG(`<circle cx="24" cy="24" r="7"/><path d="M24 6v5M24 37v5M6 24h5M37 24h5M11.3 11.3l3.5 3.5M33.2 33.2l3.5 3.5M11.3 36.7l3.5-3.5M33.2 14.8l3.5-3.5" stroke="${AM}"/>`),
+  luzRoja:SVG(`<circle cx="24" cy="24" r="15" stroke="${R_}" stroke-opacity=".35"/><circle cx="24" cy="24" r="9" fill="${R_}" stroke="none"/>`),
+  luzVerde:SVG(`<circle cx="24" cy="24" r="15" stroke="${V_}" stroke-opacity=".35"/><circle cx="24" cy="24" r="9" fill="${V_}" stroke="none"/>`),
+  buzzer:SVG(`<path d="M7 19h7l9-8v26l-9-8H7z"/><path d="M30 18c3 3.5 3 8.5 0 12M35 13c6 6 6 16 0 22" stroke="${AC}"/>`),
+  teclado:SVG(`<rect x="4" y="13" width="40" height="22" rx="3"/><path d="M10 19h2M16 19h2M22 19h2M28 19h2M34 19h4M10 24h4M18 24h2M24 24h2M30 24h2M36 24h2"/><path d="M15 29.5h18" stroke="${AC}"/>`),
+  pantalla:SVG(`<rect x="5" y="7" width="38" height="26" rx="3"/><path d="M24 33v6M15 41h18"/><path d="M12 15h14M12 21h20M12 27h9" stroke="${AC}"/>`),
+  microfono:SVG(`<rect x="17" y="5" width="14" height="22" rx="7"/><path d="M11 22a13 13 0 0 0 26 0"/><path d="M24 35v7M17 42h14"/><path d="M21 12h6M21 17h6" stroke="${AC}"/>`),
+  parlante:SVG(`<rect x="11" y="4" width="26" height="40" rx="4"/><circle cx="24" cy="29" r="8"/><circle cx="24" cy="29" r="2.5" fill="${AC}" stroke="none"/><circle cx="24" cy="13" r="3"/>`),
+  mouse:SVG(`<rect x="14" y="7" width="20" height="34" rx="10"/><path d="M24 7v11"/><path d="M14 18h20" stroke="${AC}"/>`),
+  bug:SVG(`<ellipse cx="24" cy="28" rx="9" ry="12" fill="${AC}" fill-opacity=".18"/><circle cx="24" cy="13" r="5"/><path d="M24 18v22M15 24l-7-3M15 30H7M15.5 36l-6 4M33 24l7-3M33 30h8M32.5 36l6 4M21 9l-3-4M27 9l3-4"/>`),
+  moneda:SVG(`<circle cx="24" cy="24" r="17"/><circle cx="24" cy="24" r="11" stroke="${AM}"/><path d="M24 18v12" stroke="${AM}"/>`),
+  trampa:SVG(`<circle cx="24" cy="24" r="17"/><path d="M24 7a17 17 0 0 1 0 34z" fill="${R_}" stroke="none"/><path d="M24 7v34"/>`),
+  semaforo:SVG(`<rect x="15" y="3" width="18" height="42" rx="6"/><circle cx="24" cy="13" r="4.5" fill="${R_}" stroke="none"/><circle cx="24" cy="24" r="4.5" fill="${AM}" stroke="none" fill-opacity=".35"/><circle cx="24" cy="35" r="4.5" fill="${V_}" stroke="none"/>`),
+  estrella:SVG(`<path d="M24 6l5.5 11.5 12.5 1.5-9.3 8.6 2.5 12.4L24 33.8 12.8 40l2.5-12.4L6 19l12.5-1.5z"/>`),
+  bandera:SVG(`<path d="M12 44V5"/><path d="M12 7h24l-6 8 6 8H12" fill="${AC}" fill-opacity=".25"/>`),
+};
+const ico=(n,cls)=>{const s=el('span','ico'+(cls?' '+cls:''));s.innerHTML=ICO[n];return s};
+const PT=c=>`<span class="pt ${c}"></span>`;
 const EJ=[
-  {parte:'1 · Hardware y software',repaso:'El <b>hardware</b> es lo que se puede tocar: la placa, los cables, las luces, el botón, la pantalla, el teclado. El <b>software</b> son los programas: las instrucciones que le dicen a la máquina qué hacer.<br><br>Con la consola lo vieron: el hardware fue siempre el mismo, y cada programa que armaron (cada software) lo convirtió en un juego distinto. Cuando algo anda mal, hay que pensar dónde está el problema: ¿se rompió algo que se toca, o el programa hace algo que no tendría que hacer?'},
-  {id:'e1',t:'¿Dónde está el problema?',txt:'Para cada situación: ¿es un problema de hardware o de software?',
-   o:['Hardware','Software'],items:[
-    {q:'A Juli se le cayó el celular y se le rajó la pantalla.',ok:0},
-    {q:'Una aplicación se cierra sola cada vez que la abrís.',ok:1},
-    {q:'En el cyber, una compu no prende: no se enciende ni una lucecita.',ok:0},
-    {q:'El juego de la consola dice «ganaste» aunque perdiste.',ok:1},
-    {q:'Cargué un juego en la consola y la luz verde no se prendió nunca, ni con ese juego ni con ningún otro.',ok:0},
-    {q:'Un juego del celular se traba siempre en el mismo nivel, en todos los celulares.',ok:1},
-    {q:'El mouse no anda porque el perro le mordió el cable.',ok:0}]},
-  {id:'e2',t:'¿Qué hay que cambiar?',txt:'Queremos que la consola haga cosas nuevas. Para cada una: ¿hay que cambiar el hardware o alcanza con cambiar el software?',
-   o:['El hardware','El software'],items:[
-    {q:'Que la luz verde quede prendida más tiempo.',ok:1},
-    {q:'Que tenga una tercera luz, amarilla.',ok:0},
-    {q:'Que en vez del sonido «de premio» suene la sirena.',ok:1},
-    {q:'Que sea otro juego.',ok:1},
-    {q:'Que el botón sea más grande.',ok:0}]},
-  {parte:'2 · Entradas y salidas',repaso:'Las <b>entradas</b> son las partes por donde la máquina <b>se entera</b> de algo: en la consola, el botón le avisa que alguien apretó, y el sensor de luz, que alguien lo tapó. Las <b>salidas</b> son las partes con las que la máquina <b>hace</b> algo: prender una luz, hacer sonar el buzzer.<br><br>La compu y el celular también tienen entradas y salidas.'},
-  {id:'e3',t:'La consola',txt:'¿Cada parte de la consola es una entrada o una salida?',
-   o:['Entrada','Salida'],items:[{q:'El botón',ok:0},{q:'El sensor de luz',ok:0},{q:'La luz roja',ok:1},{q:'La luz verde',ok:1},{q:'El buzzer',ok:1}]},
-  {id:'e4',t:'Las cosas de todos los días',txt:'¿Y estas? Ojo, que una es las dos cosas a la vez.',
-   o:['Entrada','Salida','Las dos'],items:[{q:'El teclado',ok:0},{q:'La pantalla de la compu',ok:1},{q:'El micrófono',ok:0},{q:'El parlante',ok:1},{q:'La cámara del celular',ok:0},{q:'La impresora',ok:1},{q:'La pantalla táctil del celular, la que tocás con el dedo',ok:2}]},
-  {parte:'3 · Bugs',repaso:'Un <b>bug</b> es un error en un programa: el programa hace algo distinto de lo que tendría que hacer. Le dicen así, «bicho» en inglés, desde hace muchos años.<br><br>Para encontrar un bug, se compara <b>lo que el programa tendría que hacer</b> con <b>lo que hace</b>, y se lee el programa paso por paso hasta encontrar dónde se separan. Es lo que hicieron cuando un juego no salía como lo habían pensado.'},
-  {id:'e5',t:'¿Cuál es el error?',senala:true,txt:'<b>Tendría que:</b> cuando aprieto el botón, prender la luz verde, esperar 2 segundos y apagarla.<br>Pero la verde queda prendida para siempre. Toquen el bloque que está mal.',
+  {rep:'hw',t:'Hardware y software'},
+  {id:'e1',t:'¿Hardware o software?',
+   fichas:[['chip','Hardware','lo que se toca'],['codigo','Software','el programa']],
+   o:[['chip','Hardware'],['codigo','Software']],items:[
+    {ic:'celuRoto',q:'Se rajó la pantalla del celu',ok:0},
+    {ic:'appCierra',q:'La app se cierra sola',ok:1},
+    {ic:'compuApagada',q:'La compu no prende',ok:0},
+    {ic:'juego',q:'El juego dice «ganaste», pero perdiste',ok:1},
+    {ic:'mouseCortado',q:'El perro mordió el cable del mouse',ok:0}]},
+  {rep:'es',t:'Entradas y salidas'},
+  {id:'e2',t:'La consola: ¿entrada o salida?',
+   fichas:[['entrada','Entrada','la máquina se entera'],['salida','Salida','la máquina hace algo']],
+   o:[['entrada','Entrada'],['salida','Salida']],items:[
+    {ic:'boton',q:'El botón',ok:0},{ic:'sensor',q:'El sensor de luz',ok:0},{ic:'luzRoja',q:'La luz roja',ok:1},{ic:'luzVerde',q:'La luz verde',ok:1},{ic:'buzzer',q:'El buzzer',ok:1}]},
+  {id:'e3',t:'La compu: ¿entrada o salida?',
+   fichas:[['entrada','Entrada','la máquina se entera'],['salida','Salida','la máquina hace algo']],
+   o:[['entrada','Entrada'],['salida','Salida']],items:[
+    {ic:'teclado',q:'El teclado',ok:0},{ic:'pantalla',q:'La pantalla',ok:1},{ic:'microfono',q:'El micrófono',ok:0},{ic:'parlante',q:'El parlante',ok:1},{ic:'mouse',q:'El mouse',ok:0}]},
+  {rep:'bug',t:'Los bugs'},
+  {id:'e4',t:'¿Dónde está el bug?',senala:true,
+   fichas:[['bug','Bug','un error en el programa']],
+   quiere:[PT('v')+'prender la verde','esperar 2 segundos',PT('o')+'apagar la verde'],
+   txt:'Pero la verde queda prendida para siempre. <b>Tocá el bloque que está mal.</b>',
    prog:{boton:[P('prender',{l:2}),P('esperar',{n:2}),P('apagar',{l:1})]},ok:2},
-  {id:'e6',t:'¿Cuál es el error?',senala:true,txt:'<b>Tendría que:</b> prender la roja 1 segundo, después la verde 1 segundo, una y otra vez.<br>Pero la verde tarda muchísimo en apagarse. Toquen el bloque que está mal.',
-   prog:{siempre:[P('prender',{l:1}),P('esperar',{n:1}),P('apagar',{l:1}),P('prender',{l:2}),P('esperar',{n:10}),P('apagar',{l:2})]},ok:4},
-  {id:'e7',t:'La moneda trucha',arma:'r-trucha',txt:'Esta moneda tendría que ser justa, pero hace trampa. Se arregla con los bloques, abajo, y la página la tira mil veces para ver si quedó justa.'},
-  {id:'e8',t:'El semáforo roto',arma:'r-semaforo',extra:true,txt:'Para los que terminaron la moneda. Se arregla con los bloques, abajo.'},
+  {id:'e5',t:'La moneda trucha',arma:'r-trucha',
+   fichas:[['moneda','Tendría que',`salir mitad ${PT('v')} y mitad ${PT('r')}`],['trampa','Pero',`sale mucho ${PT('r')}`]],
+   txt:'<b>Abajo</b> está el programa. Probalo con <b>Encender</b> y el botón, buscá la trampa y arreglala. Después tocá <b>Comprobar</b>.'},
+  {id:'e6',t:'Extra: el semáforo roto',arma:'r-semaforo',extra:true,
+   fichas:[['semaforo','Tendría que',`3 segundos ${PT('v')} y 3 segundos ${PT('r')}`],['trampa','Pero',`la ${PT('r')} casi no se ve`]],
+   txt:'<b>Abajo</b> está el programa. Arreglalo y tocá <b>Comprobar</b>.'},
 ];
+// --- las pantallas de repaso: contexto y algo para probar antes de los ejercicios ---
+Object.assign(ICO,{
+  idea:SVG(`<path d="M17 30a12 12 0 1 1 14 0v5H17z" fill="${AM}" fill-opacity=".25"/><path d="M19 40h10M21 44h6"/>`),
+  objetivo:SVG(`<circle cx="24" cy="24" r="17"/><circle cx="24" cy="24" r="10"/><circle cx="24" cy="24" r="3.5" fill="${V_}" stroke="none"/>`),
+  ojo:SVG(`<path d="M4 24s7-12 20-12 20 12 20 12-7 12-20 12S4 24 4 24z"/><circle cx="24" cy="24" r="6" fill="${AC}" fill-opacity=".3"/>`),
+  lupa:SVG(`<circle cx="20" cy="20" r="12"/><path d="M29 29l13 13"/><path d="M14 17h12M14 22h8" stroke="${AC}"/>`),
+});
+function miniConsola(){
+  const c=el('div','mini');const l=el('div','mini-luces'),r=el('div','mluz'),v=el('div','mluz');
+  r.style.setProperty('--c','#E5413A');v.style.setProperty('--c','#2FB35E');l.append(r,v);
+  const z=el('div','mini-buzz','buzzer'),b=el('button','mini-boton');b.type='button';b.setAttribute('aria-label','El botón de la consola');
+  c.append(l,z,b,el('div','etq','botón'));return {c,r,v,z,b};
+}
+const espera=ms=>new Promise(r=>setTimeout(r,ms));
+function bloques(lista){const d=el('div','mini-prog');lista.forEach(([c,t])=>d.append(el('div','linea '+c,t)));return d}
+const REPASOS={
+  hw(c){
+    const p=el('p','txt');p.innerHTML='¿Se acuerdan de la consola? Es una caja con un botón, dos luces y un buzzer. Todo eso se puede tocar: es el <b>hardware</b>. Pero la caja sola no hace nada. Para que sea un juego, le cargamos un programa: las instrucciones que le dicen qué hacer. Eso es el <b>software</b>.';
+    c.append(p);
+    const g=el('div','rep-grid'),m=miniConsola(),izq=el('div','rep-col');
+    izq.append(el('div','rot','Hardware · se toca'),m.c);
+    const der=el('div','rep-col');der.append(el('div','rot','Software · los programas'));
+    const PROGS=[
+      {n:'Programa 1',b:[['salida','apagar las dos luces'],['control','tirar una moneda'],['salida','prender la verde o la roja']],
+       f:async()=>{m.r.classList.remove('on');m.v.classList.remove('on');await espera(150);(Math.random()<.5?m.r:m.v).classList.add('on')}},
+      {n:'Programa 2',b:[['salida','prender las dos luces'],['salida','sonar'],['control','esperar 1 segundo'],['salida','apagar las dos luces']],
+       f:async()=>{m.r.classList.add('on');m.v.classList.add('on');m.z.classList.add('suena');await espera(1000);m.r.classList.remove('on');m.v.classList.remove('on');m.z.classList.remove('suena')}},
+    ];
+    let cargado=null;const msj=el('p','res');
+    PROGS.forEach(pr=>{const k=el('div','rep-prog');const bt=el('button','btn','Cargarlo en la consola');bt.type='button';
+      bt.onclick=()=>{cargado=pr;der.querySelectorAll('.rep-prog').forEach(x=>x.classList.remove('cargado'));k.classList.add('cargado');
+        m.r.classList.remove('on');m.v.classList.remove('on');msj.className='res';msj.textContent=pr.n+' cargado. Ahora apretá el botón de la consola.'};
+      k.append(el('b',null,pr.n),bloques(pr.b),bt);der.append(k)});
+    const usados=new Set();
+    m.b.onclick=async()=>{if(!cargado){msj.className='res mal';msj.textContent='Primero cargale un programa: la consola sola no hace nada.';return}
+      await cargado.f();usados.add(cargado.n);
+      if(usados.size>1){msj.className='res bien';msj.textContent='La consola es la misma: el mismo hardware. Lo que cambió es el programa, el software.'}};
+    g.append(izq,der);c.append(g);
+    const d=el('p','desafio');d.innerHTML='<b>Desafío:</b> cargá el programa 1 y apretá el botón. Después cargá el 2 y apretá otra vez. ¿Qué cambió?';
+    c.append(d,msj);
+  },
+  es(c){
+    const p=el('p','txt');p.innerHTML='Para que la consola haga algo, primero se tiene que <b>enterar</b>: que apretaste el botón, o que tapaste el sensor. Esas son las <b>entradas</b>. Después, el programa <b>decide</b> qué hacer. Y al final la consola <b>hace</b> algo: prende una luz o suena. Esas son las <b>salidas</b>.';
+    c.append(p);
+    const f=el('div','flujo');
+    const cajas=[['entrada','Se entera','Entrada: el botón'],['codigo','Decide','El programa'],['salida','Hace','Salida: la luz']].map(([ic,t,s])=>{const k=el('div','fpaso');k.append(ico(ic,'grande'),el('b',null,t),el('span',null,s));return k});
+    const m=miniConsola();
+    f.append(cajas[0],el('span','fflecha','→'),cajas[1],el('span','fflecha','→'),cajas[2]);
+    const g=el('div','rep-grid');const iz=el('div','rep-col');iz.append(el('div','rot','Probalo'),m.c);const de=el('div','rep-col');de.append(el('div','rot','Lo que pasa adentro'),f);
+    g.append(iz,de);c.append(g);
+    const msj=el('p','res');
+    m.b.onclick=async()=>{if(m.b.disabled)return;m.b.disabled=true;cajas.forEach(k=>k.classList.remove('on'));m.v.classList.remove('on');
+      for(const k of cajas){k.classList.add('on');if(k===cajas[2])m.v.classList.add('on');await espera(700)}
+      msj.className='res bien';msj.textContent='El botón le avisó (entrada), el programa decidió y la luz se prendió (salida).';
+      await espera(800);m.v.classList.remove('on');m.b.disabled=false};
+    const d=el('p','desafio');d.innerHTML='<b>Desafío:</b> apretá el botón de la consola y mirá el camino que hace.';
+    c.append(d,msj);
+  },
+  bug(c){
+    const p=el('p','txt');p.innerHTML='A veces armamos un programa y no hace lo que queríamos. Ese error se llama <b>bug</b>, que en inglés quiere decir «bicho». Le dicen así porque hace muchos años una polilla se metió adentro de una computadora y la hizo fallar.';
+    c.append(p);
+    const f=el('div','flujo');
+    [['objetivo','1. ¿Qué tendría que pasar?'],['ojo','2. ¿Qué pasa?'],['lupa','3. Leé el programa paso por paso, hasta encontrar dónde se separan']]
+      .forEach(([ic,t],i)=>{if(i)f.append(el('span','fflecha','→'));const k=el('div','fpaso on');k.append(ico(ic,'grande'),el('span',null,t));f.append(k)});
+    c.append(f);
+    const d=el('p','desafio');d.innerHTML='Así lo vamos a hacer en los próximos pasos: primero uno para leer, y después la moneda trucha, que hace trampa.';
+    c.append(d);
+  },
+};
 const EJS=EJ.filter(e=>e.id);
-const K_ENC='consola1ro.repaso.v1';
+const K_ENC='consola1ro.repaso.v3';
 const ENC=LS.get(K_ENC,{inicio:0,ej:{}});
 const guardaEnc=()=>LS.set(K_ENC,ENC);
 const est=id=>ENC.ej[id]=ENC.ej[id]||{sel:[],i:0,p:0,ok:false,ok1:false,msg:[]};
@@ -757,7 +912,7 @@ function revisarSemaforo(pr){
   if(dos)mal.push('En algún momento están las dos luces prendidas a la vez.');
   return {mal,info:''};
 }
-const ARMA={'r-trucha':'e7','r-semaforo':'e8'};
+const ARMA={'r-trucha':'e5','r-semaforo':'e6'};
 function mostrarComprobado(id){
   const s=ENC.ej[ARMA[id]],C=$('comprobado');C.innerHTML='';
   if(!s||!s.i)return;
@@ -799,47 +954,57 @@ function progTocable(e,s){
 }
 
 function renderEnc(){
-  const R=$('enc-ejs');R.innerHTML='';let n=0;
-  EJ.forEach(e=>{
-    if(e.parte){const c=el('section','panel historia');c.style.gridColumn='1 / -1';
-      c.append(el('div','rot','Parte '+e.parte.split(' · ')[0]),el('h2',null,e.parte.split(' · ')[1]));
-      const p=el('p');p.innerHTML=e.repaso;c.append(p);R.append(c);return}
-    n++;const s=est(e.id),c=el('section','panel ej'+(s.ok?' hecho':''));
-    c.append(el('div','num','Ejercicio '+n+(e.extra?' · para los que terminan':'')+(s.ok?' · ✓ resuelto':'')),el('h3',null,e.t));
-    const p=el('p');p.innerHTML=e.txt;p.style.margin='0';c.append(p);
-    if(e.arma){
-      const a=el('div','armar'),abierto=actual&&actual.id===e.arma,b=el('button','btn'+(abierto?'':' lleno'),abierto?'Está abierto abajo ↓':'Abrirlo abajo ↓');
-      b.onclick=()=>{abrir(POR_ID[e.arma]);renderEnc();document.querySelector('.consigna').scrollIntoView({behavior:'smooth'})};
-      a.append(b);c.append(a);
-      c.append(el('p','res '+(s.ok?'bien':''),s.ok?'✓ Comprobado: quedó arreglado.':s.i?'Lo comprobaron '+s.i+(s.i>1?' veces':' vez')+'. Todavía no.':''));
-      R.append(c);return;
-    }
+  const R=$('enc-ejs');R.innerHTML='';
+  if(ENC.paso==null)ENC.paso=0;
+  const fin=ENC.paso>=EJ.length;let num=0;
+  // la barra de pasos
+  const B=$('pasos');B.innerHTML='';
+  [...EJ,{fin:true}].forEach((e,i)=>{const ok=e.id&&ENC.ej[e.id]&&ENC.ej[e.id].ok;if(e.id&&!e.extra)num++;
+    const b=el('button','paso'+(i===ENC.paso?' actual':'')+(ok?' ok':'')+(e.extra?' extra':''));if(e.rep)b.classList.add('rep');if(e.fin)b.append(ico('bandera','chico'));else if(e.rep)b.append(ico('idea','chico'));else if(ok)b.textContent='✓';else if(e.extra)b.append(ico('estrella','chico'));else b.textContent=String(num);
+    b.type='button';b.title=e.fin?'Entregar':(e.rep?'Repaso: ':'')+e.t;b.setAttribute('aria-label',b.title);
+    b.onclick=()=>irA(i);B.append(b)});
+  $('entrega').hidden=!fin;
+  const e=EJ[ENC.paso],arma=e&&e.arma;
+  document.querySelector('.consigna').hidden=document.querySelector('.trabajo').hidden=!arma;
+  if(arma&&(!actual||actual.id!==e.arma))abrir(POR_ID[e.arma]);
+  if(fin){const M=$('marcador');M.innerHTML='';
+    EJS.forEach((x,i)=>{const ok=ENC.ej[x.id]&&ENC.ej[x.id].ok;M.append(el('span',ok?'si':'',(ok?'✓ ':'')+(i+1)+'. '+x.t))});return}
+  if(e.rep){const c=el('section','panel ej repaso');c.append(el('div','rot','Repaso'),el('h2',null,e.t));REPASOS[e.rep](c);
+    const nav=el('div','fila nav');if(ENC.paso>0){const a=el('button','btn','← Atrás');a.onclick=()=>irA(ENC.paso-1);nav.append(a)}
+    const sg=el('button','btn lleno grande','A los ejercicios →');sg.onclick=()=>irA(ENC.paso+1);nav.append(sg);c.append(nav);R.append(c);return}
+  const s=est(e.id),c=el('section','panel ej'+(s.ok?' hecho':''));
+  c.append(el('h2',null,e.t));
+  if(e.fichas){const F=el('div','fichas');e.fichas.forEach(([ic,n,d])=>{const f=el('div','ficha'),t=el('span');t.innerHTML=d;f.append(ico(ic,'grande'),el('b',null,n),t);F.append(f)});c.append(F)}
+  if(e.quiere){const q=el('div','quiere');q.append(el('b',null,'Tiene que:'));e.quiere.forEach((x,i)=>{if(i)q.append(el('span','fl','→'));const p=el('span','qp');p.innerHTML=x;q.append(p)});c.append(q)}
+  if(e.txt){const p=el('p','txt');p.innerHTML=e.txt;c.append(p)}
+  if(e.arma){
+    c.append(el('p','res '+(s.ok?'bien':'mal'),s.ok?'✓ ¡Quedó arreglado!':s.i?'Todavía no. Mirá abajo qué falta.':''));
+  }else{
     const items=e.senala?[{ok:e.ok}]:e.items;
     if(e.senala)c.append(progTocable(e,s));
-    else items.forEach((it,k)=>{
-      const w=el('div','item'),o=el('div','opc');w.append(el('p',null,it.q));
-      (it.o||e.o).forEach((tx,j)=>{const b=el('button',null,tx);b.type='button';b.disabled=s.ok;
+    else{const T=el('div','filas');items.forEach((it,k)=>{
+      const w=el('div','fila-it');w.append(ico(it.ic,'item'),el('span','q',it.q));const o=el('div','opc');
+      e.o.forEach(([ic,tx],j)=>{const b=el('button');b.append(ico(ic,'chico'),el('span',null,tx));b.type='button';b.disabled=s.ok;
         b.setAttribute('aria-pressed',s.sel[k]===j?'true':'false');
-        if(s.marcar&&!s.ok&&s.sel[k]!==it.ok&&s.sel[k]===j)b.style.borderColor='var(--rojo)';
-        b.onclick=()=>{empezo();s.sel[k]=j;s.marcar=false;guardaEnc();renderEnc()};o.append(b)});
-      w.append(o);c.append(w)});
-    if(!s.ok){const f=el('div','fila');f.style.marginTop='14px';const b=el('button','btn lleno','Comprobar');
+        if(s.marcar&&!s.ok&&s.sel[k]!==it.ok&&s.sel[k]===j)b.classList.add('mala');
+        b.onclick=()=>{empezo();s.sel[k]=j;s.marcar=false;s.aviso='';guardaEnc();renderEnc()};o.append(b)});
+      w.append(o);T.append(w)});c.append(T)}
+    if(!s.ok){const b=el('button','btn lleno grande','Comprobar');b.style.marginTop='16px';
       b.onclick=()=>{
-        if(items.some((_,k)=>s.sel[k]==null)){s.aviso=e.senala?'Toquen primero un bloque.':'Falta contestar alguna.';renderEnc();return}
+        if(items.some((_,k)=>s.sel[k]==null)){s.aviso=e.senala?'Tocá un bloque.':'Te falta contestar alguno.';renderEnc();return}
         s.i++;const mal=items.filter((it,k)=>s.sel[k]!==it.ok).length;
-        s.ok=!mal;s.ok1=s.ok&&s.i===1;
-        if(!s.ok&&s.i>=2&&!e.senala){s.marcar=true;s.p++}
-        if(!s.ok&&e.senala)s.marcar=true;
-        s.aviso=s.ok?'':e.senala?'Ese bloque no es. Lean el programa paso por paso y comparen con lo que tendría que hacer.'
-          :(mal===1?'Hay una que no está bien.':'Hay '+mal+' que no están bien.')+(s.marcar?(mal===1?' Está marcada en rojo.':' Están marcadas en rojo.'):' Revísenlas y vuelvan a comprobar.');
+        s.ok=!mal;s.ok1=s.ok&&s.i===1;s.marcar=!s.ok;if(!s.ok)s.p++;
+        s.aviso=s.ok?'':e.senala?'Ese no es. Probá con otro.':(mal===1?'Hay 1 mal: está en rojo.':'Hay '+mal+' mal: están en rojo.');
         guardaEnc();renderEnc()};
-      f.append(b);c.append(f)}
+      c.append(b)}
     c.append(el('p','res '+(s.ok?'bien':'mal'),s.ok?'✓ ¡Bien!':s.aviso||''));
-    R.append(c);
-  });
-  const M=$('marcador');M.innerHTML='';
-  EJS.forEach((e,i)=>{const ok=ENC.ej[e.id]&&ENC.ej[e.id].ok;M.append(el('span',ok?'si':'',(ok?'✓ ':'')+'Ejercicio '+(i+1)))});
+  }
+  const nav=el('div','fila nav');
+  if(ENC.paso>0){const a=el('button','btn','← Atrás');a.onclick=()=>irA(ENC.paso-1);nav.append(a)}
+  const sig=el('button','btn'+(s.ok?' lleno grande':''),ENC.paso===EJ.length-1?'Terminar':'Siguiente →');sig.onclick=()=>irA(ENC.paso+1);nav.append(sig);
+  c.append(nav);R.append(c);
 }
+function irA(i){ENC.paso=Math.max(0,Math.min(EJ.length,i));guardaEnc();renderEnc();document.getElementById('pasos').scrollIntoView({behavior:'smooth'})}
 $('enc-autores').value=LS.get('consola1ro.autores','');
 $('enc-autores').oninput=()=>{$('autores').value=$('enc-autores').value;$('autores').oninput()};
 $('autores').addEventListener('input',()=>{$('enc-autores').value=$('autores').value});
@@ -858,7 +1023,7 @@ $('entregar').onclick=async()=>{
   const ejs=EJS.map((e,n)=>{const s=est(e.id);
     const q=e.arma?(s.ok?'Lo arregló. ':s.i?'No quedó: '+(s.msg[0]||'')+' ':'(no lo hizo)')+(s.info||'')
       :e.senala?(s.sel[0]==null?'(no lo hizo)':'Tocó: '+txtPaso(Object.values(e.prog).flat()[s.sel[0]]))
-      :e.items.map((it,k)=>it.q+' → '+(s.sel[k]==null?'—':(it.o||e.o)[s.sel[k]])).join(' · ');
+      :e.items.map((it,k)=>it.q+' → '+(s.sel[k]==null?'—':(it.o||e.o)[s.sel[k]][1])).join(' · ');
     return {c:'Ej. '+(n+1)+' · '+e.t,t:e.arma?'arreglar':e.senala?'señalar':'elegir',q,i:s.i,ok:s.ok,ok1:s.ok1,p:s.p,s:!s.i,sg:0}});
   if(extra)ejs.push({c:'¿Cómo se dieron cuenta de la trampa?',t:'abierta',q:extra,i:1,ok:true,ok1:true,p:0,s:false,sg:0});
   const tanda={id:nuevoId('c'),alumno:quien,anio:'1ro',fecha:hoy(),ts,sala:'repaso1ro',salaNom:'Repaso de la consola',modo:'practica',
@@ -880,8 +1045,9 @@ $('entregar').onclick=async()=>{
 function ruta(){
   const h=location.hash.slice(1), esProfe=h==='profe', esEnc=h==='repaso';
   $('profe').hidden=!esProfe;$('elegir').hidden=esProfe||esEnc;
-  $('encargo').hidden=!esEnc;$('entrega').hidden=!esEnc;
-  if(esEnc){abrir(POR_ID[actual&&ARMA[actual.id]?actual.id:'r-trucha']);renderEnc();return}
+  $('encargo').hidden=!esEnc;$('entrega').hidden=true;document.querySelector('main>header').hidden=esEnc;
+  if(!esEnc){document.querySelector('.consigna').hidden=document.querySelector('.trabajo').hidden=false}
+  if(esEnc){if(!actual||!ARMA[actual.id])abrir(POR_ID['r-trucha']);renderEnc();return}
   if(esProfe){if(!actual)abrir(POR_ID.libre);return}
   abrir(POR_ID[h]||POR_ID.libre);
 }

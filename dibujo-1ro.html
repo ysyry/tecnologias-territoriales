@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dibujar con código · 1ro</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Manrope:wght@500;700&family=DM+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Manrope:wght@500;700&family=DM+Mono:wght@400;500&family=Noto+Color+Emoji&display=swap">
 <style>
 /* Dibujar con código (1ro): un pincel que obedece un programa sobre una cuadrícula de 8×8.
    Cada dibujo tiene un modelo; cuando el programa lo dibuja igual, la página lo da por hecho.
@@ -18,7 +18,7 @@
   --rojo:#C8352E; --verde:#2E8B57;
   --b-mov:#3E7FD9; --b-pin:#E8930C; --b-col:#C94BB8; --b-rep:#3B9E4C;
   --f-titulo:"Bricolage Grotesque",Georgia,serif;
-  --f-cuerpo:Manrope,system-ui,sans-serif;
+  --f-cuerpo:Manrope,system-ui,sans-serif,"Noto Color Emoji";
   --f-mono:"DM Mono",ui-monospace,monospace;
 }
 @media (prefers-color-scheme:dark){:root{
@@ -98,10 +98,10 @@ a{color:var(--violeta)}
   <header>
     <div class="rot">1ro · Informática · dibujar con código</div>
     <h1>Dibujar con código</h1>
-    <p class="bajada">En la consola, el programa decidía qué luz se prendía y cuándo. Acá el programa maneja un <b>pincel</b>: lo mueve por una cuadrícula y pinta cuadraditos. A la izquierda está el dibujo que hay que lograr. Armen el programa con los bloques, toquen <b>▶ Dibujar</b> y miren si salió igual.</p>
+    <p class="bajada">El programa mueve un <b>pincel</b>. Hacé el mismo dibujo que el modelo.</p>
     <div class="fila" style="margin-top:14px;justify-content:space-between">
       <label class="fila" style="font-weight:700;color:var(--tinta)">Lo hace <input type="text" id="autores" placeholder="Tu nombre" maxlength="60" style="min-width:240px"></label>
-      <button class="btn" id="nuevo" type="button">¿Es otra persona? Empezar de cero</button>
+      <button class="btn" id="nuevo" type="button">¿Otra persona? Empezar de cero</button>
     </div>
   </header>
 
@@ -121,7 +121,7 @@ a{color:var(--violeta)}
 
     <section class="panel col-prog">
       <h2>El programa</h2>
-      <p class="ayuda" style="margin-top:0">El pincel arranca <b>arriba a la izquierda</b>, pintando de <b>negro</b>. Tocá un bloque de abajo para agregarlo. Lo que ponés adentro de un «repetir» se hace varias veces.</p>
+      <p class="ayuda" style="margin-top:0">El pincel arranca <b>arriba a la izquierda</b>, en <b>negro</b>. Tocá los bloques de abajo.</p>
       <div id="programa"></div>
       <div class="paleta" id="paleta"></div>
       <div class="fila" style="margin-top:12px"><button class="btn" id="limpiar">Borrar el programa</button></div>
@@ -139,11 +139,11 @@ a{color:var(--violeta)}
   </div>
 
   <section class="panel">
-    <h2>Entregar</h2>
+    <h2>🏁 Entregar</h2>
     <div class="marcador" id="marcador"></div>
-    <div class="fila"><button class="btn lleno" id="entregar">Entregar</button><span class="estado" id="entregado"></span></div>
-    <p class="ayuda">Le llegan a la profe los dibujos que te salieron y tu diseño. Podés entregar aunque no estén todos, y volver a entregar después.</p>
-    <p class="ayuda"><a href="consola-1ro.html#repaso">← Volver al repaso de la consola</a></p>
+    <div class="fila"><button class="btn lleno" id="entregar">📤 Entregar</button><span class="estado" id="entregado"></span></div>
+    <p class="ayuda">Me llega aunque no estén todos.</p>
+    <p class="ayuda"><a href="consola-1ro.html#repaso">← Volver al repaso</a></p>
   </section>
 </main>
 
@@ -160,17 +160,17 @@ const NOMCOL={negro:'negro',rojo:'rojo',verde:'verde',azul:'azul',amarillo:'amar
 const LETRA={n:'negro',v:'verde',m:'marron',r:'rojo',a:'azul',y:'amarillo'};
 const DIB=[
   {id:'linea',n:'La línea',f:['nnnn....','........','........','........','........','........','........','........'],
-   a:'Cuatro cuadraditos negros, uno al lado del otro.'},
+   a:'4 cuadraditos negros.'},
   {id:'larga',n:'La línea larga',f:['........','........','........','nnnnnnnn','........','........','........','........'],
-   a:'Ocho cuadraditos. Probá con el bloque «repetir».'},
+   a:'8 cuadraditos. Probá «repetir».'},
   {id:'escalera',n:'La escalera',f:['n.......','.n......','..n.....','...n....','....n...','.....n..','........','........'],
-   a:'Pintar, moverse a la derecha, bajar… y otra vez.'},
+   a:'pintar, →, ↓… y otra vez.'},
   {id:'marco',n:'El marco',f:['nnnnn...','n...n...','n...n...','n...n...','nnnnn...','........','........','........'],
-   a:'Cuatro lados iguales. ¿Cuántos «repetir»?'},
+   a:'4 lados iguales.'},
   {id:'pino',n:'El pino',f:['...v....','..vvv...','.vvvvv..','vvvvvvv.','...m....','...m....','........','........'],
-   a:'Usá el bloque «color» para cambiar de verde a marrón.'},
+   a:'Usá «color»: verde y marrón.'},
   {id:'libre',n:'Tu dibujo',libre:true,
-   a:'Primero diseñá tu dibujo tocando los cuadraditos (elegí el color abajo). Después hacé el programa que lo dibuje.'},
+   a:'1. Tocá los cuadraditos y diseñá. 2. Hacé el programa.'},
 ];
 const POR_ID=Object.fromEntries(DIB.map(d=>[d.id,d]));
 const filas=f=>f.map(r=>[...r].map(ch=>LETRA[ch]||null));
@@ -229,7 +229,7 @@ const PALETA=[
   {c:'mov',txt:'←',aria:'mover a la izquierda',nuevo:()=>({t:'mov',d:'izq'})},
   {c:'mov',txt:'↓',aria:'mover abajo',nuevo:()=>({t:'mov',d:'aba'})},
   {c:'mov',txt:'↑',aria:'mover arriba',nuevo:()=>({t:'mov',d:'arr'})},
-  {c:'pin',txt:'🖌 pintar',aria:'pintar',nuevo:()=>({t:'pin'})},
+  {c:'pin',txt:'pintar',aria:'pintar',nuevo:()=>({t:'pin'})},
   {c:'col',txt:'color',aria:'cambiar el color',nuevo:()=>({t:'col',c:'verde'})},
   {c:'rep',txt:'repetir',aria:'repetir',nuevo:()=>({t:'rep',n:3,cuerpo:[]})},
 ];
@@ -242,7 +242,7 @@ function dibujarLista(lista,raiz){
   lista.forEach((p,i)=>{
     const b=el('div','blk '+(p.t==='mov'?'mov':p.t==='pin'?'pin':p.t==='col'?'col':'rep'));b.dataset.id=p._id=p._id||Math.random().toString(36).slice(2);
     if(p.t==='mov'){b.append(el('span','fl',FLECHA[p.d]));b.title='mover '+NOMDIR[p.d]}
-    if(p.t==='pin')b.append(el('span',null,'🖌 pintar'));
+    if(p.t==='pin')b.append(el('span',null,'pintar'));
     if(p.t==='col'){b.append(el('span',null,'color'));const sel=el('select');Object.keys(COL).forEach(c=>{const o=el('option',null,NOMCOL[c]);o.value=c;sel.append(o)});sel.value=p.c;
       sel.style.cssText='border:0;border-radius:999px;padding:2px 8px;font-weight:700';
       const m=el('span','muestra');m.style.background=COL[p.c];sel.onchange=()=>{p.c=sel.value;cambio()};b.append(m,sel)}
@@ -257,7 +257,7 @@ function dibujarLista(lista,raiz){
 function contiene(p,l){return p.cuerpo===l||p.cuerpo.some(q=>q.cuerpo&&contiene(q,l))}
 function editor(){
   const P=$('programa');P.innerHTML='';P.append(dibujarLista(prog(),true));
-  if(destino)P.append(el('p','ayuda','Los bloques nuevos entran adentro del «repetir» marcado. Para salir, tocá el borde de afuera.'));
+  if(destino)P.append(el('p','ayuda','Los bloques entran adentro del «repetir». Para salir, tocá el borde de afuera.'));
 }
 function paleta(){
   const P=$('paleta');P.innerHTML='';
