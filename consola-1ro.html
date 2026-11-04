@@ -224,9 +224,7 @@ table.esq th{color:var(--tinta)}
   .pasos{flex-wrap:nowrap;overflow-x:auto;gap:8px;padding-bottom:6px;scroll-snap-type:x proximity}
   .grupo{flex:none;padding:6px 8px 8px}
   .gtit{font-size:.6em;white-space:nowrap}
-  .paso{width:40px;height:40px} .lineas{display:flex;flex-direction:column;gap:10px;margin:6px 0 4px}
-.linea-rep{display:flex;align-items:center;gap:14px;background:var(--inf-w);border-radius:14px;padding:10px 16px;font-size:1.12em;color:var(--tinta);max-width:44em}
-.paso.rep{height:40px;padding:0 12px}
+  .paso{width:40px;height:40px} .paso.rep{height:40px;padding:0 12px}
 }
 .paso.rep{width:auto;height:46px;border-radius:999px;padding:0 16px;border-style:solid;font-size:.95em}
 .repaso .txt{max-width:46em;line-height:1.6}
@@ -268,6 +266,8 @@ table.esq th{color:var(--tinta)}
 .envio{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--raya)}
 .envio b{color:var(--tinta)}
 .envio small{color:var(--tenue)}
+.lineas{display:flex;flex-direction:column;gap:10px;margin:6px 0 4px}
+.linea-rep{display:flex;align-items:center;gap:14px;background:var(--inf-w);border-radius:14px;padding:10px 16px;font-size:1.12em;color:var(--tinta);max-width:44em}
 </style>
 </head>
 <body>
@@ -822,7 +822,7 @@ const EJ=[
   {id:'e1',t:'¿Hardware o software?',
    fichas:[['chip','Hardware','lo que se toca'],['codigo','Software','el programa']],
    o:[['chip','Hardware'],['codigo','Software']],items:[
-    {ic:'celuRoto',q:'Se rajó la pantalla del celu',ok:0},
+    {ic:'celuRoto',q:'Se rompió la pantalla del celu',ok:0},
     {ic:'appCierra',q:'La app se cierra sola',ok:1},
     {ic:'compuApagada',q:'La compu no prende',ok:0},
     {ic:'juego',q:'El juego dice «ganaste», pero perdiste',ok:1},
