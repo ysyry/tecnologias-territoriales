@@ -100,7 +100,7 @@ a{color:var(--violeta)}
     <h1>Dibujar con código</h1>
     <p class="bajada">El programa mueve un <b>pincel</b>. Hacé el mismo dibujo que el modelo.</p>
     <div class="fila" style="margin-top:14px;justify-content:space-between">
-      <label class="fila" style="font-weight:700;color:var(--tinta)">Lo hace <input type="text" id="autores" placeholder="Tu nombre" maxlength="60" style="min-width:240px"></label>
+      <label class="fila" style="font-weight:700;color:var(--tinta)">Nombre y apellido <input type="text" id="autores" placeholder="Ej.: Lucía Gómez" maxlength="80" style="min-width:240px"></label>
       <button class="btn" id="nuevo" type="button">¿Otra persona? Empezar de cero</button>
     </div>
   </header>
@@ -331,21 +331,25 @@ const aTexto=g=>g?g.map(f=>f.map(c=>c?INI[c]:'.').join('')).join(' / '):'';
 function progTexto(l){return l.map(p=>p.t==='mov'?FLECHA[p.d]:p.t==='pin'?'pintar':p.t==='col'?'color '+NOMCOL[p.c]:'repetir '+p.n+' ['+progTexto(p.cuerpo)+']').join(', ')}
 $('autores').value=LS.get('dibujo1ro.autores','');
 $('autores').oninput=()=>LS.set('dibujo1ro.autores',$('autores').value);
-$('entregar').onclick=async()=>{
+const nombreOk=n=>n.trim().split(/\s+/).filter(w=>w.length>1).length>=2;
+async function enviar(auto){
   const quien=$('autores').value.trim();
-  if(quien.length<3){$('entregado').textContent='Escribí tu nombre arriba de todo.';$('autores').focus();$('autores').scrollIntoView({behavior:'smooth',block:'center'});return}
-  if($('entregar').disabled)return;$('entregar').disabled=true;setTimeout(()=>{$('entregar').disabled=false},8000);
+  if(!nombreOk(quien)){if(!auto){$('entregado').textContent='Escribí tu nombre y apellido arriba de todo.';$('autores').focus();$('autores').scrollIntoView({behavior:'smooth',block:'center'})}return}
+  if(!E.inicio)return;
   const ejs=DIB.map(d=>{const s=est(d.id);
     const q=(d.libre?'Diseño: '+aTexto(s.diseno)+' · ':'')+(s.prog.length?'Programa: '+progTexto(s.prog):'(no lo hizo)');
     return {c:'Dibujo · '+d.n,t:d.libre?'diseño':'dibujo',q,i:s.i,ok:s.ok,ok1:s.ok1,p:0,s:!s.i,sg:0}});
   const t={id:nuevoId('c'),alumno:quien,anio:'1ro',fecha:hoy(),ts:new Date().toISOString(),sala:'dibujo1ro',salaNom:'Dibujar con código',modo:'practica',
     total:DIB.length,resueltos:DIB.filter(d=>est(d.id).ok).length,sinAyuda:DIB.filter(d=>est(d.id).ok1).length,pistas:0,
     salteadas:DIB.filter(d=>!est(d.id).i).length,seg:E.inicio?Math.round((Date.now()-E.inicio)/1000):0,ejs};
+  const h=JSON.stringify([quien,ejs.map(x=>[x.q,x.i,x.ok])]);if(h===E.enviado){if(!auto)$('entregado').textContent='✓ Ya le llegó a la profe así.';return}
   const a=LS.get(K_DAT,[]);(Array.isArray(a)?a:[]).push(t);LS.set(K_DAT,a);
-  try{await fetch(URL_BUZON,{method:'POST',mode:'no-cors',cache:'no-store',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(t)});
-    $('entregado').textContent=`✓ Entregado: ${t.resueltos} de ${DIB.length} dibujos.`}
-  catch(e){$('entregado').textContent='No hay internet. Probá de nuevo en un rato.'}
-};
+  try{await fetch(URL_BUZON,{method:'POST',mode:'no-cors',cache:'no-store',keepalive:true,headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(t)});
+    E.enviado=h;guarda();$('entregado').textContent=`✓ Le llegó a la profe: ${t.resueltos} de ${DIB.length} dibujos.`}
+  catch(e){$('entregado').textContent='No se pudo mandar: fijate que haya internet y tocá Entregar otra vez.'}
+}
+$('entregar').onclick=()=>enviar(false);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')enviar(true)});
 $('nuevo').onclick=()=>{if(!confirm('¿Empezar de cero? Se borra lo que hizo la persona anterior en esta compu (lo entregado no se pierde).'))return;
   for(const k of [K,'dibujo1ro.autores'])try{localStorage.removeItem(k)}catch(e){}location.reload()};
 
