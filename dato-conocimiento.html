@@ -121,6 +121,8 @@ input.n.largo{width:12em}
 .armado{display:flex;flex-wrap:wrap;gap:4px;font-family:var(--f-mono);margin:10px 0}
 .armado span{background:var(--hoja);border:1.5px solid var(--violeta);border-radius:6px;padding:4px 10px;color:var(--tinta)}
 .exp p{margin:0}
+.hueco{display:inline-block;background:var(--inf-w);border:1.5px dashed var(--inf);border-radius:5px;padding:0 .4em;color:var(--inf);font-family:var(--f-mono);font-weight:500}
+.codigo .hueco{background:rgba(232,139,203,.18);color:#F2B8DD;border-color:#E88BCB}
 </style>
 </head>
 <body>
@@ -230,9 +232,15 @@ Serial.println(luz);        <span class="c">// escribe la luz y baja de renglón
     <div class="preg" data-p="k2" data-ok="0">
       <h3>2 · El conocimiento se vuelve una regla</h3>
       <p>Imaginemos que, mirando muchos días, aprendimos que cuando la luz baja de 500, el cantero quedó a la sombra. Ese conocimiento lo podemos escribir en el código, para que el aparato prenda un LED cuando pasa:</p>
-      <p class="q">¿Cuál de estos <code>if</code> prende el LED cuando el cantero queda a la sombra?</p>
-      <div class="opc opc-cod"><button type="button"><code>if (luz &lt; 500)</code></button><button type="button"><code>if (luz &gt; 500)</code></button><button type="button"><code>if (luz == 500)</code></button></div>
-      <p class="exp" hidden><code>luz &lt; 500</code> quiere decir «la luz es menor que 500». Con <code>&gt;</code> se prendería con sol, y con <code>==</code> solo cuando marca justo 500, que casi nunca pasa.</p>
+      <div class="codigo"><pre>if (<span class="hueco">  ?  </span>) {
+  digitalWrite(9, HIGH);   <span class="c">// prende el LED (está en el pin 9)</span>
+} else {
+  digitalWrite(9, LOW);    <span class="c">// apaga el LED</span>
+}</pre></div>
+      <p><code>if</code> quiere decir «si». Si se cumple lo que está entre paréntesis, el programa hace lo de arriba y prende el LED. Si no se cumple, hace lo que está después de <code>else</code> («si no») y lo apaga.</p>
+      <p class="q">¿Qué va en el lugar del <span class="hueco">?</span> para que el LED se prenda cuando el cantero queda a la sombra?</p>
+      <div class="opc opc-cod"><button type="button"><code>luz &lt; 500</code></button><button type="button"><code>luz &gt; 500</code></button><button type="button"><code>luz == 500</code></button></div>
+      <p class="exp" hidden><code>luz &lt; 500</code> quiere decir «la luz es menor que 500»: hay sombra, así que se prende el LED. Con <code>luz &gt; 500</code> se prendería cuando hay sol, al revés de lo que queremos. Con <code>luz == 500</code> se prendería solo cuando marca justo 500, que casi nunca pasa.</p>
     </div>
 
     <div class="preg" data-p="k3" data-ok="1">
@@ -435,7 +443,7 @@ function mandarTodo(){
   auto('Leer un dato: la luz a las 12:00 (925)','d12');
   auto('Información: a qué hora se va el sol (15:00)','p4');
   auto('Código 1 · la fila que escribe (14,fondo,873)','k1');
-  auto('Código 2 · el if de la sombra (luz < 500)','k2');
+  auto('Código 2 · la condición del if (luz < 500)','k2');
   auto('Código 3 · dos sensores con && (revisar el fondo)','k3');
   abierta('La baja de las 11 (sin respuesta única)',R.p5&&R.p5.txt);
   abierta('Su conocimiento: qué decidirían para la huerta',document.getElementById('conoc').value.trim());
