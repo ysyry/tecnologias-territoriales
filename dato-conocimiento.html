@@ -229,18 +229,43 @@ Serial.println(luz);        <span class="c">// escribe la luz y baja de renglón
       </div>
     </div>
 
-    <div class="preg" data-p="k2" data-ok="0">
-      <h3>2 · El conocimiento se vuelve una regla</h3>
-      <p>Imaginemos que, mirando muchos días, aprendimos que cuando la luz baja de 500, el cantero quedó a la sombra. Ese conocimiento lo podemos escribir en el código, para que el aparato prenda un LED cuando pasa:</p>
-      <div class="codigo"><pre>if (<span class="hueco">  ?  </span>) {
-  digitalWrite(9, HIGH);   <span class="c">// prende el LED (está en el pin 9)</span>
+    <div class="preg">
+      <h3>2 · El conocimiento se vuelve reglas</h3>
+      <p>Imaginemos que, mirando muchos días, aprendimos tres cosas sobre los canteros: con más de 800 de luz hay sol pleno y van bien los tomates; entre 400 y 800 hay media sombra y van bien las lechugas; y con 400 o menos hay demasiada sombra. Ese conocimiento lo podemos escribir en el código, para que el aparato le recomiende qué plantar a cada cantero:</p>
+      <div class="codigo"><pre>if (luz &gt; 800) {
+  Serial.println("sol pleno: tomates");
+} else if (luz &gt; 400) {
+  Serial.println("media sombra: lechugas");
 } else {
-  digitalWrite(9, LOW);    <span class="c">// apaga el LED</span>
+  Serial.println("sombra: mejor otro cantero");
 }</pre></div>
-      <p><code>if</code> quiere decir «si». Si se cumple lo que está entre paréntesis, el programa hace lo de arriba y prende el LED. Si no se cumple, hace lo que está después de <code>else</code> («si no») y lo apaga.</p>
-      <p class="q">¿Qué va en el lugar del <span class="hueco">?</span> para que el LED se prenda cuando el cantero queda a la sombra?</p>
-      <div class="opc opc-cod"><button type="button"><code>luz &lt; 500</code></button><button type="button"><code>luz &gt; 500</code></button><button type="button"><code>luz == 500</code></button></div>
-      <p class="exp" hidden><code>luz &lt; 500</code> quiere decir «la luz es menor que 500»: hay sombra, así que se prende el LED. Con <code>luz &gt; 500</code> se prendería cuando hay sol, al revés de lo que queremos. Con <code>luz == 500</code> se prendería solo cuando marca justo 500, que casi nunca pasa.</p>
+      <p><code>if</code> es «si», <code>else if</code> es «si no, si…» y <code>else</code> es «si no». El programa revisa las condiciones <b>de arriba para abajo</b> y hace solo la primera que se cumple. Las demás las saltea.</p>
+    </div>
+
+    <div class="preg" data-p="k2a" data-ok="0">
+      <p class="q">a) El sensor lee 873. ¿Qué escribe?</p>
+      <div class="opc"><button type="button">sol pleno: tomates</button><button type="button">media sombra: lechugas</button><button type="button">las dos cosas</button></div>
+      <p class="exp" hidden>«sol pleno: tomates». 873 es mayor que 800, así que se cumple la primera condición. 873 también es mayor que 400, pero el programa ya no mira la segunda: hace solo la primera que se cumple.</p>
+    </div>
+
+    <div class="preg" data-p="k2b" data-ok="2">
+      <p class="q">b) El sensor lee justo 400. ¿Qué escribe?</p>
+      <div class="opc"><button type="button">sol pleno: tomates</button><button type="button">media sombra: lechugas</button><button type="button">sombra: mejor otro cantero</button></div>
+      <p class="exp" hidden>«sombra: mejor otro cantero». <code>luz &gt; 400</code> quiere decir «mayor que 400», y 400 no es mayor que 400: es igual. No se cumple ninguna de las dos condiciones, así que hace lo del <code>else</code>. Si quisiéramos que el 400 cuente como media sombra, habría que escribir <code>luz &gt;= 400</code> («mayor o igual»).</p>
+    </div>
+
+    <div class="preg" data-p="k2c" data-ok="1">
+      <p class="q">c) Alguien copió el código y dio vuelta el orden de las dos primeras condiciones:</p>
+      <div class="codigo"><pre>if (luz &gt; 400) {
+  Serial.println("media sombra: lechugas");
+} else if (luz &gt; 800) {
+  Serial.println("sol pleno: tomates");
+} else {
+  Serial.println("sombra: mejor otro cantero");
+}</pre></div>
+      <p class="q">Ahora el sensor lee 873. ¿Qué escribe?</p>
+      <div class="opc"><button type="button">sol pleno: tomates</button><button type="button">media sombra: lechugas</button><button type="button">sombra: mejor otro cantero</button></div>
+      <p class="exp" hidden>«media sombra: lechugas», aunque haya sol pleno. 873 es mayor que 400, así que se cumple la primera condición y el programa no sigue mirando. Con este orden, «sol pleno» no aparece nunca: cualquier número mayor que 800 ya es mayor que 400. En una cadena de <code>else if</code>, el orden cambia lo que hace el programa.</p>
     </div>
 
     <div class="preg" data-p="k3" data-ok="1">
@@ -443,7 +468,9 @@ function mandarTodo(){
   auto('Leer un dato: la luz a las 12:00 (925)','d12');
   auto('Información: a qué hora se va el sol (15:00)','p4');
   auto('Código 1 · la fila que escribe (14,fondo,873)','k1');
-  auto('Código 2 · la condición del if (luz < 500)','k2');
+  auto('Código 2a · else if con 873 (sol pleno)','k2a');
+  auto('Código 2b · el borde: 400 (sombra)','k2b');
+  auto('Código 2c · el orden dado vuelta (media sombra)','k2c');
   auto('Código 3 · dos sensores con && (revisar el fondo)','k3');
   abierta('La baja de las 11 (sin respuesta única)',R.p5&&R.p5.txt);
   abierta('Su conocimiento: qué decidirían para la huerta',document.getElementById('conoc').value.trim());
