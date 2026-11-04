@@ -205,12 +205,21 @@ table.esq th{color:var(--tinta)}
 .pt{display:inline-block;width:.8em;height:.8em;border-radius:50%;vertical-align:-.05em;margin:0 .25em 0 .1em}
 .pt.v{background:var(--verde)} .pt.r{background:var(--rojo)} .pt.o{background:var(--tenue)}
 .ficha span{color:var(--texto)}
-.paso.rep{width:42px;height:42px;border-style:dashed}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,360px);gap:28px;align-items:center}
+@media (max-width:860px){.hero{grid-template-columns:1fr}.hero-dib{max-width:300px}}
+.hero-dib{width:100%;height:auto}
+.pasos{gap:12px;align-items:stretch}
+.grupo{border:2px solid var(--raya);border-radius:16px;padding:8px 10px 10px;display:flex;flex-direction:column;gap:6px}
+.gtit{font-family:var(--f-mono);font-size:.72em;letter-spacing:.12em;text-transform:uppercase;color:var(--inf)}
+.gpasos{display:flex;gap:8px;align-items:center}
+.paso{width:46px;height:46px;font-size:1.1em;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.paso.actual{transform:none;box-shadow:0 0 0 3px var(--inf-w)}
+.paso.rep{width:auto;height:46px;border-radius:999px;padding:0 16px;border-style:solid;font-size:.95em}
 .repaso .txt{max-width:46em;line-height:1.6}
 .rep-grid{display:grid;grid-template-columns:minmax(220px,300px) minmax(0,1fr);gap:22px;margin:18px 0;align-items:start}
 @media (max-width:760px){.rep-grid{grid-template-columns:1fr}}
 .rep-col{display:flex;flex-direction:column;gap:10px}
-.mini{background:#2A2440;border-radius:20px;padding:18px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.mini{background:#0E7C86;border:3px solid #0A5F67;border-radius:14px;padding:22px 18px 18px;position:relative;background-image:radial-gradient(circle,#ffffff2e 1.5px,transparent 2px);background-size:14px 14px;display:flex;flex-direction:column;align-items:center;gap:10px}
 .mini-luces{display:flex;gap:26px}
 .mluz{width:64px;height:64px;border-radius:50%;background:var(--c);opacity:.2;transition:opacity .08s,box-shadow .08s}
 .mluz.on{opacity:1;box-shadow:0 0 22px 6px var(--c)}
@@ -218,7 +227,9 @@ table.esq th{color:var(--tinta)}
 .mini-buzz.suena{color:#FFD84A}
 .mini-boton{width:76px;height:76px;border-radius:50%;border:0;background:radial-gradient(circle at 35% 30%,#fff6,#0000 55%),#8d86a6;box-shadow:0 6px 0 #4b4566;cursor:pointer}
 .mini-boton:active{transform:translateY(5px);box-shadow:0 1px 0 #4b4566}
-.mini .etq{color:#cfc8e6}
+.mini .etq{color:#e6fbfc}
+.mini::before{content:"ARDUINO";position:absolute;top:6px;left:12px;font-family:var(--f-mono);font-size:.62em;letter-spacing:.2em;color:#e6fbfc;opacity:.8}
+.mini-buzz{color:#e6fbfc}
 .rep-prog{border:2px solid var(--raya);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
 .rep-prog.cargado{border-color:var(--violeta);background:var(--inf-w)}
 .rep-prog b{color:var(--tinta)}
@@ -273,11 +284,43 @@ table.esq th{color:var(--tinta)}
 
   <!-- el repaso: sólo con #repaso -->
   <div id="encargo" hidden style="display:flex;flex-direction:column;gap:22px">
-    <section class="panel historia">
-      <h2>Repaso de la consola</h2>
-      <p>La semana pasada armaron juegos para la consola. Hoy repasamos lo que aprendimos, de a un paso.</p>
-      <div class="fila" style="margin-top:10px;justify-content:space-between"><label class="fila" style="font-weight:700;color:var(--tinta)">Sus nombres <input type="text" id="enc-autores" placeholder="Los dos nombres" maxlength="60" style="min-width:240px"></label><button class="btn" id="enc-nuevo" type="button">¿Otra pareja? Empezar de cero</button></div>
-    </section>
+    <header class="hero">
+      <div class="hero-txt">
+        <div class="rot">1ro · Informática · repaso</div>
+        <h1>La consola por dentro</h1>
+        <p class="bajada">La semana pasada armaron juegos para la consola: la placa Arduino con un botón, dos luces y un buzzer. Hoy repasamos lo que aprendimos con ella, paso por paso: <b>hardware y software</b>, <b>entradas y salidas</b>, y <b>bugs</b>.</p>
+        <div class="fila" style="margin-top:16px;gap:14px">
+          <label class="fila" style="font-weight:700;color:var(--tinta)">Sus nombres <input type="text" id="enc-autores" placeholder="Los dos nombres" maxlength="60" style="min-width:240px"></label>
+          <button class="btn" id="enc-nuevo" type="button">¿Otra pareja? Empezar de cero</button>
+        </div>
+      </div>
+      <svg class="hero-dib" viewBox="0 0 360 240" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <!-- el programa, atrás -->
+        <g transform="rotate(-6 250 90)">
+          <rect x="180" y="18" width="160" height="128" rx="14" fill="var(--hoja)" stroke="var(--raya)" stroke-width="3"/>
+          <path d="M180 42h160" stroke="var(--raya)" stroke-width="3"/>
+          <circle cx="196" cy="30" r="4" fill="var(--rojo)"/><circle cx="210" cy="30" r="4" fill="#E8A80C"/><circle cx="224" cy="30" r="4" fill="var(--verde)"/>
+          <rect x="196" y="56" width="96" height="16" rx="5" fill="#8A5BE6"/>
+          <rect x="212" y="78" width="84" height="14" rx="5" fill="#3E7FD9"/>
+          <rect x="212" y="98" width="100" height="14" rx="5" fill="#E8930C"/>
+          <rect x="212" y="118" width="70" height="14" rx="5" fill="#3E7FD9"/>
+        </g>
+        <!-- la placa Arduino -->
+        <rect x="14" y="120" width="132" height="100" rx="10" fill="#0E7C86" stroke="#0A5F67" stroke-width="3"/>
+        <rect x="28" y="132" width="60" height="9" rx="2" fill="#0A5F67"/><rect x="28" y="200" width="90" height="9" rx="2" fill="#0A5F67"/>
+        <rect x="58" y="156" width="46" height="30" rx="3" fill="#1d1a26"/>
+        <rect x="120" y="150" width="20" height="16" rx="2" fill="#cfd6da"/>
+        <!-- los cables -->
+        <path d="M40 132c0-40 40-46 70-58M60 132c0-30 60-30 90-46M80 132c4-26 60-12 92 6" stroke="#E5413A" stroke-width="3"/>
+        <path d="M100 132c10-20 50-10 76 22" stroke="#2FB35E" stroke-width="3"/>
+        <!-- las cosas conectadas, sueltas -->
+        <circle cx="114" cy="70" r="11" fill="#E5413A"/><path d="M110 81v10M118 81v10" stroke="var(--tenue)" stroke-width="2.5"/>
+        <circle cx="154" cy="84" r="11" fill="#2FB35E" opacity=".45"/><path d="M150 95v10M158 95v10" stroke="var(--tenue)" stroke-width="2.5"/>
+        <rect x="170" y="126" width="26" height="26" rx="4" fill="#8d86a6"/><circle cx="183" cy="139" r="7" fill="#5f5779"/>
+        <circle cx="200" cy="186" r="13" fill="#1d1a26"/><path d="M218 178c4 4 4 12 0 16M226 172c8 8 8 20 0 28" stroke="#E8A80C" stroke-width="3"/>
+        <path d="M110 205c40 6 60 0 78-8" stroke="var(--tenue)" stroke-width="3"/>
+      </svg>
+    </header>
     <nav class="pasos" id="pasos" aria-label="Los pasos"></nav>
     <div id="enc-ejs"></div>
   </div>
@@ -801,7 +844,7 @@ const espera=ms=>new Promise(r=>setTimeout(r,ms));
 function bloques(lista){const d=el('div','mini-prog');lista.forEach(([c,t])=>d.append(el('div','linea '+c,t)));return d}
 const REPASOS={
   hw(c){
-    const p=el('p','txt');p.innerHTML='¿Se acuerdan de la consola? Es una caja con un botón, dos luces y un buzzer. Todo eso se puede tocar: es el <b>hardware</b>. Pero la caja sola no hace nada. Para que sea un juego, le cargamos un programa: las instrucciones que le dicen qué hacer. Eso es el <b>software</b>.';
+    const p=el('p','txt');p.innerHTML='¿Se acuerdan de la consola? Es la placa Arduino con un botón, dos luces y un buzzer conectados con cables. Todo eso se puede tocar: es el <b>hardware</b>. Pero la placa sola no hace nada. Para que sea un juego, le cargamos un programa: las instrucciones que le dicen qué hacer. Eso es el <b>software</b>.';
     c.append(p);
     const g=el('div','rep-grid'),m=miniConsola(),izq=el('div','rep-col');
     izq.append(el('div','rot','Hardware · se toca'),m.c);
@@ -818,9 +861,9 @@ const REPASOS={
         m.r.classList.remove('on');m.v.classList.remove('on');msj.className='res';msj.textContent=pr.n+' cargado. Ahora apretá el botón de la consola.'};
       k.append(el('b',null,pr.n),bloques(pr.b),bt);der.append(k)});
     const usados=new Set();
-    m.b.onclick=async()=>{if(!cargado){msj.className='res mal';msj.textContent='Primero cargale un programa: la consola sola no hace nada.';return}
+    m.b.onclick=async()=>{if(!cargado){msj.className='res mal';msj.textContent='Primero cargale un programa: la placa sola no hace nada.';return}
       await cargado.f();usados.add(cargado.n);
-      if(usados.size>1){msj.className='res bien';msj.textContent='La consola es la misma: el mismo hardware. Lo que cambió es el programa, el software.'}};
+      if(usados.size>1){msj.className='res bien';msj.textContent='La placa y las cosas conectadas son las mismas: el mismo hardware. Lo que cambió es el programa, el software.'}};
     g.append(izq,der);c.append(g);
     const d=el('p','desafio');d.innerHTML='<b>Desafío:</b> cargá el programa 1 y apretá el botón. Después cargá el 2 y apretá otra vez. ¿Qué cambió?';
     c.append(d,msj);
@@ -957,12 +1000,18 @@ function renderEnc(){
   const R=$('enc-ejs');R.innerHTML='';
   if(ENC.paso==null)ENC.paso=0;
   const fin=ENC.paso>=EJ.length;let num=0;
-  // la barra de pasos
-  const B=$('pasos');B.innerHTML='';
-  [...EJ,{fin:true}].forEach((e,i)=>{const ok=e.id&&ENC.ej[e.id]&&ENC.ej[e.id].ok;if(e.id&&!e.extra)num++;
-    const b=el('button','paso'+(i===ENC.paso?' actual':'')+(ok?' ok':'')+(e.extra?' extra':''));if(e.rep)b.classList.add('rep');if(e.fin)b.append(ico('bandera','chico'));else if(e.rep)b.append(ico('idea','chico'));else if(ok)b.textContent='✓';else if(e.extra)b.append(ico('estrella','chico'));else b.textContent=String(num);
-    b.type='button';b.title=e.fin?'Entregar':(e.rep?'Repaso: ':'')+e.t;b.setAttribute('aria-label',b.title);
-    b.onclick=()=>irA(i);B.append(b)});
+  // la barra de pasos: un camino en tres partes, cada una con su nombre
+  const B=$('pasos');B.innerHTML='';let grupo=null;
+  const boton=(i,cls,cont,tit)=>{const b=el('button','paso '+cls+(i===ENC.paso?' actual':''));b.type='button';b.title=tit;b.setAttribute('aria-label',tit);
+    if(typeof cont==='string')b.textContent=cont;else b.append(cont);b.onclick=()=>irA(i);return b};
+  EJ.forEach((e,i)=>{
+    if(e.rep){grupo=el('div','grupo');const g=el('div','gpasos');grupo.append(el('div','gtit',e.t),g);B.append(grupo);
+      g.append(boton(i,'rep','Repaso','Repaso: '+e.t));return}
+    const ok=ENC.ej[e.id]&&ENC.ej[e.id].ok;if(!e.extra)num++;
+    grupo.lastChild.append(boton(i,(ok?'ok':'')+(e.extra?' extra':''),ok?'✓':e.extra?ico('estrella','chico'):String(num),e.t));
+  });
+  const gf=el('div','grupo');gf.append(el('div','gtit','Al final'));const gp=el('div','gpasos');
+  const fb=boton(EJ.length,'rep fin',el('span',null,'Entregar'),'Entregar');fb.prepend(ico('bandera','chico'));gp.append(fb);gf.append(gp);B.append(gf);
   $('entrega').hidden=!fin;
   const e=EJ[ENC.paso],arma=e&&e.arma;
   document.querySelector('.consigna').hidden=document.querySelector('.trabajo').hidden=!arma;
