@@ -503,9 +503,9 @@ const D=[
 ];
 // los dos del repaso que se arreglan con bloques (g:'enc' no sale en las cartas)
 D.push(
-  {id:'r-trucha',g:'enc',ic:'🎭',n:'La moneda trucha',d:'',
-   c:'Tendría que salir mitad verde y mitad roja, pero sale mucho roja. Buscá la trampa en el programa y arreglala.',
-   q:'',qa:'',prog:D.find(x=>x.id==='trucha').prog,bien:MONEDA_JUSTA},
+  {id:'r-moneda',g:'enc',ic:'🎭',n:'La moneda trucha',d:'',
+   c:'Tendría que salir mitad verde y mitad roja, pero sale siempre roja. Buscá la trampa en el programa y arreglala.',
+   q:'',qa:'',prog:{empezar:[],boton:[P('todas'),P('moneda',{si:[P('prender',{l:1})],no:[P('prender',{l:1})]}),P('sonar',{s:'corto'})]},bien:MONEDA_JUSTA},
   {id:'r-semaforo',g:'enc',ic:'🚦',n:'El semáforo roto',d:'',
    c:'Tendría que estar 3 segundos en verde y 3 en rojo. Pero la roja casi no se ve. Arreglalo.',
    q:'',qa:'',prog:D.find(x=>x.id==='semaforo').prog,bien:SEMAFORO}
@@ -575,7 +575,7 @@ function dibujarLista(lista,cls){
   a.onclick=()=>{destino=destino===lista?null:lista;dibujar()};
   d.append(a);
   if(destino===lista){const pal=el('div','paleta');
-    BLOQUES.forEach(b=>{const bt=el('button',b.c,b.txt);bt.onclick=()=>{lista.push(b.nuevo());destino=null;cambio()};pal.append(bt)});
+    BLOQUES.filter(b=>!(actual&&actual.g==='enc'&&b.c==='var')).forEach(b=>{const bt=el('button',b.c,b.txt);bt.onclick=()=>{lista.push(b.nuevo());destino=null;cambio()};pal.append(bt)});
     d.append(pal)}
   return d;
 }
@@ -853,8 +853,8 @@ const EJ=[
    quiere:[PT('v')+'prender la verde','esperar 2 segundos',PT('o')+'apagar la verde'],
    txt:'Pero la verde queda prendida para siempre. <b>Tocá el bloque que está mal.</b>',
    prog:{boton:[P('prender',{l:2}),P('esperar',{n:2}),P('apagar',{l:1})]},ok:2},
-  {id:'e5',t:'La moneda trucha',arma:'r-trucha',
-   fichas:[['moneda','Tendría que',`salir mitad ${PT('v')} y mitad ${PT('r')}`],['trampa','Pero',`sale mucho ${PT('r')}`]],
+  {id:'e5',t:'La moneda trucha',arma:'r-moneda',
+   fichas:[['moneda','Tendría que',`salir mitad ${PT('v')} y mitad ${PT('r')}`],['trampa','Pero',`sale siempre ${PT('r')}`]],
    txt:'<b>Abajo</b> está el programa. Probalo con <b>Encender</b> y el botón, buscá la trampa y arreglala. Cuando la arregles, tocá <b>Siguiente</b>: la página la prueba.'},
   {id:'e6',t:'Extra: el semáforo roto',arma:'r-semaforo',extra:true,
    fichas:[['semaforo','Tendría que',`3 segundos ${PT('v')} y 3 segundos ${PT('r')}`],['trampa','Pero',`la ${PT('r')} casi no se ve`]],
@@ -1036,7 +1036,7 @@ function revisarSemaforo(pr){
   if(dos)mal.push('En algún momento están las dos luces prendidas a la vez.');
   return {mal,info:''};
 }
-const ARMA={'r-trucha':'e5','r-semaforo':'e6'};
+const ARMA={'r-moneda':'e5','r-semaforo':'e6'};
 function mostrarComprobado(id){
   const s=ENC.ej[ARMA[id]],C=$('comprobado');C.innerHTML='';
   if(!s||!s.i)return;
@@ -1047,7 +1047,7 @@ function mostrarComprobado(id){
 }
 function comprobarArma(){
   if(!actual||!ARMA[actual.id])return false;empezo();
-  const s=est(ARMA[actual.id]);const r=actual.id==='r-trucha'?revisarMoneda(prog):revisarSemaforo(prog);
+  const s=est(ARMA[actual.id]);const r=actual.id==='r-moneda'?revisarMoneda(prog):revisarSemaforo(prog);
   if(!s.ok){s.i++;s.ok=!r.mal.length;s.ok1=s.ok&&s.i===1}
   s.msg=r.mal;s.info=r.info;s.prog=copia(prog);guardaEnc();mostrarComprobado(actual.id);
   return s.ok;
@@ -1236,7 +1236,7 @@ function ruta(){
   $('profe').hidden=!esProfe;$('elegir').hidden=esProfe||esEnc;
   $('encargo').hidden=!esEnc;$('entrega').hidden=true;document.querySelector('main>header').hidden=esEnc;
   if(!esEnc){const t=document.querySelector('.trabajo'),k=document.querySelector('.consigna');k.hidden=t.hidden=false;if(t.previousElementSibling!==k)t.before(k)}
-  if(esEnc){if(!actual||!ARMA[actual.id])abrir(POR_ID['r-trucha']);renderEnc();return}
+  if(esEnc){if(!actual||!ARMA[actual.id])abrir(POR_ID['r-moneda']);renderEnc();return}
   if(esProfe){if(!actual)abrir(POR_ID.libre);return}
   abrir(POR_ID[h]||POR_ID.libre);
 }
