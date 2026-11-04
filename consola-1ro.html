@@ -892,8 +892,17 @@ const REPASOS={
     m.b.onclick=async()=>{if(!cargado){msj.className='res mal';msj.textContent='Primero cargale un programa: la placa sola no hace nada.';return}
       await cargado.f();usados.add(cargado.n);
       if(usados.size>1){msj.className='res bien';msj.textContent='La placa y las cosas conectadas son las mismas: el mismo hardware. Lo que cambió es el programa, el software.'}};
-    const d=el('p','desafio');d.innerHTML='<b>Desafío:</b><br>1. Tocá <b>Cargarlo en la consola</b> en el programa 1 y apretá el botón de la consola.<br>2. Cargá el programa 2 y apretá otra vez.<br>3. ¿Qué cambió: la consola o el programa?';
+    const d=el('p','desafio');d.innerHTML='<b>Desafío:</b><br>1. Tocá <b>Cargarlo en la consola</b> en el programa 1 y apretá el botón de la consola.<br>2. Cargá el programa 2 y apretá otra vez.<br>3. Contestá abajo: ¿qué cambió?';
     g.append(izq,der);c.append(d,g,msj);
+    // 3. la pregunta, para contestar ahí mismo (llega en la entrega)
+    const s=est('r1'),q=el('div','item');q.append(el('p',null,'3. ¿Qué cambió?'));const o=el('div','opc'),res=el('p','res');
+    const OPS=[['chip','La consola (el hardware)'],['codigo','El programa (el software)']];
+    const pinta=()=>{o.innerHTML='';OPS.forEach(([ic,tx],j)=>{const bt=el('button');bt.type='button';bt.append(ico(ic,'chico'),el('span',null,tx));
+      bt.setAttribute('aria-pressed',s.sel[0]===j?'true':'false');bt.disabled=s.ok;if(s.sel[0]===j&&!s.ok)bt.classList.add('mala');
+      bt.onclick=()=>{empezo();s.sel[0]=j;s.i++;s.ok=j===1;s.ok1=s.ok&&s.i===1;guardaEnc();pinta()};o.append(bt)});
+      res.className='res '+(s.ok?'bien':'mal');
+      res.textContent=s.ok?'✓ ¡Eso! La consola fue siempre la misma: cambió el programa.':s.i?'Mirá de nuevo: ¿cambiaste algún cable o alguna luz? ¿O cargaste otro programa?':''};
+    pinta();q.append(o,res);c.append(q);
   },
   es(c){
     const p=el('p','txt');p.innerHTML='Para que la consola haga algo, primero se tiene que <b>enterar</b>: que apretaste el botón, o que tapaste el sensor. Esas son las <b>entradas</b>. Después, el programa <b>decide</b> qué hacer. Y al final la consola <b>hace</b> algo: prende una luz o suena. Esas son las <b>salidas</b>.';
@@ -1114,6 +1123,7 @@ function armarTanda(quien){
       :e.senala?(s.sel[0]==null?'(no lo hizo)':'Tocó: '+txtPaso(Object.values(e.prog).flat()[s.sel[0]]))
       :e.items.map((it,k)=>it.q+' → '+(s.sel[k]==null?'—':(it.o||e.o)[s.sel[k]][1])).join(' · ');
     return {c:'Ej. '+(n+1)+' · '+e.t,t:e.arma?'arreglar':e.senala?'señalar':'elegir',q,i:s.i,ok:s.ok,ok1:s.ok1,p:s.p,s:!s.i,sg:0}});
+  {const r=est('r1');ejs.unshift({c:'Repaso 1 · ¿Qué cambió?',t:'elegir',q:r.sel[0]==null?'(no contestó)':['La consola (el hardware)','El programa (el software)'][r.sel[0]],i:r.i,ok:r.ok,ok1:r.ok1,p:0,s:!r.i,sg:0})}
   if(extra)ejs.push({c:'¿Cómo encontraron la trampa?',t:'abierta',q:extra,i:1,ok:true,ok1:true,p:0,s:false,sg:0});
   return {id:nuevoId('c'),alumno:quien,anio:'1ro',fecha:hoy(),ts,sala:'repaso1ro',salaNom:'Repaso de la consola',modo:'practica',
     total:EJS.length,resueltos:EJS.filter(e=>est(e.id).ok).length,sinAyuda:EJS.filter(e=>est(e.id).ok1).length,
