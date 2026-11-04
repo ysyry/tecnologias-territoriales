@@ -258,7 +258,7 @@ table.esq th{color:var(--tinta)}
 .fpaso.on{opacity:1;border-color:var(--violeta)}
 .fpaso b{color:var(--tinta);font-family:var(--f-titulo);font-size:1.15em}
 .fflecha{align-self:center;font-size:1.6em;color:var(--tenue);font-weight:800}
-.desafio{background:var(--papel);border-left:5px solid var(--inf);border-radius:10px;padding:10px 14px;font-size:1.08em;color:var(--tinta)}
+.desafio{line-height:1.7;background:var(--papel);border-left:5px solid var(--inf);border-radius:10px;padding:10px 14px;font-size:1.08em;color:var(--tinta)}
 .btn.grande{font-size:1.15em;padding:12px 26px}
 .nav{margin-top:22px;justify-content:space-between}
 
@@ -892,7 +892,7 @@ const REPASOS={
     m.b.onclick=async()=>{if(!cargado){msj.className='res mal';msj.textContent='Primero cargale un programa: la placa sola no hace nada.';return}
       await cargado.f();usados.add(cargado.n);
       if(usados.size>1){msj.className='res bien';msj.textContent='La placa y las cosas conectadas son las mismas: el mismo hardware. Lo que cambió es el programa, el software.'}};
-    const d=el('p','desafio');d.innerHTML='<b>Desafío:</b> 1. Tocá <b>Cargarlo en la consola</b> en el programa 1 y apretá el botón de la consola. 2. Cargá el programa 2 y apretá otra vez. ¿Qué cambió: la consola o el programa?';
+    const d=el('p','desafio');d.innerHTML='<b>Desafío:</b><br>1. Tocá <b>Cargarlo en la consola</b> en el programa 1 y apretá el botón de la consola.<br>2. Cargá el programa 2 y apretá otra vez.<br>3. ¿Qué cambió: la consola o el programa?';
     g.append(izq,der);c.append(d,g,msj);
   },
   es(c){
