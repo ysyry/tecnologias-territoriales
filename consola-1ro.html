@@ -268,6 +268,12 @@ table.esq th{color:var(--tinta)}
 .envio small{color:var(--tenue)}
 .lineas{display:flex;flex-direction:column;gap:10px;margin:6px 0 4px}
 .linea-rep{display:flex;align-items:center;gap:14px;background:var(--inf-w);border-radius:14px;padding:10px 16px;font-size:1.12em;color:var(--tinta);max-width:44em}
+.fpaso.ahora{box-shadow:0 0 0 4px var(--inf-w);border-color:var(--inf);transform:scale(1.04)}
+.fpaso{transition:opacity .2s,border-color .2s,transform .2s}
+.mboton.marcado{outline:4px solid #FFD84A;outline-offset:3px}
+.paso-a-paso{border:3px solid var(--violeta);border-radius:16px;padding:14px 18px;display:flex;flex-direction:column;gap:12px;align-items:flex-start;margin-top:8px}
+.paso-a-paso .txt{margin:0;font-size:1.2em}
+.mini-dice{display:inline-block;background:#8A5BE6;color:#fff;border-radius:8px;padding:2px 10px;font-weight:700}
 </style>
 </head>
 <body>
@@ -913,14 +919,20 @@ const REPASOS={
     const m=miniConsola();
     f.append(cajas[0],el('span','fflecha','→'),cajas[1],el('span','fflecha','→'),cajas[2]);
     const g=el('div','rep-grid');const iz=el('div','rep-col');iz.append(el('div','rot','Probalo'),m.c);const de=el('div','rep-col');de.append(el('div','rot','Lo que pasa adentro'),f);
-    const d=el('p','desafio');d.innerHTML='<b>Desafío:</b> apretá el botón de la consola y mirá el camino que hace, de izquierda a derecha.';
+    const d=el('p','desafio');d.innerHTML='<b>Desafío:</b> apretá el botón de la consola. Después tocá <b>Siguiente paso</b> para ver qué pasa adentro, de a un paso.';
     c.append(d);g.append(iz,de);c.append(g);
-    const msj=el('p','res');
-    m.b.onclick=async()=>{if(m.b.disabled)return;m.b.disabled=true;cajas.forEach(k=>k.classList.remove('on'));m.v.classList.remove('on');
-      for(const k of cajas){k.classList.add('on');if(k===cajas[2])m.v.classList.add('on');await espera(700)}
-      msj.className='res bien';msj.textContent='El botón le avisó (entrada), el programa decidió y la luz se prendió (salida).';
-      await espera(800);m.v.classList.remove('on');m.b.disabled=false};
-    c.append(msj);
+    const caja=el('div','paso-a-paso');caja.hidden=true;const txt=el('p','txt'),sig=el('button','btn lleno grande');sig.type='button';caja.append(txt,sig);c.append(caja);
+    const PASOS=[
+      '<b>1. Se entera.</b> Apretaste el botón. El botón es una <b>entrada</b>: por ahí la placa se entera de que lo apretaste.',
+      '<b>2. Decide.</b> El programa dice: <span class="mini-dice">cuando aprieto el botón → prender la luz verde</span>',
+      '<b>3. Hace algo.</b> La luz verde se prende. La luz es una <b>salida</b>: con ella la placa hace algo.',
+    ];
+    let n=-1;
+    const mostrar=()=>{cajas.forEach((k,i)=>{k.classList.toggle('on',i<=n);k.classList.toggle('ahora',i===n)});
+      m.b.classList.toggle('marcado',n===0);m.v.classList.toggle('on',n===2);
+      caja.hidden=false;txt.innerHTML=PASOS[n];sig.textContent=n<2?'Siguiente paso →':'Probar de nuevo';};
+    m.b.onclick=()=>{empezo();n=0;mostrar()};
+    sig.onclick=()=>{if(n<2){n++;mostrar()}else{n=-1;cajas.forEach(k=>k.classList.remove('on','ahora'));m.v.classList.remove('on');caja.hidden=true;m.b.classList.add('marcado');setTimeout(()=>m.b.classList.remove('marcado'),1500)}};
   },
   bug(c){
     c.append(lineas('',[['bug','Un <b>bug</b> es un error en el programa: hace algo que no queríamos.'],['idea','Se llama así («bicho», en inglés) porque una vez una polilla se metió en una computadora y la hizo fallar.']]));
