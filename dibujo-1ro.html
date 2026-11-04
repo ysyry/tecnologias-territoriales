@@ -91,6 +91,11 @@ a{color:var(--violeta)}
 .marcador{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
 .marcador span{border:2px solid var(--raya);border-radius:999px;padding:3px 12px;font-weight:700;font-size:.9em}
 .marcador span.si{border-color:var(--verde);color:var(--verde)}
+.leyenda{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:12px;font-size:.88em;color:var(--tenue)}
+.leyenda b{color:#fff;border-radius:6px;padding:1px 8px;margin-right:4px}
+.leyenda .mov{background:var(--b-mov)} .leyenda .pin{background:var(--b-pin)} .leyenda .col{background:var(--b-col)} .leyenda .rep{background:var(--b-rep)}
+input.grande{font-size:1.2em;padding:12px 16px;border:2px solid var(--violeta);border-radius:12px;background:var(--hoja);color:var(--tinta);min-width:min(100%,320px)}
+@media (max-width:700px){.trabajo>section:first-child{order:1}.col-prog{order:2}.trabajo>section:last-child{order:3}}
 </style>
 </head>
 <body>
@@ -105,7 +110,9 @@ a{color:var(--violeta)}
     </div>
   </header>
 
-  <section class="panel">
+  <div id="puerta"></div>
+
+  <section class="panel" id="elegir">
     <h2>Elegí el dibujo</h2>
     <div class="dibujos" id="dibujos"></div>
   </section>
@@ -124,6 +131,12 @@ a{color:var(--violeta)}
       <p class="ayuda" style="margin-top:0">El pincel arranca <b>arriba a la izquierda</b>, en <b>negro</b>. Tocá los bloques de abajo.</p>
       <div id="programa"></div>
       <div class="paleta" id="paleta"></div>
+      <div class="leyenda">
+        <span><b class="mov">→</b> mueve el pincel</span>
+        <span><b class="pin">pintar</b> pinta donde está</span>
+        <span><b class="col">color</b> cambia el color</span>
+        <span><b class="rep">repetir</b> hace lo de adentro varias veces</span>
+      </div>
       <div class="fila" style="margin-top:12px"><button class="btn" id="limpiar">Borrar el programa</button></div>
     </section>
 
@@ -131,17 +144,17 @@ a{color:var(--violeta)}
       <h2>Tu dibujo</h2>
       <div class="grilla grande" id="lienzo"></div>
       <div class="fila" style="margin-top:12px">
-        <button class="btn lleno" id="dibujar">▶ Dibujar</button>
+        <button class="btn lleno" id="dibujar">Dibujar</button>
         <button class="btn" id="dif">Ver diferencias</button>
       </div>
       <p class="res" id="res"></p>
     </section>
   </div>
 
-  <section class="panel">
-    <h2>🏁 Entregar</h2>
+  <section class="panel" id="entrega">
+    <h2>Entregar</h2>
     <div class="marcador" id="marcador"></div>
-    <div class="fila"><button class="btn lleno" id="entregar">📤 Entregar</button><span class="estado" id="entregado"></span></div>
+    <div class="fila"><button class="btn lleno" id="entregar">Entregar</button><span class="estado" id="entregado"></span></div>
     <p class="ayuda">Me llega aunque no estén todos.</p>
     <p class="ayuda"><a href="consola-1ro.html#repaso">← Volver al repaso</a></p>
   </section>
@@ -153,6 +166,7 @@ const el=(tag,cls,txt)=>{const e=document.createElement(tag);if(cls)e.className=
 const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
 const copia=o=>JSON.parse(JSON.stringify(o));
 const N=8;
+const nombreOk=n=>n.trim().split(/\s+/).filter(w=>w.length>1).length>=2;
 const COL={negro:'#1d1a26',rojo:'#E5413A',verde:'#2FB35E',azul:'#3E7FD9',amarillo:'#F5C518',marron:'#8B5A2B'};
 const NOMCOL={negro:'negro',rojo:'rojo',verde:'verde',azul:'azul',amarillo:'amarillo',marron:'marrón'};
 
@@ -300,7 +314,11 @@ $('dibujar').onclick=async()=>{
   if(!s.ok){s.i++;s.ok=c.igual;s.ok1=c.igual&&s.i===1}else if(!c.igual)s.ok=false;
   s.res=r.g;guarda();cartas();
   const R=$('res');
-  if(c.igual){R.className='res bien';R.textContent='✓ ¡Salió igual al modelo!'+(d.libre?' Tu diseño está programado.':'')}
+  if(c.igual){R.className='res bien';R.textContent='✓ ¡Salió igual al modelo!'+(d.libre?' Tu diseño está programado.':'');
+    const i=DIB.findIndex(x=>x.id===d.id);
+    if(i<DIB.length-1){const b=document.createElement('button');b.className='btn lleno';b.style.marginLeft='12px';b.textContent='Siguiente dibujo →';
+      b.onclick=()=>{E.actual=DIB[i+1].id;destino=null;verDif=false;guarda();todo();$('elegir').scrollIntoView({behavior:'smooth'})};R.append(b)}
+    else{const b=document.createElement('a');b.href='#entrega';b.className='btn lleno';b.style.marginLeft='12px';b.style.textDecoration='none';b.textContent='Ir a Entregar ↓';R.append(b)}}
   else{R.className='res mal';const partes=[];
     if(c.falta)partes.push(c.falta===1?'falta 1 cuadradito':'faltan '+c.falta+' cuadraditos');
     if(c.sobra)partes.push(c.sobra===1?'sobra 1':'sobran '+c.sobra);
@@ -313,6 +331,17 @@ $('limpiar').onclick=()=>{if(!prog().length||!confirm('¿Borrar todo el programa
 $('borrar-modelo').onclick=()=>{if(!confirm('¿Borrar tu diseño?'))return;const s=est('libre');s.diseno=null;s.ok=false;guarda();modelo();cartas()};
 
 function todo(){
+  const ok=nombreOk($('autores').value);
+  ['elegir','entrega'].forEach(id=>$(id).hidden=!ok);document.querySelector('.trabajo').hidden=!ok;
+  $('autores').closest('.fila').hidden=!ok;
+  const P=$('puerta');P.innerHTML='';
+  if(!ok){const c=el('section','panel');c.append(el('h2',null,'Antes de empezar'));
+    const p=el('p');p.style.fontSize='1.15em';p.innerHTML='Escribí tu <b>nombre y apellido</b>. Así me llega a mí lo que hagas.';c.append(p);
+    const inp=el('input');inp.type='text';inp.placeholder='Ej.: Lucía Gómez';inp.maxLength=80;inp.className='grande';
+    const ir=el('button','btn lleno','Empezar →'),msj=el('p','res mal');
+    const probar=()=>{$('autores').value=inp.value;LS.set('dibujo1ro.autores',inp.value);if(nombreOk(inp.value))todo();else msj.textContent='Falta el apellido.'};
+    ir.onclick=probar;inp.onkeydown=e=>{if(e.key==='Enter')probar()};
+    const f=el('div','fila');f.append(inp,ir);c.append(f,msj);P.append(c);setTimeout(()=>inp.focus(),50);return}
   cartas();modelo();editor();
   const s=est(E.actual);const r=resultado(s.prog);const last=r.tr[r.tr.length-1]||{x:0,y:0};
   lienzo(r.g,last.x,last.y);
@@ -331,7 +360,6 @@ const aTexto=g=>g?g.map(f=>f.map(c=>c?INI[c]:'.').join('')).join(' / '):'';
 function progTexto(l){return l.map(p=>p.t==='mov'?FLECHA[p.d]:p.t==='pin'?'pintar':p.t==='col'?'color '+NOMCOL[p.c]:'repetir '+p.n+' ['+progTexto(p.cuerpo)+']').join(', ')}
 $('autores').value=LS.get('dibujo1ro.autores','');
 $('autores').oninput=()=>LS.set('dibujo1ro.autores',$('autores').value);
-const nombreOk=n=>n.trim().split(/\s+/).filter(w=>w.length>1).length>=2;
 async function enviar(auto){
   const quien=$('autores').value.trim();
   if(!nombreOk(quien)){if(!auto){$('entregado').textContent='Escribí tu nombre y apellido arriba de todo.';$('autores').focus();$('autores').scrollIntoView({behavior:'smooth',block:'center'})}return}
