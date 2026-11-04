@@ -938,13 +938,37 @@ const REPASOS={
   },
   bug(c){
     c.append(lineas('',[['bug','Un <b>bug</b> es un error en el programa: hace algo que no queríamos.'],['idea','Se llama así («bicho», en inglés) porque una vez una polilla se metió en una computadora y la hizo fallar.']]));
-    c.append(el('p','txt','Para encontrar un bug:'));
+    c.append(el('p','txt','¿Cómo hacemos para descubrir un error en el programa?'));
     const f=el('div','flujo');
     [['objetivo','1. ¿Qué tendría que pasar?'],['ojo','2. ¿Qué pasa?'],['lupa','3. Leé el programa paso por paso']]
       .forEach(([ic,t],i)=>{if(i)f.append(el('span','fflecha','→'));const k=el('div','fpaso on');k.append(ico(ic,'grande'),el('span',null,t));f.append(k)});
     c.append(f);
-    const d=el('p','desafio');d.innerHTML='Así lo vamos a hacer en los próximos pasos: primero uno para leer, y después la moneda trucha, que hace trampa.';
+    // el detective: el programa avanza de a un bloque y ellos dicen dónde está el bug
+    const d=el('p','desafio');d.innerHTML='<b>Desafío:</b> este programa <b>tendría que</b> prender la roja, esperar 1 segundo y apagarla.<br>1. Tocá <b>Empezar</b>: el programa avanza de a un paso.<br>2. En cada paso, fijate si hace lo que tendría que hacer.<br>3. Cuando encuentres el error, tocá <b>¡Acá está el bug!</b>';
     c.append(d);
+    const st=est('r3'),PR=[['salida','prender luz roja'],['control','esperar 10 segundos'],['salida','apagar luz roja']];
+    const g=el('div','rep-grid'),m=miniConsola(),iz=el('div','rep-col'),de=el('div','rep-col');
+    const ev=el('div','evento'),cab=el('div','cab','cuando aprieto el botón'),li=el('div','lista');li.style.alignItems='flex-start';
+    const bl=PR.map(([cl,t])=>{const x=el('div','linea '+cl,t);li.append(x);return x});ev.append(cab,li);ev.style.marginBottom='0';
+    iz.append(el('div','rot','La consola'),m.c);de.append(el('div','rot','El programa'),ev);g.append(iz,de);c.append(g);
+    const caja=el('div','paso-a-paso'),tx=el('p','txt'),bots=el('div','fila');caja.append(tx,bots);c.append(caja);
+    let k=-1;
+    const EFECTO=[()=>m.r.classList.add('on'),()=>{},()=>m.r.classList.remove('on')];
+    const QUE=['Prendió la luz roja.','Se quedó esperando… 10 segundos.','Apagó la luz roja.'];
+    const NO=['No, ese va bien: tenía que prender la roja, y la prendió.','','No, ese va bien: tenía que apagar la roja, y la apagó.'];
+    const pinta=(extra,cls)=>{bl.forEach((x,i)=>x.classList.toggle('activa',i===k));bots.innerHTML='';
+      if(st.ok){tx.innerHTML='<span class="res bien">✓ ¡Lo encontraste!</span> Tenía que esperar <b>1 segundo</b> y el programa dice <b>10</b>. Ese es el bug.';
+        const r=el('button','btn','Ver de nuevo');r.onclick=()=>{k=-1;m.r.classList.remove('on');st.ok=st.ok;tx.textContent='';empezar()};bots.append(r);return}
+      if(k<0){tx.textContent='';const e=el('button','btn lleno grande','▶ Empezar');e.onclick=empezar;bots.append(e);return}
+      tx.innerHTML='<b>Paso '+(k+1)+':</b> '+QUE[k]+' ¿Va bien hasta acá?'+(extra?'<br><span class="res '+(cls||'mal')+'">'+extra+'</span>':'');
+      const si=el('button','btn','Sí, sigue →'),bug=el('button','btn lleno','¡Acá está el bug!');
+      si.onclick=()=>{if(k===1){st.i++;st.p++;guardaEnc();pinta('Mirá bien: tenía que esperar 1 segundo. ¿Cuánto dice el programa?');return}
+        if(k<2){k++;EFECTO[k]();pinta()}else{k=-1;m.r.classList.remove('on');pinta('Llegaste al final sin encontrarlo. Probá de nuevo.')}};
+      bug.onclick=()=>{empezo();st.i++;if(k===1){st.ok=true;st.ok1=st.i===1;st.sel[0]=1}else{st.sel[0]=k}guardaEnc();
+        if(st.ok)pinta();else pinta(NO[k])};
+      bots.append(si,bug)};
+    const empezar=()=>{k=0;m.r.classList.remove('on');EFECTO[0]();pinta()};
+    pinta();
   },
 };
 const EJS=EJ.filter(e=>e.id);
@@ -1153,6 +1177,7 @@ function armarTanda(quien){
       :e.senala?(s.sel[0]==null?'(no lo hizo)':'Tocó: '+txtPaso(Object.values(e.prog).flat()[s.sel[0]]))
       :e.items.map((it,k)=>it.q+' → '+(s.sel[k]==null?'—':(it.o||e.o)[s.sel[k]][1])).join(' · ');
     return {c:'Ej. '+(n+1)+' · '+e.t,t:e.arma?'arreglar':e.senala?'señalar':'elegir',q,i:s.i,ok:s.ok,ok1:s.ok1,p:s.p,s:!s.i,sg:0}});
+  {const r=est('r3');ejs.unshift({c:'Repaso 3 · Detective: ¿dónde está el bug?',t:'señalar',q:r.ok?'Lo encontró (esperar 10 segundos)':r.i?'No lo encontró':'(no lo hizo)',i:r.i,ok:r.ok,ok1:r.ok1,p:r.p,s:!r.i,sg:0})}
   {const r=est('r1');ejs.unshift({c:'Repaso 1 · ¿Qué cambió?',t:'elegir',q:r.sel[0]==null?'(no contestó)':['La consola (el hardware)','El programa (el software)'][r.sel[0]],i:r.i,ok:r.ok,ok1:r.ok1,p:0,s:!r.i,sg:0})}
   if(extra)ejs.push({c:'¿Cómo encontraron la trampa?',t:'abierta',q:extra,i:1,ok:true,ok1:true,p:0,s:false,sg:0});
   return {id:nuevoId('c'),alumno:quien,anio:'1ro',fecha:hoy(),ts,sala:'repaso1ro',salaNom:'Repaso de la consola',modo:'practica',
