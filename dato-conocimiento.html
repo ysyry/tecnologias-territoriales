@@ -90,7 +90,7 @@ textarea{width:100%;font:500 .9em var(--f-cuerpo);color:var(--tinta);background:
 .vs ul{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:4px}
 @media (max-width:760px){.vs{grid-template-columns:1fr}}
 .caso{border-top:2px solid var(--raya);padding-top:26px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px 24px;align-items:start}
-.caso .ic{font-size:2em;line-height:1}
+.caso .ic{font-family:var(--f-titulo);font-weight:800;font-size:1.6em;line-height:1.1;color:var(--inf)}
 .caso .cuerpo{display:flex;flex-direction:column;gap:16px;min-width:0}
 .caso.tapado h3{color:transparent;background:var(--raya);border-radius:6px;user-select:none}
 .destapar{align-self:flex-start;font:700 .8em var(--f-cuerpo);border-radius:999px;padding:10px 22px;cursor:pointer;background:var(--violeta);color:var(--hoja);border:0}
@@ -102,10 +102,13 @@ textarea{width:100%;font:500 .9em var(--f-cuerpo);color:var(--tinta);background:
 .quien b{color:var(--tinta)}
 .quien input{font:inherit;color:var(--tinta);background:var(--hoja);border:1.5px solid var(--raya);border-radius:8px;padding:8px 10px;min-width:0}
 .quien button{font:700 1em var(--f-cuerpo);background:var(--violeta);color:var(--hoja);border:0;border-radius:999px;padding:8px 16px;cursor:pointer}
-.intro{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:28px}
-.intro>div{background:var(--hoja);border:1px solid var(--raya);border-radius:12px;padding:18px 20px;display:flex;flex-direction:column;gap:10px}
-.intro .ic{font-size:1.8em;line-height:1}
-@media (max-width:760px){.intro{grid-template-columns:1fr}}
+.intro{display:grid;grid-template-columns:minmax(0,1fr) 40px minmax(0,1fr) 40px minmax(0,1fr);gap:12px;align-items:center;margin-top:28px}
+.paso-i{background:var(--hoja);border:1px solid var(--raya);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:14px;height:100%}
+.simb{width:64px;height:48px}
+.nums{display:flex;flex-direction:column;justify-content:center;font:500 11px/1.15 var(--f-mono);color:var(--violeta)}
+.nums span:nth-child(2){padding-left:10px}.nums span:nth-child(3){padding-left:4px}.nums span:nth-child(4){padding-left:14px;color:var(--tenue)}
+.flecha{width:40px;height:24px}
+@media (max-width:760px){.intro{grid-template-columns:1fr;justify-items:center}.paso-i{width:100%}.flecha{transform:rotate(90deg)}}
 </style>
 </head>
 <body>
@@ -116,9 +119,20 @@ textarea{width:100%;font:500 .9em var(--f-cuerpo);color:var(--tinta);background:
     <div class="rot">3ro · proyecto final · en parejas, sin la profe</div>
     <h1>¿Quién puede saber lo que sabemos de la huerta?</h1>
     <div class="intro">
-      <div><span class="ic" aria-hidden="true">🌱</span><p>En el proyecto final estamos armando un aparato para la huerta de la escuela. Mide la <b>luz</b> que le llega a un cantero y la <b>humedad</b> de la tierra.</p></div>
-      <div><span class="ic" aria-hidden="true">📋</span><p><b>Imaginemos</b> que ya está terminado y lo dejamos midiendo un día entero. Vamos a tener cientos de números.</p></div>
-      <div><span class="ic" aria-hidden="true">🤔</span><p>Hoy vemos dos cosas: cómo pasar de esos números a algo que nos sirva para decidir, y <b>de quién son</b> esos datos.</p></div>
+      <div class="paso-i">
+        <svg class="simb" viewBox="0 0 64 48" aria-hidden="true"><rect x="14" y="10" width="36" height="28" rx="4" fill="none" stroke="var(--violeta)" stroke-width="3"/><path d="M22 10 V4 M32 10 V4 M42 10 V4 M22 38 V44 M32 38 V44 M42 38 V44" stroke="var(--violeta)" stroke-width="3" stroke-linecap="round"/><circle cx="32" cy="24" r="5" fill="var(--violeta)"/></svg>
+        <p>En el proyecto final estamos armando un aparato para la huerta de la escuela. Mide la <b>luz</b> que le llega a un cantero y la <b>humedad</b> de la tierra.</p>
+      </div>
+      <svg class="flecha" viewBox="0 0 40 24" aria-hidden="true"><path d="M2 12 H34 M26 4 L35 12 L26 20" fill="none" stroke="var(--inf)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="paso-i">
+        <div class="simb nums" aria-hidden="true"><span>873</span><span>41</span><span>925</span><span>…</span></div>
+        <p><b>Imaginemos</b> que ya está terminado y lo dejamos midiendo un día entero. Vamos a tener cientos de números.</p>
+      </div>
+      <svg class="flecha" viewBox="0 0 40 24" aria-hidden="true"><path d="M2 12 H34 M26 4 L35 12 L26 20" fill="none" stroke="var(--inf)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div class="paso-i">
+        <svg class="simb" viewBox="0 0 64 48" aria-hidden="true"><path d="M6 24 H26 C34 24 34 10 44 10 H50 M26 24 C34 24 34 38 44 38 H50" fill="none" stroke="var(--violeta)" stroke-width="3" stroke-linecap="round"/><circle cx="55" cy="10" r="4" fill="var(--violeta)"/><circle cx="55" cy="38" r="4" fill="var(--inf)"/></svg>
+        <p>Hoy vemos dos cosas: cómo pasar de esos números a algo que nos sirva para <b>decidir</b>, y <b>de quién son</b> esos datos.</p>
+      </div>
     </div>
   </header>
 
@@ -189,7 +203,7 @@ textarea{width:100%;font:500 .9em var(--f-cuerpo);color:var(--tinta);background:
     <p>Ábranlos de a uno, lean y respondan la pregunta de cada uno.</p>
 
     <div class="caso tapado">
-      <div class="ic" aria-hidden="true">🗺️</div>
+      <div class="ic">1</div>
       <div class="cuerpo">
         <h3>OpenStreetMap y Google Maps</h3>
         <button class="destapar" type="button">Destapar</button>
@@ -206,7 +220,7 @@ textarea{width:100%;font:500 .9em var(--f-cuerpo);color:var(--tinta);background:
     </div>
 
     <div class="caso tapado">
-      <div class="ic" aria-hidden="true">🚜</div>
+      <div class="ic">2</div>
       <div class="cuerpo">
         <h3>El tractor que no te deja arreglarlo</h3>
         <button class="destapar" type="button">Destapar</button>
@@ -223,7 +237,7 @@ textarea{width:100%;font:500 .9em var(--f-cuerpo);color:var(--tinta);background:
     </div>
 
     <div class="caso tapado">
-      <div class="ic" aria-hidden="true">🌫️</div>
+      <div class="ic">3</div>
       <div class="cuerpo">
         <h3>Vecinos que miden el aire</h3>
         <button class="destapar" type="button">Destapar</button>
@@ -240,7 +254,7 @@ textarea{width:100%;font:500 .9em var(--f-cuerpo);color:var(--tinta);background:
     </div>
 
     <div class="caso tapado">
-      <div class="ic" aria-hidden="true">🌱</div>
+      <div class="ic">4</div>
       <div class="cuerpo">
         <h3>Imaginate: el sensor regalado</h3>
         <button class="destapar" type="button">Destapar</button>
