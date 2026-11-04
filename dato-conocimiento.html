@@ -109,6 +109,9 @@ textarea{width:100%;font:500 .9em var(--f-cuerpo);color:var(--tinta);background:
 .nums span:nth-child(2){padding-left:10px}.nums span:nth-child(3){padding-left:4px}.nums span:nth-child(4){padding-left:14px;color:var(--tenue)}
 .flecha{width:40px;height:24px}
 @media (max-width:760px){.intro{grid-template-columns:1fr;justify-items:center}.paso-i{width:100%}.flecha{transform:rotate(90deg)}}
+.ejtabla{background:var(--hoja);border:1px solid var(--raya);border-radius:12px;padding:20px 22px;display:flex;flex-direction:column;gap:14px}
+.ejtabla .tabla{font-size:.9em}
+.ejtabla .tabla td:last-child{color:var(--violeta);font-weight:500}
 </style>
 </head>
 <body>
@@ -146,7 +149,17 @@ textarea{width:100%;font:500 .9em var(--f-cuerpo);color:var(--tinta);background:
       <div class="esc"><b>Información</b><span class="ej">A las 14 h, el sensor de luz del cantero del fondo marcó 873.</span><small>Es el mismo dato, pero ahora sabemos qué se midió, dónde y cuándo. Ya se entiende.</small></div>
       <div class="esc"><b>Conocimiento</b><span class="ej">El cantero del fondo se queda sin sol a las 15 h: ahí no conviene poner tomates.</span><small>Para llegar acá hay que juntar muchas mediciones, compararlas y sacar una conclusión que nos sirva para <b>decidir</b> algo.</small></div>
     </div>
-    <p class="nota">En la planilla del aparato, cada columna le pone contexto al número (la hora, el cantero, la luz). Pero la conclusión no la escribe el aparato: la sacamos nosotros, mirando los datos y haciéndonos preguntas.</p>
+    <div class="ejtabla">
+      <p>Imaginemos que el aparato va anotando cada medición en una tabla, una fila por vez:</p>
+      <div class="tabla-w" style="padding:0"><table class="tabla">
+        <tr><th>Hora</th><th>Cantero</th><th>Luz</th></tr>
+        <tr><td>14:00</td><td>del fondo</td><td>873</td></tr>
+        <tr><td>14:30</td><td>del fondo</td><td>860</td></tr>
+        <tr><td>15:00</td><td>del fondo</td><td>410</td></tr>
+        <tr><td>15:30</td><td>del fondo</td><td>395</td></tr>
+      </table></div>
+      <p>Cada fila es <b>información</b>: las columnas le dicen al número cuándo y dónde se midió. Pero el aparato no escribe en ningún lado «a las 15 h el cantero se queda sin sol». Eso lo descubrimos nosotros cuando miramos la tabla y vemos que entre las 14:30 y las 15:00 la luz bajó a menos de la mitad. Ese es el <b>conocimiento</b>.</p>
+    </div>
 
     <h3>Ahora ustedes: ¿cada frase es un dato, información o conocimiento?</h3>
     <div class="tarjetas" id="tarjetas"></div>
