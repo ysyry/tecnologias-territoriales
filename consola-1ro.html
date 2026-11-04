@@ -361,7 +361,7 @@ table.esq th{color:var(--tinta)}
     </div>
     <p id="d-consigna" style="margin-top:8px"></p>
     <div class="revisar" id="d-comprobar" hidden>
-      <div class="fila"><button class="btn lleno grande" id="comprobar">Siguiente →</button><span class="ayuda">Si quedó bien, pasás al siguiente. Si no, te dice qué falta.</span></div>
+      <div class="fila"><button class="btn lleno grande" id="comprobar">Siguiente →</button><button class="btn" id="seguir-igual" type="button" hidden>Seguir igual →</button><span class="ayuda">Si quedó bien, pasás al siguiente. Si no, te dice qué falta.</span></div>
       <div id="comprobado"></div>
     </div>
   </section>
@@ -1134,8 +1134,17 @@ function renderEnc(){
   const nav=el('div','fila nav');
   if(ENC.paso>0){const a=el('button','btn','← Atrás');a.onclick=()=>irA(ENC.paso-1);nav.append(a)}
   const der=el('div','fila');
-  if(!s.ok&&(s.i>=3||e.extra)){const sal=el('button','btn','Seguir igual →');sal.onclick=()=>irA(ENC.paso+1);der.append(sal)}
-  const sig=el('button','btn lleno grande',ENC.paso===EJ.length-1?'Terminar':'Siguiente →');sig.onclick=()=>seguir(false);der.append(sig);nav.append(der);
+  const salida=!s.ok&&(s.i>=3||e.extra);
+  if(e.arma){
+    // el Siguiente de estos va abajo del editor, después de arreglar y probar
+    const S=$('seguir-igual');S.hidden=!salida;S.onclick=()=>irA(ENC.paso+1);
+    $('comprobar').textContent=ENC.paso===EJ.length-1?'Terminar':'Siguiente →';
+    const t=document.querySelector('.trabajo'),k=document.querySelector('.consigna');if(t.nextElementSibling!==k)t.after(k);
+  }else{
+    if(salida){const sal=el('button','btn','Seguir igual →');sal.onclick=()=>irA(ENC.paso+1);der.append(sal)}
+    const sig=el('button','btn lleno grande',ENC.paso===EJ.length-1?'Terminar':'Siguiente →');sig.onclick=()=>seguir(false);der.append(sig);
+  }
+  nav.append(der);
   c.append(nav);R.append(c);
 }
 // Siguiente: si está bien, avanza; si no, corrige y se queda
@@ -1220,7 +1229,7 @@ function ruta(){
   const h=location.hash.slice(1), esProfe=h==='profe', esEnc=h==='repaso';
   $('profe').hidden=!esProfe;$('elegir').hidden=esProfe||esEnc;
   $('encargo').hidden=!esEnc;$('entrega').hidden=true;document.querySelector('main>header').hidden=esEnc;
-  if(!esEnc){document.querySelector('.consigna').hidden=document.querySelector('.trabajo').hidden=false}
+  if(!esEnc){const t=document.querySelector('.trabajo'),k=document.querySelector('.consigna');k.hidden=t.hidden=false;if(t.previousElementSibling!==k)t.before(k)}
   if(esEnc){if(!actual||!ARMA[actual.id])abrir(POR_ID['r-trucha']);renderEnc();return}
   if(esProfe){if(!actual)abrir(POR_ID.libre);return}
   abrir(POR_ID[h]||POR_ID.libre);
