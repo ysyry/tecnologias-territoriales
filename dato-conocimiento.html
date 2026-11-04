@@ -118,6 +118,9 @@ textarea{width:100%;font:500 .9em var(--f-cuerpo);color:var(--tinta);background:
 .opc-cod code{background:none;padding:0;color:inherit;font-size:1em}
 input.n.largo{width:12em}
 .preg h3{margin-bottom:2px}
+.armado{display:flex;flex-wrap:wrap;gap:4px;font-family:var(--f-mono);margin:10px 0}
+.armado span{background:var(--hoja);border:1.5px solid var(--violeta);border-radius:6px;padding:4px 10px;color:var(--tinta)}
+.exp p{margin:0}
 </style>
 </head>
 <body>
@@ -207,15 +210,21 @@ input.n.largo{width:12em}
     <h2 id="tc">¿Dónde está todo esto en el programa del aparato?</h2>
     <p>Todo lo que vimos hasta ahora también pasa adentro del código que vamos a cargar en la placa. Veamos tres pedacitos.</p>
 
-    <div class="preg">
+    <div class="preg" data-p="k1" data-ok="1">
       <h3>1 · El código le pone contexto al dato</h3>
-      <p>El sensor solo da un número. Es el programa el que lo anota junto con el minuto y el cantero, separados por comas, para que quede una fila de la tabla:</p>
-      <div class="codigo"><pre>int luz = analogRead(A1);   <span class="c">// lee la luz: un dato</span>
-Serial.print(minuto);       <span class="c">// escribe el minuto del día</span>
-Serial.print(",fondo,");    <span class="c">// escribe el cantero, entre comas</span>
-Serial.println(luz);        <span class="c">// escribe la luz y pasa a la fila siguiente</span></pre></div>
-      <p class="q">Si <code>minuto</code> vale 840 y el sensor lee 873, ¿qué fila escribe el programa?</p>
-      <div class="fila"><input class="n largo" id="k1" aria-label="La fila que escribe el programa" placeholder="…"><button type="button" id="k1b">Revisar</button><span class="res" id="k1r"></span></div>
+      <p>El sensor da solo un número, por ejemplo 873. Para que ese número se convierta en una fila de la tabla, el programa escribe tres cosas, una al lado de la otra y separadas por comas: <b>la hora</b>, <b>el cantero</b> y <b>la luz</b>.</p>
+      <p>Para escribir usa dos instrucciones: <code>Serial.print</code> escribe algo y se queda en el mismo renglón. <code>Serial.println</code> escribe algo y después baja al renglón de abajo.</p>
+      <div class="codigo"><pre>int luz = analogRead(A1);   <span class="c">// lee la luz y la guarda en la variable luz</span>
+Serial.print(hora);         <span class="c">// escribe la hora</span>
+Serial.print(",fondo,");    <span class="c">// escribe ,fondo,</span>
+Serial.println(luz);        <span class="c">// escribe la luz y baja de renglón</span></pre></div>
+      <p class="q">Son las 14, así que la variable <code>hora</code> vale 14, y el sensor lee 873. ¿Qué aparece en la pantalla?</p>
+      <div class="opc opc-cod"><button type="button"><code>873</code></button><button type="button"><code>14,fondo,873</code></button><button type="button"><code>hora,fondo,luz</code></button></div>
+      <div class="exp" hidden>
+        <p>Aparece <code>14,fondo,873</code>. Cada línea agrega un pedazo al mismo renglón:</p>
+        <div class="armado"><span>14</span><span>,fondo,</span><span>873</span></div>
+        <p><code>print(hora)</code> no escribe la palabra «hora»: escribe lo que vale la variable, que es 14. Lo mismo con <code>luz</code>. Así, el 873 suelto (un dato) queda con su hora y su cantero: ya es <b>información</b>.</p>
+      </div>
     </div>
 
     <div class="preg" data-p="k2" data-ok="0">
@@ -425,7 +434,7 @@ function mandarTodo(){
   ejs.push({c:'Tarjetas dato / información / conocimiento',t:'auto',q:tarBien+' de '+nTar+' al primer intento',i:1,ok:tarBien>=4,ok1:tarBien===nTar,p:0,s:false,sg:0});
   auto('Leer un dato: la luz a las 12:00 (925)','d12');
   auto('Información: a qué hora se va el sol (15:00)','p4');
-  auto('Código 1 · la fila que escribe (840,fondo,873)','k1');
+  auto('Código 1 · la fila que escribe (14,fondo,873)','k1');
   auto('Código 2 · el if de la sombra (luz < 500)','k2');
   auto('Código 3 · dos sensores con && (revisar el fondo)','k3');
   abierta('La baja de las 11 (sin respuesta única)',R.p5&&R.p5.txt);
@@ -525,15 +534,6 @@ document.getElementById('d12b').addEventListener('click',()=>{
   if(+v===925){ r.className='res ok'; r.textContent='✓ 925. Eso es un dato: un número leído del gráfico.'; registrar('d12','Parte 2 · leyó el dato de las 12:00'); }
   else { r.className='res mal'; r.textContent='Buscá las 12:00 abajo, subí hasta el punto y mirá a qué altura queda. Si no se ve, abrí «Ver la tabla».'; registrar('d12-mal'+v,'Parte 2 · dato de las 12:00: puso '+v,'',false); }
 });
-document.getElementById('k1b').addEventListener('click',()=>{
-  const v=document.getElementById('k1').value.replace(/\s+/g,''), r=document.getElementById('k1r');
-  if(v==='') return;
-  const bien=v.toLowerCase()==='840,fondo,873';
-  anotar('k1',{ok:bien,txt:document.getElementById('k1').value.trim()});
-  if(bien){ r.className='res ok'; r.textContent='✓ Esa es la fila: el dato (873) con su contexto. Ya es información.'; }
-  else { r.className='res mal'; r.textContent='Seguí las tres líneas de print en orden: primero el minuto, después «,fondo,» y al final la luz. Todo pegado.'; }
-});
-
 /* ---- casos ---- */
 document.querySelectorAll('.caso').forEach(c=>c.querySelector('.destapar').addEventListener('click',e=>{
   c.classList.remove('tapado'); e.currentTarget.hidden=true; c.querySelector('.dentro').hidden=false;
