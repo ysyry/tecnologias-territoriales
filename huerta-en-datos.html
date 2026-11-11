@@ -14,7 +14,7 @@
   --papel:#F3F1F7; --hoja:#FCFBFE; --raya:#DAD4E6;
   --tinta:#161226; --texto:#3B3350; --tenue:#5F5779;
   --violeta:#5B3FA8; --violeta-w:rgba(91,63,168,.10); --inf:#9A3A80; --inf-w:rgba(154,58,128,.10);
-  --rojo:#C8352E; --verde:#2E8B57; --verde-w:rgba(46,139,87,.12); --sol:#B7791F; --sol-w:rgba(183,121,31,.12); --agua:#2563EB; --agua-w:rgba(37,99,235,.11);
+  --rojo:#C8352E; --verde:#2E8B57; --verde-w:rgba(46,139,87,.12); --sol:#B7791F; --sol-w:rgba(183,121,31,.12); --tierra:#8B5E3C; --tierra-w:rgba(139,94,60,.16); --agua:#2563EB; --agua-w:rgba(37,99,235,.11);
   --codigo:#1E1934; --codigo-t:#EDE8FA;
   --f-titulo:"Bricolage Grotesque",Georgia,serif;
   --f-cuerpo:Manrope,system-ui,sans-serif;
@@ -24,13 +24,13 @@
   --papel:#0E0C18; --hoja:#1B1830; --raya:#332D50;
   --tinta:#F6F3FF; --texto:#D6D0E8; --tenue:#ABA3C4;
   --violeta:#B197EE; --violeta-w:rgba(177,151,238,.14); --inf:#E88BCB; --inf-w:rgba(232,139,203,.14);
-  --rojo:#F07068; --verde:#5CC98C; --verde-w:rgba(92,201,140,.14); --sol:#E9B44C; --sol-w:rgba(233,180,76,.14); --agua:#60A5FA; --agua-w:rgba(96,165,250,.15);
+  --rojo:#F07068; --verde:#5CC98C; --verde-w:rgba(92,201,140,.14); --sol:#E9B44C; --sol-w:rgba(233,180,76,.14); --tierra:#B98558; --tierra-w:rgba(185,133,88,.18); --agua:#60A5FA; --agua-w:rgba(96,165,250,.15);
   --codigo:#15121F; --codigo-t:#EDE8FA; color-scheme:dark}}
 :root[data-theme="dark"]{
   --papel:#0E0C18; --hoja:#1B1830; --raya:#332D50;
   --tinta:#F6F3FF; --texto:#D6D0E8; --tenue:#ABA3C4;
   --violeta:#B197EE; --violeta-w:rgba(177,151,238,.14); --inf:#E88BCB; --inf-w:rgba(232,139,203,.14);
-  --rojo:#F07068; --verde:#5CC98C; --verde-w:rgba(92,201,140,.14); --sol:#E9B44C; --sol-w:rgba(233,180,76,.14); --agua:#60A5FA; --agua-w:rgba(96,165,250,.15);
+  --rojo:#F07068; --verde:#5CC98C; --verde-w:rgba(92,201,140,.14); --sol:#E9B44C; --sol-w:rgba(233,180,76,.14); --tierra:#B98558; --tierra-w:rgba(185,133,88,.18); --agua:#60A5FA; --agua-w:rgba(96,165,250,.15);
   --codigo:#15121F; --codigo-t:#EDE8FA; color-scheme:dark}
 *{box-sizing:border-box}
 body{background:var(--papel);color:var(--texto);font-family:var(--f-cuerpo);font-size:clamp(17px,1.6vw,21px);line-height:1.5;margin:0}
@@ -87,6 +87,18 @@ textarea{width:100%;min-height:5.5em;resize:vertical}
 .esquema .ard{font-family:var(--f-titulo);font-weight:800;font-size:24px;fill:var(--codigo-t)}
 .esq-wrap{overflow-x:auto}
 .esq-wrap svg{min-width:640px}
+.simb{width:100%;height:auto;display:block;background:var(--hoja);border:1px solid var(--raya);border-radius:14px}
+.simb .tr line,.simb .tr path.pz2{stroke:var(--tinta);stroke-width:2.5;stroke-linecap:round;fill:none}
+.simb .pz{fill:var(--hoja);stroke:var(--tinta);stroke-width:2.5}
+.simb .nd{fill:var(--tinta)}
+.simb .tr line.fl{stroke:var(--sol);stroke-width:2.5}
+.simb text{font-family:var(--f-cuerpo);fill:var(--tinta)}
+.simb .t{font-family:var(--f-titulo);font-weight:600;font-size:20px}
+.simb .v{font-size:14px;font-weight:700}
+.simb .s{font-family:var(--f-mono);font-size:15px;fill:var(--violeta)}
+.simb .c{font-family:var(--f-mono);font-size:11px;fill:var(--tenue)}
+.simb .rot2 text{font-size:13px;font-weight:700}
+.simb .rot2 line{stroke:var(--tenue);stroke-width:1.5}
 /* código */
 .cod-wrap{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:20px;align-items:start}
 .codigo{background:var(--codigo);color:var(--codigo-t);border-radius:12px;padding:16px 0;overflow-x:auto;font-family:var(--f-mono);font-size:.74em;line-height:1.6}
@@ -251,6 +263,28 @@ th{font-family:var(--f-mono);font-weight:500;color:var(--tenue);font-size:.85em}
 <text x="706" y="58" class="ch">VCC</text><text x="826" y="58" class="ch">GND</text>
 <polyline points="640,22 230,22 230,75 190,75" fill="none" stroke="var(--verde)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><text x="612" y="16" class="ch">AO</text>
 </svg></div>
+  <h3 style="margin-top:6px">El mismo circuito, en símbolos</h3>
+  <div class="esq-wrap"><svg class="simb" viewBox="0 0 880 230" role="img" aria-label="El circuito en símbolos: la fotorresistencia entre 5V y A1 con la resistencia de 10 kilo ohm a tierra; el sensor de humedad con VCC a 5V, AO a A0 y GND a tierra; el LED con su resistencia de 220 ohm entre el pin 9 y tierra">
+<defs><marker id="pt" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="var(--sol)"/></marker></defs>
+<g class="tr"><text x="40" y="28" class="t">La luz</text>
+<text x="150" y="58" text-anchor="middle" class="v">5V</text><line x1="150" y1="64" x2="150" y2="80"/>
+<rect x="141" y="80" width="18" height="38" rx="2" class="pz"/><line x1="108" y1="70" x2="136" y2="92" class="fl" marker-end="url(#pt)"/><line x1="100" y1="86" x2="128" y2="108" class="fl" marker-end="url(#pt)"/>
+<text x="166" y="104" class="v">fotorresistencia</text>
+<line x1="150" y1="118" x2="150" y2="140"/><circle cx="150" cy="140" r="4" class="nd"/><line x1="150" y1="140" x2="215" y2="140"/><text x="222" y="145" class="s">A1</text>
+<line x1="150" y1="140" x2="150" y2="148"/><rect x="141" y="148" width="18" height="34" rx="2" class="pz"/><line x1="150" y1="182" x2="150" y2="190"/><text x="166" y="170" class="v">10 kΩ</text><line x1="150" y1="190" x2="150" y2="198"/><line x1="136" y1="198" x2="164" y2="198"/><line x1="141" y1="204" x2="159" y2="204"/><line x1="146" y1="210" x2="154" y2="210"/><text x="330" y="28" class="t">La humedad</text>
+<rect x="340" y="80" width="120" height="70" rx="8" class="pz"/><text x="400" y="112" text-anchor="middle" class="v">sensor de</text><text x="400" y="128" text-anchor="middle" class="v">humedad</text>
+<line x1="460" y1="92" x2="520" y2="92"/><text x="527" y="97" class="v">5V</text><text x="466" y="88" class="c">VCC</text>
+<line x1="460" y1="115" x2="520" y2="115"/><text x="527" y="120" class="s">A0</text><text x="466" y="111" class="c">AO</text>
+<line x1="460" y1="138" x2="500" y2="138"/><line x1="500" y1="138" x2="500" y2="180"/><line x1="500" y1="180" x2="500" y2="188"/><line x1="486" y1="188" x2="514" y2="188"/><line x1="491" y1="194" x2="509" y2="194"/><line x1="496" y1="200" x2="504" y2="200"/><text x="466" y="134" class="c">GND</text>
+<path d="M370 150 v40 M390 150 v40" class="pz2"/><text x="362" y="180" text-anchor="end" class="c">patas en la tierra</text><text x="630" y="28" class="t">El LED</text>
+<text x="700" y="58" text-anchor="middle" class="s">pin 9</text><line x1="700" y1="64" x2="700" y2="72"/>
+<line x1="700" y1="72" x2="700" y2="80"/><rect x="691" y="80" width="18" height="34" rx="2" class="pz"/><line x1="700" y1="114" x2="700" y2="122"/><text x="716" y="102" class="v">220 Ω</text>
+<path d="M684 122 h32 l-16 26 z" class="pz"/><line x1="684" y1="148" x2="716" y2="148"/><line x1="700" y1="148" x2="700" y2="190"/>
+<line x1="722" y1="126" x2="746" y2="112" class="fl" marker-end="url(#pt)"/><line x1="724" y1="138" x2="748" y2="124" class="fl" marker-end="url(#pt)"/><text x="756" y="128" class="v">LED</text>
+<text x="726" y="160" class="c">pata larga arriba</text>
+<line x1="700" y1="190" x2="700" y2="198"/><line x1="686" y1="198" x2="714" y2="198"/><line x1="691" y1="204" x2="709" y2="204"/><line x1="696" y1="210" x2="704" y2="210"/></g>
+<text x="440" y="222" text-anchor="middle" class="c">⏚ = GND, el riel − de la protoboard</text>
+</svg></div>
   <ol class="armado">
     <li><b>Los rieles</b><span>Un cable del <b>5V</b> de la placa al riel <b>+</b> (rojo) y otro del <b>GND</b> al riel <b>−</b> (azul). Todo lo que necesite 5V o GND se enchufa ahí.</span><span class="prueba">Prueba: enchufamos el USB y la placa prende su lucecita. Nada se calienta.</span></li>
     <li><b>La luz</b><span>La fotorresistencia con una pata en cada tira. Una pata: cable al riel <b>+</b>. En la tira de la otra pata: un cable a <b>A1</b> y la resistencia de <b>10 kΩ</b> (marrón, negro, <b>naranja</b>) hasta el riel <b>−</b>.</span><span class="prueba">Prueba: tapamos el sensor y el número de luz tiene que bajar mucho.</span></li>
@@ -275,6 +309,46 @@ th{font-family:var(--f-mono);font-weight:500;color:var(--tenue);font-size:.85em}
   <p class="lead">Vamos a medir en varios lugares. En cada uno, antes de medir, <b>apostamos</b>: ¿va a haber más o menos luz que en el lugar anterior? Después medimos un par de minutos y vemos si acertamos.</p>
 
 
+  <h3>Así va en la huerta</h3>
+  <div class="esq-wrap"><svg class="simb" viewBox="0 0 880 360" role="img" aria-label="Cómo va en la huerta: el sensor de humedad clavado en la tierra, la placa con la fotorresistencia en una bandeja mirando al cielo, el cable USB hasta la notebook con la página abierta">
+<defs><marker id="pt2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="var(--tenue)"/></marker></defs>
+<circle cx="80" cy="60" r="26" fill="var(--sol)"/>
+<line x1="118" y1="60" x2="130" y2="60" stroke="var(--sol)" stroke-width="4" stroke-linecap="round"/><line x1="106.6" y1="86.6" x2="115.0" y2="95.0" stroke="var(--sol)" stroke-width="4" stroke-linecap="round"/><line x1="80" y1="98" x2="80" y2="110" stroke="var(--sol)" stroke-width="4" stroke-linecap="round"/><line x1="53.400000000000006" y1="86.6" x2="45.0" y2="95.0" stroke="var(--sol)" stroke-width="4" stroke-linecap="round"/><line x1="42" y1="60" x2="30" y2="60" stroke="var(--sol)" stroke-width="4" stroke-linecap="round"/><line x1="53.400000000000006" y1="33.400000000000006" x2="45.0" y2="25.0" stroke="var(--sol)" stroke-width="4" stroke-linecap="round"/><line x1="80" y1="22" x2="80" y2="10" stroke="var(--sol)" stroke-width="4" stroke-linecap="round"/><line x1="106.6" y1="33.400000000000006" x2="115.0" y2="25.0" stroke="var(--sol)" stroke-width="4" stroke-linecap="round"/>
+<line x1="118" y1="88" x2="362" y2="164" stroke="var(--sol)" stroke-width="2" stroke-dasharray="6 6"/>
+<rect x="0" y="230" width="880" height="130" fill="var(--tierra-w)"/>
+<line x1="0" y1="230" x2="880" y2="230" stroke="var(--tierra)" stroke-width="3"/>
+<path d="M40 230 q-4 -30 2 -58 M41 200 q-20 -8 -26 -26 q18 2 26 20 M41 188 q18 -10 24 -28 q-18 4 -24 22" fill="var(--verde-w)" stroke="var(--verde)" stroke-width="2.5" stroke-linecap="round"/><path d="M150 230 q-4 -30 2 -58 M151 200 q-20 -8 -26 -26 q18 2 26 20 M151 188 q18 -10 24 -28 q-18 4 -24 22" fill="var(--verde-w)" stroke="var(--verde)" stroke-width="2.5" stroke-linecap="round"/><path d="M600 230 q-4 -30 2 -58 M601 200 q-20 -8 -26 -26 q18 2 26 20 M601 188 q18 -10 24 -28 q-18 4 -24 22" fill="var(--verde-w)" stroke="var(--verde)" stroke-width="2.5" stroke-linecap="round"/><path d="M850 230 q-4 -30 2 -58 M851 200 q-20 -8 -26 -26 q18 2 26 20 M851 188 q18 -10 24 -28 q-18 4 -24 22" fill="var(--verde-w)" stroke="var(--verde)" stroke-width="2.5" stroke-linecap="round"/>
+<!-- bandeja con placa y protoboard -->
+<rect x="250" y="196" width="190" height="34" rx="6" fill="var(--hoja)" stroke="var(--tenue)" stroke-width="2"/>
+<rect x="262" y="176" width="70" height="38" rx="5" fill="var(--codigo)" stroke="var(--raya)" stroke-width="1.5"/>
+<rect x="342" y="180" width="86" height="34" rx="4" fill="var(--papel)" stroke="var(--raya)" stroke-width="1.5"/>
+<line x1="368" y1="168" x2="368" y2="182" stroke="var(--tinta)" stroke-width="2"/><line x1="376" y1="168" x2="376" y2="182" stroke="var(--tinta)" stroke-width="2"/>
+<ellipse cx="372" cy="166" rx="10" ry="6" fill="var(--sol)" stroke="var(--tinta)" stroke-width="1.5"/>
+<circle cx="408" cy="196" r="6" fill="var(--rojo)"/>
+<!-- sensor de humedad -->
+<path d="M428 196 C470 160 500 160 520 186" fill="none" stroke="var(--agua)" stroke-width="3"/>
+<rect x="508" y="186" width="44" height="20" rx="3" fill="var(--agua-w)" stroke="var(--agua)" stroke-width="2"/>
+<path d="M516 206 v74 M544 206 v74" stroke="var(--agua)" stroke-width="6" stroke-linecap="round"/>
+<line x1="506" y1="250" x2="556" y2="250" stroke="var(--tinta)" stroke-width="2" stroke-dasharray="4 3"/>
+<!-- cable y notebook -->
+<path d="M440 222 Q560 240 662 226" fill="none" stroke="var(--tenue)" stroke-width="3"/>
+<rect x="660" y="120" width="170" height="104" rx="8" fill="var(--codigo)" stroke="var(--raya)" stroke-width="2"/>
+<polyline points="676,180 700,170 724,176 748,150 772,154 796,148 814,152" fill="none" stroke="var(--sol)" stroke-width="3"/>
+<polyline points="676,204 700,202 724,200 748,198 772,190 796,192 814,190" fill="none" stroke="var(--agua)" stroke-width="3"/>
+<path d="M640 224 h210 l-16 10 h-178 z" fill="var(--raya)"/>
+<!-- rótulos -->
+<g class="rot2">
+<text x="330" y="92">1 · la fotorresistencia, mirando al cielo:</text><text x="330" y="108">que nadie le haga sombra</text>
+<line x1="380" y1="114" x2="374" y2="156" marker-end="url(#pt2)"/>
+<text x="560" y="300">2 · el sensor, clavado siempre</text><text x="560" y="316">hasta la misma marca</text>
+<line x1="600" y1="290" x2="560" y2="254" marker-end="url(#pt2)"/>
+<text x="120" y="270">3 · la placa en una bandeja,</text><text x="120" y="286">nunca sobre la tierra mojada</text>
+<line x1="230" y1="262" x2="262" y2="226" marker-end="url(#pt2)"/>
+<text x="845" y="104" text-anchor="end">4 · la notebook con la página: el gráfico</text>
+<text x="610" y="252" text-anchor="middle" style="font-size:11px;font-weight:500">cable USB</text>
+<text x="330" y="345">el cable USB lleva los números a la notebook y le da energía a la placa</text>
+</g>
+</svg></div>
   <div class="panel" aria-label="El aparato en vivo">
     <div class="fila">
       <button class="lleno" id="b-con" type="button">Conectar el aparato</button>
