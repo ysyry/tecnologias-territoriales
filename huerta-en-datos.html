@@ -1,0 +1,689 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La huerta en datos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Manrope:wght@500;700&family=DM+Mono:wght@400;500&display=swap">
+<style>
+[hidden]{display:none!important}
+/* Proyecto final de 3ro · 11/11/2026. Una sola página para todo el curso: el aparato, el código entre todos,
+   la huerta con la placa conectada, las tarjetas y las preguntas a los datos (como en Explorando datos). */
+:root{
+  --papel:#F3F1F7; --hoja:#FCFBFE; --raya:#DAD4E6;
+  --tinta:#161226; --texto:#3B3350; --tenue:#5F5779;
+  --violeta:#5B3FA8; --violeta-w:rgba(91,63,168,.10); --inf:#9A3A80; --inf-w:rgba(154,58,128,.10);
+  --rojo:#C8352E; --verde:#2E8B57; --verde-w:rgba(46,139,87,.12); --sol:#B7791F; --sol-w:rgba(183,121,31,.12);
+  --codigo:#1E1934; --codigo-t:#EDE8FA;
+  --f-titulo:"Bricolage Grotesque",Georgia,serif;
+  --f-cuerpo:Manrope,system-ui,sans-serif;
+  --f-mono:"DM Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --papel:#0E0C18; --hoja:#1B1830; --raya:#332D50;
+  --tinta:#F6F3FF; --texto:#D6D0E8; --tenue:#ABA3C4;
+  --violeta:#B197EE; --violeta-w:rgba(177,151,238,.14); --inf:#E88BCB; --inf-w:rgba(232,139,203,.14);
+  --rojo:#F07068; --verde:#5CC98C; --verde-w:rgba(92,201,140,.14); --sol:#E9B44C; --sol-w:rgba(233,180,76,.14);
+  --codigo:#15121F; --codigo-t:#EDE8FA; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --papel:#0E0C18; --hoja:#1B1830; --raya:#332D50;
+  --tinta:#F6F3FF; --texto:#D6D0E8; --tenue:#ABA3C4;
+  --violeta:#B197EE; --violeta-w:rgba(177,151,238,.14); --inf:#E88BCB; --inf-w:rgba(232,139,203,.14);
+  --rojo:#F07068; --verde:#5CC98C; --verde-w:rgba(92,201,140,.14); --sol:#E9B44C; --sol-w:rgba(233,180,76,.14);
+  --codigo:#15121F; --codigo-t:#EDE8FA; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--papel);color:var(--texto);font-family:var(--f-cuerpo);font-size:clamp(17px,1.6vw,21px);line-height:1.5;margin:0}
+main{max-width:1100px;margin:0 auto;padding:clamp(28px,5vw,64px) 16px 80px;display:flex;flex-direction:column;gap:clamp(48px,7vw,88px)}
+.rot{font-family:var(--f-mono);font-size:.7em;letter-spacing:.14em;text-transform:uppercase;color:var(--inf)}
+h1{font-family:var(--f-titulo);font-weight:800;color:var(--tinta);font-size:clamp(44px,7.4vw,96px);line-height:.98;letter-spacing:-.02em;margin:.2em 0 0;text-wrap:balance}
+.bajada{font-size:1.2em;max-width:34em;margin:.7em 0 0;text-wrap:pretty}
+h2{font-family:var(--f-titulo);font-weight:600;color:var(--tinta);font-size:clamp(28px,3.4vw,42px);line-height:1.08;margin:0;text-wrap:balance}
+h3{font-family:var(--f-titulo);font-weight:600;color:var(--tinta);font-size:1.2em;line-height:1.2;margin:0}
+p{margin:0}
+.sec{display:flex;flex-direction:column;gap:22px}
+.sec>header{display:flex;gap:18px;align-items:baseline;border-top:2px solid var(--raya);padding-top:28px}
+.sec .n{font-family:var(--f-titulo);font-weight:800;font-size:2.2em;line-height:1;color:var(--violeta);min-width:1.1em}
+.sec .lead{max-width:40em;color:var(--texto)}
+.tiempo{font-family:var(--f-mono);font-size:.6em;color:var(--tenue);font-weight:400;margin-left:.5em;white-space:nowrap}
+small,.tenue{color:var(--tenue)}
+button{font:700 .82em var(--f-cuerpo);border-radius:999px;padding:10px 20px;cursor:pointer;border:2px solid var(--violeta);background:transparent;color:var(--violeta)}
+button.lleno{background:var(--violeta);color:var(--hoja)}
+button:disabled{opacity:.45;cursor:not-allowed}
+button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--violeta);outline-offset:2px}
+select,input,textarea{font:500 .9em var(--f-cuerpo);color:var(--tinta);background:var(--hoja);border:2px solid var(--raya);border-radius:10px;padding:8px 10px;max-width:100%}
+textarea{width:100%;min-height:5.5em;resize:vertical}
+.fila{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+
+/* portada */
+.tapa{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:clamp(24px,4vw,56px);align-items:end}
+.cifras{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.cifra{background:var(--hoja);border:1px solid var(--raya);border-radius:14px;padding:14px 16px}
+.cifra b{display:block;font-family:var(--f-titulo);font-weight:800;font-size:2em;line-height:1;color:var(--tinta);font-variant-numeric:tabular-nums}
+.cifra span{font-size:.75em;color:var(--tenue)}
+
+/* el aparato */
+.sistema{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:stretch}
+.caja{background:var(--hoja);border:1px solid var(--raya);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:8px;position:relative}
+.caja .et{font-family:var(--f-mono);font-size:.68em;letter-spacing:.12em;text-transform:uppercase}
+.caja.e .et{color:var(--sol)} .caja.d .et{color:var(--violeta)} .caja.s .et{color:var(--verde)}
+.caja p{color:var(--tinta);font-weight:700}
+.caja small{font-size:.82em}
+.caja:not(:last-child)::after{content:"→";position:absolute;right:-14px;top:50%;transform:translate(50%,-50%);font-family:var(--f-titulo);font-weight:800;color:var(--tenue);font-size:1.4em}
+
+/* código */
+.cod-wrap{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:20px;align-items:start}
+.codigo{background:var(--codigo);color:var(--codigo-t);border-radius:12px;padding:16px 0;overflow-x:auto;font-family:var(--f-mono);font-size:.74em;line-height:1.6}
+.codigo .ln{display:block;padding:0 18px;white-space:pre;transition:background .2s,opacity .2s}
+.codigo .c{color:#9E93C4}
+.codigo.foco .ln{opacity:.35}
+.codigo.foco .ln.on{opacity:1;background:rgba(177,151,238,.22)}
+.preguntas{display:flex;flex-direction:column;gap:12px}
+.preg{background:var(--hoja);border:1px solid var(--raya);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.preg.activa{border-color:var(--violeta);box-shadow:0 0 0 2px var(--violeta-w)}
+.preg h3{font-size:1.05em}
+.preg .resp{background:var(--violeta-w);border-radius:10px;padding:10px 12px;font-size:.9em}
+
+/* roles */
+.roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+.rol{background:var(--hoja);border:1px solid var(--raya);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:6px}
+.rol b{font-family:var(--f-titulo);font-size:1.1em;color:var(--tinta)}
+.rol small{font-size:.82em}
+
+/* la huerta en vivo */
+.panel{background:var(--hoja);border:1px solid var(--raya);border-radius:16px;padding:clamp(14px,2.4vw,24px);display:flex;flex-direction:column;gap:18px}
+.vivo{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.medida{border-radius:12px;padding:12px 14px;border:1px solid var(--raya)}
+.medida span{font-size:.75em;color:var(--tenue)}
+.medida b{display:block;font-family:var(--f-titulo);font-weight:800;font-size:clamp(34px,5vw,58px);line-height:1;color:var(--tinta);font-variant-numeric:tabular-nums}
+.medida.luz{background:var(--sol-w)} .medida.hum{background:var(--verde-w)} .medida.led{background:var(--inf-w)}
+.medida.led.on b{color:var(--rojo)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:2px solid var(--raya);background:var(--hoja);color:var(--tinta);border-radius:999px;padding:8px 14px;font:700 .8em var(--f-cuerpo);cursor:pointer}
+.chip[aria-pressed="true"]{border-color:var(--violeta);background:var(--violeta);color:var(--hoja)}
+.chip .cnt{font-family:var(--f-mono);font-weight:400;opacity:.75;margin-left:6px}
+.apuesta{border:2px dashed var(--raya);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.apuesta.ok{border-style:solid;border-color:var(--verde)}
+.apuesta.mal{border-style:solid;border-color:var(--rojo)}
+.estado{font-family:var(--f-mono);font-size:.75em;color:var(--tenue)}
+.estado.rec{color:var(--rojo)}
+.estado.rec::before{content:"● ";animation:lat 1s infinite}
+@keyframes lat{50%{opacity:.2}}
+.aviso{background:var(--sol-w);border-radius:10px;padding:10px 14px;font-size:.85em;color:var(--tinta)}
+.graf{width:100%;height:auto;display:block}
+.graf text{font-family:var(--f-mono);font-size:12px;fill:var(--tenue)}
+.leyenda{display:flex;gap:18px;flex-wrap:wrap;font-size:.8em}
+.leyenda i{display:inline-block;width:18px;height:4px;border-radius:2px;vertical-align:middle;margin-right:6px}
+details.mas{font-size:.85em}
+details.mas summary{cursor:pointer;color:var(--violeta);font-weight:700}
+
+/* tarjetas */
+.mazo{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:20px;align-items:start}
+.tarjeta{background:var(--hoja);border:2px solid var(--raya);border-radius:20px;padding:clamp(20px,3vw,36px);min-height:260px;display:flex;flex-direction:column;gap:16px;justify-content:center}
+.tarjeta .tipo{font-family:var(--f-mono);font-size:.7em;letter-spacing:.12em;text-transform:uppercase}
+.tarjeta.lt{border-color:var(--violeta)} .tarjeta.lt .tipo{color:var(--violeta)}
+.tarjeta.pc{border-color:var(--inf)} .tarjeta.pc .tipo{color:var(--inf)}
+.tarjeta .txt{font-family:var(--f-titulo);font-weight:600;font-size:clamp(24px,3vw,36px);line-height:1.15;color:var(--tinta);text-wrap:balance}
+.tarjeta .sit{font-size:.9em;color:var(--texto)}
+.tarjeta.vacia .txt{color:var(--tenue)}
+.mazo-lado{display:flex;flex-direction:column;gap:12px}
+
+/* preguntas a los datos */
+.atajos{display:flex;flex-wrap:wrap;gap:8px}
+.paso-q{display:flex;flex-direction:column;gap:10px;border-left:3px solid var(--violeta);padding-left:14px}
+.paso-q .et{font-family:var(--f-mono);font-size:.68em;letter-spacing:.12em;text-transform:uppercase;color:var(--violeta)}
+.filtro{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.filtro .quitar{border:none;padding:6px 10px;color:var(--rojo)}
+.py{background:var(--codigo);color:var(--codigo-t);border-radius:12px;padding:14px 18px;font-family:var(--f-mono);font-size:.74em;line-height:1.6;overflow-x:auto;white-space:pre;margin:0}
+.py .c{color:#9E93C4}
+.res-num{font-family:var(--f-titulo);font-weight:800;font-size:clamp(40px,6vw,72px);line-height:1;color:var(--tinta);font-variant-numeric:tabular-nums}
+.enpal{font-size:1.05em;color:var(--tinta);font-weight:700}
+table{border-collapse:collapse;font-size:.8em;width:100%;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:6px 10px;border-bottom:1px solid var(--raya)}
+th{font-family:var(--f-mono);font-weight:500;color:var(--tenue);font-size:.85em}
+.tabla-wrap{max-height:340px;overflow:auto;border:1px solid var(--raya);border-radius:10px}
+.barras{display:flex;flex-direction:column;gap:8px}
+.barra{display:grid;grid-template-columns:minmax(90px,170px) minmax(0,1fr) 4em;gap:10px;align-items:center;font-size:.85em}
+.barra .b{height:22px;border-radius:0 6px 6px 0;background:var(--violeta)}
+.barra .v{font-family:var(--f-mono);text-align:right;color:var(--tinta)}
+
+/* cierre */
+.conclu textarea{min-height:8em;font-size:1em}
+.gracias{font-family:var(--f-titulo);font-weight:600;font-size:clamp(22px,2.6vw,30px);color:var(--tinta);max-width:30em;text-wrap:balance}
+
+/* profe */
+.profe{background:var(--inf-w);border-radius:16px;padding:clamp(16px,3vw,28px);display:flex;flex-direction:column;gap:14px}
+.profe table td,.profe table th{vertical-align:top}
+.pie{font-size:.75em;color:var(--tenue);border-top:1px solid var(--raya);padding-top:18px}
+
+@media (max-width:820px){
+  .tapa,.cod-wrap,.mazo{grid-template-columns:1fr}
+  .sistema{grid-template-columns:1fr}
+  .caja:not(:last-child)::after{content:"↓";right:50%;top:auto;bottom:-14px;transform:translate(50%,50%)}
+  .vivo{grid-template-columns:1fr 1fr}
+}
+
+/* imprimir las tarjetas para llevar a la huerta */
+.imprimibles{display:none}
+@media print{
+  body{background:#fff;color:#000;font-size:13pt}
+  body.imp main>*{display:none!important}
+  body.imp .imprimibles{display:grid!important;grid-template-columns:1fr 1fr;gap:10pt}
+  .imp-t{border:1.5pt dashed #888;border-radius:10pt;padding:14pt;break-inside:avoid;min-height:150pt;display:flex;flex-direction:column;gap:8pt}
+  .imp-t .tipo{font:500 8pt var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:#555}
+  .imp-t .txt{font:600 15pt var(--f-titulo);line-height:1.2;color:#000}
+  .imp-t .sit{font-size:10pt;color:#333}
+}
+</style>
+</head>
+<body>
+<main>
+
+<!-- PORTADA -->
+<section class="tapa" aria-label="Portada">
+  <div>
+    <div class="rot">3ro · Proyecto final · Laboratorio de Tecnologías Creativas · 2026</div>
+    <h1>La huerta en datos</h1>
+    <p class="bajada">Armamos un aparato que mide la luz y la humedad de la tierra, lo llevamos a la huerta de la escuela y le hicimos preguntas a los números. Esto es lo que encontramos.</p>
+  </div>
+  <div class="cifras" aria-live="polite">
+    <div class="cifra"><b id="c-filas">0</b><span>mediciones</span></div>
+    <div class="cifra"><b id="c-lug">0</b><span>lugares de la huerta</span></div>
+    <div class="cifra"><b id="c-luz">—</b><span>luz, la última</span></div>
+    <div class="cifra"><b id="c-hum">—</b><span>humedad, la última</span></div>
+  </div>
+</section>
+
+<!-- 1 · EL APARATO -->
+<section class="sec" id="aparato" aria-labelledby="h-ap">
+  <header><span class="n">1</span><div><h2 id="h-ap">El aparato <span class="tiempo">8:00</span></h2></div></header>
+  <p class="lead">Es el mismo que fueron armando desde septiembre, ahora entero: mide dos cosas, decide una y nos cuenta todo a la compu.</p>
+  <div class="sistema">
+    <div class="caja e"><span class="et">Lo que entra</span><p>Fotorresistencia en A1</p><p>Sensor de humedad en A0</p><small>Cada uno le da a la placa un número entre 0 y 1023.</small></div>
+    <div class="caja d"><span class="et">Lo que decide</span><p>La placa Arduino</p><small>Compara la humedad con un número que elegimos nosotros, el <b>umbral</b>: ¿la tierra está seca?</small></div>
+    <div class="caja s"><span class="et">Lo que sale</span><p>Un LED en el pin 9</p><p>Una fila de números por segundo</p><small>El LED se prende si la tierra está seca. Los números viajan por el cable USB hasta esta página.</small></div>
+  </div>
+</section>
+
+<!-- 2 · EL CÓDIGO ENTRE TODOS -->
+<section class="sec" id="codigo" aria-labelledby="h-cod">
+  <header><span class="n">2</span><div><h2 id="h-cod">El código, entre todos <span class="tiempo">8:05</span></h2></div></header>
+  <p class="lead">No hace falta escribirlo: hay que entenderlo. Tres preguntas, y cada una ilumina las líneas que la contestan. Primero lo dicen ustedes, después destapamos.</p>
+  <div class="cod-wrap">
+    <div class="codigo" id="cod" aria-label="El programa de la placa"></div>
+    <div class="preguntas" id="preguntas"></div>
+  </div>
+</section>
+
+<!-- 3 · EN LA HUERTA -->
+<section class="sec" id="huerta" aria-labelledby="h-hu">
+  <header><span class="n">3</span><div><h2 id="h-hu">En la huerta <span class="tiempo">8:25</span></h2></div></header>
+  <p class="lead">Vamos a medir en varios lugares. En cada uno, antes de medir, <b>apostamos</b>: ¿va a haber más o menos luz que en el lugar anterior? Después medimos un par de minutos y vemos si acertamos.</p>
+
+  <div class="roles" aria-label="Los trabajos en cada lugar">
+    <div class="rol"><b>Conexión</b><small>Lleva la notebook y el aparato. Que no se suelte ningún cable.</small></div>
+    <div class="rol"><b>Elige el lugar</b><small>Propone dónde medir y explica por qué ahí.</small></div>
+    <div class="rol"><b>Lee los números</b><small>Canta en voz alta la luz y la humedad, y avisa si cambian.</small></div>
+    <div class="rol"><b>Juez de la tierra</b><small>Toca la tierra con la mano y dice si está seca o húmeda. ¿Coincide con el LED?</small></div>
+    <div class="rol"><b>Saca una tarjeta</b><small>Antes de irnos del lugar, saca una tarjeta y la contesta. Las tarjetas están más abajo, en la parte 4.</small></div>
+  </div>
+  <p class="tenue" style="font-size:.85em">Los trabajos rotan: en cada lugar le toca a otra persona. Al final todos tuvieron uno.</p>
+
+  <div class="panel" aria-label="El aparato en vivo">
+    <div class="fila">
+      <button class="lleno" id="b-con" type="button">Conectar el aparato</button>
+      <button id="b-des" type="button" hidden>Desconectar</button>
+      <button id="b-ens" type="button">Probar sin el aparato</button>
+      <span class="estado" id="est">Sin conectar.</span>
+    </div>
+    <p class="aviso" id="aviso-ens" hidden>Modo prueba: los números son inventados por la página, para practicar. Antes de medir en la huerta, tocá «Borrar todo» y conectá el aparato.</p>
+
+    <div class="vivo">
+      <div class="medida luz"><span>Luz</span><b id="v-luz">—</b><small>0 = oscuro · 1023 = mucha luz</small></div>
+      <div class="medida hum"><span>Humedad</span><b id="v-hum">—</b><small id="v-hum-s">más alto = más seca</small></div>
+      <div class="medida led" id="m-led"><span>LED</span><b id="v-led">—</b><small>prendido = «regame»</small></div>
+    </div>
+
+    <div class="paso-q">
+      <span class="et">¿Dónde estamos?</span>
+      <div class="chips" id="lugares" role="group" aria-label="Lugares de la huerta"></div>
+      <div class="fila"><input id="nuevo-lugar" placeholder="Otro lugar…" aria-label="Nombre de otro lugar" maxlength="30"><button type="button" id="b-lugar">Agregar</button></div>
+    </div>
+
+    <div class="apuesta" id="apuesta" aria-live="polite"></div>
+
+    <div class="fila">
+      <button class="lleno" id="b-medir" type="button" disabled>Medir acá</button>
+      <button id="b-parar" type="button" hidden>Listo, terminamos este lugar</button>
+      <span class="estado" id="est-med"></span>
+    </div>
+
+    <svg class="graf" id="graf" viewBox="0 0 1000 320" role="img" aria-label="Gráfico de luz y humedad"></svg>
+    <div class="leyenda"><span><i style="background:var(--sol)"></i>luz</span><span><i style="background:var(--verde)"></i>humedad</span><span><i style="background:var(--verde);height:0;border-top:2px dashed var(--verde)"></i>umbral</span><span><i style="background:var(--rojo);width:8px;height:8px;border-radius:50%"></i>LED prendido</span></div>
+
+    <details class="mas">
+      <summary>El umbral: ¿desde qué número decimos que la tierra está seca?</summary>
+      <div class="fila" style="margin-top:10px">
+        <p style="flex-basis:100%">Midan una tierra bien seca y una recién regada. El umbral va en el medio. Lo cambiamos acá y la placa lo usa enseguida, sin volver a cargar el programa.</p>
+        <label for="umbral">Umbral</label><input id="umbral" type="number" min="1" max="1022" value="600" style="width:7em">
+        <button type="button" id="b-umbral">Mandarlo a la placa</button>
+        <span class="estado" id="est-umb"></span>
+      </div>
+    </details>
+
+    <div class="fila">
+      <button type="button" id="b-csv">Descargar los datos (CSV)</button>
+      <button type="button" id="b-subir">Guardar en la planilla de la profe</button>
+      <button type="button" id="b-borrar">Borrar todo</button>
+      <span class="estado" id="est-dat"></span>
+    </div>
+  </div>
+</section>
+
+<!-- 4 · LAS TARJETAS -->
+<section class="sec" id="tarjetas" aria-labelledby="h-ta">
+  <header><span class="n">4</span><div><h2 id="h-ta">Las tarjetas <span class="tiempo">en cada lugar</span></h2></div></header>
+  <p class="lead">Antes de irnos de cada lugar, alguien saca una tarjeta y la contesta en voz alta. Los demás pueden ayudar, pero primero habla quien la sacó.</p>
+  <div class="mazo">
+    <div class="tarjeta vacia" id="tarjeta" aria-live="polite"><span class="tipo">El mazo</span><p class="txt">Tocá «Sacar una tarjeta».</p></div>
+    <div class="mazo-lado">
+      <div class="fila">
+        <button class="lleno" type="button" id="b-sacar">Sacar una tarjeta</button>
+        <button type="button" id="b-lt">Una de palabras</button>
+        <button type="button" id="b-pc">Una de pensar</button>
+      </div>
+      <p class="estado" id="est-mazo"></p>
+      <p style="font-size:.85em"><b style="color:var(--violeta)">Palabras</b>: explicar con las palabras justas lo que hace el aparato y lo que dicen los números.<br><b style="color:var(--inf)">Pensar</b>: dudar de los datos, decidir con ellos y decir por qué.</p>
+      <button type="button" id="b-imp">Imprimir las tarjetas para llevar</button>
+    </div>
+  </div>
+</section>
+
+<!-- 5 · PREGUNTARLE A LOS DATOS -->
+<section class="sec" id="datos" aria-labelledby="h-da">
+  <header><span class="n">5</span><div><h2 id="h-da">Preguntarle a los datos <span class="tiempo">8:55, de vuelta en el aula</span></h2></div></header>
+  <p class="lead">Como en <i>Explorando datos</i>: elegimos qué filas mirar, qué hacer con ellas, y la página nos muestra la respuesta y el código de Python (pandas) que haría lo mismo.</p>
+  <div class="atajos" id="atajos"></div>
+  <div class="panel">
+    <div class="paso-q">
+      <span class="et">Paso 1 · ¿Qué filas miramos?</span>
+      <div id="filtros" style="display:flex;flex-direction:column;gap:8px"></div>
+      <div class="fila"><button type="button" id="b-filtro">+ Agregar un filtro</button><small id="q-n"></small></div>
+    </div>
+    <div class="paso-q">
+      <span class="et">Paso 2 · ¿Qué hacemos con esas filas?</span>
+      <select id="q-acc" aria-label="Qué hacemos con las filas">
+        <option value="filas">Mostrar las filas</option>
+        <option value="contar">Contar cuántas son</option>
+        <option value="p_luz">Promedio de luz</option>
+        <option value="p_hum">Promedio de humedad</option>
+        <option value="g_luz">Por lugar: promedio de luz</option>
+        <option value="g_hum">Por lugar: promedio de humedad</option>
+        <option value="g_n">Por lugar: cuántas filas</option>
+      </select>
+    </div>
+    <div class="paso-q">
+      <span class="et">La respuesta</span>
+      <p class="enpal" id="q-pal"></p>
+      <div id="q-res"></div>
+    </div>
+    <div class="paso-q">
+      <span class="et">Lo mismo, en Python</span>
+      <pre class="py" id="q-py"></pre>
+    </div>
+  </div>
+  <details class="mas">
+    <summary>¿Y en la app Explorando datos?</summary>
+    <p style="margin-top:8px">Tocá «Descargar los datos (CSV)» en la parte 3. Abrí <a href="https://ysyry.github.io/explorando-datos-edu/" target="_blank" rel="noopener">Explorando datos</a>, elegí «Cargar CSV» y subí el archivo <code>huerta.csv</code>. Son los mismos datos, con todas las herramientas de la app.</p>
+  </details>
+</section>
+
+<!-- 6 · LO QUE CONCLUIMOS -->
+<section class="sec conclu" id="conclu" aria-labelledby="h-co">
+  <header><span class="n">6</span><div><h2 id="h-co">Lo que concluimos <span class="tiempo">9:10</span></h2></div></header>
+  <p class="lead">Lo escribimos entre todos: qué aprendimos de la huerta mirando los números, y qué no se puede saber con lo que medimos.</p>
+  <textarea id="conclusiones" aria-label="Las conclusiones del curso" placeholder="Por ejemplo: debajo del sauce hay la mitad de luz que en la cama del medio…"></textarea>
+  <div class="panel" style="gap:12px">
+    <p class="gracias">Una última, para cada uno y si querés: ¿qué sabés hacer ahora que en agosto no sabías?</p>
+    <div class="fila"><input id="cie-nom" placeholder="Tu nombre" aria-label="Tu nombre" autocomplete="name" style="flex:0 1 14em"><input id="cie-txt" placeholder="Ahora sé…" aria-label="Qué sabés hacer ahora" style="flex:1 1 18em"><button type="button" id="b-cie">Mandar</button></div>
+    <span class="estado" id="est-cie"></span>
+  </div>
+</section>
+
+<!-- PARA LA PROFE: sólo con #profe -->
+<section class="profe" id="profe" hidden aria-label="Para la profe">
+  <div class="rot">Sólo para la profe · se ve con #profe</div>
+  <h2>Qué escuchar en las tarjetas</h2>
+  <p>Hoy se miran dos criterios: <b>lenguaje técnico</b> (tarjetas de palabras) y <b>pensamiento crítico</b> (tarjetas de pensar). Cada estudiante contesta al menos una de cada tipo a lo largo de la huerta y del código. Lo anotás en la planilla de chequeo, con la escala del informe.</p>
+  <table>
+    <tr><th></th><th>EP · En proceso</th><th>L · Logrado</th><th>AL · Ampliamente logrado</th></tr>
+    <tr><th>Lenguaje técnico</th><td>Señala o dice «eso», «el cosito». Lee el número sin decir qué es.</td><td>Nombra la parte y lo que hace: sensor, pin, umbral, LED. Dice qué mide cada número.</td><td>Une parte, número y decisión: «si la humedad pasa de 600 el LED se prende, porque…». Usa una cuenta para comparar.</td></tr>
+    <tr><th>Pensamiento crítico</th><td>Repite el dato y lo da por cierto. «Porque sí».</td><td>Da una razón o una duda con motivo: «puede ser la nube», «dos minutos es poco».</td><td>Propone cómo comprobarlo: medir otra vez, más tiempo, con la mano, con otro aparato.</td></tr>
+  </table>
+  <p><b>Quién tiene que hablar sí o sí:</b> los que tenés en duda para fortalecimiento. Que les toque «Saca una tarjeta» temprano, así si la primera no sale hay tiempo para otra.</p>
+  <p><b>Antes de las 8:</b> cargar el programa de la parte 2 en la placa, probar luz, humedad y LED; notebook con batería y Chrome; compartir internet del celular si en la huerta no llega el wifi. Si el número de humedad <b>baja</b> cuando la tierra se seca (pasa con algunas horquillas), en el programa cambiá <code>humedad &gt; umbral</code> por <code>humedad &lt; umbral</code> antes de cargarlo, y acá tocá este botón para que la página muestre «más alto = más seca» igual: <button type="button" id="b-inv">Invertir el sentido de la humedad</button> <span class="estado" id="est-inv"></span></p>
+</section>
+
+<p class="pie">Tecnologías para el territorio · software libre · 3ro año, Escuela Don Jaime de Nevares, Villa La Angostura · noviembre de 2026</p>
+</main>
+
+<div class="imprimibles" id="imprimibles" aria-hidden="true"></div>
+
+<script>
+/* ===== utilidades ===== */
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const K='pps.huerta.v1';
+let S=Object.assign({datos:[],lugares:['Pleno sol','Sombra','Cama recién regada','Tierra seca','Invernadero'],apuestas:{},umbral:600,inv:false,conclu:'',salieron:[]},LS.get(K,{}));
+const guardar=()=>LS.set(K,S);
+const prom=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:null;
+const r0=x=>x==null?'—':Math.round(x);
+
+/* ===== 2 · el código ===== */
+const CODIGO=[
+ ['// La huerta en datos · 3ro 2026',''],
+ ['const int PIN_LUZ = A1;      // la fotorresistencia','1'],
+ ['const int PIN_HUMEDAD = A0;  // el sensor en la tierra','1'],
+ ['const int PIN_LED = 9;       // el aviso','2'],
+ ['int umbral = 600;            // desde acá, la tierra está seca','2'],
+ ['',''],
+ ['void setup() {',''],
+ ['  pinMode(PIN_LED, OUTPUT);',''],
+ ['  Serial.begin(9600);        // abre la conversación con la compu','3'],
+ ['  Serial.println("segundos,luz,humedad,led");','3'],
+ ['}',''],
+ ['',''],
+ ['void loop() {',''],
+ ['  int luz = analogRead(PIN_LUZ);','1'],
+ ['  int humedad = analogRead(PIN_HUMEDAD);','1'],
+ ['',''],
+ ['  int led = 0;','2'],
+ ['  if (humedad > umbral) {    // ¿está seca?','2'],
+ ['    led = 1;','2'],
+ ['  }','2'],
+ ['  digitalWrite(PIN_LED, led);','2'],
+ ['',''],
+ ['  // una fila de la tabla: segundo, luz, humedad, led','3'],
+ ['  Serial.print(millis() / 1000);  Serial.print(",");','3'],
+ ['  Serial.print(luz);              Serial.print(",");','3'],
+ ['  Serial.print(humedad);          Serial.print(",");','3'],
+ ['  Serial.println(led);','3'],
+ ['',''],
+ ['  // si la página manda un umbral nuevo, lo usamos','2'],
+ ['  if (Serial.available() > 0) {','2'],
+ ['    int nuevo = Serial.parseInt();','2'],
+ ['    if (nuevo > 0) umbral = nuevo;','2'],
+ ['  }','2'],
+ ['',''],
+ ['  delay(1000);               // una medición por segundo','3'],
+ ['}','']
+];
+const PREG=[
+ {q:'1',t:'¿Qué mide el aparato y dónde está enchufado cada sensor?',r:'La luz, con la fotorresistencia en <b>A1</b>, y la humedad, con el sensor en <b>A0</b>. <code>analogRead</code> lee cada uno y da un número de 0 a 1023. Es un número, no una unidad: más luz, número más alto.'},
+ {q:'2',t:'¿Cuándo se prende el LED? ¿Quién decide ese número?',r:'Cuando la <b>humedad pasa el umbral</b> (<code>humedad &gt; umbral</code>): la tierra está seca y el LED avisa. El umbral lo elegimos <b>nosotros</b> en la huerta, midiendo tierra seca y mojada. El aparato no sabe qué es «seco»: se lo enseñamos con un número.'},
+ {q:'3',t:'¿Qué le cuenta a la compu, y cada cuánto?',r:'Una <b>fila por segundo</b>, con cuatro números separados por comas: segundo, luz, humedad y LED (1 prendido, 0 apagado). La primera fila son los títulos. Con esas filas se arma la tabla, y con la tabla, el gráfico y las preguntas.'}
+];
+(function(){
+  const cod=$('cod');
+  const pinta=l=>esc(l).replace(/(\/\/.*)$/,'<span class="c">$1</span>');
+  cod.innerHTML=CODIGO.map(([l,q])=>`<span class="ln" data-q="${q}">${pinta(l)||' '}</span>`).join('');
+  const box=$('preguntas');
+  box.innerHTML=PREG.map((p,i)=>`<div class="preg" data-q="${p.q}"><h3>${i+1}. ${p.t}</h3><div class="fila"><button type="button" class="b-ver">Ver las líneas</button><button type="button" class="b-resp">Destapar la respuesta</button></div><p class="resp" hidden>${p.r}</p></div>`).join('');
+  box.querySelectorAll('.preg').forEach(pr=>{
+    pr.querySelector('.b-ver').addEventListener('click',()=>{
+      const ya=pr.classList.contains('activa');
+      box.querySelectorAll('.preg').forEach(x=>x.classList.remove('activa'));
+      cod.classList.toggle('foco',!ya);
+      cod.querySelectorAll('.ln').forEach(l=>l.classList.toggle('on',!ya&&l.dataset.q===pr.dataset.q));
+      if(!ya)pr.classList.add('activa');
+    });
+    pr.querySelector('.b-resp').addEventListener('click',e=>{const r=pr.querySelector('.resp');r.hidden=!r.hidden;e.target.textContent=r.hidden?'Destapar la respuesta':'Tapar'});
+  });
+})();
+
+/* ===== 3 · la huerta en vivo ===== */
+let lugar=null, midiendo=false, ultima=null, ensayo=null, port=null, reader=null, cerrado=null;
+const segLugar=()=>S.datos.filter(d=>d.lugar===lugar).length;
+function pintarLugares(){
+  $('lugares').innerHTML=S.lugares.map(l=>{const n=S.datos.filter(d=>d.lugar===l).length;return `<button type="button" class="chip" aria-pressed="${l===lugar}" data-l="${esc(l)}">${esc(l)}${n?`<span class="cnt">${n}</span>`:''}</button>`}).join('');
+  $('lugares').querySelectorAll('.chip').forEach(b=>b.addEventListener('click',()=>{if(midiendo)return;lugar=b.dataset.l;pintarLugares();pintarApuesta();}));
+  $('b-medir').disabled=!lugar||midiendo||(!port&&!ensayo);
+}
+$('b-lugar').addEventListener('click',()=>{const v=$('nuevo-lugar').value.trim();if(!v||S.lugares.includes(v))return;S.lugares.push(v);$('nuevo-lugar').value='';lugar=v;guardar();pintarLugares();pintarApuesta()});
+$('nuevo-lugar').addEventListener('keydown',e=>{if(e.key==='Enter')$('b-lugar').click()});
+
+/* el lugar medido justo antes que este (para comparar la apuesta) */
+function anterior(l){const ord=[];S.datos.forEach(d=>{if(!ord.includes(d.lugar))ord.push(d.lugar)});const i=ord.indexOf(l);const prev=i<0?ord[ord.length-1]:ord[i-1];return prev&&prev!==l?prev:null}
+function pintarApuesta(){
+  const box=$('apuesta');box.className='apuesta';
+  if(!lugar){box.innerHTML='<p class="tenue">Elegí un lugar para empezar.</p>';return}
+  const prev=anterior(lugar);
+  if(!prev){box.innerHTML=`<p><b>${esc(lugar)}</b> es el primer lugar: no hay con qué comparar. Medimos y queda de referencia para el próximo.</p>`;return}
+  const a=S.apuestas[lugar];
+  const lp=prom(S.datos.filter(d=>d.lugar===prev).map(d=>d.luz));
+  const la=prom(S.datos.filter(d=>d.lugar===lugar).map(d=>d.luz));
+  if(!a){
+    box.innerHTML=`<p><b>La apuesta.</b> En «${esc(prev)}» la luz dio <b>${r0(lp)}</b> en promedio. En «${esc(lugar)}», ¿va a haber…</p><div class="fila"><button type="button" data-a="mas">más luz</button><button type="button" data-a="menos">menos luz</button><button type="button" data-a="igual">más o menos igual</button></div><small>Quien eligió el lugar dice por qué apuesta eso.</small>`;
+    box.querySelectorAll('[data-a]').forEach(b=>b.addEventListener('click',()=>{S.apuestas[lugar]=b.dataset.a;guardar();pintarApuesta()}));
+    return;
+  }
+  const txt={mas:'más luz',menos:'menos luz',igual:'más o menos igual'}[a];
+  if(la==null||segLugar()<5){box.innerHTML=`<p>Apostamos <b>${txt}</b> que en «${esc(prev)}» (${r0(lp)}). Ahora a medir.</p>`;return}
+  const dif=la-lp, real=Math.abs(dif)<=Math.max(30,lp*.08)?'igual':dif>0?'mas':'menos';
+  box.classList.add(real===a?'ok':'mal');
+  box.innerHTML=`<p>Apostamos <b>${txt}</b>. Dio <b>${r0(la)}</b> contra <b>${r0(lp)}</b>: una diferencia de <b>${r0(Math.abs(dif))}</b>. ${real===a?'<b>¡Acertamos!</b>':'<b>No acertamos.</b>'} ${real===a?'¿Por qué lo sabíamos?':'¿Qué no tuvimos en cuenta?'}</p>`;
+}
+
+function nuevaFila(seg,luz,hum,led){
+  ultima={seg,luz,hum,led};
+  $('v-luz').textContent=luz;$('v-hum').textContent=hum;$('v-led').textContent=led?'prendido':'apagado';$('m-led').classList.toggle('on',!!led);
+  $('c-luz').textContent=luz;$('c-hum').textContent=hum;
+  if(midiendo&&lugar){
+    S.datos.push({n:S.datos.length+1,lugar,luz,humedad:hum,led,hora:new Date().toTimeString().slice(0,8),prueba:!!ensayo});
+    guardar();$('est-med').textContent=`${segLugar()} mediciones en «${lugar}»`;
+    if(S.datos.length%3===0)pintarLugares();
+    pintarApuesta();pintarCifras();graficar();if(S.datos.length%5===0)consultar();
+  }
+}
+function linea(l){
+  l=l.trim();if(!l)return;
+  if(l.startsWith('#'))return;
+  const p=l.split(',').map(Number);
+  if(p.length>=4&&p.every(x=>!isNaN(x))){let hum=p[2];if(S.inv)hum=1023-hum;nuevaFila(p[0],p[1],hum,p[3])}
+}
+$('b-con').addEventListener('click',async()=>{
+  if(!('serial' in navigator)){$('est').textContent='Este navegador no puede leer la placa: abrí la página en Chrome.';return}
+  try{port=await navigator.serial.requestPort();await port.open({baudRate:9600})}
+  catch(e){port=null;$('est').textContent=e.name==='NotFoundError'?'No elegiste ninguna placa: tocá Conectar y elegí la que dice USB o COM.':'No se pudo abrir la placa. ¿Está abierto el Monitor serie del IDE? Cerralo y probá de nuevo.';return}
+  pararEnsayo();
+  $('b-con').hidden=true;$('b-des').hidden=false;$('est').textContent='Conectado. Esperando números…';pintarLugares();
+  const dec=new TextDecoderStream();cerrado=port.readable.pipeTo(dec.writable).catch(()=>{});reader=dec.readable.getReader();
+  let buf='';
+  try{while(true){const {value,done}=await reader.read();if(done)break;buf+=value;let i;while((i=buf.indexOf('\n'))>=0){linea(buf.slice(0,i));buf=buf.slice(i+1)}$('est').textContent='Conectado · '+new Date().toLocaleTimeString('es-AR')}}
+  catch(e){$('est').textContent='Se cortó. ¿Se desenchufó el cable? Enchufalo y tocá Conectar.'}
+  await desconectar();
+});
+async function desconectar(){
+  try{if(reader)await reader.cancel()}catch(_){}try{if(cerrado)await cerrado}catch(_){}try{if(port)await port.close()}catch(_){}
+  port=reader=cerrado=null;$('b-con').hidden=false;$('b-des').hidden=true;if(midiendo)$('b-parar').click();pintarLugares();
+}
+$('b-des').addEventListener('click',async()=>{await desconectar();$('est').textContent='Desconectado.'});
+
+/* modo prueba: números inventados según el lugar */
+function pararEnsayo(){if(ensayo){clearInterval(ensayo);ensayo=null;$('aviso-ens').hidden=true;$('b-ens').textContent='Probar sin el aparato'}}
+$('b-ens').addEventListener('click',()=>{
+  if(ensayo){pararEnsayo();pintarLugares();$('est').textContent='Sin conectar.';return}
+  if(port)return;
+  let t=0;$('aviso-ens').hidden=false;$('b-ens').textContent='Parar la prueba';$('est').textContent='Modo prueba';
+  ensayo=setInterval(()=>{t++;const l=(lugar||'').toLowerCase();
+    let luz=/sol/.test(l)?900:/sombra|invern/.test(l)?430:650, hum=/regad|moj/.test(l)?340:/seca/.test(l)?760:540;
+    luz+=Math.round((Math.random()-.5)*60);hum+=Math.round((Math.random()-.5)*30);if(t%40>34)luz-=250;
+    nuevaFila(t,Math.max(0,Math.min(1023,luz)),Math.max(0,Math.min(1023,hum)),hum>S.umbral?1:0)},1000);
+  pintarLugares();
+});
+
+$('b-medir').addEventListener('click',()=>{if(!lugar)return;midiendo=true;$('b-medir').hidden=true;$('b-parar').hidden=false;$('est-med').className='estado rec';$('est-med').textContent='Midiendo en «'+lugar+'»…';pintarLugares()});
+$('b-parar').addEventListener('click',()=>{midiendo=false;$('b-medir').hidden=false;$('b-parar').hidden=true;$('est-med').className='estado';$('est-med').textContent=`Listo: ${segLugar()} mediciones en «${lugar}». ¿Sacamos una tarjeta?`;pintarLugares();pintarApuesta();graficar();consultar()});
+
+/* umbral */
+$('umbral').value=S.umbral;
+$('b-umbral').addEventListener('click',async()=>{
+  const v=parseInt($('umbral').value,10);if(!(v>0&&v<1023))return;S.umbral=v;guardar();graficar();
+  if(!port){$('est-umb').textContent=ensayo?'Guardado (modo prueba).':'Guardado. Conectá el aparato para mandarlo.';return}
+  try{const w=port.writable.getWriter();await w.write(new TextEncoder().encode(String(S.inv?1023-v:v)+'\n'));w.releaseLock();$('est-umb').textContent='Mandado: la placa ya usa '+v+'.'}
+  catch(e){$('est-umb').textContent='No se pudo mandar. Probá otra vez.'}
+});
+
+/* gráfico */
+function graficar(){
+  const svg=$('graf'),W=1000,H=320,L=44,R=10,T=26,B=24,d=S.datos;
+  const x=i=>L+(d.length<2?0:(W-L-R)*i/(d.length-1)), y=v=>T+(H-T-B)*(1-v/1023);
+  let s='';
+  [0,256,512,768,1023].forEach(v=>{s+=`<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--raya)" stroke-width="1"/><text x="${L-6}" y="${y(v)+4}" text-anchor="end">${v}</text>`});
+  if(!d.length){s+=`<text x="${W/2}" y="${H/2}" text-anchor="middle" style="font-size:16px">Cuando midamos, acá aparecen la luz y la humedad de cada lugar.</text>`;svg.innerHTML=s;return}
+  /* bandas por lugar */
+  let ini=0;const tonos=['var(--violeta-w)','transparent'];let k=0;
+  for(let i=1;i<=d.length;i++){if(i===d.length||d[i].lugar!==d[ini].lugar){const x0=x(ini)-(i-ini===1?3:0),x1=x(i-1)+(i-ini===1?3:0);s+=`<rect x="${x0}" y="${T}" width="${Math.max(6,x1-x0)}" height="${H-T-B}" fill="${tonos[k%2]}"/><text x="${(x0+x1)/2}" y="${T-8}" text-anchor="middle" style="fill:var(--tinta);font-size:12px">${esc(d[ini].lugar).slice(0,18)}</text>`;k++;ini=i}}
+  s+=`<line x1="${L}" x2="${W-R}" y1="${y(S.umbral)}" y2="${y(S.umbral)}" stroke="var(--verde)" stroke-width="1.5" stroke-dasharray="6 5"/><text x="${W-R}" y="${y(S.umbral)-5}" text-anchor="end" style="fill:var(--verde)">umbral ${S.umbral}</text>`;
+  const pl=k=>d.map((r,i)=>`${x(i).toFixed(1)},${y(r[k]).toFixed(1)}`).join(' ');
+  s+=`<polyline points="${pl('luz')}" fill="none" stroke="var(--sol)" stroke-width="2.5" stroke-linejoin="round"/>`;
+  s+=`<polyline points="${pl('humedad')}" fill="none" stroke="var(--verde)" stroke-width="2.5" stroke-linejoin="round"/>`;
+  d.forEach((r,i)=>{if(r.led)s+=`<circle cx="${x(i).toFixed(1)}" cy="${H-B+8}" r="3" fill="var(--rojo)"/>`});
+  svg.innerHTML=s;
+}
+function pintarCifras(){$('c-filas').textContent=S.datos.length;$('c-lug').textContent=new Set(S.datos.map(d=>d.lugar)).size;const u=S.datos[S.datos.length-1];if(u&&!ultima){$('c-luz').textContent=u.luz;$('c-hum').textContent=u.humedad}}
+
+/* datos: CSV, planilla, borrar */
+const csv=()=>'n,lugar,luz,humedad,led,hora\n'+S.datos.map(d=>[d.n,'"'+d.lugar.replace(/"/g,"'")+'"',d.luz,d.humedad,d.led,d.hora].join(',')).join('\n');
+$('b-csv').addEventListener('click',()=>{if(!S.datos.length){$('est-dat').textContent='Todavía no hay datos.';return}const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv()],{type:'text/csv'}));a.download='huerta.csv';a.click();$('est-dat').textContent='Descargado: huerta.csv'});
+const URL_BUZON='https://script.google.com/macros/s/AKfycbzLxvvU5Nw5Zx1yKyeb9z7WB1b2AQD8x7FcPpFznLSr3K8kImnVx4dNrX1Z0WntVigUjg/exec';
+function hoy(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function mandar(alumno,sala,salaNom,concepto,detalle){
+  const t={id:'t'+Date.now().toString(36)+Math.random().toString(36).slice(2,7),alumno,anio:'3ro',fecha:hoy(),ts:new Date().toISOString(),sala,salaNom,modo:'practica',total:1,resueltos:1,sinAyuda:1,pistas:0,salteadas:0,seg:1,ejs:[{c:concepto,t:'desafio',q:detalle,i:1,ok:true,ok1:true,p:0,s:false,sg:1}]};
+  return fetch(URL_BUZON,{method:'POST',mode:'no-cors',cache:'no-store',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(t)});
+}
+$('b-subir').addEventListener('click',()=>{if(!S.datos.length){$('est-dat').textContent='Todavía no hay datos.';return}
+  $('est-dat').textContent='Mandando…';
+  mandar('3ro · todo el curso','huerta-en-datos','Proyecto final · La huerta en datos','Los datos de la huerta ('+S.datos.length+' filas)',csv()+(S.conclu?'\n\nCONCLUSIONES\n'+S.conclu:''))
+   .then(()=>$('est-dat').textContent='Mandado a la planilla. Igual conviene descargar el CSV.').catch(()=>$('est-dat').textContent='No hay internet. Descargá el CSV y lo subimos después.')});
+$('b-borrar').addEventListener('click',()=>{if(!S.datos.length)return;if(!confirm('¿Borrar las '+S.datos.length+' mediciones y las apuestas? No se puede deshacer.'))return;S.datos=[];S.apuestas={};guardar();ultima=null;['c-luz','c-hum','v-luz','v-hum','v-led'].forEach(i=>$(i).textContent='—');pintarCifras();pintarLugares();pintarApuesta();graficar();consultar();$('est-dat').textContent='Borrado.'});
+
+/* ===== 4 · las tarjetas ===== */
+const TARJ=[
+ {t:'lt',x:'Contale a alguien de 1ro qué hace la fotorresistencia.',s:'Sin decir «el cosito»: qué mide, dónde está enchufada, qué número da.'},
+ {t:'lt',x:'Leé esta fila en voz alta, diciendo qué es cada número: 34, 812, 640, 1',s:'Pista: mirá la primera fila que manda la placa, la de los títulos.'},
+ {t:'lt',x:'¿Qué es el umbral? Explicalo con el de nuestra huerta.',s:'¿Qué número elegimos y qué pasa de un lado y del otro?'},
+ {t:'lt',x:'Nombrá las tres partes del aparato: qué entra, qué decide y qué sale.',s:'Con el nombre de cada pieza.'},
+ {t:'lt',x:'Señalá en el código la línea que decide si se prende el LED y leela como si fuera castellano.',s:'«Si la humedad es mayor que…»'},
+ {t:'lt',x:'La placa dice 850 de luz. ¿850 qué?',s:'¿Es una unidad, como los grados o los metros? ¿Entre qué números se mueve?'},
+ {t:'lt',x:'Compará la luz de este lugar con la del anterior usando una cuenta.',s:'¿Cuánto más? ¿Cuántas veces más? ¿Cuál cuenta te sirve más?'},
+ {t:'lt',x:'¿Qué viaja por el cable USB, y en qué orden?',s:'Contalo como si fueras el cable.'},
+ {t:'pc',x:'El LED dice que la tierra está seca, pero la tocás y está húmeda. ¿A quién le creés?',s:'¿Qué harías para salir de la duda?'},
+ {t:'pc',x:'Medimos dos minutos en cada lugar. ¿Alcanza para decir «la sombra siempre tiene menos luz»?',s:'¿Qué nos falta medir para poder decir «siempre»?'},
+ {t:'pc',x:'Pasó una nube mientras medíamos al sol. ¿Qué le pasa a los datos?',s:'¿Cómo nos daríamos cuenta mirando el gráfico?'},
+ {t:'pc',x:'Sos quien cuida la huerta. Con estos datos, ¿qué cama regás primero?',s:'Decí qué número miraste para decidir.'},
+ {t:'pc',x:'Alguien te quiere vender un riego automático que «nunca se equivoca». ¿Qué le preguntás?',s:'Pensá en lo que nos pasó a nosotros con el umbral.'},
+ {t:'pc',x:'Si dejamos el aparato toda la noche en la huerta, ¿qué números esperás de luz y de humedad?',s:'Apostá antes, y decí por qué.'},
+ {t:'pc',x:'Dos aparatos iguales, en el mismo lugar, dan 780 y 820 de luz. ¿Cuál tiene razón?',s:'¿Puede que los dos tengan razón?'},
+ {t:'pc',x:'¿Quién más en la Villa podría usar estos datos? ¿Los publicaríamos libres?',s:'Nombrá a alguien concreto y para qué le servirían.'}
+];
+const NOM={lt:'Palabras · lenguaje técnico',pc:'Pensar · pensamiento crítico'};
+function sacar(tipo){
+  let pool=TARJ.map((c,i)=>({...c,i})).filter(c=>(!tipo||c.t===tipo)&&!S.salieron.includes(c.i));
+  if(!pool.length){S.salieron=S.salieron.filter(i=>tipo&&TARJ[i].t!==tipo);pool=TARJ.map((c,i)=>({...c,i})).filter(c=>!tipo||c.t===tipo)}
+  const c=pool[Math.floor(Math.random()*pool.length)];S.salieron.push(c.i);guardar();
+  const el=$('tarjeta');el.className='tarjeta '+c.t;
+  el.innerHTML=`<span class="tipo">${NOM[c.t]}</span><p class="txt">${esc(c.x)}</p><p class="sit">${esc(c.s)}</p>`;
+  $('est-mazo').textContent=`Salieron ${S.salieron.length} de ${TARJ.length}.`;
+}
+$('b-sacar').addEventListener('click',()=>sacar(null));$('b-lt').addEventListener('click',()=>sacar('lt'));$('b-pc').addEventListener('click',()=>sacar('pc'));
+$('imprimibles').innerHTML=TARJ.map(c=>`<div class="imp-t"><span class="tipo">${NOM[c.t]}</span><p class="txt">${esc(c.x)}</p><p class="sit">${esc(c.s)}</p></div>`).join('');
+$('b-imp').addEventListener('click',()=>{document.body.classList.add('imp');window.print();setTimeout(()=>document.body.classList.remove('imp'),500)});
+window.addEventListener('afterprint',()=>document.body.classList.remove('imp'));
+
+/* ===== 5 · preguntarle a los datos ===== */
+let F=[];
+const COLS={lugar:'lugar',luz:'luz',humedad:'humedad',led:'LED'};
+function filaFiltro(f,i){
+  const lugares=[...new Set(S.datos.map(d=>d.lugar).concat(S.lugares))];
+  const ops=f.col==='lugar'?[['==','es'],['!=','no es']]:f.col==='led'?[['==','es']]:[['>','es mayor que'],['<','es menor que']];
+  const val=f.col==='lugar'?`<select data-k="val">${lugares.map(l=>`<option ${l===f.val?'selected':''}>${esc(l)}</option>`).join('')}</select>`
+     :f.col==='led'?`<select data-k="val"><option value="1" ${f.val=='1'?'selected':''}>1 · prendido</option><option value="0" ${f.val=='0'?'selected':''}>0 · apagado</option></select>`
+     :`<input data-k="val" type="number" value="${esc(f.val)}" style="width:6em">`;
+  return `<div class="filtro" data-i="${i}"><select data-k="col">${Object.keys(COLS).map(c=>`<option value="${c}" ${c===f.col?'selected':''}>${COLS[c]}</option>`).join('')}</select><select data-k="op">${ops.map(([o,t])=>`<option value="${o}" ${o===f.op?'selected':''}>${t}</option>`).join('')}</select>${val}<button type="button" class="quitar" aria-label="Quitar filtro">✕</button></div>`;
+}
+const DEF={lugar:()=>({col:'lugar',op:'==',val:S.lugares[0]}),luz:()=>({col:'luz',op:'>',val:500}),humedad:()=>({col:'humedad',op:'>',val:S.umbral}),led:()=>({col:'led',op:'==',val:'1'})};
+function pintarFiltros(){
+  $('filtros').innerHTML=F.length?F.map(filaFiltro).join(''):'<small>Sin filtros: miramos todas las filas.</small>';
+  $('filtros').querySelectorAll('.filtro').forEach(div=>{const i=+div.dataset.i;
+    div.querySelectorAll('[data-k]').forEach(el=>el.addEventListener(el.tagName==='INPUT'?'input':'change',()=>{const k=el.dataset.k;if(k==='col'){F[i]=DEF[el.value]()}else F[i][k]=el.value;if(k==='col')pintarFiltros();consultar()}));
+    div.querySelector('.quitar').addEventListener('click',()=>{F.splice(i,1);pintarFiltros();consultar()});
+  });
+}
+$('b-filtro').addEventListener('click',()=>{F.push(DEF.lugar());pintarFiltros();consultar()});
+$('q-acc').addEventListener('change',consultar);
+const pyVal=f=>f.col==='lugar'?`"${f.val}"`:f.val;
+function consultar(){
+  const d=S.datos;
+  const pasa=r=>F.every(f=>{const v=r[f.col];if(f.col==='lugar')return f.op==='=='?v===f.val:v!==f.val;const n=Number(f.val);return f.op==='>'?v>n:f.op==='<'?v<n:v==n});
+  const sel=d.filter(pasa), acc=$('q-acc').value;
+  $('q-n').textContent=d.length?`${sel.length} de ${d.length} filas`:'';
+  /* python */
+  const py=['<span class="c"># los datos de la huerta, en una tabla</span>','import pandas as pd','df = pd.read_csv("huerta.csv")',''];
+  let base='df';
+  if(F.length){const conds=F.map(f=>`(df["${f.col}"] ${f.op} ${esc(pyVal(f))})`);py.push('<span class="c"># paso 1: las filas que cumplen</span>');py.push(`filas = df[${conds.join(' &amp; ')}]`);base='filas'}
+  py.push('<span class="c"># paso 2</span>');
+  const col=acc.endsWith('luz')?'luz':'humedad';
+  if(acc==='filas')py.push(`print(${base})`);
+  else if(acc==='contar')py.push(`print(len(${base}))`);
+  else if(acc.startsWith('p_'))py.push(`print(${base}["${col}"].mean())`);
+  else if(acc==='g_n')py.push(`print(${base}.groupby("lugar").size().sort_values(ascending=False))`);
+  else py.push(`print(${base}.groupby("lugar")["${col}"].mean().sort_values(ascending=False))`);
+  $('q-py').innerHTML=py.join('\n');
+  /* respuesta */
+  const res=$('q-res'), pal=$('q-pal');
+  if(!d.length){pal.textContent='Todavía no medimos nada. Cuando haya datos, las respuestas aparecen acá.';res.innerHTML='';return}
+  const quien=F.length?`De las ${d.length} filas, ${sel.length} cumplen los filtros`:`Miramos las ${d.length} filas`;
+  if(acc==='filas'){
+    pal.textContent=quien+'.';
+    res.innerHTML=sel.length?`<div class="tabla-wrap"><table><tr><th>n</th><th>lugar</th><th>luz</th><th>humedad</th><th>led</th><th>hora</th></tr>${sel.slice(0,200).map(r=>`<tr><td>${r.n}</td><td>${esc(r.lugar)}</td><td>${r.luz}</td><td>${r.humedad}</td><td>${r.led}</td><td>${r.hora}</td></tr>`).join('')}</table></div>${sel.length>200?'<small>Se muestran las primeras 200.</small>':''}`:'<p class="tenue">Ninguna fila cumple eso.</p>';
+  }else if(acc==='contar'){pal.textContent=quien+'.';res.innerHTML=`<p class="res-num">${sel.length}</p>`}
+  else if(acc.startsWith('p_')){const p=prom(sel.map(r=>r[col]));pal.textContent=`${quien}. El promedio de ${col} es:`;res.innerHTML=`<p class="res-num">${p==null?'—':Math.round(p)}</p>`}
+  else{
+    const g={};sel.forEach(r=>{(g[r.lugar]=g[r.lugar]||[]).push(r)});
+    let rows=Object.entries(g).map(([l,a])=>[l,acc==='g_n'?a.length:prom(a.map(r=>r[col]))]).sort((a,b)=>b[1]-a[1]);
+    if(!rows.length){pal.textContent='Ninguna fila cumple eso.';res.innerHTML='';return}
+    const max=Math.max(...rows.map(r=>r[1]),1);
+    const qué=acc==='g_n'?'filas':`${col} promedio`;
+    pal.textContent=`${quien}. Por lugar, de mayor a menor ${qué}: arriba de todo, «${rows[0][0]}»`+(rows.length>1?`; abajo, «${rows[rows.length-1][0]}».`:'.');
+    res.innerHTML=`<div class="barras">${rows.map(([l,v])=>`<div class="barra"><span>${esc(l)}</span><div class="b" style="width:${(100*v/max).toFixed(1)}%;background:${acc==='g_luz'?'var(--sol)':acc==='g_hum'?'var(--verde)':'var(--violeta)'}"></div><span class="v">${Math.round(v)}</span></div>`).join('')}</div>`;
+  }
+}
+const ATAJOS=[
+ ['¿Dónde hubo más luz?',[],'g_luz'],
+ ['¿Qué lugar está más seco?',[],'g_hum'],
+ ['¿Cuántas veces se prendió el LED?',[{col:'led',op:'==',val:'1'}],'contar'],
+ ['¿Dónde se prendió el LED?',[{col:'led',op:'==',val:'1'}],'g_n'],
+ ['¿Cuánta luz había en la sombra?',[{col:'lugar',op:'==',val:'Sombra'}],'p_luz']
+];
+$('atajos').innerHTML=ATAJOS.map((a,i)=>`<button type="button" data-i="${i}">${a[0]}</button>`).join('');
+$('atajos').querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{const a=ATAJOS[b.dataset.i];F=a[1].map(f=>({...f}));$('q-acc').value=a[2];pintarFiltros();consultar();$('q-pal').scrollIntoView({behavior:'smooth',block:'center'})}));
+
+/* ===== 6 · conclusiones y cierre ===== */
+$('conclusiones').value=S.conclu||'';
+$('conclusiones').addEventListener('input',e=>{S.conclu=e.target.value;guardar()});
+$('b-cie').addEventListener('click',()=>{const n=$('cie-nom').value.trim(),t=$('cie-txt').value.trim();if(n.length<3||!t){$('est-cie').textContent='Poné tu nombre y lo que sabés hacer ahora.';return}
+  mandar(n,'huerta-cierre','Proyecto final · ¿Qué sabés hacer ahora?','¿Qué sabés hacer ahora que en agosto no sabías?',t).then(()=>{$('est-cie').textContent='¡Gracias, '+n.split(' ')[0]+'! Llegó.';$('cie-txt').value='';$('cie-nom').value=''}).catch(()=>$('est-cie').textContent='No hay internet: probá en un rato.')});
+
+/* ===== profe ===== */
+function verProfe(){$('profe').hidden=location.hash!=='#profe'}
+window.addEventListener('hashchange',verProfe);verProfe();
+function pintarInv(){$('v-hum-s').textContent='más alto = más seca';$('est-inv').textContent=S.inv?'Invertido: la página da vuelta el número que manda la placa.':''}
+$('b-inv').addEventListener('click',()=>{S.inv=!S.inv;guardar();pintarInv()});
+
+/* arranque */
+pintarInv();pintarLugares();pintarApuesta();pintarCifras();graficar();pintarFiltros();consultar();
+</script>
+</body>
+</html>
