@@ -163,17 +163,6 @@ th{font-family:var(--f-mono);font-weight:500;color:var(--tenue);font-size:.85em}
   .vivo{grid-template-columns:1fr 1fr}
 }
 
-/* imprimir las tarjetas para llevar a la huerta */
-.imprimibles{display:none}
-@media print{
-  body{background:#fff;color:#000;font-size:13pt}
-  body.imp main>*{display:none!important}
-  body.imp .imprimibles{display:grid!important;grid-template-columns:1fr 1fr;gap:10pt}
-  .imp-t{border:1.5pt dashed #888;border-radius:10pt;padding:14pt;break-inside:avoid;min-height:150pt;display:flex;flex-direction:column;gap:8pt}
-  .imp-t .tipo{font:500 8pt var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:#555}
-  .imp-t .txt{font:600 15pt var(--f-titulo);line-height:1.2;color:#000}
-  .imp-t .sit{font-size:10pt;color:#333}
-}
 </style>
 </head>
 <body>
@@ -294,7 +283,6 @@ th{font-family:var(--f-mono);font-weight:500;color:var(--tenue);font-size:.85em}
       </div>
       <p class="estado" id="est-mazo"></p>
       <p style="font-size:.85em"><b style="color:var(--violeta)">Palabras</b>: explicar con las palabras justas lo que hace el aparato y lo que dicen los números.<br><b style="color:var(--inf)">Pensar</b>: dudar de los datos, decidir con ellos y decir por qué.</p>
-      <button type="button" id="b-imp">Imprimir las tarjetas para llevar</button>
     </div>
   </div>
 </section>
@@ -367,7 +355,6 @@ th{font-family:var(--f-mono);font-weight:500;color:var(--tenue);font-size:.85em}
 <p class="pie">Tecnologías para el territorio · software libre · 3ro año, Escuela Don Jaime de Nevares, Villa La Angostura · noviembre de 2026</p>
 </main>
 
-<div class="imprimibles" id="imprimibles" aria-hidden="true"></div>
 
 <script>
 /* ===== utilidades ===== */
@@ -598,9 +585,6 @@ function sacar(tipo){
   $('est-mazo').textContent=`Salieron ${S.salieron.length} de ${TARJ.length}.`;
 }
 $('b-sacar').addEventListener('click',()=>sacar(null));$('b-lt').addEventListener('click',()=>sacar('lt'));$('b-pc').addEventListener('click',()=>sacar('pc'));
-$('imprimibles').innerHTML=TARJ.map(c=>`<div class="imp-t"><span class="tipo">${NOM[c.t]}</span><p class="txt">${esc(c.x)}</p><p class="sit">${esc(c.s)}</p></div>`).join('');
-$('b-imp').addEventListener('click',()=>{document.body.classList.add('imp');window.print();setTimeout(()=>document.body.classList.remove('imp'),500)});
-window.addEventListener('afterprint',()=>document.body.classList.remove('imp'));
 
 /* ===== 5 · preguntarle a los datos ===== */
 let F=[];
