@@ -72,12 +72,13 @@ textarea{width:100%;min-height:5.5em;resize:vertical}
 .caja small{font-size:.82em}
 .caja:not(:last-child)::after{content:"→";position:absolute;right:-14px;top:50%;transform:translate(50%,-50%);font-family:var(--f-titulo);font-weight:800;color:var(--tenue);font-size:1.4em}
 
-.armado{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;counter-reset:a}
+.armado{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;counter-reset:a}
 .armado li{background:var(--hoja);border:1px solid var(--raya);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:8px;counter-increment:a}
 .armado li::before{content:"Paso " counter(a);font-family:var(--f-mono);font-size:.68em;letter-spacing:.12em;text-transform:uppercase;color:var(--violeta)}
 .armado b{color:var(--tinta)}
 .armado .prueba{background:var(--verde-w);border-radius:10px;padding:8px 10px;font-size:.85em;color:var(--tinta)}
-@media (max-width:820px){.armado{grid-template-columns:1fr}}
+@media (max-width:1000px){.armado{grid-template-columns:1fr 1fr}}
+@media (max-width:600px){.armado{grid-template-columns:1fr}}
 /* código */
 .cod-wrap{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:20px;align-items:start}
 .codigo{background:var(--codigo);color:var(--codigo-t);border-radius:12px;padding:16px 0;overflow-x:auto;font-family:var(--f-mono);font-size:.74em;line-height:1.6}
@@ -201,11 +202,13 @@ th{font-family:var(--f-mono);font-weight:500;color:var(--tenue);font-size:.85em}
     <div class="caja s"><span class="et">Lo que sale</span><p>Un LED en el pin 9</p><p>Una fila de números por segundo</p><small>El LED se prende si la tierra está seca. Los números viajan por el cable USB hasta esta página.</small></div>
   </div>
   <h3 style="margin-top:6px">Lo armamos entre todos <span class="tiempo">una pieza, una prueba</span></h3>
-  <p class="lead">Una pieza por vez, y después de cada una la probamos. Si algo falla, sabemos que fue lo último que agregamos.</p>
+  <p class="lead">En la protoboard, una pieza por vez, y después de cada una la probamos. Si algo falla, sabemos que fue lo último que agregamos.</p>
+  <p class="aviso">La regla de la protoboard: los agujeros de una <b>misma fila de cinco</b> están conectados entre sí. Por eso las dos patas de una pieza van siempre en <b>filas distintas</b>; si quedan en la misma, la pieza queda «puenteada» y no hace nada.</p>
   <ol class="armado">
-    <li><b>La luz</b><span>5V → fotorresistencia → <b>A1</b>. De A1, una resistencia de <b>10 kΩ</b> a GND (bandas marrón, negro, <b>naranja</b>).</span><span class="prueba">Prueba: tapamos el sensor y el número de luz tiene que bajar mucho.</span></li>
-    <li><b>La humedad</b><span>El sensor: VCC a 5V, GND a GND y la salida AO a <b>A0</b>.</span><span class="prueba">Prueba: al aire da un número; en agua o tierra mojada, otro muy distinto.</span></li>
-    <li><b>El LED</b><span>Pin <b>9</b> → resistencia de 220 Ω → pata larga del LED. La pata corta, a GND.</span><span class="prueba">Prueba: en seco se prende, en mojado se apaga.</span></li>
+    <li><b>Los rieles</b><span>Un cable del <b>5V</b> de la placa al riel <b>+</b> (rojo) y otro del <b>GND</b> al riel <b>−</b> (azul). Todo lo que necesite 5V o GND se enchufa ahí.</span><span class="prueba">Prueba: enchufamos el USB y la placa prende su lucecita. Nada se calienta.</span></li>
+    <li><b>La luz</b><span>La fotorresistencia con una pata en cada fila. Una pata: cable al riel <b>+</b>. En la fila de la otra pata: un cable a <b>A1</b> y la resistencia de <b>10 kΩ</b> (marrón, negro, <b>naranja</b>) hasta el riel <b>−</b>.</span><span class="prueba">Prueba: tapamos el sensor y el número de luz tiene que bajar mucho.</span></li>
+    <li><b>La humedad</b><span>El sensor va con cables directo, sin pasar por el medio de la protoboard: <b>VCC</b> al riel +, <b>GND</b> al riel − y la salida <b>AO</b> a <b>A0</b>.</span><span class="prueba">Prueba: al aire da un número; en agua o tierra mojada, otro muy distinto.</span></li>
+    <li><b>El LED</b><span>El LED con una pata en cada fila. La <b>pata corta</b> al riel −. En la fila de la <b>pata larga</b>, la resistencia de <b>220 Ω</b> hasta otra fila, y de esa fila un cable al pin <b>9</b>.</span><span class="prueba">Prueba: en seco se prende, en mojado se apaga.</span></li>
   </ol>
 </section>
 
