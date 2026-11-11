@@ -72,6 +72,12 @@ textarea{width:100%;min-height:5.5em;resize:vertical}
 .caja small{font-size:.82em}
 .caja:not(:last-child)::after{content:"→";position:absolute;right:-14px;top:50%;transform:translate(50%,-50%);font-family:var(--f-titulo);font-weight:800;color:var(--tenue);font-size:1.4em}
 
+.armado{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;counter-reset:a}
+.armado li{background:var(--hoja);border:1px solid var(--raya);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:8px;counter-increment:a}
+.armado li::before{content:"Paso " counter(a);font-family:var(--f-mono);font-size:.68em;letter-spacing:.12em;text-transform:uppercase;color:var(--violeta)}
+.armado b{color:var(--tinta)}
+.armado .prueba{background:var(--verde-w);border-radius:10px;padding:8px 10px;font-size:.85em;color:var(--tinta)}
+@media (max-width:820px){.armado{grid-template-columns:1fr}}
 /* código */
 .cod-wrap{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:20px;align-items:start}
 .codigo{background:var(--codigo);color:var(--codigo-t);border-radius:12px;padding:16px 0;overflow-x:auto;font-family:var(--f-mono);font-size:.74em;line-height:1.6}
@@ -188,12 +194,19 @@ th{font-family:var(--f-mono);font-weight:500;color:var(--tenue);font-size:.85em}
 <!-- 1 · EL APARATO -->
 <section class="sec" id="aparato" aria-labelledby="h-ap">
   <header><span class="n">1</span><div><h2 id="h-ap">El aparato <span class="tiempo">8:00</span></h2></div></header>
-  <p class="lead">Es el mismo que fueron armando desde septiembre, ahora entero: mide dos cosas, decide una y nos cuenta todo a la compu.</p>
+  <p class="lead">Es el mismo que fueron armando desde septiembre, ahora entero: mide dos cosas, decide una y nos cuenta todo a la compu. Hoy lo armamos acá, entre todos.</p>
   <div class="sistema">
     <div class="caja e"><span class="et">Lo que entra</span><p>Fotorresistencia en A1</p><p>Sensor de humedad en A0</p><small>Cada uno le da a la placa un número entre 0 y 1023.</small></div>
     <div class="caja d"><span class="et">Lo que decide</span><p>La placa Arduino</p><small>Compara la humedad con un número que elegimos nosotros, el <b>umbral</b>: ¿la tierra está seca?</small></div>
     <div class="caja s"><span class="et">Lo que sale</span><p>Un LED en el pin 9</p><p>Una fila de números por segundo</p><small>El LED se prende si la tierra está seca. Los números viajan por el cable USB hasta esta página.</small></div>
   </div>
+  <h3 style="margin-top:6px">Lo armamos entre todos <span class="tiempo">una pieza, una prueba</span></h3>
+  <p class="lead">Una pieza por vez, y después de cada una la probamos. Si algo falla, sabemos que fue lo último que agregamos.</p>
+  <ol class="armado">
+    <li><b>La luz</b><span>5V → fotorresistencia → <b>A1</b>. De A1, una resistencia de <b>10 kΩ</b> a GND (bandas marrón, negro, <b>naranja</b>).</span><span class="prueba">Prueba: tapamos el sensor y el número de luz tiene que bajar mucho.</span></li>
+    <li><b>La humedad</b><span>El sensor: VCC a 5V, GND a GND y la salida AO a <b>A0</b>.</span><span class="prueba">Prueba: al aire da un número; en agua o tierra mojada, otro muy distinto.</span></li>
+    <li><b>El LED</b><span>Pin <b>9</b> → resistencia de 220 Ω → pata larga del LED. La pata corta, a GND.</span><span class="prueba">Prueba: en seco se prende, en mojado se apaga.</span></li>
+  </ol>
 </section>
 
 <!-- 2 · EL CÓDIGO ENTRE TODOS -->
