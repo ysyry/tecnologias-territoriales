@@ -38,6 +38,7 @@ main{max-width:1100px;margin:0 auto;padding:clamp(28px,5vw,64px) 16px 80px;displ
 .rot{font-family:var(--f-mono);font-size:.7em;letter-spacing:.14em;text-transform:uppercase;color:var(--inf)}
 h1{font-family:var(--f-titulo);font-weight:800;color:var(--tinta);font-size:clamp(44px,7.4vw,96px);line-height:.98;letter-spacing:-.02em;margin:.2em 0 0;text-wrap:balance}
 .bajada{font-size:1.2em;max-width:34em;margin:.7em 0 0;text-wrap:pretty}
+.sobre{font-family:var(--f-titulo);font-weight:600;color:var(--violeta);font-size:clamp(22px,2.6vw,32px);line-height:1.15;margin:.5em 0 0;text-wrap:balance}
 h2{font-family:var(--f-titulo);font-weight:600;color:var(--tinta);font-size:clamp(28px,3.4vw,42px);line-height:1.08;margin:0;text-wrap:balance}
 h3{font-family:var(--f-titulo);font-weight:600;color:var(--tinta);font-size:1.2em;line-height:1.2;margin:0}
 p{margin:0}
@@ -172,6 +173,7 @@ th{font-family:var(--f-mono);font-weight:500;color:var(--tenue);font-size:.85em}
 <section class="tapa" aria-label="Portada">
   <div>
     <div class="rot">3ro · Proyecto final · Laboratorio de Tecnologías Creativas · 2026</div>
+    <p class="sobre">Datos de nuestro territorio: automatizando tareas</p>
     <h1>La huerta en datos</h1>
     <p class="bajada">Armamos un aparato que mide la luz y la humedad de la tierra, lo llevamos a la huerta de la escuela y le hicimos preguntas a los números. Esto es lo que encontramos.</p>
   </div>
@@ -254,7 +256,6 @@ th{font-family:var(--f-mono);font-weight:500;color:var(--tenue);font-size:.85em}
 
     <div class="fila">
       <button type="button" id="b-csv">Descargar los datos (CSV)</button>
-      <button type="button" id="b-subir">Guardar en la planilla de la profe</button>
       <button type="button" id="b-borrar">Borrar todo</button>
       <span class="estado" id="est-dat"></span>
     </div>
@@ -542,10 +543,6 @@ function mandar(alumno,sala,salaNom,concepto,detalle){
   const t={id:'t'+Date.now().toString(36)+Math.random().toString(36).slice(2,7),alumno,anio:'3ro',fecha:hoy(),ts:new Date().toISOString(),sala,salaNom,modo:'practica',total:1,resueltos:1,sinAyuda:1,pistas:0,salteadas:0,seg:1,ejs:[{c:concepto,t:'desafio',q:detalle,i:1,ok:true,ok1:true,p:0,s:false,sg:1}]};
   return fetch(URL_BUZON,{method:'POST',mode:'no-cors',cache:'no-store',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(t)});
 }
-$('b-subir').addEventListener('click',()=>{if(!S.datos.length){$('est-dat').textContent='Todavía no hay datos.';return}
-  $('est-dat').textContent='Mandando…';
-  mandar('3ro · todo el curso','huerta-en-datos','Proyecto final · La huerta en datos','Los datos de la huerta ('+S.datos.length+' filas)',csv()+(S.conclu?'\n\nCONCLUSIONES\n'+S.conclu:''))
-   .then(()=>$('est-dat').textContent='Mandado a la planilla. Igual conviene descargar el CSV.').catch(()=>$('est-dat').textContent='No hay internet. Descargá el CSV y lo subimos después.')});
 $('b-borrar').addEventListener('click',()=>{if(!S.datos.length)return;if(!confirm('¿Borrar las '+S.datos.length+' mediciones y las apuestas? No se puede deshacer.'))return;S.datos=[];S.apuestas={};guardar();ultima=null;['c-luz','c-hum','v-luz','v-hum','v-led'].forEach(i=>$(i).textContent='—');pintarCifras();pintarLugares();pintarApuesta();graficar();consultar();$('est-dat').textContent='Borrado.'});
 
 /* ===== 4 · las tarjetas ===== */
