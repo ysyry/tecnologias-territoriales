@@ -282,7 +282,7 @@ th{font-family:var(--f-mono);font-weight:500;color:var(--tenue);font-size:.85em}
         <button type="button" id="b-pc">Una de pensar</button>
       </div>
       <p class="estado" id="est-mazo"></p>
-      <p style="font-size:.85em"><b style="color:var(--violeta)">Palabras</b>: explicar con las palabras justas lo que hace el aparato y lo que dicen los números.<br><b style="color:var(--inf)">Pensar</b>: dudar de los datos, decidir con ellos y decir por qué.</p>
+      <p style="font-size:.85em"><b style="color:var(--violeta)">Palabras</b>: explicar el aparato y el código con las palabras técnicas: sensor, variable, condición, umbral.<br><b style="color:var(--inf)">Pensar</b>: una situación de la huerta para resolver. ¿Qué hacés y por qué?</p>
     </div>
   </div>
 </section>
@@ -558,22 +558,22 @@ $('b-borrar').addEventListener('click',()=>{if(!S.datos.length)return;if(!confir
 
 /* ===== 4 · las tarjetas ===== */
 const TARJ=[
- {t:'lt',x:'Contale a alguien de 1ro qué hace la fotorresistencia.',s:'Sin decir «el cosito»: qué mide, dónde está enchufada, qué número da.'},
- {t:'lt',x:'Tapá el sensor de luz con la mano. ¿Qué número cambia en la pantalla, y por qué?',s:'Mostralo y contalo mientras lo hacés.'},
- {t:'lt',x:'¿Qué es el umbral? Explicalo con el de nuestra huerta.',s:'¿Qué número elegimos y qué pasa de un lado y del otro?'},
- {t:'lt',x:'Nombrá las tres partes del aparato: qué entra, qué decide y qué sale.',s:'Con el nombre de cada pieza.'},
- {t:'lt',x:'Señalá en el código la línea que decide si se prende el LED y leela como si fuera castellano.',s:'«Si la humedad es mayor que…»'},
- {t:'lt',x:'Señalá en el aparato el sensor de humedad. ¿Qué hace, y qué pasa si lo sacamos de la tierra?',s:'Probalo y contá lo que ves en la pantalla.'},
- {t:'lt',x:'Compará la luz de este lugar con la del anterior usando una cuenta.',s:'¿Cuánto más? ¿Cuántas veces más? ¿Cuál cuenta te sirve más?'},
- {t:'lt',x:'¿Para qué está el cable entre el aparato y la compu?',s:'¿Qué pasaría con la pantalla si lo desenchufamos?'},
- {t:'pc',x:'El LED dice que la tierra está seca, pero la tocás y está húmeda. ¿A quién le creés?',s:'¿Qué harías para salir de la duda?'},
- {t:'pc',x:'Medimos dos minutos en cada lugar. ¿Alcanza para decir «la sombra siempre tiene menos luz»?',s:'¿Qué nos falta medir para poder decir «siempre»?'},
- {t:'pc',x:'Pasó una nube mientras medíamos al sol. ¿Qué le pasa a los datos?',s:'¿Cómo nos daríamos cuenta mirando el gráfico?'},
- {t:'pc',x:'Sos quien cuida la huerta. Con estos datos, ¿qué cama regás primero?',s:'Decí qué número miraste para decidir.'},
- {t:'pc',x:'Alguien te quiere vender un riego automático que «nunca se equivoca». ¿Qué le preguntás?',s:'Pensá en lo que nos pasó a nosotros con el umbral.'},
- {t:'pc',x:'Si dejamos el aparato toda la noche en la huerta, ¿qué números esperás de luz y de humedad?',s:'Apostá antes, y decí por qué.'},
- {t:'pc',x:'Dos aparatos iguales, en el mismo lugar, dan 780 y 820 de luz. ¿Cuál tiene razón?',s:'¿Puede que los dos tengan razón?'},
- {t:'pc',x:'¿Quién más en la Villa podría usar estos datos? ¿Los publicaríamos libres?',s:'Nombrá a alguien concreto y para qué le servirían.'}
+ {t:'lt',x:'¿Qué es un sensor? Explicalo con el de luz de nuestro aparato.',s:'Usá las palabras «entrada» y «número».'},
+ {t:'lt',x:'Nombrá una entrada y una salida del aparato, y en qué pin está enchufada cada una.',s:'Señalalas en el aparato mientras hablás.'},
+ {t:'lt',x:'En el código hay una variable que se llama luz. ¿Qué es una variable, y qué guarda esta?',s:'Tapá el sensor: ¿qué le pasa a la variable?'},
+ {t:'lt',x:'Señalá el if en el código. ¿Qué condición mira, y qué hace el programa si se cumple?',s:'Leelo como si fuera castellano: «si…, entonces…».'},
+ {t:'lt',x:'¿Qué es el umbral? Explicalo con el número que elegimos en la huerta.',s:'¿Qué pasa de un lado del umbral, y qué del otro?'},
+ {t:'lt',x:'Contá el recorrido completo: desde la tierra hasta el gráfico de la pantalla.',s:'Usá: sensor, placa, programa, cable, dato, gráfico.'},
+ {t:'lt',x:'¿Cuál es la diferencia entre un dato y una conclusión? Dá un ejemplo de cada uno con lo de hoy.',s:'Como en la tarea de la huerta: dato, información, conocimiento.'},
+ {t:'lt',x:'El LED es un actuador. ¿Qué quiere decir? ¿Qué otro actuador le pondrías a la huerta?',s:'El sensor mira el mundo; el actuador…'},
+ {t:'pc',x:'Situación: quien cuida la huerta te dice «el aparato no prendió el LED, así que no riego». Pero las hojas están caídas.',s:'¿Qué le decís? ¿A quién le creés?'},
+ {t:'pc',x:'Situación: medimos la cama del fondo justo cuando pasó una nube. Alguien dice «esa cama tiene poca luz».',s:'¿Tiene razón? ¿Cómo nos daríamos cuenta mirando el gráfico?'},
+ {t:'pc',x:'Situación: el LED se prendió, pero el juez de la tierra la toca y dice que está húmeda.',s:'¿Quién se equivoca, el aparato o la mano? ¿Cómo lo averiguamos?'},
+ {t:'pc',x:'Situación: alguien dice «medimos dos minutos al sol, así que ya sabemos cuánta luz tiene la huerta».',s:'¿Qué le falta a esa conclusión? ¿Qué habría que medir?'},
+ {t:'pc',x:'Situación: el municipio quiere comprar 50 aparatos como el nuestro para todas las huertas de la Villa.',s:'Con lo que viste hoy, ¿qué les recomendás antes de comprar?'},
+ {t:'pc',x:'Situación: una empresa te regala un sensor para la huerta, pero los datos se los queda ella.',s:'¿Aceptás? ¿Qué le preguntarías antes?'},
+ {t:'pc',x:'Situación: llega enero, no hay nadie en la escuela y el aparato queda solo en la huerta, midiendo.',s:'¿Qué podría salir mal? ¿Para qué podría servir?'},
+ {t:'pc',x:'Situación: te quieren vender un riego automático que «nunca se equivoca».',s:'Con lo que nos pasó con el umbral, ¿qué le preguntás al vendedor?'}
 ];
 const NOM={lt:'Palabras · lenguaje técnico',pc:'Pensar · pensamiento crítico'};
 function sacar(tipo){
