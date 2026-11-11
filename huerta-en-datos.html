@@ -14,7 +14,7 @@
   --papel:#F3F1F7; --hoja:#FCFBFE; --raya:#DAD4E6;
   --tinta:#161226; --texto:#3B3350; --tenue:#5F5779;
   --violeta:#5B3FA8; --violeta-w:rgba(91,63,168,.10); --inf:#9A3A80; --inf-w:rgba(154,58,128,.10);
-  --rojo:#C8352E; --verde:#2E8B57; --verde-w:rgba(46,139,87,.12); --sol:#B7791F; --sol-w:rgba(183,121,31,.12);
+  --rojo:#C8352E; --verde:#2E8B57; --verde-w:rgba(46,139,87,.12); --sol:#B7791F; --sol-w:rgba(183,121,31,.12); --agua:#2563EB; --agua-w:rgba(37,99,235,.11);
   --codigo:#1E1934; --codigo-t:#EDE8FA;
   --f-titulo:"Bricolage Grotesque",Georgia,serif;
   --f-cuerpo:Manrope,system-ui,sans-serif;
@@ -24,13 +24,13 @@
   --papel:#0E0C18; --hoja:#1B1830; --raya:#332D50;
   --tinta:#F6F3FF; --texto:#D6D0E8; --tenue:#ABA3C4;
   --violeta:#B197EE; --violeta-w:rgba(177,151,238,.14); --inf:#E88BCB; --inf-w:rgba(232,139,203,.14);
-  --rojo:#F07068; --verde:#5CC98C; --verde-w:rgba(92,201,140,.14); --sol:#E9B44C; --sol-w:rgba(233,180,76,.14);
+  --rojo:#F07068; --verde:#5CC98C; --verde-w:rgba(92,201,140,.14); --sol:#E9B44C; --sol-w:rgba(233,180,76,.14); --agua:#60A5FA; --agua-w:rgba(96,165,250,.15);
   --codigo:#15121F; --codigo-t:#EDE8FA; color-scheme:dark}}
 :root[data-theme="dark"]{
   --papel:#0E0C18; --hoja:#1B1830; --raya:#332D50;
   --tinta:#F6F3FF; --texto:#D6D0E8; --tenue:#ABA3C4;
   --violeta:#B197EE; --violeta-w:rgba(177,151,238,.14); --inf:#E88BCB; --inf-w:rgba(232,139,203,.14);
-  --rojo:#F07068; --verde:#5CC98C; --verde-w:rgba(92,201,140,.14); --sol:#E9B44C; --sol-w:rgba(233,180,76,.14);
+  --rojo:#F07068; --verde:#5CC98C; --verde-w:rgba(92,201,140,.14); --sol:#E9B44C; --sol-w:rgba(233,180,76,.14); --agua:#60A5FA; --agua-w:rgba(96,165,250,.15);
   --codigo:#15121F; --codigo-t:#EDE8FA; color-scheme:dark}
 *{box-sizing:border-box}
 body{background:var(--papel);color:var(--texto);font-family:var(--f-cuerpo);font-size:clamp(17px,1.6vw,21px);line-height:1.5;margin:0}
@@ -96,7 +96,7 @@ textarea{width:100%;min-height:5.5em;resize:vertical}
 .medida{border-radius:12px;padding:12px 14px;border:1px solid var(--raya)}
 .medida span{font-size:.75em;color:var(--tenue)}
 .medida b{display:block;font-family:var(--f-titulo);font-weight:800;font-size:clamp(34px,5vw,58px);line-height:1;color:var(--tinta);font-variant-numeric:tabular-nums}
-.medida.luz{background:var(--sol-w)} .medida.hum{background:var(--verde-w)} .medida.led{background:var(--inf-w)}
+.medida.luz{background:var(--sol-w)} .medida.hum{background:var(--agua-w)} .medida.led{background:var(--inf-w)}
 .medida.led.on b{color:var(--rojo)}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{border:2px solid var(--raya);background:var(--hoja);color:var(--tinta);border-radius:999px;padding:8px 14px;font:700 .8em var(--f-cuerpo);cursor:pointer}
@@ -240,7 +240,7 @@ th{font-family:var(--f-mono);font-weight:500;color:var(--tenue);font-size:.85em}
     </div>
 
     <svg class="graf" id="graf" viewBox="0 0 1000 320" role="img" aria-label="Gráfico de luz y humedad"></svg>
-    <div class="leyenda"><span><i style="background:var(--sol)"></i>luz</span><span><i style="background:var(--verde)"></i>humedad</span><span><i style="background:var(--verde);height:0;border-top:2px dashed var(--verde)"></i>umbral</span><span><i style="background:var(--rojo);width:8px;height:8px;border-radius:50%"></i>LED prendido</span></div>
+    <div class="leyenda"><span><i style="background:var(--sol)"></i>luz</span><span><i style="background:var(--agua)"></i>humedad</span><span><i style="background:transparent;height:0;border-top:2px dashed var(--agua)"></i>umbral</span><span><i style="background:var(--rojo);width:8px;height:8px;border-radius:50%"></i>LED prendido</span></div>
 
     <details class="mas">
       <summary>El umbral: ¿desde qué número decimos que la tierra está seca?</summary>
@@ -524,10 +524,10 @@ function graficar(){
   /* bandas por lugar */
   let ini=0;const tonos=['var(--violeta-w)','transparent'];let k=0;
   for(let i=1;i<=d.length;i++){if(i===d.length||d[i].lugar!==d[ini].lugar){const x0=x(ini)-(i-ini===1?3:0),x1=x(i-1)+(i-ini===1?3:0);s+=`<rect x="${x0}" y="${T}" width="${Math.max(6,x1-x0)}" height="${H-T-B}" fill="${tonos[k%2]}"/><text x="${(x0+x1)/2}" y="${T-8}" text-anchor="middle" style="fill:var(--tinta);font-size:12px">${esc(d[ini].lugar).slice(0,18)}</text>`;k++;ini=i}}
-  s+=`<line x1="${L}" x2="${W-R}" y1="${y(S.umbral)}" y2="${y(S.umbral)}" stroke="var(--verde)" stroke-width="1.5" stroke-dasharray="6 5"/><text x="${W-R}" y="${y(S.umbral)-5}" text-anchor="end" style="fill:var(--verde)">umbral ${S.umbral}</text>`;
+  s+=`<line x1="${L}" x2="${W-R}" y1="${y(S.umbral)}" y2="${y(S.umbral)}" stroke="var(--agua)" stroke-width="1.5" stroke-dasharray="6 5"/><text x="${W-R}" y="${y(S.umbral)-5}" text-anchor="end" style="fill:var(--agua)">umbral ${S.umbral}</text>`;
   const pl=k=>d.map((r,i)=>`${x(i).toFixed(1)},${y(r[k]).toFixed(1)}`).join(' ');
   s+=`<polyline points="${pl('luz')}" fill="none" stroke="var(--sol)" stroke-width="2.5" stroke-linejoin="round"/>`;
-  s+=`<polyline points="${pl('humedad')}" fill="none" stroke="var(--verde)" stroke-width="2.5" stroke-linejoin="round"/>`;
+  s+=`<polyline points="${pl('humedad')}" fill="none" stroke="var(--agua)" stroke-width="2.5" stroke-linejoin="round"/>`;
   d.forEach((r,i)=>{if(r.led)s+=`<circle cx="${x(i).toFixed(1)}" cy="${H-B+8}" r="3" fill="var(--rojo)"/>`});
   svg.innerHTML=s;
 }
@@ -633,7 +633,7 @@ function consultar(){
     const max=Math.max(...rows.map(r=>r[1]),1);
     const qué=acc==='g_n'?'filas':`${col} promedio`;
     pal.textContent=`${quien}. Por lugar, de mayor a menor ${qué}: arriba de todo, «${rows[0][0]}»`+(rows.length>1?`; abajo, «${rows[rows.length-1][0]}».`:'.');
-    res.innerHTML=`<div class="barras">${rows.map(([l,v])=>`<div class="barra"><span>${esc(l)}</span><div class="b" style="width:${(100*v/max).toFixed(1)}%;background:${acc==='g_luz'?'var(--sol)':acc==='g_hum'?'var(--verde)':'var(--violeta)'}"></div><span class="v">${Math.round(v)}</span></div>`).join('')}</div>`;
+    res.innerHTML=`<div class="barras">${rows.map(([l,v])=>`<div class="barra"><span>${esc(l)}</span><div class="b" style="width:${(100*v/max).toFixed(1)}%;background:${acc==='g_luz'?'var(--sol)':acc==='g_hum'?'var(--agua)':'var(--violeta)'}"></div><span class="v">${Math.round(v)}</span></div>`).join('')}</div>`;
   }
 }
 const ATAJOS=[
