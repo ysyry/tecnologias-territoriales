@@ -214,7 +214,7 @@ th{font-family:var(--f-mono);font-weight:500;color:var(--tenue);font-size:.85em}
   <header><span class="n">2</span><div><h2 id="h-cod">El código, entre todos <span class="tiempo">8:05</span></h2></div></header>
   <p class="lead">No hace falta escribirlo: hay que entenderlo. Tres preguntas, y cada una ilumina las líneas que la contestan. Primero lo dicen ustedes, después destapamos.</p>
   <div class="cod-wrap">
-    <div class="codigo" id="cod" aria-label="El programa de la placa"></div>
+    <div style="display:flex;flex-direction:column;gap:10px;min-width:0"><div class="fila"><button type="button" id="b-copiar">Copiar el programa</button><span class="estado" id="est-cop"></span></div><div class="codigo" id="cod" aria-label="El programa de la placa"></div></div>
     <div class="preguntas" id="preguntas"></div>
   </div>
 </section>
@@ -422,6 +422,12 @@ const PREG=[
   const cod=$('cod');
   const pinta=l=>esc(l).replace(/(\/\/.*)$/,'<span class="c">$1</span>');
   cod.innerHTML=CODIGO.map(([l,q])=>`<span class="ln" data-q="${q}">${pinta(l)||' '}</span>`).join('');
+  const texto=CODIGO.map(([l])=>l).join('\n')+'\n';
+  cod.addEventListener('copy',e=>{const sel=String(getSelection());if(sel.length>40){e.preventDefault();e.clipboardData.setData('text/plain',texto)}});
+  $('b-copiar').addEventListener('click',async()=>{
+    try{await navigator.clipboard.writeText(texto);$('est-cop').textContent='Copiado. Pegalo en el IDE.'}
+    catch(_){const ta=document.createElement('textarea');ta.value=texto;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();$('est-cop').textContent='Copiado. Pegalo en el IDE.'}
+  });
   const box=$('preguntas');
   box.innerHTML=PREG.map((p,i)=>`<div class="preg" data-q="${p.q}"><h3>${i+1}. ${p.t}</h3><div class="fila"><button type="button" class="b-ver">Ver las líneas</button><button type="button" class="b-resp">Destapar la respuesta</button></div><p class="resp" hidden>${p.r}</p></div>`).join('');
   box.querySelectorAll('.preg').forEach(pr=>{
