@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bitácora de la huerta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Manrope:wght@500;700&family=DM+Mono:wght@400;500&display=swap">
+<style>
+[hidden]{display:none!important}
+/* El blog del proyecto final de 3ro (2026). Se llena con las fotos de blog-huerta/ y con los datos:
+   el huerta.csv publicado o, si todavía no está, los que midió esta compu en huerta-en-datos.html. */
+:root{
+  --papel:#F3F1F7; --hoja:#FCFBFE; --raya:#DAD4E6;
+  --tinta:#161226; --texto:#3B3350; --tenue:#5F5779;
+  --violeta:#5B3FA8; --violeta-w:rgba(91,63,168,.10); --inf:#9A3A80;
+  --sol:#B7791F; --sol-w:rgba(183,121,31,.12); --agua:#2563EB; --agua-w:rgba(37,99,235,.11); --rojo:#C8352E;
+  --f-titulo:"Bricolage Grotesque",Georgia,serif; --f-cuerpo:Manrope,system-ui,sans-serif; --f-mono:"DM Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --papel:#0E0C18; --hoja:#1B1830; --raya:#332D50; --tinta:#F6F3FF; --texto:#D6D0E8; --tenue:#ABA3C4;
+  --violeta:#B197EE; --violeta-w:rgba(177,151,238,.14); --inf:#E88BCB;
+  --sol:#E9B44C; --sol-w:rgba(233,180,76,.14); --agua:#60A5FA; --agua-w:rgba(96,165,250,.15); --rojo:#F07068; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --papel:#0E0C18; --hoja:#1B1830; --raya:#332D50; --tinta:#F6F3FF; --texto:#D6D0E8; --tenue:#ABA3C4;
+  --violeta:#B197EE; --violeta-w:rgba(177,151,238,.14); --inf:#E88BCB;
+  --sol:#E9B44C; --sol-w:rgba(233,180,76,.14); --agua:#60A5FA; --agua-w:rgba(96,165,250,.15); --rojo:#F07068; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--papel);color:var(--texto);font-family:var(--f-cuerpo);font-size:clamp(17px,1.5vw,20px);line-height:1.6;margin:0}
+main{max-width:860px;margin:0 auto;padding:clamp(28px,5vw,64px) 16px 80px;display:flex;flex-direction:column;gap:clamp(48px,7vw,80px)}
+.rot{font-family:var(--f-mono);font-size:.7em;letter-spacing:.14em;text-transform:uppercase;color:var(--inf)}
+.sobre{font-family:var(--f-titulo);font-weight:600;color:var(--violeta);font-size:clamp(20px,2.4vw,28px);line-height:1.15;margin:.5em 0 0}
+h1{font-family:var(--f-titulo);font-weight:800;color:var(--tinta);font-size:clamp(42px,7vw,84px);line-height:.98;letter-spacing:-.02em;margin:.15em 0 0;text-wrap:balance}
+h2{font-family:var(--f-titulo);font-weight:600;color:var(--tinta);font-size:clamp(26px,3.2vw,38px);line-height:1.1;margin:0;text-wrap:balance}
+p{margin:0;max-width:38em;text-wrap:pretty}
+.bajada{font-size:1.15em;margin-top:.8em}
+a{color:var(--violeta)}
+nav.indice{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:.85em;border-top:1px solid var(--raya);border-bottom:1px solid var(--raya);padding:12px 0}
+nav.indice a{text-decoration:none;font-weight:700}
+article{display:flex;flex-direction:column;gap:18px}
+article .fecha{font-family:var(--f-mono);font-size:.7em;color:var(--tenue);letter-spacing:.08em;text-transform:uppercase}
+.fotos{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+figure{margin:0;display:flex;flex-direction:column;gap:6px}
+figure img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:12px;background:var(--raya);display:block}
+figcaption{font-size:.8em;color:var(--tenue)}
+.hueco{aspect-ratio:4/3;border:2px dashed var(--raya);border-radius:12px;display:grid;place-items:center;text-align:center;padding:16px;color:var(--tenue);font-size:.85em}
+.cita{border-left:4px solid var(--violeta);padding:4px 0 4px 18px;font-family:var(--f-titulo);font-weight:600;font-size:1.2em;color:var(--tinta);max-width:32em}
+.cifras{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.cifra{background:var(--hoja);border:1px solid var(--raya);border-radius:14px;padding:14px 16px}
+.cifra b{display:block;font-family:var(--f-titulo);font-weight:800;font-size:1.9em;line-height:1;color:var(--tinta);font-variant-numeric:tabular-nums}
+.cifra span{font-size:.75em;color:var(--tenue)}
+.barras{display:flex;flex-direction:column;gap:8px}
+.barra{display:grid;grid-template-columns:minmax(90px,160px) minmax(0,1fr) 3.5em;gap:10px;align-items:center;font-size:.85em}
+.barra .b{height:20px;border-radius:0 6px 6px 0}
+.barra .v{font-family:var(--f-mono);text-align:right;color:var(--tinta)}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.dos h3{font-family:var(--f-titulo);font-weight:600;font-size:1.05em;color:var(--tinta);margin:0 0 10px}
+table{border-collapse:collapse;font-size:.82em;width:100%;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:6px 10px;border-bottom:1px solid var(--raya)}
+th{font-family:var(--f-mono);font-weight:500;color:var(--tenue);font-size:.85em}
+.tabla-wrap{max-height:360px;overflow:auto;border:1px solid var(--raya);border-radius:10px}
+details summary{cursor:pointer;color:var(--violeta);font-weight:700;font-size:.9em}
+.aviso{background:var(--sol-w);border-radius:10px;padding:10px 14px;font-size:.85em;color:var(--tinta)}
+.conclu{background:var(--hoja);border:1px solid var(--raya);border-radius:16px;padding:clamp(16px,3vw,28px);white-space:pre-wrap;color:var(--tinta);font-size:1.05em}
+.pie{font-size:.75em;color:var(--tenue);border-top:1px solid var(--raya);padding-top:18px;display:flex;flex-direction:column;gap:6px}
+.camino{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.camino li{display:grid;grid-template-columns:5.5em minmax(0,1fr);gap:16px;padding:0 0 22px;position:relative}
+.camino li::before{content:"";position:absolute;left:calc(5.5em + 7px);top:10px;bottom:-4px;width:2px;background:var(--raya)}
+.camino li:last-child::before{display:none}
+.camino .cu{font-family:var(--f-mono);font-size:.75em;color:var(--tenue);padding-top:3px;text-align:right}
+.camino .qu{padding-left:22px;position:relative;display:flex;flex-direction:column;gap:2px}
+.camino .qu::before{content:"";position:absolute;left:-1px;top:7px;width:12px;height:12px;border-radius:50%;background:var(--hoja);border:3px solid var(--violeta)}
+.camino li.hoy .qu::before{background:var(--violeta)}
+.camino b{color:var(--tinta);font-family:var(--f-titulo);font-weight:600;font-size:1.08em}
+.camino small{color:var(--tenue);font-size:.88em}
+@media (max-width:640px){.camino li{grid-template-columns:4.2em minmax(0,1fr)}.camino li::before{left:calc(4.2em + 7px)}}
+@media (max-width:640px){.dos{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main>
+
+<header>
+  <div class="rot">3ro · Proyecto final · Laboratorio de Tecnologías Creativas · 2026</div>
+  <p class="sobre">Datos de nuestro territorio: automatizando tareas</p>
+  <h1>Bitácora de la huerta</h1>
+  <p class="bajada">Durante el segundo cuatrimestre armamos un aparato que mide la luz y la humedad de la tierra, y el 11 de noviembre lo llevamos a la huerta de la escuela. Acá contamos cómo lo hicimos, qué medimos y qué aprendimos.</p>
+</header>
+
+<nav class="indice" aria-label="Las entradas">
+  <a href="#camino">El camino</a><a href="#idea">La idea</a><a href="#aparato">El aparato</a><a href="#dia">El día en la huerta</a><a href="#datos">Los datos</a><a href="#conclusiones">Lo que concluimos</a><a href="#nosotros">Nosotros</a>
+</nav>
+
+<article id="camino">
+  <span class="fecha">Marzo a noviembre</span>
+  <h2>El camino que hicimos</h2>
+  <ol class="camino">
+    <li><span class="cu">1er cuatri.</span><div class="qu"><b>Datos en el territorio</b><small>Con Matemática: preguntas sobre la Villa, datos y tablas. Mapeamos con OpenStreetMap. Todavía sin programar.</small></div></li>
+    <li><span class="cu">Agosto</span><div class="qu"><b>Las misiones en la app</b><small>Programar la placa en el simulador, seguir una variable, tomar decisiones con if y cazar errores.</small></div></li>
+    <li><span class="cu">Septiembre</span><div class="qu"><b>Del simulador al aparato</b><small>Cuentas en Tinkercad. Cada equipo eligió su aparato y lo dibujó: qué mide, qué decide, qué hace.</small></div></li>
+    <li><span class="cu">30/09</span><div class="qu"><b>¿Cómo es octubre en la huerta?</b><small>El sensor de temperatura en Tinkercad, una tabla CSV y su gráfico.</small></div></li>
+    <li><span class="cu">28/10</span><div class="qu"><b>La placa en la mesa</b><small>Por primera vez con cables: la fotorresistencia conectada. Errores encontrados: una resistencia equivocada y un divisor al revés.</small></div></li>
+    <li><span class="cu">04/11</span><div class="qu"><b>¿Quién puede saber lo que sabemos de la huerta?</b><small>Dato, información y conocimiento. Datos libres y privativos.</small></div></li>
+    <li class="hoy"><span class="cu">11/11</span><div class="qu"><b>La huerta en datos</b><small>El aparato entero en la huerta: medir por lugares, elegir el umbral, preguntarle a los datos.</small></div></li>
+  </ol>
+</article>
+
+<article id="idea">
+  <span class="fecha">Septiembre</span>
+  <h2>La idea: ¿cuánta luz y cuánta agua tiene la huerta?</h2>
+  <p>La huerta de la escuela no es pareja: hay camas al sol, rincones con sombra, tierra que se seca rápido y tierra que se queda húmeda. Nos propusimos medirlo con un aparato hecho por nosotros, en lugar de adivinarlo.</p>
+  <p>Primero pensamos qué tenía que hacer el aparato: <b>medir</b> (luz y humedad), <b>decidir</b> (¿la tierra está seca?) y <b>avisar</b> (prender una luz). Lo dibujamos y lo probamos en el simulador antes de tocar un cable.</p>
+  <div class="fotos" data-fotos="idea"></div>
+</article>
+
+<article id="aparato">
+  <span class="fecha">Octubre</span>
+  <h2>Cómo armamos el aparato</h2>
+  <p>Usamos una placa Arduino, una fotorresistencia para la luz, un sensor de humedad clavado en la tierra y un LED que se prende cuando la tierra está seca. Cada segundo, la placa le manda a la compu una fila con los números.</p>
+  <p>No salió a la primera. Un equipo veía que la luz casi no cambiaba al tapar el sensor: tenía una resistencia de 100 kΩ en vez de 10 kΩ (las bandas se parecen: amarilla y naranja). A otro, el número le subía al tapar en vez de bajar: la fotorresistencia y la resistencia estaban cambiadas de lugar. Encontrar esos errores fue parte del trabajo.</p>
+  <p class="cita">«Desde qué número decimos que la tierra está seca» no lo sabe el aparato: lo decidimos nosotros, midiendo. Ese número es el umbral.</p>
+  <div class="fotos" data-fotos="aparato"></div>
+  <p><a href="huerta-en-datos.html#codigo">Ver el código del aparato, línea por línea →</a></p>
+</article>
+
+<article id="dia">
+  <span class="fecha">Miércoles 11 de noviembre</span>
+  <h2>El día en la huerta</h2>
+  <p>Salimos con el aparato conectado a una notebook y medimos en varios lugares. Antes de cada medición apostamos: ¿va a haber más o menos luz que en el lugar anterior? Después mirábamos el gráfico y veíamos si habíamos acertado.</p>
+  <div class="fotos" data-fotos="dia"></div>
+</article>
+
+<article id="datos">
+  <span class="fecha">Los números</span>
+  <h2>Los datos</h2>
+  <p class="aviso" id="origen" hidden></p>
+  <div id="sin-datos"><p>Los datos de la huerta se publican acá después de la medición del 11 de noviembre.</p></div>
+  <div id="con-datos" hidden style="display:flex;flex-direction:column;gap:22px">
+    <div class="cifras" id="cifras"></div>
+    <div class="dos">
+      <div><h3>Luz promedio por lugar</h3><div class="barras" id="b-luz"></div><p style="font-size:.75em;color:var(--tenue);margin-top:6px">0 = oscuro · 1023 = mucha luz</p></div>
+      <div><h3>Humedad promedio por lugar</h3><div class="barras" id="b-hum"></div><p style="font-size:.75em;color:var(--tenue);margin-top:6px">más alto = tierra más seca</p></div>
+    </div>
+    <div><h3 style="font-family:var(--f-titulo);font-weight:600;color:var(--tinta);margin:0 0 10px;font-size:1.05em">Resumen por lugar</h3><div class="tabla-wrap"><table id="resumen"></table></div></div>
+    <details><summary>Todas las mediciones</summary><div class="tabla-wrap" style="margin-top:10px"><table id="todas"></table></div></details>
+    <p style="font-size:.9em">¿Querés hacerle tus propias preguntas a estos datos? <a id="csv-link" href="blog-huerta/huerta.csv" download>Descargá el CSV</a> y abrilo en <a href="https://ysyry.github.io/explorando-datos-edu/" target="_blank" rel="noopener">Explorando datos</a> con «Cargar CSV».</p>
+  </div>
+</article>
+
+<article id="conclusiones">
+  <span class="fecha">Para cerrar</span>
+  <h2>Lo que concluimos</h2>
+  <div class="conclu" id="conclu">Las conclusiones del curso se publican acá después del 11 de noviembre.</div>
+</article>
+
+<article id="nosotros">
+  <span class="fecha">3ro año · 2026</span>
+  <h2>Nosotros</h2>
+  <p>Somos el track de programación de 3ro de la Escuela Media Don Jaime de Nevares, en Villa La Angostura. Este proyecto es parte del Laboratorio de Tecnologías Creativas y del proyecto de área «Datos en el territorio».</p>
+  <div class="fotos" data-fotos="nosotros"></div>
+</article>
+
+<footer class="pie">
+  <span>Hecho con software libre. El aparato, el código y esta página se pueden copiar, usar y mejorar.</span>
+  <span><a href="huerta-en-datos.html">La página del aparato en vivo</a> · <a href="index.html">Tecnologías para el territorio</a></span>
+</footer>
+</main>
+
+<script>
+/* ===== Las fotos: se agregan acá, con el archivo dentro de blog-huerta/ y su epígrafe =====
+   Si una sección no tiene fotos, se muestra un hueco que dice qué foto va. */
+const FOTOS={
+  idea:[],
+  aparato:[],
+  dia:[],
+  nosotros:[]
+};
+const HUECOS={
+  idea:['El dibujo del aparato o el simulador'],
+  aparato:['El aparato armado, de cerca','La placa con los cables, desde arriba'],
+  dia:['Midiendo en la huerta','El gráfico en la pantalla'],
+  nosotros:['El curso con el aparato']
+};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+document.querySelectorAll('[data-fotos]').forEach(div=>{
+  const k=div.dataset.fotos, fs=FOTOS[k]||[];
+  div.innerHTML=fs.length
+    ?fs.map(f=>`<figure><img src="blog-huerta/${esc(f.src)}" alt="${esc(f.alt||f.pie||'')}" loading="lazy"><figcaption>${esc(f.pie||'')}</figcaption></figure>`).join('')
+    :(HUECOS[k]||[]).map(h=>`<div class="hueco">Acá va la foto: ${esc(h)}</div>`).join('');
+});
+
+/* ===== Los datos: el CSV publicado; si no está, los que midió esta compu ===== */
+const prom=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:0;
+function parseCSV(t){
+  const ls=t.trim().split(/\r?\n/);const h=ls.shift().split(',');
+  return ls.map(l=>{const c=l.match(/("[^"]*"|[^,]+)/g)||[];const o={};h.forEach((k,i)=>{let v=(c[i]||'').replace(/^"|"$/g,'');o[k]=['n','luz','humedad','led'].includes(k)?Number(v):v});return o});
+}
+function mostrar(d,origen){
+  if(!d.length)return;
+  document.getElementById('sin-datos').hidden=true;document.getElementById('con-datos').hidden=false;
+  if(origen){const o=document.getElementById('origen');o.hidden=false;o.textContent=origen}
+  const g={};d.forEach(r=>{(g[r.lugar]=g[r.lugar]||[]).push(r)});
+  const L=Object.entries(g).map(([l,a])=>({l,n:a.length,luz:prom(a.map(r=>r.luz)),hum:prom(a.map(r=>r.humedad)),led:a.filter(r=>r.led==1).length}));
+  const masLuz=[...L].sort((a,b)=>b.luz-a.luz)[0], masSeco=[...L].sort((a,b)=>b.hum-a.hum)[0];
+  document.getElementById('cifras').innerHTML=[[d.length,'mediciones, una por segundo'],[L.length,'lugares de la huerta'],[masLuz.l,'el lugar con más luz'],[masSeco.l,'el lugar más seco']]
+    .map(([v,t])=>`<div class="cifra"><b>${esc(v)}</b><span>${t}</span></div>`).join('');
+  const barras=(id,k,color)=>{const s=[...L].sort((a,b)=>b[k]-a[k]),m=Math.max(...s.map(x=>x[k]),1);
+    document.getElementById(id).innerHTML=s.map(x=>`<div class="barra"><span>${esc(x.l)}</span><div class="b" style="width:${(100*x[k]/m).toFixed(1)}%;background:${color}"></div><span class="v">${Math.round(x[k])}</span></div>`).join('')};
+  barras('b-luz','luz','var(--sol)');barras('b-hum','hum','var(--agua)');
+  document.getElementById('resumen').innerHTML='<tr><th>lugar</th><th>mediciones</th><th>luz promedio</th><th>humedad promedio</th><th>LED prendido</th></tr>'+L.map(x=>`<tr><td>${esc(x.l)}</td><td>${x.n}</td><td>${Math.round(x.luz)}</td><td>${Math.round(x.hum)}</td><td>${x.led} de ${x.n}</td></tr>`).join('');
+  document.getElementById('todas').innerHTML='<tr><th>n</th><th>lugar</th><th>luz</th><th>humedad</th><th>led</th><th>hora</th></tr>'+d.map(r=>`<tr><td>${r.n}</td><td>${esc(r.lugar)}</td><td>${r.luz}</td><td>${r.humedad}</td><td>${r.led}</td><td>${esc(r.hora||'')}</td></tr>`).join('');
+}
+function local(){try{return JSON.parse(localStorage.getItem('pps.huerta.v1')||'null')}catch(e){return null}}
+fetch('blog-huerta/huerta.csv',{cache:'no-store'}).then(r=>r.ok?r.text():Promise.reject()).then(t=>mostrar(parseCSV(t)))
+  .catch(()=>{const S=local();if(S&&S.datos&&S.datos.length){const prueba=S.datos.some(r=>r.prueba);
+    mostrar(S.datos,(prueba?'Estos números son del modo prueba. ':'')+'Son los datos que midió esta compu; todavía no están publicados para todos.');
+    const a=document.getElementById('csv-link');a.removeAttribute('href');a.onclick=()=>{location.href='huerta-en-datos.html#huerta'}}});
+fetch('blog-huerta/conclusiones.txt',{cache:'no-store'}).then(r=>r.ok?r.text():Promise.reject()).then(t=>{document.getElementById('conclu').textContent=t.trim()})
+  .catch(()=>{const S=local();if(S&&S.conclu&&S.conclu.trim())document.getElementById('conclu').textContent=S.conclu.trim()});
+</script>
+</body>
+</html>
